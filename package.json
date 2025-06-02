@@ -25,7 +25,7 @@
     "eslint": "^9.27.0",
     "globals": "^16.1.0",
     "husky": "^9.1.7",
-    "oxlint": "^0.16.11",
+    "oxlint": "^0.17.0",
     "pinst": "^3.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^3.5.3",
