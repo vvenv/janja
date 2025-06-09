@@ -723,9 +723,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@marko/compiler@npm:^5.39.20":
-  version: 5.39.20
-  resolution: "@marko/compiler@npm:5.39.20"
+"@marko/compiler@npm:^5.39.21":
+  version: 5.39.21
+  resolution: "@marko/compiler@npm:5.39.21"
   dependencies:
     "@babel/code-frame": "npm:^7.26.2"
     "@babel/core": "npm:^7.26.10"
@@ -750,7 +750,7 @@ __metadata:
     resolve-from: "npm:^5.0.0"
     self-closing-tags: "npm:^1.0.1"
     source-map-support: "npm:^0.5.21"
-  checksum: 10c0/b95db4b4eb2830b9c0c2b6581b5a0f1ad30e0a4f9849089e2c407afd22caf32ae6a4b58530a67b2aa9bea1cb84a6c19a1704db2d874317c3157504fcbdc49659
+  checksum: 10c0/bdf708984554285aab91b55af089ad3558df3ae3a4a7c2c468050b04d66a5985fd32c8c5cfbe2f347768f3af265d4b5eca585caf24c4c2d059b4945377b14193
   languageName: node
   linkType: hard
 
@@ -1736,7 +1736,7 @@ __metadata:
     handlebars: "npm:^4.7.8"
     igo-dust: "npm:^0.3.5"
     liquidjs: "npm:^10.21.1"
-    marko: "npm:^5.37.31"
+    marko: "npm:^5.37.32"
     path: "npm:^0.12.7"
     pug: "npm:^3.0.3"
     template: "workspace:^"
@@ -3399,12 +3399,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marko@npm:^5.37.31":
-  version: 5.37.31
-  resolution: "marko@npm:5.37.31"
+"marko@npm:^5.37.32":
+  version: 5.37.32
+  resolution: "marko@npm:5.37.32"
   dependencies:
     "@babel/runtime": "npm:^7.27.0"
-    "@marko/compiler": "npm:^5.39.20"
+    "@marko/compiler": "npm:^5.39.21"
     app-module-path: "npm:^2.2.0"
     argly: "npm:^1.2.0"
     browser-refresh-client: "npm:1.1.4"
@@ -3420,7 +3420,7 @@ __metadata:
     warp10: "npm:^2.1.0"
   bin:
     markoc: bin/markoc
-  checksum: 10c0/6479d9e2a3faf87b1116b827d99b0f4d93d468f2d8010d4e5c4b549352926a2da4c0052e40a69543bd5f25d465db573107a3a056c964f907d66de5c5e19573c5
+  checksum: 10c0/97ae791777fbc229bded613dc6ac5e96b3f67e94389318f2b93a10b960218d68cf730c796a3c174efad8346d72df5981ad1bbb28bb452f884f743bdcf8292dd4
   languageName: node
   linkType: hard
 
