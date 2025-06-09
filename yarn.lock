@@ -1161,12 +1161,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.15.21":
-  version: 22.15.21
-  resolution: "@types/node@npm:22.15.21"
+"@types/node@npm:^22.15.30":
+  version: 22.15.30
+  resolution: "@types/node@npm:22.15.30"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/f092bbccda2131c2b2c8f720338080aa0ef1d928f5f1062c03954a4f7dafa7ee3ed29bc3e51bd4e2584473b3d943c637a2b39ad7174898970818270187cf10c1
+  checksum: 10c0/ca330ac0e7fd502686d6df115fcc606aba46fd334220f749bbba2f639accdadcb23f7900603ceccdc8240be736739cad5c0b87c0fa92c9255a4dff245f07d664
   languageName: node
   linkType: hard
 
@@ -3094,7 +3094,7 @@ __metadata:
   resolution: "jianjia@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.27.0"
-    "@types/node": "npm:^22.15.21"
+    "@types/node": "npm:^22.15.30"
     eslint: "npm:^9.27.0"
     globals: "npm:^16.1.0"
     husky: "npm:^9.1.7"
@@ -3893,7 +3893,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "playground@workspace:playground"
   dependencies:
-    "@types/node": "npm:^22.15.21"
+    "@types/node": "npm:^22.15.30"
     template: "workspace:^"
     typescript: "npm:^5.8.3"
     vite: "npm:^6.3.5"
@@ -4600,7 +4600,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "template@workspace:packages/template"
   dependencies:
-    "@types/node": "npm:^22.15.21"
+    "@types/node": "npm:^22.15.30"
     "@vitest/coverage-v8": "npm:3.1.4"
     "@vitest/ui": "npm:3.1.4"
     tinyrainbow: "npm:^2.0.0"
