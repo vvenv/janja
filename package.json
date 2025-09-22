@@ -20,7 +20,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.3.0",
+    "@antfu/eslint-config": "^5.4.1",
     "@types/node": "^24.5.0",
     "eslint": "^9.35.0",
     "husky": "^9.1.7",
