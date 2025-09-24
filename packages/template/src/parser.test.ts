@@ -12,7 +12,7 @@ it('empty', () => {
   const tree = new Parser({} as Required<EngineOptions>)
 
   expect(tree.valid).toBe(true)
-  expect(tree.children).toMatchInlineSnapshot(`[]`)
+  expect(tree.tags).toMatchInlineSnapshot(`[]`)
 
   tree.start({
     name: 'root',
@@ -20,7 +20,7 @@ it('empty', () => {
     endIndex: 0,
   })
   expect(tree.valid).toBe(false)
-  expect(tree.children).toMatchInlineSnapshot(`[]`)
+  expect(tree.tags).toMatchInlineSnapshot(`[]`)
 
   tree.end({
     name: 'end_root',
@@ -28,7 +28,7 @@ it('empty', () => {
     endIndex: 0,
   })
   expect(tree.valid).toBe(true)
-  expect(tree.children).toMatchInlineSnapshot(`[]`)
+  expect(tree.tags).toMatchInlineSnapshot(`[]`)
 })
 
 it('add nodes', () => {
@@ -37,7 +37,7 @@ it('add nodes', () => {
   let i = 0
 
   expect(parser.valid).toBe(true)
-  expect(parser.children).toMatchInlineSnapshot(`[]`)
+  expect(parser.tags).toMatchInlineSnapshot(`[]`)
 
   parser.start({
     name: 'root',
@@ -139,7 +139,7 @@ describe('validation', () => {
       endIndex: 1,
     })
     expect(parser.valid).toBe(true)
-    expect(parser.children).toMatchInlineSnapshot(`[]`)
+    expect(parser.tags).toMatchInlineSnapshot(`[]`)
   })
 
   it('unexpected else node', () => {
@@ -151,7 +151,7 @@ describe('validation', () => {
       endIndex: 1,
     })
     expect(parser.valid).toBe(true)
-    expect(parser.children).toMatchInlineSnapshot(`[]`)
+    expect(parser.tags).toMatchInlineSnapshot(`[]`)
   })
 
   it('unexpected next node', () => {
@@ -172,8 +172,6 @@ describe('validation', () => {
     expect(parser.nodes).toMatchInlineSnapshot(`
       [
         {
-          "ast": AST,
-          "children": [],
           "endIndex": 1,
           "name": "raw",
           "next": null,
@@ -181,6 +179,8 @@ describe('validation', () => {
           "previous": null,
           "previousSibling": null,
           "startIndex": 0,
+          "tag": AST,
+          "tags": [],
         },
       ]
     `)
@@ -204,8 +204,6 @@ describe('validation', () => {
     expect(parser.nodes).toMatchInlineSnapshot(`
       [
         {
-          "ast": AST,
-          "children": [],
           "endIndex": 1,
           "name": "raw",
           "next": null,
@@ -213,6 +211,8 @@ describe('validation', () => {
           "previous": null,
           "previousSibling": null,
           "startIndex": 0,
+          "tag": AST,
+          "tags": [],
         },
       ]
     `)
@@ -355,7 +355,7 @@ it('real world', async () => {
   await ast.parse(
     `{{= "hello, {name}" | t name="IJK" }}`,
   )
-  expect(ast.children).toMatchInlineSnapshot(`
+  expect(ast.tags).toMatchInlineSnapshot(`
     [
       {
         "index": 0,
@@ -363,8 +363,6 @@ it('real world', async () => {
         "nextSibling": null,
         "nodes": [
           {
-            "ast": [Circular],
-            "children": [],
             "data": ""hello, {name}" | t name="IJK"",
             "endIndex": 37,
             "identifier": "=",
@@ -381,8 +379,6 @@ it('real world', async () => {
                 "nextSibling": null,
                 "previous": [Circular],
                 "previousSibling": {
-                  "ast": AST,
-                  "children": [Circular],
                   "endIndex": 0,
                   "name": "root",
                   "next": [Circular],
@@ -390,6 +386,8 @@ it('real world', async () => {
                   "previous": null,
                   "previousSibling": null,
                   "startIndex": 0,
+                  "tag": AST,
+                  "tags": [Circular],
                 },
                 "startIndex": 37,
               },
@@ -413,8 +411,6 @@ it('real world', async () => {
                 "nextSibling": null,
                 "previous": [Circular],
                 "previousSibling": {
-                  "ast": AST,
-                  "children": [Circular],
                   "endIndex": 0,
                   "name": "root",
                   "next": [Circular],
@@ -422,6 +418,8 @@ it('real world', async () => {
                   "previous": null,
                   "previousSibling": null,
                   "startIndex": 0,
+                  "tag": AST,
+                  "tags": [Circular],
                 },
                 "startIndex": 37,
               },
@@ -435,8 +433,6 @@ it('real world', async () => {
             },
             "original": "{{= "hello, {name}" | t name="IJK" }}",
             "previous": {
-              "ast": AST,
-              "children": [Circular],
               "endIndex": 0,
               "name": "root",
               "next": [Circular],
@@ -465,11 +461,15 @@ it('real world', async () => {
               "previous": null,
               "previousSibling": null,
               "startIndex": 0,
+              "tag": AST,
+              "tags": [Circular],
             },
             "previousSibling": null,
             "startIndex": 0,
             "stripAfter": false,
             "stripBefore": false,
+            "tag": [Circular],
+            "tags": [],
           },
           {
             "data": ""hello, {name}" | t name="IJK"",
@@ -483,13 +483,9 @@ it('real world', async () => {
               "nextSibling": null,
               "previous": [Circular],
               "previousSibling": {
-                "ast": AST,
-                "children": [Circular],
                 "endIndex": 0,
                 "name": "root",
                 "next": {
-                  "ast": [Circular],
-                  "children": [],
                   "data": ""hello, {name}" | t name="IJK"",
                   "endIndex": 37,
                   "identifier": "=",
@@ -502,19 +498,21 @@ it('real world', async () => {
                   "startIndex": 0,
                   "stripAfter": false,
                   "stripBefore": false,
+                  "tag": [Circular],
+                  "tags": [],
                 },
                 "nextSibling": [Circular],
                 "previous": null,
                 "previousSibling": null,
                 "startIndex": 0,
+                "tag": AST,
+                "tags": [Circular],
               },
               "startIndex": 37,
             },
             "nextSibling": null,
             "original": "{{= "hello, {name}" | t name="IJK" }}",
             "previous": {
-              "ast": [Circular],
-              "children": [],
               "data": ""hello, {name}" | t name="IJK"",
               "endIndex": 37,
               "identifier": "=",
@@ -523,8 +521,6 @@ it('real world', async () => {
               "nextSibling": [Circular],
               "original": "{{= "hello, {name}" | t name="IJK" }}",
               "previous": {
-                "ast": AST,
-                "children": [Circular],
                 "endIndex": 0,
                 "name": "root",
                 "next": [Circular],
@@ -540,15 +536,17 @@ it('real world', async () => {
                 "previous": null,
                 "previousSibling": null,
                 "startIndex": 0,
+                "tag": AST,
+                "tags": [Circular],
               },
               "previousSibling": null,
               "startIndex": 0,
               "stripAfter": false,
               "stripBefore": false,
+              "tag": [Circular],
+              "tags": [],
             },
             "previousSibling": {
-              "ast": [Circular],
-              "children": [],
               "data": ""hello, {name}" | t name="IJK"",
               "endIndex": 37,
               "identifier": "=",
@@ -557,8 +555,6 @@ it('real world', async () => {
               "nextSibling": [Circular],
               "original": "{{= "hello, {name}" | t name="IJK" }}",
               "previous": {
-                "ast": AST,
-                "children": [Circular],
                 "endIndex": 0,
                 "name": "root",
                 "next": [Circular],
@@ -574,11 +570,15 @@ it('real world', async () => {
                 "previous": null,
                 "previousSibling": null,
                 "startIndex": 0,
+                "tag": AST,
+                "tags": [Circular],
               },
               "previousSibling": null,
               "startIndex": 0,
               "stripAfter": false,
               "stripBefore": false,
+              "tag": [Circular],
+              "tags": [],
             },
             "startIndex": 37,
             "stripAfter": false,

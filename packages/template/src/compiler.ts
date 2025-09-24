@@ -1,5 +1,5 @@
 import type { Parser } from './parser'
-import type { AST, ASTNode, EngineOptions } from './types'
+import type { ASTNode, ASTTag, EngineOptions } from './types'
 import { CONTEXT } from './config'
 import { OutScript } from './out-script'
 import { SourceMap } from './source-map'
@@ -14,10 +14,10 @@ export class Compiler {
     if (parser.valid) {
       out.start()
 
-      const { children } = parser
-      if (children.length) {
-        for (const child of children) {
-          await this.compileNode(template, child, CONTEXT, parser, out, sourcemap)
+      const { tags } = parser
+      if (tags.length) {
+        for (const tag of tags) {
+          await this.compileNode(template, tag, CONTEXT, parser, out, sourcemap)
         }
 
         out.pushStr(template.slice(parser.cursor.endIndex), {
@@ -37,7 +37,7 @@ export class Compiler {
 
   private async compileNode(
     template: string,
-    { nodes }: AST,
+    { nodes }: ASTTag,
     context: string,
     parser: Parser,
     out: OutScript,
@@ -93,9 +93,9 @@ export class Compiler {
     out: OutScript
     sourcemap: SourceMap
   }) {
-    if (node.children.length) {
-      for (const child of node.children) {
-        await this.compileNode(template, child, context, parser, out, sourcemap)
+    if (node.tags.length) {
+      for (const tag of node.tags) {
+        await this.compileNode(template, tag, context, parser, out, sourcemap)
       }
     }
     else {

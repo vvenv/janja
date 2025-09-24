@@ -73,7 +73,10 @@ export interface ASTNodeBase extends Location {
 export interface ASTNode extends ASTNodeBase {
   name: string
   data?: any
-  ast: AST
+  /**
+   * The tag that contains this node.
+   */
+  tag: ASTTag
   /**
    * The previous node in the same level.
    */
@@ -82,14 +85,17 @@ export interface ASTNode extends ASTNodeBase {
    * The next node in the same level.
    */
   nextSibling: ASTNode | null
-  children: AST[]
+  /**
+   * The tags that contained in this node.
+   */
+  tags: ASTTag[]
 }
 
-export interface AST {
+export interface ASTTag {
   nodes: ASTNode[]
-  parent: AST | null
-  previousSibling: AST | null
-  nextSibling: AST | null
+  parent: ASTTag | null
+  previousSibling: ASTTag | null
+  nextSibling: ASTTag | null
   level: number
   index: number
 }

@@ -73,7 +73,7 @@ export const tag: Tag = {
       let loc
       const nodes = getNodes(node, parser)
       if (nodes.indexOf(node) === 0) {
-        const { level, index } = node.ast
+        const { level, index } = node.tag
         const affix = `${level.toString(32)}_${index.toString(32)}`
         let curry = ''
         for (let i = 0; i < nodes.length; i++) {

@@ -72,7 +72,7 @@ export const tag: Tag = {
 
   async compile({ template, node, context, out }, compileContent) {
     if (node.name === MACRO) {
-      const { level, index } = node.ast
+      const { level, index } = node.tag
       const affix = `${level.toString(32)}_${index.toString(32)}`
       const { data: { name, args } } = node
       const lines: string[] = []

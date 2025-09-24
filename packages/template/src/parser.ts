@@ -1,7 +1,7 @@
 import type {
-  AST,
   ASTNode,
   ASTNodeBase,
+  ASTTag,
   EngineOptions,
   Location,
 } from './types'
@@ -10,33 +10,27 @@ import { ParserError } from './parser-error'
 import { COMMENT } from './tags/comment'
 
 /**
- * - AST
+ * - ASTTag
  *   - ASTNode
- *     - children
- *       - AST
+ *     - tags
+ *       - ASTTag
  *         - ASTNode
- *       - AST
- *         - ASTNode
- *   - ASTNode
- *     - children
- *       - AST
- *         - ASTNode
- *       - AST
+ *       - ASTTag
  *         - ASTNode
  *   - ASTNode
- * - AST
- *   - ASTNode
- *     - children
- *       - AST
+ *     - tags
+ *       - ASTTag
+ *         - ASTNode
+ *       - ASTTag
  *         - ASTNode
  *   - ASTNode
  */
-export class Parser implements AST {
+export class Parser implements ASTTag {
   template = ''
   /**
    * Current active node while parsing
    */
-  current: AST
+  current: ASTTag
   /**
    * Current node cursor while consuming
    */
@@ -68,8 +62,8 @@ export class Parser implements AST {
     return this.nodes.length % 2 === 0
   }
 
-  get children() {
-    return this.nodes[0]?.children ?? []
+  get tags() {
+    return this.nodes[0]?.tags ?? []
   }
 
   async parse(
@@ -165,7 +159,7 @@ export class Parser implements AST {
   /**
    * If the current ast:
    * 1. no nodes, add it.
-   * 2. has nodes, add a new ast with the node to the children of the last node.
+   * 2. has nodes, add a new ast with the node to the tags of the last node.
    */
   start(baseNode: Partial<ASTNode> & Location) {
     if (!this.verifyNextNode(baseNode)) {
@@ -182,32 +176,32 @@ export class Parser implements AST {
       nextSibling: null,
       previous: null,
       next: null,
-      children: [],
+      tags: [],
     } as ASTNode
 
     if (nodes.length === 0) {
-      node.ast = this.current
+      node.tag = this.current
       nodes.push(node)
       return this.goto(node)
     }
 
-    const { children } = this.current.nodes.at(-1)!
-    const lastAST = children.at(-1)
-    const ast = {
+    const { tags } = this.current.nodes.at(-1)!
+    const lastAST = tags.at(-1)
+    const tag = {
       nodes: [node],
       parent: this.current,
       previousSibling: lastAST ?? null,
       nextSibling: null,
       level: this.current.level + 1,
-      index: children.length,
-    } as AST
+      index: tags.length,
+    } satisfies ASTTag
     if (lastAST) {
-      lastAST.nextSibling = ast
+      lastAST.nextSibling = tag
     }
-    node.ast = ast
-    children.push(ast)
+    node.tag = tag
+    tags.push(tag)
 
-    this.current = ast
+    this.current = tag
 
     return this.goto(node)
   }
@@ -229,12 +223,12 @@ export class Parser implements AST {
     const lastNode = nodes.at(-1)!
     const node = {
       ...baseNode,
-      ast: lastNode.ast,
+      tag: lastNode.tag,
       previousSibling: lastNode,
       nextSibling: null,
       previous: null,
       next: null,
-      children: [],
+      tags: [],
     } as ASTNode
 
     lastNode.nextSibling = node

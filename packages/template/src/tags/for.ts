@@ -54,7 +54,7 @@ export const tag: Tag = {
 
   async compile({ template, node, context, out }, compileContent) {
     if (node.name === FOR) {
-      const { level, index } = node.ast
+      const { level, index } = node.tag
       const affix = `${level.toString(32)}_${index.toString(32)}`
       const [{ value }, , ...right] = parseStatement(node.data!)
       const items = compileStatement(right, context)
