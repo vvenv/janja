@@ -22,7 +22,7 @@ export const tag: Tag = {
           name: END_MACRO,
         }
 
-        if (parser.checkStartNode(MACRO, node)) {
+        if (parser.startMatch(MACRO, node)) {
           parser.end(node)
         }
 
@@ -53,7 +53,7 @@ export const tag: Tag = {
         name: CALLER,
       }
 
-      if (parser.checkStartNode(MACRO, node)) {
+      if (parser.startMatch(MACRO, node)) {
         parser.start(node)
 
         // Self closing

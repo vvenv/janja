@@ -162,7 +162,7 @@ describe('validation', () => {
       startIndex: 0,
       endIndex: 1,
     })
-    parser.nextNode = 'end_raw'
+    parser.expect('end_raw')
     parser.end({
       name: 'for',
       startIndex: 2,
@@ -194,7 +194,7 @@ describe('validation', () => {
       startIndex: 0,
       endIndex: 1,
     })
-    parser.nextNode = 'end_raw'
+    parser.expect('end_raw')
     parser.between({
       name: 'for',
       startIndex: 2,
@@ -259,7 +259,7 @@ describe('validation w/ debug', () => {
         startIndex: 0,
         endIndex: 1,
       })
-      ast.nextNode = 'end_raw'
+      ast.expect('end_raw')
       ast.end({
         name: 'for',
         startIndex: 2,
@@ -282,7 +282,7 @@ describe('validation w/ debug', () => {
         startIndex: 0,
         endIndex: 1,
       })
-      ast.nextNode = 'end_raw'
+      ast.expect('end_raw')
       ast.between({
         name: 'for',
         startIndex: 2,
@@ -298,7 +298,7 @@ describe('validation w/ debug', () => {
 })
 
 describe('verify', () => {
-  it('checkStartNode', () => {
+  it('startMatch', () => {
     const parser = new Parser({} as Required<EngineOptions>)
     const nodes = [
       { name: 'for', startIndex: 0, endIndex: 1 },
@@ -307,11 +307,11 @@ describe('verify', () => {
     ]
     parser.start(nodes[0])
 
-    expect(parser.checkStartNode('if', nodes[1], false)).toBe(false)
-    expect(parser.checkStartNode('for', nodes[2], false)).toBe(true)
+    expect(parser.startOptionalMatch('if', nodes[1])).toBe(false)
+    expect(parser.startOptionalMatch('for', nodes[2])).toBe(true)
   })
 
-  it('checkStartNode /w debug', () => {
+  it('startMatch /w debug', () => {
     const parser = new Parser({ debug: true } as Required<EngineOptions>)
     const nodes = [
       { name: 'for', startIndex: 0, endIndex: 1 },
@@ -320,13 +320,13 @@ describe('verify', () => {
     parser.start(nodes[0])
 
     expect(() =>
-      parser.checkStartNode('if', nodes[1]),
+      parser.startMatch('if', nodes[1]),
     ).toThrowErrorMatchingInlineSnapshot(
-      `[ASTError: "end_if" must follow "if", not "for".]`,
+      `[ASTError: "end_if" must follow "if".]`,
     )
   })
 
-  it('checkAncestorStartNode', () => {
+  it('startRecursiveMatch', () => {
     const ast = new Parser({} as Required<EngineOptions>)
     const nodes = [
       { name: 'root', startIndex: 0, endIndex: 0 },
@@ -336,17 +336,17 @@ describe('verify', () => {
     ]
 
     ast.start(nodes[0])
-    ast.nextNode = 'end_raw'
-    expect(ast.checkAncestorStartNode('for', nodes[3])).toBe(true)
+    ast.expect('end_raw')
+    expect(ast.startRecursiveMatch('for', nodes[3])).toBe(true)
 
-    ast.nextNode = null
-    expect(ast.checkAncestorStartNode('for', nodes[3])).toBe(false)
+    ast.expect(null)
+    expect(ast.startRecursiveMatch('for', nodes[3])).toBe(false)
 
     ast.start(nodes[1])
-    expect(ast.checkAncestorStartNode('for', nodes[3])).toBe(true)
+    expect(ast.startRecursiveMatch('for', nodes[3])).toBe(true)
 
     ast.start(nodes[2])
-    expect(ast.checkAncestorStartNode('for', nodes[3])).toBe(true)
+    expect(ast.startRecursiveMatch('for', nodes[3])).toBe(true)
   })
 })
 

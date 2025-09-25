@@ -21,7 +21,7 @@ export const tag: Tag = {
         name: END_BLOCK,
       }
 
-      if (parser.checkStartNode(BLOCK, node)) {
+      if (parser.startMatch(BLOCK, node)) {
         parser.end(node)
       }
 
@@ -34,7 +34,7 @@ export const tag: Tag = {
         name: SUPER,
       }
 
-      if (parser.checkStartNode(BLOCK, node)) {
+      if (parser.startMatch(BLOCK, node)) {
         parser.start(node)
 
         // Self closing
@@ -54,7 +54,7 @@ export const tag: Tag = {
         name: BLOCK,
       }
 
-      if (parser.checkStartNode(ROOT, node)) {
+      if (parser.startMatch(ROOT, node)) {
         const startNode = parser.start(node)
 
         if (startNode) {

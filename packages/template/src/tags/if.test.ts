@@ -197,10 +197,9 @@ it('invalid', async () => {
   expect(
     await compile('{{ #for x in y }}{{ /if }}', { debug: true }),
   ).toMatchInlineSnapshot(`
-    " JianJia  "end_if" must follow "if", not "for".
+    " JianJia  "end_if" must follow "if".
 
     1: {{ #for x in y }}{{ /if }}
-       ^^^^^^^^^^^^^^^^^
                         ^^^^^^^^^
     "
   `)
@@ -212,10 +211,9 @@ it('invalid', async () => {
   expect(
     await compile('{{ #for x in y }}{{ elif z }}', { debug: true }),
   ).toMatchInlineSnapshot(`
-    " JianJia  "elif" must follow "if", not "for".
+    " JianJia  "elif" must follow "if".
 
     1: {{ #for x in y }}{{ elif z }}
-       ^^^^^^^^^^^^^^^^^
                         ^^^^^^^^^^^^
     "
   `)

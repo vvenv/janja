@@ -27,7 +27,7 @@ it('invalid', async () => {
 
   expect(await compile(`{{ #call }}3{{ /call }}`, { debug: true })).toMatchInlineSnapshot(
     `
-    " JianJia  "end_call" must follow "call", not "root".
+    " JianJia  "end_call" must follow "call".
 
     1: {{ #call }}3{{ /call }}
                    ^^^^^^^^^^^

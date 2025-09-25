@@ -21,7 +21,7 @@ export const tag: Tag = {
         name: END_IF,
       }
 
-      if (parser.checkStartNode(IF, node)) {
+      if (parser.startMatch(IF, node)) {
         parser.end(node)
       }
 
@@ -34,7 +34,7 @@ export const tag: Tag = {
         name: ELSE,
       }
 
-      if (parser.checkStartNode(IF, node, false)) {
+      if (parser.startOptionalMatch(IF, node)) {
         parser.between(node)
         return
       }
@@ -47,7 +47,7 @@ export const tag: Tag = {
           name: ELIF,
         }
 
-        if (parser.checkStartNode(IF, node)) {
+        if (parser.startMatch(IF, node)) {
           parser.between(node)
         }
 

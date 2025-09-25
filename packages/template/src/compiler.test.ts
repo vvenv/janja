@@ -70,7 +70,7 @@ it('translate', async () => {
 it('invalid', async () => {
   expect(await compile(`{{ /if }}`, { debug: true })).toMatchInlineSnapshot(
     `
-    " JianJia  "end_if" must follow "if", not "root".
+    " JianJia  "end_if" must follow "if".
 
     1: {{ /if }}
        ^^^^^^^^^

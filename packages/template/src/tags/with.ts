@@ -16,7 +16,7 @@ export const tag: Tag = {
         name: END_WITH,
       }
 
-      if (parser.checkStartNode(WITH, node)) {
+      if (parser.startMatch(WITH, node)) {
         parser.end(node)
         return
       }

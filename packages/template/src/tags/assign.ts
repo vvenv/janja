@@ -22,7 +22,7 @@ export const tag: Tag = {
         name: END_ASSIGN,
       }
 
-      if (parser.checkStartNode(ASSIGN, node)) {
+      if (parser.startMatch(ASSIGN, node)) {
         parser.end(node)
       }
 

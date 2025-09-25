@@ -16,7 +16,7 @@ export const tag: Tag = {
       name: CONTINUE,
     }
 
-    if (parser.checkAncestorStartNode(FOR, node)) {
+    if (parser.startRecursiveMatch(FOR, node)) {
       parser.start(node)
 
       // Self closing

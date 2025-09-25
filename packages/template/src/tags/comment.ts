@@ -17,7 +17,7 @@ export const tag: Tag = {
         name: END_COMMENT,
       }
 
-      if (parser.checkStartNode(COMMENT, node)) {
+      if (parser.startMatch(COMMENT, node)) {
         parser.end(node)
       }
 

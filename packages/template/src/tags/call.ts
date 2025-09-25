@@ -17,7 +17,7 @@ export const tag: Tag = {
         name: END_CALL,
       }
 
-      if (parser.checkStartNode(CALL, node)) {
+      if (parser.startMatch(CALL, node)) {
         parser.end(node)
       }
 

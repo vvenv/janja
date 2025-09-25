@@ -119,10 +119,9 @@ it('destructing', async () => {
 it('compile error', async () => {
   expect(await compile(`{{ #for name in names }}{{ /if }}`, { debug: true }))
     .toMatchInlineSnapshot(`
-      " JianJia  "end_if" must follow "if", not "for".
+      " JianJia  "end_if" must follow "if".
 
       1: {{ #for name in names }}{{ /if }}
-         ^^^^^^^^^^^^^^^^^^^^^^^^
                                  ^^^^^^^^^
       "
     `)

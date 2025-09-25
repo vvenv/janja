@@ -39,7 +39,7 @@ it('invalid', async () => {
     }),
   ).toMatchInlineSnapshot(
     `
-    " JianJia  "end_macro" must follow "macro", not "root".
+    " JianJia  "end_macro" must follow "macro".
 
     1: {{ #macro }}{{ /macro }}
                    ^^^^^^^^^^^^
@@ -56,7 +56,7 @@ it('invalid', async () => {
       debug: true,
     }),
   ).toMatchInlineSnapshot(`
-    " JianJia  "end_macro" must follow "macro", not "root".
+    " JianJia  "end_macro" must follow "macro".
 
     1: {{ #macro 1 }}{{ /macro }}
                      ^^^^^^^^^^^^
@@ -73,7 +73,7 @@ it('invalid', async () => {
     }),
   ).toMatchInlineSnapshot(
     `
-    " JianJia  "caller" must follow "macro", not "root".
+    " JianJia  "caller" must follow "macro".
 
     1: {{ caller }}
        ^^^^^^^^^^^^

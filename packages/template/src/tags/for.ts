@@ -21,7 +21,7 @@ export const tag: Tag = {
         name: END_FOR,
       }
 
-      if (parser.checkStartNode(FOR, node)) {
+      if (parser.startMatch(FOR, node)) {
         parser.end(node)
       }
 
@@ -34,7 +34,7 @@ export const tag: Tag = {
         name: ELSE,
       }
 
-      if (parser.checkStartNode(FOR, node, false)) {
+      if (parser.startOptionalMatch(FOR, node)) {
         parser.between(node)
         return
       }

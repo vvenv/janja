@@ -177,10 +177,9 @@ it('invalid', async () => {
   expect(
     await compile('{{ #if x }}{{ /for }}', { debug: true }),
   ).toMatchInlineSnapshot(`
-    " JianJia  "end_for" must follow "for", not "if".
+    " JianJia  "end_for" must follow "for".
 
     1: {{ #if x }}{{ /for }}
-       ^^^^^^^^^^^
                   ^^^^^^^^^^
     "
   `)

@@ -43,10 +43,10 @@ export class Parser implements ASTTag {
   /**
    * Next node that is expected to be parsed.
    */
-  nextNode: string | null = null
+  private expectedTagName: string | null = null
 
   body: ASTNode[]
-  parent: null
+  parent: ASTTag | null
   previousSibling: null
   nextSibling: null
   level: number
@@ -167,11 +167,11 @@ export class Parser implements ASTTag {
    * 2. has body, add a new ast with the node to the tags of the last node.
    */
   start(baseNode: Partial<ASTNode> & Location) {
-    if (!this.verifyNextNode(baseNode)) {
+    if (!this.expectMatch(baseNode)) {
       return
     }
 
-    this.nextNode = null
+    this.expect(null)
 
     const { body } = this.current
 
@@ -212,11 +212,11 @@ export class Parser implements ASTTag {
   }
 
   between(baseNode: Partial<ASTNode> & Location) {
-    if (!this.verifyNextNode(baseNode)) {
+    if (!this.expectMatch(baseNode)) {
       return
     }
 
-    this.nextNode = null
+    this.expect(null)
 
     const { body } = this.current
 
@@ -243,11 +243,11 @@ export class Parser implements ASTTag {
   }
 
   end(baseNode: Partial<ASTNode> & Location) {
-    if (!this.verifyNextNode(baseNode)) {
+    if (!this.expectMatch(baseNode)) {
       return
     }
 
-    this.nextNode = null
+    this.expect(null)
 
     const { body } = this.current
 
@@ -274,43 +274,60 @@ export class Parser implements ASTTag {
     return this.goto(node)
   }
 
-  private verifyNextNode(node: Partial<ASTNode> & Location) {
-    if (!this.nextNode || node.name === this.nextNode) {
+  /**
+   * Expect the next node to be the given name.
+   * If
+   */
+  expect(name: string | null) {
+    this.expectedTagName = name
+  }
+
+  /**
+   * Check if the given node matches the expected name.
+   */
+  private expectMatch(node: Partial<ASTNode> & Location) {
+    if (!this.expectedTagName || node.name === this.expectedTagName) {
       return true
     }
-    this.throwError(`expect "${this.nextNode}", "${node.name}" found.`, [node])
+    this.throwError(`expect "${this.expectedTagName}", "${node.name}" found.`, [node])
     return false
   }
 
   /**
-   * Check if the start node in current ast matches the given name.
+   * Check if the given name matches the start node in current body.
    */
-  checkStartNode(
+  startMatch(
     name: string,
     node: Partial<ASTNode> & Location,
-    required = true,
   ) {
-    if (!this.verifyNextNode(node)) {
+    if (this.startOptionalMatch(name, node)) {
       return true
     }
-    const startNode = this.current.body.at(0)!
-    if (startNode.name === name) {
-      return true
-    }
-    if (required) {
-      this.throwError(`"${node.name}" must follow "${name}", not "${startNode.name}".`, [startNode, node])
-    }
+    this.throwError(`"${node.name}" must follow "${name}".`, [node])
     return false
   }
 
   /**
-   * Check if the start nide in current ast or its ancestor matches the given name.
+   * Check if the given name matches the start node in current body.
    */
-  checkAncestorStartNode(
+  startOptionalMatch(
     name: string,
     node: Partial<ASTNode> & Location,
   ) {
-    if (!this.verifyNextNode(node)) {
+    if (!this.expectMatch(node)) {
+      return true
+    }
+    return this.current.body.at(0)!.name === name
+  }
+
+  /**
+   * Check if the given name matches the start node in current body or its parents.
+   */
+  startRecursiveMatch(
+    name: string,
+    node: Partial<ASTNode> & Location,
+  ) {
+    if (!this.expectMatch(node)) {
       return true
     }
     let ast = this.current

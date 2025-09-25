@@ -23,7 +23,7 @@ it('invalid', async () => {
       debug: true,
     }),
   ).toMatchInlineSnapshot(`
-    " JianJia  "end_block" must follow "block", not "root".
+    " JianJia  "end_block" must follow "block".
 
     1: {{ #block }}{{ /block }}
                    ^^^^^^^^^^^^
@@ -41,10 +41,9 @@ it('invalid', async () => {
       debug: true,
     }),
   ).toMatchInlineSnapshot(`
-    " JianJia  "block" must follow "root", not "if".
+    " JianJia  "block" must follow "root".
 
     1: {{ #if x }}{{ #block title }}{{ /block }}{{ /if }}
-       ^^^^^^^^^^^
                   ^^^^^^^^^^^^^^^^^^
     "
   `)
@@ -59,10 +58,9 @@ it('invalid', async () => {
     await compile(`{{ #if x }}{{ super }}{{ /if }}`, { debug: true }),
   ).toMatchInlineSnapshot(
     `
-    " JianJia  "super" must follow "block", not "if".
+    " JianJia  "super" must follow "block".
 
     1: {{ #if x }}{{ super }}{{ /if }}
-       ^^^^^^^^^^^
                   ^^^^^^^^^^^
     "
   `,

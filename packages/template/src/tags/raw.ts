@@ -17,7 +17,7 @@ export const tag: Tag = {
         name: END_RAW,
       }
 
-      if (parser.checkStartNode(RAW, node)) {
+      if (parser.startMatch(RAW, node)) {
         parser.end(node)
       }
 
@@ -29,7 +29,7 @@ export const tag: Tag = {
       name: RAW,
     })
 
-    parser.nextNode = END_RAW
+    parser.expect(END_RAW)
   },
 
   async compile({ template, node, parser, out }) {
