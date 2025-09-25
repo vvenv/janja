@@ -92,7 +92,7 @@ export interface ASTNode extends ASTNodeBase {
 }
 
 export interface ASTTag {
-  nodes: ASTNode[]
+  body: ASTNode[]
   parent: ASTTag | null
   previousSibling: ASTTag | null
   nextSibling: ASTTag | null

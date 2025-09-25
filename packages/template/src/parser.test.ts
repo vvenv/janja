@@ -169,7 +169,7 @@ describe('validation', () => {
       endIndex: 3,
     })
     expect(parser.valid).toBe(false)
-    expect(parser.nodes).toMatchInlineSnapshot(`
+    expect(parser.body).toMatchInlineSnapshot(`
       [
         {
           "endIndex": 1,
@@ -201,7 +201,7 @@ describe('validation', () => {
       endIndex: 3,
     })
     expect(parser.valid).toBe(false)
-    expect(parser.nodes).toMatchInlineSnapshot(`
+    expect(parser.body).toMatchInlineSnapshot(`
       [
         {
           "endIndex": 1,
@@ -358,10 +358,7 @@ it('real world', async () => {
   expect(ast.tags).toMatchInlineSnapshot(`
     [
       {
-        "index": 0,
-        "level": 1,
-        "nextSibling": null,
-        "nodes": [
+        "body": [
           {
             "data": ""hello, {name}" | t name="IJK"",
             "endIndex": 37,
@@ -585,6 +582,9 @@ it('real world', async () => {
             "stripBefore": false,
           },
         ],
+        "index": 0,
+        "level": 1,
+        "nextSibling": null,
         "parent": AST,
         "previousSibling": null,
       },

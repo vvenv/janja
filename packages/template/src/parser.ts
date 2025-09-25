@@ -11,24 +11,29 @@ import { COMMENT } from './tags/comment'
 
 /**
  * - ASTTag
- *   - ASTNode
- *     - tags
- *       - ASTTag
- *         - ASTNode
- *       - ASTTag
- *         - ASTNode
- *   - ASTNode
- *     - tags
- *       - ASTTag
- *         - ASTNode
- *       - ASTTag
- *         - ASTNode
- *   - ASTNode
+ *   - body
+ *     - ASTNode
+ *       - tags
+ *         - ASTTag
+ *           - body
+ *             - ASTNode
+ *         - ASTTag
+ *           - body
+ *             - ASTNode
+ *     - ASTNode
+ *       - tags
+ *         - ASTTag
+ *           - body
+ *             - ASTNode
+ *         - ASTTag
+ *           - body
+ *             - ASTNode
+ *     - ASTNode
  */
 export class Parser implements ASTTag {
   template = ''
   /**
-   * Current active node while parsing
+   * Current active tag while parsing
    */
   current: ASTTag
   /**
@@ -40,7 +45,7 @@ export class Parser implements ASTTag {
    */
   nextNode: string | null = null
 
-  nodes: ASTNode[]
+  body: ASTNode[]
   parent: null
   previousSibling: null
   nextSibling: null
@@ -48,7 +53,7 @@ export class Parser implements ASTTag {
   index: number
 
   constructor(public options: Required<EngineOptions>) {
-    this.nodes = []
+    this.body = []
     this.parent = null
     this.previousSibling = null
     this.nextSibling = null
@@ -59,11 +64,11 @@ export class Parser implements ASTTag {
   }
 
   get valid() {
-    return this.nodes.length % 2 === 0
+    return this.body.length % 2 === 0
   }
 
   get tags() {
-    return this.nodes[0]?.tags ?? []
+    return this.body[0]?.tags ?? []
   }
 
   async parse(
@@ -158,8 +163,8 @@ export class Parser implements ASTTag {
 
   /**
    * If the current ast:
-   * 1. no nodes, add it.
-   * 2. has nodes, add a new ast with the node to the tags of the last node.
+   * 1. no body, add it.
+   * 2. has body, add a new ast with the node to the tags of the last node.
    */
   start(baseNode: Partial<ASTNode> & Location) {
     if (!this.verifyNextNode(baseNode)) {
@@ -168,7 +173,7 @@ export class Parser implements ASTTag {
 
     this.nextNode = null
 
-    const { nodes } = this.current
+    const { body } = this.current
 
     const node = {
       ...baseNode,
@@ -179,16 +184,16 @@ export class Parser implements ASTTag {
       tags: [],
     } as ASTNode
 
-    if (nodes.length === 0) {
+    if (body.length === 0) {
       node.tag = this.current
-      nodes.push(node)
+      body.push(node)
       return this.goto(node)
     }
 
-    const { tags } = this.current.nodes.at(-1)!
+    const { tags } = this.current.body.at(-1)!
     const lastAST = tags.at(-1)
     const tag = {
-      nodes: [node],
+      body: [node],
       parent: this.current,
       previousSibling: lastAST ?? null,
       nextSibling: null,
@@ -213,14 +218,14 @@ export class Parser implements ASTTag {
 
     this.nextNode = null
 
-    const { nodes } = this.current
+    const { body } = this.current
 
     // For testing purposes
-    if (!nodes.length) {
+    if (!body.length) {
       return
     }
 
-    const lastNode = nodes.at(-1)!
+    const lastNode = body.at(-1)!
     const node = {
       ...baseNode,
       tag: lastNode.tag,
@@ -232,7 +237,7 @@ export class Parser implements ASTTag {
     } as ASTNode
 
     lastNode.nextSibling = node
-    nodes.push(node)
+    body.push(node)
 
     return this.goto(node)
   }
@@ -244,14 +249,14 @@ export class Parser implements ASTTag {
 
     this.nextNode = null
 
-    const { nodes } = this.current
+    const { body } = this.current
 
     // For testing purposes
-    if (!nodes.length) {
+    if (!body.length) {
       return
     }
 
-    const lastNode = nodes.at(-1)!
+    const lastNode = body.at(-1)!
     const node = {
       ...baseNode,
       previousSibling: lastNode,
@@ -261,7 +266,7 @@ export class Parser implements ASTTag {
     } as ASTNode
 
     lastNode.nextSibling = node
-    nodes.push(node)
+    body.push(node)
 
     // It's a close block, so we need to move the cursor to the parent
     this.current = this.current.parent ?? this
@@ -288,7 +293,7 @@ export class Parser implements ASTTag {
     if (!this.verifyNextNode(node)) {
       return true
     }
-    const startNode = this.current.nodes.at(0)!
+    const startNode = this.current.body.at(0)!
     if (startNode.name === name) {
       return true
     }
@@ -310,7 +315,7 @@ export class Parser implements ASTTag {
     }
     let ast = this.current
     while (ast) {
-      if (ast.nodes.at(0)!.name === name) {
+      if (ast.body.at(0)!.name === name) {
         return true
       }
       ast = ast.parent!

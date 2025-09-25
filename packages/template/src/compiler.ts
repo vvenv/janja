@@ -37,7 +37,7 @@ export class Compiler {
 
   private async compileNode(
     template: string,
-    { nodes }: ASTTag,
+    { body }: ASTTag,
     context: string,
     parser: Parser,
     out: OutScript,
@@ -49,7 +49,7 @@ export class Compiler {
       context: string
       out: OutScript
     }) => this.compileContent({ ...arg, parser, sourcemap })
-    for (const node of nodes) {
+    for (const node of body) {
       out.pushStr(template.slice(parser.cursor.endIndex, node.startIndex), {
         trimStart: parser.cursor.stripAfter,
         trimEnd: node.stripBefore,
