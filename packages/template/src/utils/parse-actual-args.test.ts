@@ -2,6 +2,7 @@ import { expect, it } from 'vitest'
 import { parseActualArgs } from './parse-actual-args'
 
 it('basic', () => {
+  expect(parseActualArgs('', 'c')).toEqual([])
   expect(parseActualArgs('a', 'c')).toEqual(['c.a'])
 })
 

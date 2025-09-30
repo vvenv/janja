@@ -1,9 +1,11 @@
-import type { EngineOptions, Location, ParsedScript } from './types'
+import type { EngineOptions, Loc, Script } from './types'
 import { CONTEXT, ESCAPE, FILTERS, HELPERS } from './config'
 
 export class OutScript {
   private content = ''
-  private strOffset = `s+="`.length
+
+  private strOffset = 's+="'.length
+
   private varOffset = `s+=${ESCAPE}(`.length
 
   constructor(public options: Required<EngineOptions>) {}
@@ -14,12 +16,12 @@ export class OutScript {
 
   get script() {
     // eslint-disable-next-line no-new-func
-    return new Function(CONTEXT, FILTERS, ESCAPE, HELPERS, this.value) as ParsedScript
+    return new Function(CONTEXT, FILTERS, ESCAPE, HELPERS, this.value) as Script
   }
 
   start() {
     if (this.options.strictMode) {
-      this.pushLine(`"use strict";`)
+      this.pushLine('"use strict";')
     }
 
     this.pushLine('return(async()=>{', 'let s="";')
@@ -29,49 +31,57 @@ export class OutScript {
     this.pushLine('return s;', '})();')
   }
 
-  pushLine(...lines: string[]): Location {
-    const startIndex = this.content.length
+  pushLine(...lines: string[]): Loc {
+    const start = this.content.length
+
     for (const line of lines) {
       this.content += line
     }
+
     return {
-      startIndex,
-      endIndex: this.content.length,
+      start,
+      end: this.content.length,
     }
   }
 
   pushStr(
     s: string,
     o?: { trimStart: boolean, trimEnd: boolean },
-  ): Location | void {
+  ): Loc | void {
     if (s) {
       if (o?.trimStart || this.options.trimWhitespace) {
         s = s.trimStart()
       }
+
       if (o?.trimEnd || this.options.trimWhitespace) {
         s = s.trimEnd()
       }
     }
+
     if (s) {
-      const startIndex = this.content.length + this.strOffset
+      const start = this.content.length + this.strOffset
+
       s = this.unescapeTag(s)
         .replace(/\\/g, '\\\\')
         .replace(/"/g, '\\"')
         .replace(/[\n\r]/g, '\\n')
       this.pushLine(`s+="${s}";`)
+
       return {
-        startIndex,
-        endIndex: this.content.length - 2,
+        start,
+        end: this.content.length - 2,
       }
     }
   }
 
-  pushVar(v: string): Location {
-    const startIndex = this.content.length + this.varOffset
+  pushVar(v: string): Loc {
+    const start = this.content.length + this.varOffset
+
     this.pushLine(`s+=${ESCAPE}(${v});`)
+
     return {
-      startIndex,
-      endIndex: startIndex + v.length,
+      start,
+      end: start + v.length,
     }
   }
 

@@ -1,26 +1,15 @@
 import type { EngineOptions } from '../src/types'
+import { Compiler } from '../src'
 import { defaultOptions, Engine } from '../src/engine'
+import { Tokenizer } from '../src/tokenizer'
 
-export async function parse(template: string, options?: EngineOptions): Promise<any> {
+export async function compile(
+  template: string,
+  options?: EngineOptions,
+): Promise<any> {
   if (options?.debug && !(options as any).__debug) {
     (options as any).__debug = true
-    return await (async () => {
-      try {
-        return await parse(template, options)
-      }
-      catch (error: any) {
-        return error.details ?? error.message
-      }
-    })()
-  }
 
-  const { parse: _parse } = await new Engine({ ...defaultOptions, ...options }).initialize(template)
-  return _parse()
-}
-
-export async function compile(template: string, options?: EngineOptions, returnObject = false): Promise<any> {
-  if (options?.debug && !(options as any).__debug) {
-    (options as any).__debug = true
     return await (async () => {
       try {
         return await compile(template, options)
@@ -31,13 +20,22 @@ export async function compile(template: string, options?: EngineOptions, returnO
     })()
   }
 
-  const obj = await (await parse(template, options)).compile()
-  return returnObject ? obj : obj.value
+  const opt = { ...defaultOptions, ...options }
+  const { value } = await new Compiler(opt).compile(
+    await new Tokenizer(opt).parse(template),
+  )
+
+  return value
 }
 
-export async function render(template: string, data: Record<string, any>, options?: EngineOptions): Promise<any> {
+export async function render(
+  template: string,
+  data: Record<string, any>,
+  options?: EngineOptions,
+): Promise<any> {
   if (options?.debug && !(options as any).__debug) {
     (options as any).__debug = true
+
     return await (async () => {
       try {
         return await render(template, data, options)
@@ -48,5 +46,7 @@ export async function render(template: string, data: Record<string, any>, option
     })()
   }
 
-  return (await compile(template, options, true)).render(data)
+  const opt = { ...defaultOptions, ...options }
+
+  return (await new Engine(opt).compile(template)).render(data)
 }

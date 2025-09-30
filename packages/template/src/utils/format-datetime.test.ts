@@ -2,40 +2,40 @@ import { expect, it } from 'vitest'
 import { formatDatetime as fd } from './format-datetime'
 
 it('number', () => {
-  expect(fd({}, 1746410588992, 'y')).toMatchInlineSnapshot(`"2025"`)
-  expect(fd({}, 1746410588992, 'yy')).toMatchInlineSnapshot(`"2025"`)
-  expect(fd({}, 1746410588992, 'yyy')).toMatchInlineSnapshot(`"2025"`)
-  expect(fd({}, 1746410588992, 'yyyy')).toMatchInlineSnapshot(`"2025"`)
+  expect(fd({}, 1746410588992, 'y')).toMatchInlineSnapshot('"2025"')
+  expect(fd({}, 1746410588992, 'yy')).toMatchInlineSnapshot('"2025"')
+  expect(fd({}, 1746410588992, 'yyy')).toMatchInlineSnapshot('"2025"')
+  expect(fd({}, 1746410588992, 'yyyy')).toMatchInlineSnapshot('"2025"')
   expect(fd({}, 1746410588992, 'y M d h m s D')).toMatchInlineSnapshot(
-    `"2025 5 5 2 3 8 Mon"`,
+    '"2025 5 5 2 3 8 Mon"',
   )
   expect(fd({}, 1746410588992, 'y MM dd hh mm ss DD')).toMatchInlineSnapshot(
-    `"2025 05 05 02 03 08 Monday"`,
+    '"2025 05 05 02 03 08 Monday"',
   )
 })
 
 it('string', () => {
   expect(fd({}, '2021-01-01T02:03:08.992Z', 'y')).toMatchInlineSnapshot(
-    `"2021"`,
+    '"2021"',
   )
   expect(fd({}, '2021-01-01T02:03:08.992Z', 'yy')).toMatchInlineSnapshot(
-    `"2021"`,
+    '"2021"',
   )
   expect(fd({}, '2021-01-01T02:03:08.992Z', 'yyy')).toMatchInlineSnapshot(
-    `"2021"`,
+    '"2021"',
   )
   expect(fd({}, '2021-01-01T02:03:08.992Z', 'yyyy')).toMatchInlineSnapshot(
-    `"2021"`,
+    '"2021"',
   )
   expect(fd({}, '2021-01-01T02:03:08.992Z', 'N NN')).toMatchInlineSnapshot(
-    `"Jan January"`,
+    '"Jan January"',
   )
   expect(
     fd({}, '2021-01-01T02:03:08.992Z', 'y M d h m s D'),
-  ).toMatchInlineSnapshot(`"2021 1 1 2 3 8 Fri"`)
+  ).toMatchInlineSnapshot('"2021 1 1 2 3 8 Fri"')
   expect(
     fd({}, '2021-01-01T02:03:08.992Z', 'y MM dd hh mm ss DD'),
-  ).toMatchInlineSnapshot(`"2021 01 01 02 03 08 Friday"`)
+  ).toMatchInlineSnapshot('"2021 01 01 02 03 08 Friday"')
 })
 
 it('translate', () => {
@@ -45,5 +45,5 @@ it('translate', () => {
       '2021-01-01',
       'N NN D DD',
     ),
-  ).toMatchInlineSnapshot(`"一月 一月 Fri Friday"`)
+  ).toMatchInlineSnapshot('"一月 一月 Fri Friday"')
 })

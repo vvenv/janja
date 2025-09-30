@@ -17,9 +17,10 @@ export function parseExpression(template: string) {
   const filterRe = / \| ([a-z$_][^|]*?)(?= \||$)/gi
 
   let match
-  // eslint-disable-next-line no-cond-assign
+
   while ((match = filterRe.exec(rest))) {
     const [, filter] = match
+
     filters.push(parseFilter(filter))
   }
 

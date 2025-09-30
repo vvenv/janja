@@ -10,7 +10,6 @@ it('w/ filter', () => {
     value: 'x',
     filters: [{ name: 'abs' }],
   })
-
   expect(pe('x | replace: "a", "," | split: ""')).toEqual({
     value: 'x',
     filters: [
@@ -51,19 +50,19 @@ it('arithmetic', () => {
     expect(pe(`x${op}1`)).toEqual({ value: `x${op}1` })
     expect(pe(`1${op}y`)).toEqual({ value: `1${op}y` })
   })
-
-  expect(pe(`x++`)).toEqual({ value: `x++` })
-  expect(pe(`++x`)).toEqual({ value: `++x` })
-  expect(pe(`+x`)).toEqual({ value: `+x` })
-  expect(pe(`x--`)).toEqual({ value: `x--` })
-  expect(pe(`--x`)).toEqual({ value: `--x` })
-  expect(pe(`-x`)).toEqual({ value: `-x` })
+  expect(pe('x++')).toEqual({ value: 'x++' })
+  expect(pe('++x')).toEqual({ value: '++x' })
+  expect(pe('+x')).toEqual({ value: '+x' })
+  expect(pe('x--')).toEqual({ value: 'x--' })
+  expect(pe('--x')).toEqual({ value: '--x' })
+  expect(pe('-x')).toEqual({ value: '-x' })
 
   const filters = [{ name: 'f', args: undefined }]
-  expect(pe(`x++ | f`)).toEqual({ value: `x++`, filters })
-  expect(pe(`++x | f`)).toEqual({ value: `++x`, filters })
-  expect(pe(`+x | f`)).toEqual({ value: `+x`, filters })
-  expect(pe(`x-- | f`)).toEqual({ value: `x--`, filters })
-  expect(pe(`--x | f`)).toEqual({ value: `--x`, filters })
-  expect(pe(`-x | f`)).toEqual({ value: `-x`, filters })
+
+  expect(pe('x++ | f')).toEqual({ value: 'x++', filters })
+  expect(pe('++x | f')).toEqual({ value: '++x', filters })
+  expect(pe('+x | f')).toEqual({ value: '+x', filters })
+  expect(pe('x-- | f')).toEqual({ value: 'x--', filters })
+  expect(pe('--x | f')).toEqual({ value: '--x', filters })
+  expect(pe('-x | f')).toEqual({ value: '-x', filters })
 })

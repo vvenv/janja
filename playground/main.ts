@@ -10,6 +10,7 @@ declare global {
 
 function loadScript(url: string) {
   const script = document.createElement('script')
+
   script.async = true
   script.src = url
   document.querySelector('head')!.prepend(script)
@@ -106,27 +107,8 @@ This is a comment with variable "name='{{= name }}'"
         </li>
       {{ /for }}
     </ul>
-    ---
-    <ul>
-      {{ #for name in empty }}
-        <li>{{= name }}</li>
-      {{ else }}
-        <li>Empty array</li>
-      {{ /for }}
-    </ul>
-    {{ #with info }}
-    <dl>
-      <dt>Data Source:</dt>
-      <dd>{{= source }}</dd>
-      <dt>Version:</dt>
-      <dd>{{= version }}</dd>
-      <dt>Last Update Time:</dt>
-      <dd>{{= lastUpdated }}</dd>
-    </dl>
-    {{ /with }}
   </div>
-{{ /block }}
-`
+{{ /block }}`
 
 const defaultData
   = (!reset && localStorage.getItem('data')) || `{
@@ -179,6 +161,7 @@ async function update() {
     }
 
     const template = templateEl.value.trim()
+
     localStorage.setItem('template', template)
 
     if (!dataEl.value.trim()) {
@@ -186,6 +169,7 @@ async function update() {
     }
 
     const data = dataEl.value.trim()
+
     localStorage.setItem('data', data)
 
     const parsedData = JSON.parse(data)
@@ -197,11 +181,8 @@ async function update() {
       trimWhitespace: true,
     })
 
-    const { parse } = await engine.initialize(template)
-    const initializeEnd = performance.now()
-    const { compile } = await parse()
-    const parseEnd = performance.now()
-    const { script, render } = await compile()
+    const start = performance.now()
+    const { render, script } = await engine.compile(template)
     const compileEnd = performance.now()
     const output = await render(parsedData)
     const end = performance.now()
@@ -211,14 +192,12 @@ async function update() {
       'javascript',
     )
 
-    const parseTime = Math.floor((parseEnd - initializeEnd) * 1000) / 1000
-    const compileTime = Math.floor((compileEnd - parseEnd) * 1000) / 1000
+    const compileTime = Math.floor((compileEnd - start) * 1000) / 1000
     const renderTime = Math.floor((end - compileEnd) * 1000) / 1000
-    const total = Math.floor((end - initializeEnd) * 1000) / 1000
+    const total = Math.floor((end - start) * 1000) / 1000
 
     performanceEl.textContent = `| Stage     | Time
 |-----------+---------
-| parse     | +${parseTime}ms
 | compile   | +${compileTime}ms
 | render    | +${renderTime}ms
 |-----------+---------

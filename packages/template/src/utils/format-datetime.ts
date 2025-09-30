@@ -42,7 +42,11 @@ const dayNames = [
 
 const shortDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-const o: Record<string, (d: Date, len: number, translations: Record<string, string>) => string> = {
+const o: Record<string, (
+  d: Date,
+  len: number,
+  translations: Record<string, string>
+) => string> = {
   y: d => `${d.getUTCFullYear()}`,
   M: (d, len) => `${d.getUTCMonth() + 1}`.padStart(len, '0'),
   N: (d, len, translations) =>
@@ -61,7 +65,11 @@ const o: Record<string, (d: Date, len: number, translations: Record<string, stri
     ),
 }
 
-export function formatDatetime(translations: Record<string, string> = {}, value: string | number = 0, format: string) {
+export function formatDatetime(
+  translations: Record<string, string> = {},
+  value: string | number = 0,
+  format: string,
+) {
   const d = new Date(value)
 
   return format.replace(/y+|M+|N+|d+|h+|m+|s+|D+/g, (str) => {

@@ -16,7 +16,12 @@ export function compileExpression(
 
   if (filters?.length) {
     for (const { name, args } of filters) {
-      const params = [context, identifier, ...(args ? parseActualArgs(args, context) : [context])]
+      const params = [
+        context,
+        identifier,
+        ...(args ? parseActualArgs(args, context) : [context]),
+      ]
+
       identifier = `await ${FILTERS}.${name}.call(${params.join(',')})`
     }
   }

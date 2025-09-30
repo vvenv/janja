@@ -1,6 +1,11 @@
 {
   "cSpell.words": [
     "elif",
+    "endassign",
+    "endcall",
+    "endcomment",
+    "endmacro",
+    "endwith",
     "groupby",
     "jianjia",
     "liquidjs",
@@ -54,5 +59,8 @@
     "scss",
     "pcss",
     "postcss"
-  ]
+  ],
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  }
 }

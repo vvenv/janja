@@ -38,9 +38,9 @@ export function parseStatement(template: string): Statement[] {
 
   let cursor = 0
   let match: RegExpExecArray | null
+
   operatorRe.lastIndex = 0
 
-  // eslint-disable-next-line no-cond-assign
   while ((match = operatorRe.exec(template))) {
     statements.push({
       type: 'expression',

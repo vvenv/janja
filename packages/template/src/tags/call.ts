@@ -1,66 +1,41 @@
-import type { ASTNode, Tag } from '../types'
+import type { Tag } from '../types'
 import { parseActualArgs } from '../utils/parse-actual-args'
 
-const CALL = 'call'
-const END_CALL = 'end_call'
+const CALL = ['call', '#call']
+const END_CALL = ['end_call', 'endcall', '/call']
+const RE = /^([a-z$_][\w$]*)(?:: (.+)|\b)/
 
 /**
  * @example {{ #call my_macro: "foo", "bar" }}...{{ /call }}
  */
 export const tag: Tag = {
-  names: [CALL],
+  names: [...CALL, ...END_CALL],
 
-  parse({ parser, base }) {
-    if (base.isEnd) {
-      const node = {
-        ...base,
-        name: END_CALL,
+  async compile({ token: { name, value }, ctx: { context }, out, validator }) {
+    if (CALL.includes(name)) {
+      if (!value) {
+        throw new Error('call tag must have a value')
       }
 
-      if (parser.startMatch(CALL, node)) {
-        parser.end(node)
+      const [, _name, _args = ''] = value.match(RE) ?? []
+
+      if (!_name) {
+        throw new Error('call tag must have a valid name')
       }
 
-      return
+      validator.expect(END_CALL)
+
+      const args = parseActualArgs(_args, context)
+
+      return out.pushLine(`await ${context}.${_name}(${[...args, 'async()=>{'].join(',')}`)
     }
 
-    if (base.data) {
-      parser.start({
-        ...base,
-        name: CALL,
-      })
+    if (END_CALL.includes(name)) {
+      if (!validator.consume(END_CALL)) {
+        throw new Error(`Unexpected ${name}`)
+      }
 
-      return
-    }
-
-    return false
-  },
-
-  async compile({ template, node, context, out }, compileContent) {
-    if (node.name === CALL) {
-      const name = parseMacroName(node)
-      const loc = out.pushLine(`await ${context}.${name}(async()=>{`)
-      await compileContent({ template, node, context, out })
-      return loc
-    }
-
-    if (node.name === END_CALL) {
-      const args = parseMacroActualArgs(node.previousSibling!, context)
-      return args.length
-        ? out.pushLine(`},${args.join(',')});`)
-        : out.pushLine(`});`)
+      return out.pushLine('});')
     }
   },
-}
-
-function parseMacroName(tag: ASTNode) {
-  const [, name] = tag.data!.match(/^([a-z$_][\w$]*)(?:: |\b)/)!
-
-  return name
-}
-
-function parseMacroActualArgs(tag: ASTNode, context: string) {
-  const [, args] = tag.data!.match(/^[a-z$_][\w$]*: (.+)$/) ?? []
-
-  return args ? parseActualArgs(args, context) : []
 }

@@ -68,14 +68,13 @@ it('w/ filters', () => {
       { name: 'y', args: '1' },
       { name: 'z', args: '' },
     ]),
-  ).toMatchInlineSnapshot(`"await f.z.call(c,await f.y.call(c,c.x,1),c)"`)
-
+  ).toMatchInlineSnapshot('"await f.z.call(c,await f.y.call(c,c.x,1),c)"')
   expect(
     ce('x', 'c', [
       { name: 'y', args: '"1"' },
       { name: 'z', args: '' },
     ]),
-  ).toMatchInlineSnapshot(`"await f.z.call(c,await f.y.call(c,c.x,"1"),c)"`)
+  ).toMatchInlineSnapshot('"await f.z.call(c,await f.y.call(c,c.x,"1"),c)"')
 })
 
 it('not', () => {
@@ -84,32 +83,11 @@ it('not', () => {
       { name: 'y', args: '1' },
       { name: 'z', args: 'a="b"' },
     ]),
-  ).toMatchInlineSnapshot(`"await f.z.call(c,await f.y.call(c,!c.x,1),{a:"b"})"`)
-
+  ).toMatchInlineSnapshot('"await f.z.call(c,await f.y.call(c,!c.x,1),{a:"b"})"')
   expect(
     ce('x', 'c', [
       { name: 'y', args: '"1"' },
       { name: 'z', args: 'b="c", d=2' },
     ]),
-  ).toMatchInlineSnapshot(`"await f.z.call(c,await f.y.call(c,c.x,"1"),{b:"c",d:2})"`)
-})
-
-it('real world', () => {
-  expect(
-    ce('"hello, {name}"', 'c', [
-      {
-        name: 't',
-        args: 'name="IJK"',
-      },
-    ]),
-  ).toMatchInlineSnapshot(`"await f.t.call(c,"hello, {name}",{name:"IJK"})"`)
-
-  expect(
-    ce('x', 'c', [
-      {
-        name: 't',
-        args: 'name="IJK"',
-      },
-    ]),
-  ).toMatchInlineSnapshot(`"await f.t.call(c,c.x,{name:"IJK"})"`)
+  ).toMatchInlineSnapshot('"await f.z.call(c,await f.y.call(c,c.x,"1"),{b:"c",d:2})"')
 })

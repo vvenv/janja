@@ -1,7 +1,11 @@
-import type { Location } from '../types'
+import type { Loc } from '../types'
 import c from 'tinyrainbow'
 
-export function highlightSource(message: string, source: string, locations: Location[]) {
+export function highlightSource(
+  message: string,
+  source: string,
+  locations: Loc[],
+) {
   const output: string[] = []
   const caretLines = new Set<number>()
 
@@ -28,25 +32,28 @@ export function highlightSource(message: string, source: string, locations: Loca
     )
 
     locations.forEach((tag) => {
-      if (tag.startIndex! < cursor) {
+      if (tag.start! < cursor) {
         locations.splice(locations.indexOf(tag), 1)
-        return
-      }
-      if (tag.startIndex! >= cursor + line.length + 1) {
+
         return
       }
 
-      const offset = tag.startIndex! - cursor + indentWidth
-      const end = Math.min(tag.endIndex!, cursor + line.length)
-      const count = end - tag.startIndex!
+      if (tag.start! >= cursor + line.length + 1) {
+        return
+      }
+
+      const offset = tag.start! - cursor + indentWidth
+      const end = Math.min(tag.end!, cursor + line.length)
+      const count = end - tag.start!
 
       const caretLine = `${' '.repeat(offset)}${c.red('^'.repeat(count))}`
+
       if (/\S/.test(caretLine)) {
         output.push(caretLine)
       }
 
-      if (end < tag.endIndex!) {
-        tag.startIndex! += count + 1
+      if (end < tag.end!) {
+        tag.start! += count + 1
       }
 
       addCaretLine(++caretLinesCount + index)

@@ -8,10 +8,10 @@
 {{ #if condition }}内容{{ elif other }}内容{{ else }}内容{{ /if }}
 ```
 
-### **for / else**：循环遍历
+### **for**：循环遍历
 
 ```jianjia
-{{ #for item in items }}{{ item }}{{ else }}无数据{{ /for }}
+{{ #for item in items }}{{= item }}{{ /for }}
 ```
 
 ### **assign**：变量赋值
@@ -48,25 +48,11 @@
 {{ continue }}
 ```
 
-### **with**：上下文变量赋值
-
-```jianjia
-{{ #with obj }}
-{{= key }}
-{{ /with }}
-```
-
 ### **comment**：注释
 
 ```jianjia
 {{! 这是注释 }}
 {{ #comment }}多行注释{{ /comment }}
-```
-
-### **raw**：原文输出（不解析内容）
-
-```jianjia
-{{ #raw }}{{ #if x }}foo{{ /if }}{{ /raw }}
 ```
 
 ### **expression（=）**：表达式输出
@@ -99,14 +85,15 @@ const myTag = {
   parse({ ast, base }) {
     // 解析逻辑
     ast.start({ ...base, name: 'my_tag' })
-    ast.end({ ...base, startIndex: base.endIndex, name: 'end_my_tag' })
+    ast.end({ ...base, start: base.end, name: 'end_my_tag' })
   },
   async compile({ template, tag, context, out }, compileContent) {
     // 编译逻辑
     out.pushStr('自定义标签内容')
-  }
+  },
 }
 const engine = new Engine()
+
 engine.registerTags([myTag])
 ```
 
@@ -120,10 +107,11 @@ engine.registerTags([myTag])
 
 ```javascript
 const engine = new Engine()
+
 engine.registerFilters({
   my_filter(value) {
     return `自定义：${value}`
-  }
+  },
 })
 ```
 

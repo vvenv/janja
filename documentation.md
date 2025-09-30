@@ -8,10 +8,10 @@
 {{ #if condition }}Content{{ elif other }}Content{{ else }}Content{{ /if }}
 ```
 
-### **for / else**: Looping
+### **for**: Looping
 
 ```jianjia
-{{ #for item in items }}{{ item }}{{ else }}No data{{ /for }}
+{{ #for item in items }}{{= item }}{{ /for }}
 ```
 
 ### **assign**: Variable Assignment
@@ -48,25 +48,11 @@
 {{ continue }}
 ```
 
-### **with**: Contextual Variable Assignment
-
-```jianjia
-{{ #with obj }}
-{{= key }}
-{{ /with }}
-```
-
 ### **comment**: Comments
 
 ```jianjia
 {{! This is a comment }}
 {{ #comment }}Multi-line comment{{ /comment }}
-```
-
-### **raw**: Raw Output (No Parsing)
-
-```jianjia
-{{ #raw }}{{ #if x }}foo{{ /if }}{{ /raw }}
 ```
 
 ### **expression (=)**: Expression Output
@@ -99,14 +85,15 @@ const myTag = {
   parse({ ast, base }) {
     // Parsing logic
     ast.start({ ...base, name: 'my_tag' })
-    ast.end({ ...base, startIndex: base.endIndex, name: 'end_my_tag' })
+    ast.end({ ...base, start: base.end, name: 'end_my_tag' })
   },
   async compile({ template, tag, context, out }, compileContent) {
     // Compilation logic
     out.pushStr('Custom tag content')
-  }
+  },
 }
 const engine = new Engine()
+
 engine.registerTags([myTag])
 ```
 
@@ -120,10 +107,11 @@ Usage in template:
 
 ```javascript
 const engine = new Engine()
+
 engine.registerFilters({
   my_filter(value) {
     return `Custom: ${value}`
-  }
+  },
 })
 ```
 

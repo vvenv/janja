@@ -32,7 +32,7 @@ pre.error {
   list-style-type: none;
 }
 
-#app > li {
+#app>li {
   flex: 4;
   min-width: 0;
   padding: 0;
@@ -42,16 +42,16 @@ pre.error {
   flex-direction: column;
 }
 
-#app > li:first-child {
-  flex: 3;
+#app>li:first-child {
+  flex: 4;
 }
 
-#app > li:last-child {
-  flex: 2;
+#app>li:last-child {
+  flex: 4;
 }
 
-#app > li > label,
-#app > li > span {
+#app>li>label,
+#app>li>span {
   display: block;
   padding: 1rem;
   outline: 1px solid #11151b;
@@ -81,8 +81,8 @@ pre.error {
   flex-direction: column;
 }
 
-#code > pre,
-#result > pre {
+#code>pre,
+#result>pre {
   flex: 1;
   margin: 0;
   padding: 1rem;

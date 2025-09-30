@@ -27,6 +27,7 @@
 const engine = new Engine()
 const { render } = await engine.compile('Hello, {{= name }}！')
 const html = await render({ name: 'World' })
+
 document.body.innerHTML = html
 ```
 

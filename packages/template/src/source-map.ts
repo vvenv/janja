@@ -1,4 +1,4 @@
-import type { EngineOptions, Location, Mapping } from './types'
+import type { EngineOptions, Loc, Mapping } from './types'
 
 /**
  * Contains the source map information.
@@ -12,12 +12,12 @@ import type { EngineOptions, Location, Mapping } from './types'
  * - sourceMap:
  *   Mapping {
  *     source: {
- *       startIndex: 3,
- *       endIndex: 6,
+ *       start: 3,
+ *       end: 6,
  *     },
  *     target: {
- *       startIndex: 3,
- *       endIndex: 8,
+ *       start: 3,
+ *       end: 8,
  *     }
  *   }
  */
@@ -26,7 +26,7 @@ export class SourceMap {
 
   constructor(public options: Required<EngineOptions>) {}
 
-  addMapping(source: Location, target: Location) {
+  addMapping(source: Loc, target: Loc) {
     this.mappings.push({
       source,
       target,
@@ -36,8 +36,7 @@ export class SourceMap {
   getLocations(offset: number) {
     return this.mappings
       .filter(
-        ({ target: { startIndex, endIndex } }) =>
-          startIndex <= offset && endIndex >= offset,
+        ({ target: { start, end } }) => start <= offset && end >= offset,
       )
       .map(({ source }) => source)
   }

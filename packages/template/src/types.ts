@@ -1,18 +1,19 @@
+import type { Context } from './context'
 import type { OutScript } from './out-script'
-import type { Parser } from './parser'
+import type { Validator } from './validator'
 
 export type MaybePromise<T> = T | Promise<T>
 
 export type ObjectType = Record<string, any>
 
-export interface Location {
-  startIndex: number
-  endIndex: number
+export interface Loc {
+  start: number
+  end: number
 }
 
 export interface Mapping {
-  source: Location
-  target: Location
+  source: Loc
+  target: Loc
 }
 
 export interface FilterMeta {
@@ -41,89 +42,48 @@ export interface Filter {
   (value: any, ...args: any[]): any
 }
 
-export type ParsedScript = (
+export type Script = (
   globals: Globals,
   filters: Filters,
   escape: (v: unknown) => unknown,
   helpers: Helpers
 ) => Promise<string>
 
-export type RenderFunction = (
+export type Render = (
   globals: Globals,
 ) => Promise<string>
 
-export interface ASTNodeBase extends Location {
-  identifier: string
-  data?: string
-  isStart?: boolean
-  isEnd?: boolean
-  original: string
-  stripBefore: boolean
-  stripAfter: boolean
-  /**
-   * The previous node in all levels.
-   */
-  previous: ASTNode | null
-  /**
-   * The next node in all levels.
-   */
-  next: ASTNode | null
-}
-
-export interface ASTNode extends ASTNodeBase {
+export interface Token extends Loc {
   name: string
-  data?: any
-  /**
-   * The tag that contains this node.
-   */
-  tag: ASTTag
-  /**
-   * The previous node in the same level.
-   */
-  previousSibling: ASTNode | null
-  /**
-   * The next node in the same level.
-   */
-  nextSibling: ASTNode | null
-  /**
-   * The tags that contained in this node.
-   */
-  tags: ASTTag[]
+  value: string | null
+  raw: string
+  previous: Token | null
+  next: Token | null
+  stripBefore?: boolean
+  stripAfter?: boolean
 }
 
-export interface ASTTag {
-  body: ASTNode[]
-  parent: ASTTag | null
-  previousSibling: ASTTag | null
-  nextSibling: ASTTag | null
-  level: number
-  index: number
+export interface AST {
+  cursor: Token | null
 }
 
 export interface Tag {
   names: string[]
 
   /**
-   * - void: handled by the parser
-   * - false: not handled by the parser
+   * - Return `Location` to indicate the range of the tag.
+   * - Return `false` to pass the control to the next tag.
+   * - Return `void` to continue compiling.
    */
-  parse: (arg: { parser: Parser, base: ASTNodeBase }) => MaybePromise<void | false>
-
   compile: (
     arg: {
-      template: string
-      node: ASTNode
-      context: string
-      parser: Parser
+      token: Token
+      index: number
+      ctx: Context
       out: OutScript
+      validator: Validator
     },
-    compileContent: (arg: {
-      template: string
-      node: ASTNode
-      context: string
-      out: OutScript
-    }) => Promise<void>,
-  ) => MaybePromise<void | false | Location>
+  ) => MaybePromise<Loc | void | false>
 }
 
 export interface EngineOptions {

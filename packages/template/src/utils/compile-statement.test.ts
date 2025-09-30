@@ -20,7 +20,7 @@ it('basic', () => {
       ],
       'c',
     ),
-  ).toMatchInlineSnapshot(`"c.x===c.y"`)
+  ).toMatchInlineSnapshot('"c.x===c.y"')
 })
 
 it('not', () => {
@@ -42,8 +42,7 @@ it('not', () => {
       ],
       'c',
     ),
-  ).toMatchInlineSnapshot(`"!c.x in !c.y"`)
-
+  ).toMatchInlineSnapshot('"!c.x in !c.y"')
   expect(
     cs(
       [
@@ -74,7 +73,7 @@ it('not', () => {
       ],
       'c',
     ),
-  ).toMatchInlineSnapshot(`"await f.f.call(c,!c.x,c.a)&&await f.f.call(c,!c.y,{b:"x"})"`)
+  ).toMatchInlineSnapshot('"await f.f.call(c,!c.x,c.a)&&await f.f.call(c,!c.y,{b:"x"})"')
 })
 
 it('filter', () => {
@@ -108,7 +107,7 @@ it('filter', () => {
       ],
       'c',
     ),
-  ).toMatchInlineSnapshot(`"await f.f.call(c,c.x,c)===await f.f.call(c,c.y,c)"`)
+  ).toMatchInlineSnapshot('"await f.f.call(c,c.x,c)===await f.f.call(c,c.y,c)"')
 })
 
 it('filter w/ named args', () => {
@@ -143,7 +142,7 @@ it('filter w/ named args', () => {
       'c',
     ),
   ).toMatchInlineSnapshot(
-    `"await f.f.call(c,!c.x,"a")===await f.f.call(c,!c.y,"a",\`b\`)"`,
+    '"await f.f.call(c,!c.x,"a")===await f.f.call(c,!c.y,"a",`b`)"',
   )
   expect(
     cs(
@@ -176,6 +175,6 @@ it('filter w/ named args', () => {
       'c',
     ),
   ).toMatchInlineSnapshot(
-    `"await f.f.call(c,!c.x,{a:"a"})===await f.f.call(c,!c.y,{a:c.a,b:\`b\`})"`,
+    '"await f.f.call(c,!c.x,{a:"a"})===await f.f.call(c,!c.y,{a:c.a,b:`b`})"',
   )
 })

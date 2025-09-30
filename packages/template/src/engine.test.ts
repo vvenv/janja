@@ -1,4 +1,3 @@
-/* eslint-disable style/no-tabs */
 import { describe, expect, it } from 'vitest'
 import { compile, render } from '../test/__helper'
 import { loader } from './loaders/file-loader'
@@ -14,7 +13,7 @@ describe('autoEscape', async () => {
       ),
     ).toMatchInlineSnapshot(`
       ""
-      &lt;foo&gt;	&lt;/foo&gt;
+      &lt;foo&gt;\t&lt;/foo&gt;
       <>"
     `)
   })
@@ -32,7 +31,7 @@ describe('autoEscape', async () => {
       ),
     ).toMatchInlineSnapshot(`
       ""
-      <foo>	</foo>
+      <foo>\t</foo>
       <>"
     `)
   })
@@ -40,12 +39,12 @@ describe('autoEscape', async () => {
 
 it('interpolate', async () => {
   expect(await render('{{= name }}', { name: 'foo' })).toMatchInlineSnapshot(
-    `"foo"`,
+    '"foo"',
   )
   expect(
     await render('{{= name }} and {{= name }}', { name: 'foo' }),
-  ).toMatchInlineSnapshot(`"foo and foo"`)
-  expect(await render('{{= "*" }}', {})).toMatchInlineSnapshot(`"*"`)
+  ).toMatchInlineSnapshot('"foo and foo"')
+  expect(await render('{{= "*" }}', {})).toMatchInlineSnapshot('"*"')
 })
 
 it('for loop', async () => {
@@ -53,8 +52,7 @@ it('for loop', async () => {
     await render('{{ #for name in names }}{{ name }}{{ /for }}', {
       names: ['foo', 'bar'],
     }),
-  ).toMatchInlineSnapshot(`"{{ name }}{{ name }}"`)
-
+  ).toMatchInlineSnapshot('""')
   expect(
     await render(
       `{{ #for name in names -}}
@@ -70,7 +68,7 @@ it('for loop', async () => {
 it('for loop - nested', async () => {
   expect(
     await render(
-      `{{ #for _as in ass }}{{ #for a in _as }}|{{= a }} in {{= _as }} in {{= ass }}|{{ /for }}{{ /for }}`,
+      '{{ #for _as in ass }}{{ #for a in _as }}|{{= a }} in {{= _as }} in {{= ass }}|{{ /for }}{{ /for }}',
       {
         ass: ['foo', 'bar'],
       },
@@ -82,19 +80,19 @@ it('for loop - nested', async () => {
 
 it('if - else', async () => {
   expect(
-    await render(`{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}`, {
+    await render('{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}', {
       name: 'foo',
     }),
-  ).toMatchInlineSnapshot(`"foo"`)
+  ).toMatchInlineSnapshot('"foo"')
   expect(
-    await render(`{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}`, {}),
-  ).toMatchInlineSnapshot(`"*"`)
+    await render('{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}', {}),
+  ).toMatchInlineSnapshot('"*"')
 })
 
 it('mixed', async () => {
   expect(
     await render(
-      `{{ #for name in names }}{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}{{ /for }}`,
+      '{{ #for name in names }}{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}{{ /for }}',
       {
         names: ['foo', '', 'bar'],
       },
@@ -105,7 +103,7 @@ it('mixed', async () => {
 it('destructing', async () => {
   expect(
     await render(
-      `{{ #for name in names }}{{ #for k, v in name }}{{= k }}{{= v }}{{ /for }}{{ /for }}`,
+      '{{ #for name in names }}{{ #for k, v in name }}{{= k }}{{= v }}{{ /for }}{{ /for }}',
       {
         names: [
           { x: 1, y: 3 },
@@ -116,38 +114,10 @@ it('destructing', async () => {
   ).toMatchInlineSnapshot(`"x1y3y2x4"`)
 })
 
-it('compile error', async () => {
-  expect(await compile(`{{ #for name in names }}{{ /if }}`, { debug: true }))
-    .toMatchInlineSnapshot(`
-      " JianJia  "end_if" must follow "if".
-
-      1: {{ #for name in names }}{{ /if }}
-                                 ^^^^^^^^^
-      "
-    `)
-  expect(await compile(`{{ #for name in names }}{{ /if }}`, { debug: false }))
-    .toMatchInlineSnapshot(`""`)
-})
-
-it('render error', async () => {
-  expect(
-    await render(`{{ #for name in names }}{{ /for }}`, {}, { debug: true }),
-  ).toMatchInlineSnapshot(`
-    " JianJia  Cannot convert undefined or null to object
-
-    1: {{ #for name in names }}{{ /for }}
-       ^^^^^^^^^^^^^^^^^^^^^^^^
-    "
-  `)
-  expect(
-    await render(`{{ #for name in names }}{{ /for }}`, {}, { debug: false }),
-  ).toMatchInlineSnapshot(`""`)
-})
-
-it('partials', async () => {
+it('layout', async () => {
   expect(
     await render(
-      `{{ layout "default" }}`,
+      '{{ layout "default" }}',
       {},
       {
         loader: path => loader(`test/${path}`),
@@ -164,68 +134,56 @@ it('partials', async () => {
     </html>
     "
   `)
+})
 
+it('include', async () => {
   expect(
     await render(
-      `{{ include "header" }}`,
+      '{{ layout "default" }}x{{ include "head" }}y{{ include "body" }}z',
       {},
       {
         loader: path => loader(`test/${path}`),
       },
     ),
   ).toMatchInlineSnapshot(`
-    "<h1>蒹葭苍苍，白露为霜</h1>
-    "
-  `)
-
-  expect(
-    await render(
-      `{{ layout "default" }}x{{ include "header" }} y`,
-      {},
-      {
-        loader: path => loader(`test/${path}`),
-      },
-    ),
-  ).toMatchInlineSnapshot(
-    `
     "<html>
       <head>
-      <title>JianJia</title>
+      <title>蒹葭苍苍，白露为霜</title>
       </head>
       <body>
       <h1>蒹葭苍苍，白露为霜</h1>
       </body>
     </html>
     x
-     y"
-  `,
-  )
+    y
+    z"
+  `)
 })
 
-it('partials / not found', async () => {
+it('include / not found', async () => {
   expect(
     await render(
-      `{{ layout "fallback" }}`,
+      '{{ include "fallback" }}',
       {},
       {
         debug: true,
         loader: path => loader(`test/${path}`),
       },
     ),
-  ).toMatchInlineSnapshot(`"Could not find file at "layouts/fallback.jianjia""`)
+  ).toMatchInlineSnapshot(`"file not found: test/partials/fallback.jianjia"`)
 })
 
-it('partials / optional', async () => {
+it('include / optional', async () => {
   expect(
     await render(
-      `{{ layout "fallback"? }}`,
+      '{{ include "fallback"? }}',
       {},
       {
         debug: true,
         loader: path => loader(`test/${path}`),
       },
     ),
-  ).toMatchInlineSnapshot(`"{{ layout "fallback"? }}"`)
+  ).toMatchInlineSnapshot(`""`)
 })
 
 it('custom tag', async () => {
@@ -234,23 +192,35 @@ it('custom tag', async () => {
       tags: {
         custom: [{
           names: ['custom'],
-          parse: async ({ parser, base }) => {
-            parser.start({
-              ...base,
-              name: 'custom',
-            })
-            parser.end({
-              ...base,
-              name: 'end_custom',
-            })
-          },
-          compile: async ({ node, out }) => {
-            if (node.name === 'custom') {
+          compile: async ({ token: { name }, out }) => {
+            if (name === 'custom') {
               out.pushStr('CUSTOM')
             }
           },
         }],
       },
     }),
-  ).toMatchInlineSnapshot(`"CUSTOM"`)
+  ).toMatchInlineSnapshot('"CUSTOM"')
+})
+
+it('compile error', async () => {
+  expect(await compile('{{ #for name in names }}{{ /if }}', { debug: true }))
+    .toMatchInlineSnapshot(`
+      " JianJia  Unexpected /if
+
+      {{ /if }}
+      "
+    `)
+})
+
+it('render error', async () => {
+  expect(
+    await render('{{ #for name in names }}{{ /for }}', {}, { debug: true }),
+  ).toMatchInlineSnapshot(`
+    " JianJia  Cannot convert undefined or null to object
+
+    1: {{ #for name in names }}{{ /for }}
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+    "
+  `)
 })

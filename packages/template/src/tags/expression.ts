@@ -4,47 +4,33 @@ import { hasKeyword } from '../utils/has-keyword'
 import { isEvil } from '../utils/is-evil'
 import { parseStatement } from '../utils/parse-statement'
 
-const EXPRESSION = 'expression'
-const END_EXPRESSION = 'end_expression'
+const EXPRESSION = ['=']
 
 /**
- * @example {{ x | f }}
- * @example {{ 'a' if x else 'b' }}
+ * @example {{= x | f }}
+ * @example {{= 'a' if x else 'b' }}
  */
 export const tag: Tag = {
-  names: ['='],
+  names: [...EXPRESSION],
 
-  parse({ parser, base }) {
-    if (verifyExpression(base.data!)) {
-      parser.start({
-        ...base,
-        name: EXPRESSION,
-      })
+  compile({ token: { name, value }, ctx: { context }, out }) {
+    if (EXPRESSION.includes(name)) {
+      if (!verifyExpression(value!)) {
+        throw new Error(`invalid expression: ${value}`)
+      }
 
-      // Self closing
-      parser.end({
-        ...base,
-        startIndex: base.endIndex,
-        name: END_EXPRESSION,
-      })
-
-      return
-    }
-
-    return false
-  },
-
-  compile({ node, context, out }) {
-    if (node.name === EXPRESSION) {
       const [, a, cond, b]
-        = node.data!.match(/^(.+?) if (.+?)(?: else (.+))?$/)
+        = value!.match(/^(.+?) if (.+?)(?: else (.+))?$/)
           ?? []
+
       if (cond) {
         return out.pushVar(
           `${compileStatement(parseStatement(cond), context)} ? ${compileStatement(parseStatement(a), context)} : ${b ? compileStatement(parseStatement(b), context) : '""'}`,
         )
       }
-      const [statement0] = parseStatement(node.data!)
+
+      const [statement0] = parseStatement(value!)
+
       return out.pushVar(
         compileStatement(
           [

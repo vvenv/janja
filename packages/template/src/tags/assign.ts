@@ -2,115 +2,70 @@ import type { Tag } from '../types'
 import { compileStatement } from '../utils/compile-statement'
 import { parseStatement } from '../utils/parse-statement'
 
-const ASSIGN = 'assign'
-const END_ASSIGN = 'end_assign'
+const ASSIGN = ['assign', '#assign']
+const END_ASSIGN = ['end_assign', 'endassign', '/assign']
 const RE
   = /^(?:([a-z$_][\w$]*)|([a-z$_][\w$]*(?:, [a-z$_][\w$]*)*) = ((['"`])(?:\\\4|(?!\4).)*\4|[^=]+))$/i
 
 /**
- * @example {{ assign my_variable = my_value }}
- * @example {{ assign my_variable1, my_variable2 = my_value }}
- * @example {{ #assign my_variable }} this is {{= my_value }} {{ /assign }}
+ * @example {{ assign left = right }}
+ * @example {{ assign left_1, left_2 = right }}
+ * @example {{ #assign variable }} this is {{= my_value }} {{ /assign }}
  */
 export const tag: Tag = {
-  names: [ASSIGN],
+  names: [...ASSIGN, ...END_ASSIGN],
 
-  parse({ parser, base }) {
-    if (base.isEnd) {
-      const node = {
-        ...base,
-        name: END_ASSIGN,
+  async compile({ token: { name, value }, ctx: { context }, out, validator }) {
+    if (ASSIGN.includes(name)) {
+      if (!value) {
+        throw new Error('assign tag must have a value')
       }
 
-      if (parser.startMatch(ASSIGN, node)) {
-        parser.end(node)
+      const [, variable, left = variable, right] = value.match(RE) ?? []
+
+      if (!left) {
+        throw new Error('assign tag must have a variable')
       }
 
-      return
-    }
+      const names = left.split(/, +/)
 
-    if (base.data) {
-      const [, variable, left, right] = base.data.match(RE) ?? []
-
-      if (base.isStart) {
-        if (!variable) {
-          parser.throwError(`invalid tag data`, [base])
-
-          return false
-        }
-
-        parser.start({
-          ...base,
-          name: ASSIGN,
-          data: {
-            left: variable,
-          },
-        })
-
-        return
-      }
-
-      if (!left || !right) {
-        parser.throwError(`invalid tag data`, [base])
-
-        return false
-      }
-
-      parser.start({
-        ...base,
-        name: ASSIGN,
-        data: {
-          left,
-          right,
-        },
-      })
-
-      // Self closing
-      parser.end({
-        ...base,
-        startIndex: base.endIndex,
-        name: END_ASSIGN,
-      })
-
-      return
-    }
-
-    return false
-  },
-
-  async compile({ template, node, context, out }, compileContent) {
-    if (node.name === ASSIGN) {
-      const { data: { left, right } } = node
-      const names = (left as string).split(/, +/)
+      // inline assignment
       if (right) {
         const lines: string[] = []
+
         lines.push(`Object.assign(${context},{`)
-        const value = compileStatement(parseStatement(right), context)
+
+        const v = compileStatement(parseStatement(right), context)
+
         if (names.length > 1) {
-          names.forEach((key, index) => {
-            lines.push(`${index > 0 ? ',' : ''}${key}:${value}.${key}`)
+          names.forEach((n, index) => {
+            lines.push(`${index > 0 ? ',' : ''}${n}:${v}.${n}`)
           })
         }
         else {
-          lines.push(`${left}:${value}`)
+          lines.push(`${left}:${v}`)
         }
 
-        lines.push(`});`)
+        lines.push('});')
+
         return out.pushLine(...lines)
       }
 
-      const loc = out.pushLine(
+      validator.expect(END_ASSIGN)
+
+      // block assignment
+      return out.pushLine(
         `Object.assign(${context},{`,
         `${left}:await(async(s)=>{`,
       )
-      await compileContent({
-        template,
-        node,
-        context,
-        out,
-      })
-      out.pushLine(`return s;})("")});`)
-      return loc
+    }
+
+    if (END_ASSIGN.includes(name)) {
+      if (!validator.consume(END_ASSIGN)) {
+        throw new Error(`Unexpected ${name}`)
+      }
+
+      return out.pushLine('return s;})("")});')
     }
   },
 }

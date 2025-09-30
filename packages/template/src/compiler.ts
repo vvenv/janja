@@ -1,109 +1,70 @@
-import type { Parser } from './parser'
-import type { ASTNode, ASTTag, EngineOptions } from './types'
-import { CONTEXT } from './config'
+import type { EngineOptions, Script, Token } from './types'
+import { CompileError } from './compile-error'
+import { Context } from './context'
 import { OutScript } from './out-script'
 import { SourceMap } from './source-map'
+import { Validator } from './validator'
 
 export class Compiler {
   constructor(public options: Required<EngineOptions>) {}
 
-  async compile(template: string, parser: Parser) {
+  async compile(token: Token | null) {
+    const ctx = new Context(this.options)
     const out = new OutScript(this.options)
     const sourcemap = new SourceMap(this.options)
+    const validator = new Validator(this.options)
 
-    if (parser.valid) {
-      out.start()
+    out.start()
+    let i = 0
 
-      const { tags } = parser
-      if (tags.length) {
-        for (const tag of tags) {
-          await this.compileNode(template, tag, CONTEXT, parser, out, sourcemap)
+    while (token) {
+      const tags = (this.options.tags[token.name] ?? [])
+
+      for (const tag of tags) {
+        try {
+          const r = await tag.compile(
+            {
+              token,
+              index: i++,
+              ctx,
+              out,
+              validator,
+            },
+          )
+
+          if (r !== false) {
+            if (r) {
+              sourcemap.addMapping(token, r)
+            }
+
+            break
+          }
         }
+        catch (error: any) {
+          if (this.options.debug) {
+            throw new CompileError(error.message, token)
+          }
 
-        out.pushStr(template.slice(parser.cursor.endIndex), {
-          trimStart: parser.cursor.stripAfter,
-          trimEnd: false,
-        })
-      }
-      else {
-        out.pushStr(template)
+          return { value: '', script: (async () => 'invalid template') as unknown as Script, sourcemap }
+        }
       }
 
-      out.end()
+      token = token.next
     }
+
+    try {
+      validator.validate()
+    }
+    catch (error: any) {
+      if (this.options.debug) {
+        throw error
+      }
+
+      return { value: '', script: (async () => 'invalid template') as unknown as Script, sourcemap }
+    }
+
+    out.end()
 
     return { value: out.value, script: out.script, sourcemap }
-  }
-
-  private async compileNode(
-    template: string,
-    { body }: ASTTag,
-    context: string,
-    parser: Parser,
-    out: OutScript,
-    sourcemap: SourceMap,
-  ) {
-    const compileContent = (arg: {
-      template: string
-      node: ASTNode
-      context: string
-      out: OutScript
-    }) => this.compileContent({ ...arg, parser, sourcemap })
-    for (const node of body) {
-      out.pushStr(template.slice(parser.cursor.endIndex, node.startIndex), {
-        trimStart: parser.cursor.stripAfter,
-        trimEnd: node.stripBefore,
-      })
-      parser.goto(node)
-
-      const tags = (this.options.tags[node.identifier] ?? [])
-      for (const tag of tags) {
-        const r = await tag.compile(
-          {
-            template,
-            node,
-            context,
-            parser,
-            out,
-          },
-          compileContent,
-        )
-        if (r !== false) {
-          if (r) {
-            sourcemap.addMapping(node, r)
-          }
-          break
-        }
-      }
-    }
-  }
-
-  private async compileContent({
-    template,
-    node,
-    context,
-    parser,
-    out,
-    sourcemap,
-  }: {
-    template: string
-    node: ASTNode
-    context: string
-    parser: Parser
-    out: OutScript
-    sourcemap: SourceMap
-  }) {
-    if (node.tags.length) {
-      for (const tag of node.tags) {
-        await this.compileNode(template, tag, context, parser, out, sourcemap)
-      }
-    }
-    else {
-      out.pushStr(template.slice(node.endIndex, node.nextSibling!.startIndex), {
-        trimStart: node.stripAfter,
-        trimEnd: node.nextSibling!.stripBefore,
-      })
-      parser.goto(node.nextSibling!)
-    }
   }
 }

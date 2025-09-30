@@ -8,6 +8,6 @@ it('basic', () => {
       expect(hasKeyword(keyword)).toBe(true)
       expect(hasKeyword(`"${keyword}"`)).toBe(false)
     })
-  expect(hasKeyword(`abstract class`)).toBe(true)
-  expect(hasKeyword(`"abstract class"`)).toBe(false)
+  expect(hasKeyword('abstract class')).toBe(true)
+  expect(hasKeyword('"abstract class"')).toBe(false)
 })

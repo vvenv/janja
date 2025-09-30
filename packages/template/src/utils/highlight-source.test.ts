@@ -3,10 +3,10 @@ import { highlightSource } from './highlight-source'
 
 it('highlight', () => {
   expect(
-    highlightSource(`foo`, `1\n2\n3\nhello\nworld\n4\n5\n6`, [
+    highlightSource('foo', '1\n2\n3\nhello\nworld\n4\n5\n6', [
       {
-        startIndex: 6,
-        endIndex: 11,
+        start: 6,
+        end: 11,
       },
     ]),
   ).toMatchInlineSnapshot(`
@@ -22,10 +22,10 @@ it('highlight', () => {
     "
   `)
   expect(
-    highlightSource(`foo`, `1\n2\n3\nhello\nworld\n4\n5\n6`, [
+    highlightSource('foo', '1\n2\n3\nhello\nworld\n4\n5\n6', [
       {
-        startIndex: 6,
-        endIndex: 17,
+        start: 6,
+        end: 17,
       },
     ]),
   ).toMatchInlineSnapshot(`
@@ -43,10 +43,10 @@ it('highlight', () => {
     "
   `)
   expect(
-    highlightSource(`foo`, `1\n2\n3\nhello\nworld\n4\n5\n6`, [
+    highlightSource('foo', '1\n2\n3\nhello\nworld\n4\n5\n6', [
       {
-        startIndex: 10,
-        endIndex: 13,
+        start: 10,
+        end: 13,
       },
     ]),
   ).toMatchInlineSnapshot(`

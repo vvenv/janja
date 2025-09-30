@@ -37,6 +37,7 @@ export function groupby(this: Globals, value: ObjectType[] = [], key: string) {
   return value.reduce(
     (o, v) => {
       const k = v[key]
+
       return {
         ...o,
         [k]: [...(o[k] || []), v],

@@ -1,8 +1,8 @@
 import { expect, it } from 'vitest'
-import { RuntimeError } from './runtime-error'
+import { RenderError } from './render-error'
 
-it('runtimeError', () => {
-  const error = new RuntimeError('test error', {
+it('render error', () => {
+  const error = new RenderError('test error', {
     source: '{{ #if }}{{ else }}{{ /if }}',
     error: {
       stack: '<anonymous>:1:1)',
@@ -12,19 +12,18 @@ it('runtimeError', () => {
         index === 1
           ? [
               {
-                startIndex: 0,
-                endIndex: 9,
+                start: 0,
+                end: 9,
               },
               {
-                startIndex: 19,
-                endIndex: 28,
+                start: 19,
+                end: 28,
               },
             ]
           : [],
     } as any,
   })
-
-  expect(error.name).toBe('RuntimeError')
+  expect(error.name).toBe('RenderError')
   expect(error.message).toBe('test error')
   expect(error.details).toMatchInlineSnapshot(`
     " JianJia  test error
@@ -36,8 +35,8 @@ it('runtimeError', () => {
   `)
 })
 
-it('runtimeError w/ missed', () => {
-  const error = new RuntimeError('test error', {
+it('render error w/ missed', () => {
+  const error = new RenderError('test error', {
     source: '{{ #if }}{{ else }}{{ /if }}',
     error: {
       stack: '',
@@ -47,19 +46,18 @@ it('runtimeError w/ missed', () => {
         index === 1
           ? [
               {
-                startIndex: 0,
-                endIndex: 9,
+                start: 0,
+                end: 9,
               },
               {
-                startIndex: 19,
-                endIndex: 28,
+                start: 19,
+                end: 28,
               },
             ]
           : [],
     } as any,
   })
-
-  expect(error.name).toBe('RuntimeError')
+  expect(error.name).toBe('RenderError')
   expect(error.message).toBe('test error')
   expect(error.details).toMatchInlineSnapshot(`
     " JianJia  test error

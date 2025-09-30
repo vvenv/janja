@@ -11,12 +11,12 @@ import { isLiteral } from './is-literal'
 export function parseActualArgs(statement: string, context: string) {
   const kvArgs: string[] = []
   const args: string[] = []
+
   let match
 
   const argRe
     = /(?:, )?(?:([a-z$_][\w$]*)=)?(?:(['"`])((?:\\\2|(?!\2).)*?)\2|([^'"`,\s]+))/gi
 
-  // eslint-disable-next-line no-cond-assign
   while ((match = argRe.exec(statement))) {
     const [, name, quote, literal, arg] = match
 
@@ -28,6 +28,7 @@ export function parseActualArgs(statement: string, context: string) {
             ? arg
             : compileExpression(arg, context),
       )
+
       continue
     }
 
@@ -45,6 +46,7 @@ export function parseActualArgs(statement: string, context: string) {
 
   if (kvArgs.length) {
     kvArgs.push('}')
+
     return [kvArgs.join('')]
   }
 
