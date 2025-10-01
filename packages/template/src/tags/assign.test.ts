@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { compile } from '../../test/__helper'
 
 it('inline', async () => {
@@ -10,6 +10,9 @@ it('inline', async () => {
   )
   expect(await compile('{{ assign x = "a" }}')).toMatchInlineSnapshot(
     '""use strict";return(async()=>{let s="";Object.assign(c,{x:"a"});return s;})();"',
+  )
+  expect(await compile('{{ assign x = ["a"] }}')).toMatchInlineSnapshot(
+    `""use strict";return(async()=>{let s="";Object.assign(c,{x:["a"]});return s;})();"`,
   )
 })
 
@@ -104,4 +107,15 @@ it('invalid', async () => {
     0:18"
   `,
   )
+})
+
+describe('not supported', () => {
+  it('object', async () => {
+    expect(await compile('{{ assign x = {a} }}', { debug: true })).toMatchInlineSnapshot(
+      `"Unexpected token '.'"`,
+    )
+    expect(await compile('{{ assign x = {a:1} }}', { debug: true })).toMatchInlineSnapshot(
+      `"Unexpected token '.'"`,
+    )
+  })
 })

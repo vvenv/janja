@@ -5,7 +5,7 @@ import { isLiteral } from './is-literal'
 import { parseActualArgs } from './parse-actual-args'
 
 /**
- * Returns the expression with filters applied
+ * Return the expression with filters applied
  */
 export function compileExpression(
   value: string,

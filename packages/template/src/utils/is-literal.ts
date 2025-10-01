@@ -3,6 +3,7 @@ import { isString } from './is-string'
 
 /**
  * Check if a value is a literal.
+ * limited to string, number, boolean, null, and undefined.
  */
 export function isLiteral(value: string) {
   return (
@@ -10,9 +11,7 @@ export function isLiteral(value: string) {
     || value === 'false'
     || value === 'null'
     || value === 'undefined'
-    // String
     || isString(value)
-    // Number
     || isNumber(value)
   )
 }

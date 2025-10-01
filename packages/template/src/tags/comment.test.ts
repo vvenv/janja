@@ -27,7 +27,6 @@ describe('w/o stripComments', async () => {
     ).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+="<!--foo-->";return s;})();"',
     )
-
     expect(
       await compile('{{! foo\nbar }}', {
         stripComments: false,
@@ -35,7 +34,6 @@ describe('w/o stripComments', async () => {
     ).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+="<!--foo\\nbar-->";return s;})();"',
     )
-
     expect(
       await compile('{{ #comment }}foo{{ /comment }}', {
         stripComments: false,
@@ -43,7 +41,6 @@ describe('w/o stripComments', async () => {
     ).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+="<!--";s+="foo";s+="-->";return s;})();"',
     )
-
     expect(
       await compile('{{ #comment }}foo\nbar{{ /comment }}', {
         stripComments: false,
@@ -61,7 +58,6 @@ describe('w/o stripComments', async () => {
     ).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\n";s+=e(c.name);s+="\\nbar";s+="-->";return s;})();"',
     )
-
     expect(
       await compile('{{ #comment }}foo\n\\{\\{= name \\}\\}\nbar{{ /comment }}', {
         stripComments: false,

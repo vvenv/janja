@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { compileStatement as cs } from './compile-statement'
 
 it('basic', () => {
@@ -177,4 +177,42 @@ it('filter w/ named args', () => {
   ).toMatchInlineSnapshot(
     '"await f.f.call(c,!c.x,{a:"a"})===await f.f.call(c,!c.y,{a:c.a,b:`b`})"',
   )
+})
+
+describe('not supported', () => {
+  it('object', () => {
+    expect(
+      cs(
+        [
+          {
+            type: 'expression',
+            value: '{ x }',
+          },
+        ],
+        'c',
+      ),
+    ).toMatchInlineSnapshot(`"{ c.x }"`)
+    expect(
+      cs(
+        [
+          {
+            type: 'expression',
+            value: '{ x: 1 }',
+          },
+        ],
+        'c',
+      ),
+    ).toMatchInlineSnapshot(`"{ c.x: 1 }"`)
+    expect(
+      cs(
+        [
+          {
+            type: 'expression',
+            value: '{ x: 1, `y`: "2" }',
+          },
+        ],
+        'c',
+      ),
+    ).toMatchInlineSnapshot(`"{ c.x: 1, \`y\`: "2" }"`)
+  })
 })

@@ -16,6 +16,12 @@ it('basic', () => {
   })
 })
 
+it('object', () => {
+  expect(pe(`{ x }`)).toEqual([{ type: 'expression', value: '{ x }' }])
+  expect(pe(`{ x: 1 }`)).toEqual([{ type: 'expression', value: '{ x: 1 }' }])
+  expect(pe(`{ x: 1, 'y': "2" }`)).toEqual([{ type: 'expression', value: '{ x: 1, \'y\': "2" }' }])
+})
+
 it('w/ filters', () => {
   const filters = [{ name: 'f', args: undefined }]
 

@@ -60,9 +60,12 @@ it('array/object member', async () => {
   ).toMatchInlineSnapshot(
     '""use strict";return(async()=>{let s="";s+=e(c.config.locales[c.page.locale]["lang"]);return s;})();"',
   )
-
-  // not supported
-  // expect(await parse('{{= config.locales[page.locale].lang }}')).toMatchInlineSnapshot();
+  expect(
+    await compile('{{= config.locales[page.locale][lang] }}'),
+  )
+    .toMatchInlineSnapshot(
+      `""use strict";return(async()=>{let s="";s+=e(c.config.locales[c.page.locale][c.lang]);return s;})();"`,
+    )
 })
 
 it('escape', async () => {
@@ -82,27 +85,32 @@ describe('literal', () => {
     expect(await compile('{{= "*" }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e("*");return s;})();"',
     )
-
     expect(await compile('{{= "**" }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e("**");return s;})();"',
     )
-
     expect(await compile('{{= "***" }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e("***");return s;})();"',
     )
-
     expect(await compile('{{= "\\"*" }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e("\\"*");return s;})();"',
     )
   })
 
   it('number', async () => {
-    expect(await compile('{{= 1314 }}')).toMatchInlineSnapshot(
-      '""use strict";return(async()=>{let s="";s+=e(1314);return s;})();"',
+    expect(await compile('{{= 255 }}')).toMatchInlineSnapshot(
+      `""use strict";return(async()=>{let s="";s+=e(255);return s;})();"`,
     )
-
-    expect(await compile('{{= 13.14 }}')).toMatchInlineSnapshot(
-      '""use strict";return(async()=>{let s="";s+=e(13.14);return s;})();"',
+    expect(await compile('{{= 255.0 }}')).toMatchInlineSnapshot(
+      `""use strict";return(async()=>{let s="";s+=e(255.0);return s;})();"`,
+    )
+    expect(await compile('{{= 0xff }}')).toMatchInlineSnapshot(
+      `""use strict";return(async()=>{let s="";s+=e(0xff);return s;})();"`,
+    )
+    expect(await compile('{{= 0b11111111 }}')).toMatchInlineSnapshot(
+      `""use strict";return(async()=>{let s="";s+=e(0b11111111);return s;})();"`,
+    )
+    expect(await compile('{{= 0.255e3 }}')).toMatchInlineSnapshot(
+      `""use strict";return(async()=>{let s="";s+=e(0.255e3);return s;})();"`,
     )
   })
 
@@ -110,7 +118,6 @@ describe('literal', () => {
     expect(await compile('{{= true }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e(true);return s;})();"',
     )
-
     expect(await compile('{{= false }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e(false);return s;})();"',
     )
@@ -128,15 +135,12 @@ describe('w/ filters', async () => {
     expect(await compile('{{= x | upper }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e(await f.upper.call(c,c.x,c));return s;})();"',
     )
-
     expect(await compile('{{= "x" | upper }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e(await f.upper.call(c,"x",c));return s;})();"',
     )
-
     expect(await compile('{{= \'x\' | upper }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e(await f.upper.call(c,\'x\',c));return s;})();"',
     )
-
     expect(await compile('{{= `x` | upper }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e(await f.upper.call(c,`x`,c));return s;})();"',
     )
@@ -166,7 +170,6 @@ describe('w/ filters', async () => {
     expect(await compile('{{= name | split: "" }}')).toMatchInlineSnapshot(
       '""use strict";return(async()=>{let s="";s+=e(await f.split.call(c,c.name,""));return s;})();"',
     )
-
     expect(
       await compile('{{= "hello, {name}" | t: name="JianJia" }}'),
     ).toMatchInlineSnapshot(
@@ -246,4 +249,12 @@ it('invalid', async () => {
     0:13"
   `,
   )
+})
+
+describe('not supported', () => {
+  it('object', async () => {
+    expect(await compile('{{= { x: 1 } }}', { debug: true })).toMatchInlineSnapshot(
+      `"Unexpected token '.'"`,
+    )
+  })
 })

@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { compileExpression as ce } from './compile-expression'
 
 it('basic', () => {
@@ -90,4 +90,10 @@ it('not', () => {
       { name: 'z', args: 'b="c", d=2' },
     ]),
   ).toMatchInlineSnapshot('"await f.z.call(c,await f.y.call(c,c.x,"1"),{b:"c",d:2})"')
+})
+
+describe('not supported', () => {
+  it('object', () => {
+    expect(ce('{ x }', 'c')).toBe('{ c.x }')
+  })
 })

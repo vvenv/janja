@@ -29,14 +29,14 @@ export const tag: Tag = {
         )
       }
 
-      const [statement0] = parseStatement(value!)
+      const [statement] = parseStatement(value!)
 
       return out.pushVar(
         compileStatement(
           [
             {
-              ...statement0,
-              value: out.unescapeTag(statement0.value),
+              ...statement,
+              value: out.unescapeTag(statement.value),
             },
           ],
           context,
