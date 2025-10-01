@@ -168,9 +168,9 @@ describe('w/ filters', async () => {
     )
 
     expect(
-      await compile('{{= "hello, {name}" | t: name="IJK" }}'),
+      await compile('{{= "hello, {name}" | t: name="JianJia" }}'),
     ).toMatchInlineSnapshot(
-      '""use strict";return(async()=>{let s="";s+=e(await f.t.call(c,"hello, {name}",{name:"IJK"}));return s;})();"',
+      '""use strict";return(async()=>{let s="";s+=e(await f.t.call(c,"hello, {name}",{name:"JianJia"}));return s;})();"',
     )
   })
 })

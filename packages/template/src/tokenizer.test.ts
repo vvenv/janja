@@ -215,17 +215,17 @@ it('whitespace', async () => {
 })
 
 it('expression', async () => {
-  expect(await new Tokenizer(defaultOptions).parse('{{= "hello, {name}" | t name="IJK" }}')).toMatchInlineSnapshot(`
+  expect(await new Tokenizer(defaultOptions).parse('{{= "hello, {name}" | t name="JianJia" }}')).toMatchInlineSnapshot(`
     {
-      "end": 37,
+      "end": 41,
       "name": "=",
       "next": null,
       "previous": null,
-      "raw": "{{= "hello, {name}" | t name="IJK" }}",
+      "raw": "{{= "hello, {name}" | t name="JianJia" }}",
       "start": 0,
       "stripAfter": false,
       "stripBefore": false,
-      "value": ""hello, {name}" | t name="IJK"",
+      "value": ""hello, {name}" | t name="JianJia"",
     }
   `)
 })

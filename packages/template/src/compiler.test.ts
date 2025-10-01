@@ -61,7 +61,7 @@ it('line break feed', async () => {
 
 it('translate', async () => {
   expect(
-    await compile('{{ "hello, {name}" | t name="IJK" }}'),
+    await compile('{{ "hello, {name}" | t name="JianJia" }}'),
   ).toMatchInlineSnapshot(
     '""use strict";return(async()=>{let s="";return s;})();"',
   )

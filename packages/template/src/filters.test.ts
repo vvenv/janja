@@ -288,10 +288,10 @@ describe('builtin', () => {
 
   it('t', async () => {
     expect(
-      await render('{{= "hello, {name}" | t: name="IJK" }}', {
+      await render('{{= "hello, {name}" | t: name="JianJia" }}', {
         translations: { 'hello, {name}': '你好，{name}' },
       }),
-    ).toMatchInlineSnapshot('"你好，IJK"')
+    ).toMatchInlineSnapshot('"你好，JianJia"')
   })
 
   it('time', async () => {
