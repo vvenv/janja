@@ -203,11 +203,11 @@ it('whitespace control', async () => {
   expect(await compile(' \t\r\n{{= x }}\r\n\t ')).toMatchInlineSnapshot(
     '""use strict";return(async()=>{let s="";s+=" 	\\n\\n";s+=e(c.x);s+="\\n\\n	 ";return s;})();"',
   )
-  expect(await compile(' \t\r\n{{=- x -}}\r\n\t ')).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+=" 	\\n\\n{{=- x -}}\\n\\n	 ";return s;})();"',
+  expect(await compile(' \t\r\n{{-= x -}}\r\n\t ')).toMatchInlineSnapshot(
+    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
   )
-  expect(await compile(' \t\r\n{{=- x }}\r\n\t ')).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+=" 	\\n\\n{{=- x }}\\n\\n	 ";return s;})();"',
+  expect(await compile(' \t\r\n{{-= x }}\r\n\t ')).toMatchInlineSnapshot(
+    `""use strict";return(async()=>{let s="";s+=e(c.x);s+="\\n\\n	 ";return s;})();"`,
   )
   expect(await compile(' \t\r\n{{= x -}}\r\n\t ')).toMatchInlineSnapshot(
     '""use strict";return(async()=>{let s="";s+=" 	\\n\\n";s+=e(c.x);return s;})();"',
