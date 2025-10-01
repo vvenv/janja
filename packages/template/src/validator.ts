@@ -1,9 +1,9 @@
-import type { EngineOptions } from './types'
+import type { Config } from './types'
 
 export class Validator {
   expected: string[][] = []
 
-  constructor(public options: Required<EngineOptions>) {}
+  constructor(public options: Required<Config>) {}
 
   expect(names: string[]) {
     this.expected.push(names)

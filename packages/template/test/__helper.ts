@@ -1,11 +1,12 @@
-import type { EngineOptions } from '../src/types'
+import type { Config } from '../src/types'
 import { Compiler } from '../src/compiler'
-import { defaultOptions, Engine } from '../src/engine'
+import { config } from '../src/config'
+import { Engine } from '../src/engine'
 import { Tokenizer } from '../src/tokenizer'
 
 export async function compile(
   template: string,
-  options?: EngineOptions,
+  options?: Config,
 ): Promise<any> {
   if (options?.debug && !(options as any).__debug) {
     (options as any).__debug = true
@@ -20,7 +21,7 @@ export async function compile(
     })()
   }
 
-  const opt = { ...defaultOptions, ...options }
+  const opt = { ...config, ...options }
   const { value } = await new Compiler(opt).compile(
     await new Tokenizer(opt).parse(template),
   )
@@ -31,7 +32,7 @@ export async function compile(
 export async function render(
   template: string,
   data: Record<string, any>,
-  options?: EngineOptions,
+  options?: Config,
 ): Promise<any> {
   if (options?.debug && !(options as any).__debug) {
     (options as any).__debug = true
@@ -46,5 +47,5 @@ export async function render(
     })()
   }
 
-  return new Engine({ ...defaultOptions, ...options }).render(template, data)
+  return new Engine({ ...config, ...options }).render(template, data)
 }

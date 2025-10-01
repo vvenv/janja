@@ -1,29 +1,13 @@
 import type { SourceMap } from './source-map'
-import type { EngineOptions, Filters, Globals, Script, Tag } from './types'
+import type { Config, Filters, Globals, Script, Tag } from './types'
 import { Compiler } from './compiler'
+import { config } from './config'
 import { escape } from './escape'
 import * as filters from './filters'
 import * as helpers from './helpers'
-import { loader } from './loaders/url-loader'
 import { RenderError } from './render-error'
 import { Safe } from './safe'
-import { tags } from './tags'
 import { Tokenizer } from './tokenizer'
-
-export const defaultOptions: Required<EngineOptions> = {
-  debug: false,
-  globals: {
-    translations: {},
-  },
-  filters: { ...filters },
-  tags: { ...tags },
-  autoEscape: true,
-  strictMode: true,
-  stripComments: false,
-  trimWhitespace: false,
-  loader,
-  cache: false,
-}
 
 const cache = new Map<string, {
   template: string
@@ -32,10 +16,10 @@ const cache = new Map<string, {
 }>()
 
 export class Engine {
-  protected options: Required<EngineOptions>
+  protected options: Required<Config>
 
-  constructor({ globals, filters, tags, ...options }: EngineOptions = {}) {
-    this.options = { ...defaultOptions, ...options }
+  constructor({ globals, filters, tags, ...options }: Config = {}) {
+    this.options = { ...config, ...options }
     this.registerGlobals(globals)
     this.registerFilters(filters)
     this.registerTags(tags)
@@ -76,10 +60,22 @@ export class Engine {
   }
 
   private async _compile(template: string, filepath?: string) {
-    return new Compiler(this.options).compile(
-      await new Tokenizer(this.options).parse(template),
-      filepath,
-    )
+    try {
+      return await new Compiler(this.options).compile(
+        await new Tokenizer(this.options).parse(template),
+        filepath,
+      )
+    }
+    catch (error: any) {
+      if (this.options.debug) {
+        throw error
+      }
+
+      return {
+        script: async () => 'compile error',
+        sourcemap: {} as SourceMap,
+      }
+    }
   }
 
   private async _render(
@@ -111,7 +107,7 @@ export class Engine {
         })
       }
 
-      return ''
+      return 'render error'
     }
   }
 }

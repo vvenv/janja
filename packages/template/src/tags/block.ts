@@ -11,6 +11,4 @@ export const END_BLOCK = ['end_block', 'endblock', '/block']
  */
 export const tag: Tag = {
   names: [...BLOCK, ...SUPER, ...END_BLOCK],
-
-  async compile() {},
 }

@@ -3,7 +3,7 @@ import { compile } from '../../test/__helper'
 
 it('basic', async () => {
   expect(await compile('{{ #macro m }}MACRO{{ /macro }}')).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";c.m=async(_c)=>{s+="MACRO";};return s;})();"',
+    `""use strict";return(async()=>{let s="";c.m=async(_c)=>{s+="MACRO";};return s;})();"`,
   )
   expect(
     await compile('{{ #macro m: x, y }}{{= x }}{{= y }}{{ /macro }}'),
@@ -29,11 +29,23 @@ it('caller', async () => {
 })
 
 it('invalid', async () => {
-  expect(await compile('{{ #macro }}{{ /macro }}', { debug: true })).toMatchInlineSnapshot(
+  expect(await compile('{{ #macro }}', { debug: true })).toMatchInlineSnapshot(
     `
     " JianJia  assign tag must have a value
 
     {{ #macro }}
+
+    0:12"
+  `,
+  )
+  expect(await compile('{{ #macro n }}', { debug: true })).toMatchInlineSnapshot(
+    `"expected tokens end_macro, endmacro, /macro, but got nothing"`,
+  )
+  expect(await compile('{{ /macro }}', { debug: true })).toMatchInlineSnapshot(
+    `
+    " JianJia  Unexpected /macro
+
+    {{ /macro }}
 
     0:12"
   `,

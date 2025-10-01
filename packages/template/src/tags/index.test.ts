@@ -3,7 +3,7 @@ import { compile } from '../../test/__helper'
 
 it('empty tag', async () => {
   expect(await compile('{{ }}')).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+="{{ }}";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+="{{ }}";return s;})();"`,
   )
 })
 

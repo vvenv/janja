@@ -10,16 +10,9 @@ export const tag: Tag = {
   names: [STR],
 
   async compile({ token: { value, previous, next }, out }) {
-    let v = value ?? ''
-
-    if (previous?.stripAfter) {
-      v = v.trimStart()
-    }
-
-    if (next?.stripBefore) {
-      v = v.trimEnd()
-    }
-
-    return out.pushStr(v)
+    return out.pushStr(value ?? '', {
+      trimStart: previous?.stripAfter,
+      trimEnd: next?.stripBefore,
+    })
   },
 }

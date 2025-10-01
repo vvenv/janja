@@ -4,24 +4,45 @@ import { compile } from '../../test/__helper'
 it('basic', async () => {
   expect(
     await compile(
+      '{{ #block title }}1{{ /block }}',
+    ),
+  ).toMatchInlineSnapshot(
+    `""use strict";return(async()=>{let s="";s+="1";return s;})();"`,
+  )
+  expect(
+    await compile(
+      '{{ #block title }}{{ super }}{{ /block }}',
+    ),
+  ).toMatchInlineSnapshot(
+    `""use strict";return(async()=>{let s="";return s;})();"`,
+  )
+  expect(
+    await compile(
+      '{{ #block title }}{{ super }}{{ /block }}{{ #block title }}{{ super }}{{ /block }}',
+    ),
+  ).toMatchInlineSnapshot(
+    `""use strict";return(async()=>{let s="";return s;})();"`,
+  )
+  expect(
+    await compile(
       '{{ #block title }}1{{ /block }}{{ #block title }}2{{ /block }}{{ #block title }}{{ super }}3{{ /block }}',
     ),
   ).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+="2";s+="3";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+="2";s+="3";return s;})();"`,
   )
   expect(
     await compile(
       '{{ #block title }}1{{ /block }}{{ #block title }}2{{ super }}{{ /block }}{{ #block title }}{{ super }}3{{ /block }}',
     ),
   ).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+="2";s+="1";s+="3";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+="2";s+="1";s+="3";return s;})();"`,
   )
   expect(
     await compile(
       ' {{- #block title }} 1 {{- /block }} {{ #block title -}} 2 {{ super -}} {{ /block -}} {{- #block title -}} {{- super -}} 3 {{- /block -}} ',
     ),
   ).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+="2";s+=" 1";s+=" ";s+="3";s+=" ";s+=" ";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+="2";s+=" 1";s+=" ";s+="3";s+=" ";s+=" ";return s;})();"`,
   )
 })
 
@@ -29,32 +50,32 @@ it('whitespace control', async () => {
   expect(
     await compile(' {{ #block name }} x {{ /block }} '),
   ).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+=" ";s+=" x ";s+=" ";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+=" ";s+=" x ";s+=" ";return s;})();"`,
   )
   expect(
     await compile(' {{ #block name -}} x {{- /block }} '),
   ).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+=" ";s+="x";s+=" ";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+=" ";s+="x";s+=" ";return s;})();"`,
   )
   expect(
     await compile(' {{- #block name -}} x {{- /block -}} '),
   ).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+="x";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+="x";return s;})();"`,
   )
   expect(
     await compile(' {{- #block name -}} x {{ super }} y {{- /block -}} '),
   ).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+="x ";s+=" y";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+="x ";s+=" y";return s;})();"`,
   )
   expect(
     await compile(' {{- #block name -}} x {{- super -}} y {{- /block -}} '),
   ).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+="x";s+="y";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+="x";s+="y";return s;})();"`,
   )
   expect(
     await compile(' {{- #block name }} x {{- super -}} y {{ /block -}} '),
   ).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";s+=" x";s+="y ";return s;})();"',
+    `""use strict";return(async()=>{let s="";s+=" x";s+="y ";return s;})();"`,
   )
 })
 

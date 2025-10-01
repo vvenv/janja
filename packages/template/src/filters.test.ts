@@ -36,7 +36,7 @@ describe('builtin', () => {
   it('date', async () => {
     expect(
       await render('{{= x | date }}', { x: '2021-01-01' }),
-    ).toMatchInlineSnapshot('""')
+    ).toMatchInlineSnapshot(`"render error"`)
     expect(
       await render('{{= x | date: "y-M-d" }}', { x: '2021-01-01' }),
     ).toMatchInlineSnapshot('"2021-1-1"')
@@ -297,7 +297,7 @@ describe('builtin', () => {
   it('time', async () => {
     expect(
       await render('{{= x | time }}', { x: '2021-01-01' }),
-    ).toMatchInlineSnapshot('""')
+    ).toMatchInlineSnapshot(`"render error"`)
     expect(
       await render('{{= x | time: "D" }}', { x: '2021-01-01' }),
     ).toMatchInlineSnapshot('"Fri"')

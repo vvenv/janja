@@ -1,4 +1,4 @@
-import type { EngineOptions } from './types'
+import type { Config } from './types'
 import { CONTEXT } from './config'
 
 export class Context {
@@ -6,7 +6,7 @@ export class Context {
 
   private contexts: string[] = [CONTEXT]
 
-  constructor(public options: Required<EngineOptions>) {}
+  constructor(public options: Required<Config>) {}
 
   affix(affix: string | number) {
     const len = this.contexts.push(`${this.context}_${affix}`)

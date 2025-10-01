@@ -71,7 +71,7 @@ export interface Tag {
    * - Return `false` to pass the control to the next tag.
    * - Return `void` to continue compiling.
    */
-  compile: (
+  compile?: (
     arg: {
       token: Token
       index: number
@@ -82,7 +82,7 @@ export interface Tag {
   ) => MaybePromise<Loc | void | false>
 }
 
-export interface EngineOptions {
+export interface Config {
   debug?: boolean
   globals?: Globals
   filters?: Filters

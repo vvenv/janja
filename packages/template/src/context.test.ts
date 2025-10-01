@@ -1,31 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import { CONTEXT } from './config'
+import { config, CONTEXT } from './config'
 import { Context } from './context'
-import { defaultOptions } from './engine'
 
 describe('context', () => {
   it('should initialize with default context', () => {
-    const context = new Context(defaultOptions)
+    const context = new Context(config)
     expect(context.context).toBe(CONTEXT)
   })
 
   describe('affix', () => {
     it('should affix string to context', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
       const result = context.affix('test')
       expect(result).toBe('c_test')
       expect(context.context).toBe('c_test')
     })
 
     it('should affix number to context', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
       const result = context.affix(123)
       expect(result).toBe('c_123')
       expect(context.context).toBe('c_123')
     })
 
     it('should support multiple affixes', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
 
       context.affix('first')
       expect(context.context).toBe('c_first')
@@ -38,7 +37,7 @@ describe('context', () => {
     })
 
     it('should return the new context value', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
       const result1 = context.affix('alpha')
       const result2 = context.affix('beta')
 
@@ -50,7 +49,7 @@ describe('context', () => {
 
   describe('reset', () => {
     it('should reset to previous context after single affix', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
 
       context.affix('temp')
       expect(context.context).toBe('c_temp')
@@ -60,7 +59,7 @@ describe('context', () => {
     })
 
     it('should reset to previous context after multiple affixes', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
 
       context.affix('first')
       context.affix('second')
@@ -78,7 +77,7 @@ describe('context', () => {
     })
 
     it('should handle reset on base context gracefully', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
       expect(context.context).toBe('c')
 
       context.reset()
@@ -88,7 +87,7 @@ describe('context', () => {
 
   describe('nested operations', () => {
     it('should handle complex affix and reset patterns', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
 
       // Build nested context
       context.affix('1')
@@ -111,7 +110,7 @@ describe('context', () => {
     })
 
     it('should maintain context stack integrity', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
 
       // Create multiple contexts
       const contexts = ['a', 'b', 'c', 'd', 'e']
@@ -130,21 +129,21 @@ describe('context', () => {
 
   describe('edge cases', () => {
     it('should handle empty string affix', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
       const result = context.affix('')
       expect(result).toBe('c_')
       expect(context.context).toBe('c_')
     })
 
     it('should handle zero as affix', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
       const result = context.affix(0)
       expect(result).toBe('c_0')
       expect(context.context).toBe('c_0')
     })
 
     it('should handle special characters in affix', () => {
-      const context = new Context(defaultOptions)
+      const context = new Context(config)
       const result = context.affix('test-name.property[0]')
       expect(result).toBe('c_test-name.property[0]')
       expect(context.context).toBe('c_test-name.property[0]')

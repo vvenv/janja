@@ -1,4 +1,4 @@
-import type { EngineOptions, Loc, Script } from './types'
+import type { Config, Loc, Script } from './types'
 import { CONTEXT, ESCAPE, FILTERS, HELPERS } from './config'
 
 export class OutScript {
@@ -8,7 +8,7 @@ export class OutScript {
 
   private varOffset = `s+=${ESCAPE}(`.length
 
-  constructor(public options: Required<EngineOptions>) {}
+  constructor(public options: Required<Config>) {}
 
   get value() {
     return this.content
@@ -46,7 +46,7 @@ export class OutScript {
 
   pushStr(
     s: string,
-    o?: { trimStart: boolean, trimEnd: boolean },
+    o?: { trimStart?: boolean, trimEnd?: boolean },
   ): Loc | void {
     if (s) {
       if (o?.trimStart || this.options.trimWhitespace) {

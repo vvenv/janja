@@ -1,9 +1,9 @@
-import type { EngineOptions } from './types'
+import type { Config } from './types'
 import { expect, it } from 'vitest'
 import { SourceMap } from './source-map'
 
 it('mapping', () => {
-  const sourcemap = new SourceMap({} as Required<EngineOptions>)
+  const sourcemap = new SourceMap({} as Required<Config>)
 
   sourcemap.addMapping(
     {

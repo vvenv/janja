@@ -3,13 +3,13 @@ import { compile } from '../../test/__helper'
 
 it('basic', async () => {
   expect(await compile('{{ #call m }}3{{ /call }}')).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";await c.m(async()=>{s+="3";});return s;})();"',
+    `""use strict";return(async()=>{let s="";await c.m(async()=>{s+="3";});return s;})();"`,
   )
   expect(await compile('{{ #call m: 1, "2" }}3{{ /call }}')).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";await c.m(1,"2",async()=>{s+="3";});return s;})();"',
+    `""use strict";return(async()=>{let s="";await c.m(1,"2",async()=>{s+="3";});return s;})();"`,
   )
   expect(await compile('{{ #call m: x=1, y="2" }}3{{ /call }}')).toMatchInlineSnapshot(
-    '""use strict";return(async()=>{let s="";await c.m({x:1,y:"2"},async()=>{s+="3";});return s;})();"',
+    `""use strict";return(async()=>{let s="";await c.m({x:1,y:"2"},async()=>{s+="3";});return s;})();"`,
   )
 })
 
@@ -31,6 +31,18 @@ it('macro and call', async () => {
 })
 
 it('invalid', async () => {
+  expect(await compile('{{ #call n }}', { debug: true })).toMatchInlineSnapshot(
+    `"expected tokens end_call, endcall, /call, but got nothing"`,
+  )
+  expect(await compile('{{ /call }}', { debug: true })).toMatchInlineSnapshot(
+    `
+    " JianJia  Unexpected /call
+
+    {{ /call }}
+
+    0:11"
+  `,
+  )
   expect(await compile('{{ #call }}3{{ /call }}', { debug: true })).toMatchInlineSnapshot(
     `
     " JianJia  call tag must have a value
@@ -38,6 +50,15 @@ it('invalid', async () => {
     {{ #call }}
 
     0:11"
+  `,
+  )
+  expect(await compile('{{ #call 3 }}{{ /call }}', { debug: true })).toMatchInlineSnapshot(
+    `
+    " JianJia  call tag must have a valid name
+
+    {{ #call 3 }}
+
+    0:13"
   `,
   )
 })

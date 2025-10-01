@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compile, render } from '../test/__helper'
+import { render } from '../test/__helper'
 import { loader } from './loaders/file-loader'
 
 describe('autoEscape', async () => {
@@ -203,8 +203,10 @@ it('custom tag', async () => {
   ).toMatchInlineSnapshot('"CUSTOM"')
 })
 
-it('compile error', async () => {
-  expect(await compile('{{ #for name in names }}{{ /if }}', { debug: true }))
+it('invalid', async () => {
+  expect(await render('{{ #for name in names }}{{ /if }}', {}))
+    .toMatchInlineSnapshot(`"compile error"`)
+  expect(await render('{{ #for name in names }}{{ /if }}', {}, { debug: true }))
     .toMatchInlineSnapshot(`
       " JianJia  Unexpected /if
 
@@ -212,9 +214,9 @@ it('compile error', async () => {
 
       24:33"
     `)
-})
-
-it('render error', async () => {
+  expect(
+    await render('{{ #for name in names }}{{ /for }}', {}),
+  ).toMatchInlineSnapshot(`"render error"`)
   expect(
     await render('{{ #for name in names }}{{ /for }}', {}, { debug: true }),
   ).toMatchInlineSnapshot(`

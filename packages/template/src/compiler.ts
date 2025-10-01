@@ -1,4 +1,4 @@
-import type { EngineOptions, Script, Token } from './types'
+import type { Config, Token } from './types'
 import { CompileError } from './compile-error'
 import { Context } from './context'
 import { OutScript } from './out-script'
@@ -6,7 +6,7 @@ import { SourceMap } from './source-map'
 import { Validator } from './validator'
 
 export class Compiler {
-  constructor(public options: Required<EngineOptions>) {}
+  constructor(public options: Required<Config>) {}
 
   async compile(token: Token | null, filepath?: string) {
     const ctx = new Context(this.options)
@@ -22,7 +22,7 @@ export class Compiler {
 
       for (const tag of tags) {
         try {
-          const r = await tag.compile(
+          const r = await tag.compile?.(
             {
               token,
               index: i++,
@@ -41,27 +41,14 @@ export class Compiler {
           }
         }
         catch (error: any) {
-          if (this.options.debug) {
-            throw new CompileError(error.message, token, filepath)
-          }
-
-          return { value: '', script: (async () => 'invalid template') as unknown as Script, sourcemap }
+          throw new CompileError(error.message, token, filepath)
         }
       }
 
       token = token.next
     }
 
-    try {
-      validator.validate()
-    }
-    catch (error: any) {
-      if (this.options.debug) {
-        throw error
-      }
-
-      return { value: '', script: (async () => 'invalid template') as unknown as Script, sourcemap }
-    }
+    validator.validate()
 
     out.end()
 

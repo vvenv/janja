@@ -1,10 +1,10 @@
-import type { EngineOptions } from './types'
+import type { Config } from './types'
 import { expect, it } from 'vitest'
-import { defaultOptions } from './engine'
+import { config } from './config'
 import { OutScript } from './out-script'
 
-function _out(options?: Partial<EngineOptions>) {
-  return new OutScript({ ...defaultOptions, ...options })
+function _out(options?: Partial<Config>) {
+  return new OutScript({ ...config, ...options })
 }
 
 it('escape \\', () => {

@@ -16,7 +16,7 @@ describe('array', async () => {
     expect(
       await compile('{{ #for name in names }}{{ break }}{{ /for }}'),
     ).toMatchInlineSnapshot(
-      '""use strict";return(async()=>{let s="";const o_0=c.names;const a_0=Array.isArray(o_0);const k_0=Object.keys(o_0);const l_0=k_0.length;for(let i_0=0;i_0<l_0;i_0++){const _item=o_0[k_0[i_0]];const c_0={...c,name:_item,loop:{index:i_0,first:i_0===0,last:i_0===l_0,length:l_0}};break;}return s;})();"',
+      `""use strict";return(async()=>{let s="";const o_0=c.names;const a_0=Array.isArray(o_0);const k_0=Object.keys(o_0);const l_0=k_0.length;for(let i_0=0;i_0<l_0;i_0++){const _item=o_0[k_0[i_0]];const c_0={...c,name:_item,loop:{index:i_0,first:i_0===0,last:i_0===l_0,length:l_0}};break;}return s;})();"`,
     )
     expect(
       await compile(
@@ -31,7 +31,7 @@ describe('array', async () => {
     expect(
       await compile('{{ #for name in names }}{{ continue }}{{ /for }}'),
     ).toMatchInlineSnapshot(
-      '""use strict";return(async()=>{let s="";const o_0=c.names;const a_0=Array.isArray(o_0);const k_0=Object.keys(o_0);const l_0=k_0.length;for(let i_0=0;i_0<l_0;i_0++){const _item=o_0[k_0[i_0]];const c_0={...c,name:_item,loop:{index:i_0,first:i_0===0,last:i_0===l_0,length:l_0}};continue;}return s;})();"',
+      `""use strict";return(async()=>{let s="";const o_0=c.names;const a_0=Array.isArray(o_0);const k_0=Object.keys(o_0);const l_0=k_0.length;for(let i_0=0;i_0<l_0;i_0++){const _item=o_0[k_0[i_0]];const c_0={...c,name:_item,loop:{index:i_0,first:i_0===0,last:i_0===l_0,length:l_0}};continue;}return s;})();"`,
     )
     expect(
       await compile(
@@ -189,24 +189,23 @@ describe('object', async () => {
 })
 
 it('invalid', async () => {
-  expect(await compile('{{ #if x }}{{ /for }}', { debug: true })).toMatchInlineSnapshot(`
+  expect(await compile('{{ #for }}', { debug: true })).toMatchInlineSnapshot(`
+    " JianJia  for tag must have a value
+
+    {{ #for }}
+
+    0:10"
+  `)
+  expect(await compile('{{ #for x }}', { debug: true })).toMatchInlineSnapshot(
+    `"expected tokens end_for, endfor, /for, but got nothing"`,
+  )
+  expect(await compile('{{ /for }}', { debug: true })).toMatchInlineSnapshot(`
     " JianJia  Unexpected /for
 
     {{ /for }}
 
-    11:21"
+    0:10"
   `)
-  expect(
-    await compile('{{ #if x }}{{ break }}{{ /if }}', { debug: true }),
-  ).toMatchInlineSnapshot(
-    `
-    " JianJia  break tag must be inside a for loop
-
-    {{ break }}
-
-    11:22"
-  `,
-  )
   expect(await compile('{{ break }}', { debug: true })).toMatchInlineSnapshot(
     `
     " JianJia  break tag must be inside a for loop

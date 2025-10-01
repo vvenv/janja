@@ -1,6 +1,6 @@
 import type {
   AST,
-  EngineOptions,
+  Config,
   Token,
 } from './types'
 import { BLOCK, END_BLOCK, SUPER } from './tags/block'
@@ -16,7 +16,7 @@ export class Tokenizer implements AST {
 
   cursor: Token | null = null
 
-  constructor(public options: Required<EngineOptions>) {}
+  constructor(public options: Required<Config>) {}
 
   async parse(
     template: string,

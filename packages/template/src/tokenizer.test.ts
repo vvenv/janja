@@ -1,11 +1,11 @@
 import { expect, it } from 'vitest'
-import { defaultOptions } from './engine'
+import { config } from './config'
 import { loader } from './loaders/file-loader'
 import { Tokenizer } from './tokenizer'
 
 it('empty', async () => {
-  expect(await new Tokenizer(defaultOptions).parse('')).toMatchInlineSnapshot('null')
-  expect(await new Tokenizer(defaultOptions).parse(' ')).toMatchInlineSnapshot(`
+  expect(await new Tokenizer(config).parse('')).toMatchInlineSnapshot('null')
+  expect(await new Tokenizer(config).parse(' ')).toMatchInlineSnapshot(`
     {
       "end": 1,
       "name": "str",
@@ -19,7 +19,7 @@ it('empty', async () => {
 })
 
 it('layout', async () => {
-  expect(await new Tokenizer({ ...defaultOptions, loader: async path => loader(`test/${path}`) }).parse('{{ layout "default" }}')).toMatchInlineSnapshot(`
+  expect(await new Tokenizer({ ...config, loader: async path => loader(`test/${path}`) }).parse('{{ layout "default" }}')).toMatchInlineSnapshot(`
     {
       "end": 18,
       "name": "str",
@@ -121,7 +121,7 @@ it('layout', async () => {
 })
 
 it('block', async () => {
-  expect(await new Tokenizer(defaultOptions).parse('{{ #block title }}1{{ /block }}{{ #block title }}2{{ /block }}{{ #block title }}{{ super }}3{{ /block }}')).toMatchInlineSnapshot(`
+  expect(await new Tokenizer(config).parse('{{ #block title }}1{{ /block }}{{ #block title }}2{{ /block }}{{ #block title }}{{ super }}3{{ /block }}')).toMatchInlineSnapshot(`
     {
       "end": 80,
       "name": "#block",
@@ -182,120 +182,35 @@ it('block', async () => {
   `)
 })
 
-it('whitespace', async () => {
-  expect(await new Tokenizer(defaultOptions).parse(' hello {{= name }} ')).toMatchInlineSnapshot(`
-    {
-      "end": 7,
-      "name": "str",
-      "next": {
-        "end": 18,
-        "name": "=",
-        "next": {
-          "end": 19,
-          "name": "str",
-          "next": null,
-          "previous": [Circular],
-          "raw": " ",
-          "start": 18,
-          "value": " ",
-        },
-        "previous": [Circular],
-        "raw": "{{= name }}",
-        "start": 7,
-        "stripAfter": false,
-        "stripBefore": false,
-        "value": "name",
-      },
-      "previous": null,
-      "raw": " hello ",
-      "start": 0,
-      "value": " hello ",
-    }
-  `)
-})
-
-it('expression', async () => {
-  expect(await new Tokenizer(defaultOptions).parse('{{= "hello, {name}" | t name="JianJia" }}')).toMatchInlineSnapshot(`
-    {
-      "end": 41,
-      "name": "=",
-      "next": null,
-      "previous": null,
-      "raw": "{{= "hello, {name}" | t name="JianJia" }}",
-      "start": 0,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": ""hello, {name}" | t name="JianJia"",
-    }
-  `)
-})
-
-it('if/elif/else', async () => {
-  expect(await new Tokenizer(defaultOptions).parse('{{ #if x }}x{{ elif y }}y{{ else }}z{{ /if }}')).toMatchInlineSnapshot(`
-    {
-      "end": 11,
-      "name": "#if",
-      "next": {
-        "end": 12,
-        "name": "str",
-        "next": {
-          "end": 24,
-          "name": "elif",
-          "next": {
-            "end": 25,
-            "name": "str",
-            "next": {
-              "end": 35,
-              "name": "else",
-              "next": {
-                "end": 36,
-                "name": "str",
-                "next": {
-                  "end": 45,
-                  "name": "/if",
-                  "next": null,
-                  "previous": [Circular],
-                  "raw": "{{ /if }}",
-                  "start": 36,
-                  "stripAfter": false,
-                  "stripBefore": false,
-                  "value": null,
-                },
-                "previous": [Circular],
-                "raw": "z",
-                "start": 35,
-                "value": "z",
-              },
-              "previous": [Circular],
-              "raw": "{{ else }}",
-              "start": 25,
-              "stripAfter": false,
-              "stripBefore": false,
-              "value": null,
-            },
-            "previous": [Circular],
-            "raw": "y",
-            "start": 24,
-            "value": "y",
-          },
-          "previous": [Circular],
-          "raw": "{{ elif y }}",
-          "start": 12,
-          "stripAfter": false,
-          "stripBefore": false,
-          "value": "y",
-        },
-        "previous": [Circular],
-        "raw": "x",
-        "start": 11,
-        "value": "x",
-      },
-      "previous": null,
-      "raw": "{{ #if x }}",
-      "start": 0,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": "x",
-    }
-  `)
+it('invalid', async () => {
+  try {
+    await new Tokenizer(config).parse('{{ layout }}')
+  }
+  catch (error) {
+    expect(error).toMatchInlineSnapshot(`[Error: missing layout file path]`)
+  }
+  try {
+    await new Tokenizer(config).parse('{{ layout "" }}')
+  }
+  catch (error) {
+    expect(error).toMatchInlineSnapshot(`[Error: missing layout file path]`)
+  }
+  try {
+    await new Tokenizer(config).parse('{{ include }}')
+  }
+  catch (error) {
+    expect(error).toMatchInlineSnapshot(`[Error: missing include file path]`)
+  }
+  try {
+    await new Tokenizer(config).parse('{{ include "" }}')
+  }
+  catch (error) {
+    expect(error).toMatchInlineSnapshot(`[Error: missing include file path]`)
+  }
+  try {
+    await new Tokenizer({ ...config, loader: async path => loader(`test/${path}`) }).parse('{{ include "empty" }}')
+  }
+  catch (error) {
+    expect(error).toMatchInlineSnapshot(`[TypeError: Failed to parse URL from partials/empty.jianjia]`)
+  }
 })

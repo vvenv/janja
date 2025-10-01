@@ -12,17 +12,21 @@ export const tag: Tag = {
 
   async compile({ token: { name, value }, out, validator }) {
     if (COMMENT.includes(name)) {
-      if (out.options.stripComments) {
-        return
-      }
-
       // inline comment
       if (value) {
+        if (out.options.stripComments) {
+          return
+        }
+
         return out.pushStr(`<!--${value}-->`)
       }
 
       // block comment
       validator.expect(END_COMMENT)
+
+      if (out.options.stripComments) {
+        return
+      }
 
       return out.pushStr('<!--')
     }

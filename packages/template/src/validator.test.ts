@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { defaultOptions } from './engine'
+import { config } from './config'
 import { Validator } from './validator'
 
 describe('validator', () => {
   describe('expect', () => {
     it('should add expected token names', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo', 'bar'])
       expect(validator.expected).toEqual([['foo', 'bar']])
     })
 
     it('should support multiple expectations', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo', 'bar'])
       validator.expect(['baz'])
       expect(validator.expected).toEqual([['foo', 'bar'], ['baz']])
@@ -20,7 +20,7 @@ describe('validator', () => {
 
   describe('matchAny', () => {
     it('should return true if any expected token matches any provided name', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo', 'bar'])
       validator.expect(['baz'])
 
@@ -31,7 +31,7 @@ describe('validator', () => {
     })
 
     it('should return false if no expected tokens match any provided name', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo', 'bar'])
       validator.expect(['baz'])
 
@@ -40,12 +40,12 @@ describe('validator', () => {
     })
 
     it('should return false when no expectations exist', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       expect(validator.matchAny(['foo'])).toBe(false)
     })
 
     it('should return false when provided names are empty', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo'])
       expect(validator.matchAny([])).toBe(false)
     })
@@ -53,7 +53,7 @@ describe('validator', () => {
 
   describe('match', () => {
     it('should return true if the last expected token matches any provided name', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo', 'bar'])
       validator.expect(['baz'])
 
@@ -62,7 +62,7 @@ describe('validator', () => {
     })
 
     it('should return false if the last expected token does not match any provided name', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo', 'bar'])
       validator.expect(['baz'])
 
@@ -72,12 +72,12 @@ describe('validator', () => {
     })
 
     it('should return undefined when no expectations exist', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       expect(validator.match(['foo'])).toBeUndefined()
     })
 
     it('should return false when provided names are empty', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo'])
       expect(validator.match([])).toBe(false)
     })
@@ -85,7 +85,7 @@ describe('validator', () => {
 
   describe('consume', () => {
     it('should consume and return true when last expected token matches', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo', 'bar'])
       validator.expect(['baz'])
 
@@ -94,7 +94,7 @@ describe('validator', () => {
     })
 
     it('should not consume and return false when last expected token does not match', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo', 'bar'])
       validator.expect(['baz'])
 
@@ -103,12 +103,12 @@ describe('validator', () => {
     })
 
     it('should return false when no expectations exist', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       expect(validator.consume(['foo'])).toBe(false)
     })
 
     it('should consume multiple expectations in LIFO order', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo'])
       validator.expect(['bar'])
       validator.expect(['baz'])
@@ -126,7 +126,7 @@ describe('validator', () => {
 
   describe('validate', () => {
     it('should not throw when all expectations are consumed', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo'])
       validator.consume(['foo'])
 
@@ -134,14 +134,14 @@ describe('validator', () => {
     })
 
     it('should throw when expectations remain unconsumed', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo'])
 
       expect(() => validator.validate()).toThrow('expected tokens foo, but got nothing')
     })
 
     it('should throw with multiple unconsumed expectations', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect(['foo', 'bar'])
       validator.expect(['baz'])
 
@@ -149,14 +149,14 @@ describe('validator', () => {
     })
 
     it('should not throw when no expectations were set', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       expect(() => validator.validate()).not.toThrow()
     })
   })
 
   describe('integration scenarios', () => {
     it('should handle complex validation workflow', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
 
       // Set up nested expectations
       validator.expect(['if', 'for'])
@@ -184,7 +184,7 @@ describe('validator', () => {
     })
 
     it('should handle empty token arrays', () => {
-      const validator = new Validator(defaultOptions)
+      const validator = new Validator(config)
       validator.expect([])
 
       expect(validator.matchAny(['foo'])).toBe(false)

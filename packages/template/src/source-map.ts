@@ -1,4 +1,4 @@
-import type { EngineOptions, Loc, Mapping } from './types'
+import type { Config, Loc, Mapping } from './types'
 
 /**
  * Contains the source map information.
@@ -24,7 +24,7 @@ import type { EngineOptions, Loc, Mapping } from './types'
 export class SourceMap {
   public mappings: Mapping[] = []
 
-  constructor(public options: Required<EngineOptions>) {}
+  constructor(public options: Required<Config>) {}
 
   addMapping(source: Loc, target: Loc) {
     this.mappings.push({
