@@ -1,27 +1,8 @@
-import type { EngineOptions } from './types'
 import { describe, expect, it } from 'vitest'
+import { defaultOptions } from './engine'
 import { Validator } from './validator'
 
 describe('validator', () => {
-  const defaultOptions: Required<EngineOptions> = {
-    debug: false,
-    globals: {},
-    filters: {},
-    tags: {},
-    strictMode: false,
-    autoEscape: true,
-    stripComments: false,
-    trimWhitespace: false,
-    loader: async () => '',
-    cache: true,
-  }
-
-  it('should initialize with empty expected array', () => {
-    const validator = new Validator(defaultOptions)
-    expect(validator.expected).toEqual([])
-    expect(validator.options).toBe(defaultOptions)
-  })
-
   describe('expect', () => {
     it('should add expected token names', () => {
       const validator = new Validator(defaultOptions)

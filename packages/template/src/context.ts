@@ -14,6 +14,9 @@ export class Context {
   }
 
   reset() {
+    if (this.context === CONTEXT) {
+      return
+    }
     this.contexts.pop()
     this.context = this.contexts[this.contexts.length - 1]
   }
