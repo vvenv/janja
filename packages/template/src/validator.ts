@@ -29,7 +29,7 @@ export class Validator {
 
   validate() {
     if (this.expected.length) {
-      throw new Error(`expected tokens ${this.expected.join(', ')}, but got nothing`)
+      throw new Error(`expected tokens ${this.expected.flatMap(e => e).join(', ')}, but got nothing`)
     }
   }
 }
