@@ -1,5 +1,5 @@
 import type { EngineOptions } from '../src/types'
-import { Compiler } from '../src'
+import { Compiler } from '../src/compiler'
 import { defaultOptions, Engine } from '../src/engine'
 import { Tokenizer } from '../src/tokenizer'
 
