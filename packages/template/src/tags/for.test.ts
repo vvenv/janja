@@ -193,7 +193,8 @@ it('invalid', async () => {
     " JianJia  Unexpected /for
 
     {{ /for }}
-    "
+
+    11:21"
   `)
   expect(
     await compile('{{ #if x }}{{ break }}{{ /if }}', { debug: true }),
@@ -202,7 +203,8 @@ it('invalid', async () => {
     " JianJia  break tag must be inside a for loop
 
     {{ break }}
-    "
+
+    11:22"
   `,
   )
   expect(await compile('{{ break }}', { debug: true })).toMatchInlineSnapshot(
@@ -210,7 +212,8 @@ it('invalid', async () => {
     " JianJia  break tag must be inside a for loop
 
     {{ break }}
-    "
+
+    0:11"
   `,
   )
   expect(await compile('{{ continue }}', { debug: true })).toMatchInlineSnapshot(
@@ -218,7 +221,8 @@ it('invalid', async () => {
     " JianJia  continue tag must be inside a for loop
 
     {{ continue }}
-    "
+
+    0:14"
   `,
   )
 })

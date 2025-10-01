@@ -25,18 +25,11 @@
 
 ```javascript
 const engine = new Engine()
-const { render } = await engine.compile('Hello, {{= name }}！')
-const html = await render({ name: 'World' })
+const html = await engine.render('Hello, {{= name }}！', { name: 'World' })
+// or
+// const html = await engine.renderFile('./template.html', { name: 'World' })
 
 document.body.innerHTML = html
-```
-
-Or, in a simpler way:
-
-```javascript
-document.body.innerHTML = await template('Hello, {{= name }}!', {
-  name: 'World',
-})
 ```
 
 [Documentation](./documentation.md)

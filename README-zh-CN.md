@@ -25,18 +25,11 @@
 
 ```javascript
 const engine = new Engine()
-const { render } = await engine.compile('{{= name }} 苍苍，白露为霜')
-const html = await render({ name: '蒹葭' })
+const html = await engine.render('{{= name }} 苍苍，白露为霜', { name: '蒹葭' })
+// or
+// const html = await engine.renderFile('./template.html', { name: '蒹葭' })
 
 document.body.innerHTML = html
-```
-
-或，更简单的方式：
-
-```javascript
-document.body.innerHTML = await template('{{= name }} 苍苍，白露为霜', {
-  name: '蒹葭',
-})
 ```
 
 [使用文档](./documentation-zh-CN.md)

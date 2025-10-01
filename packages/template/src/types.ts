@@ -49,10 +49,6 @@ export type Script = (
   helpers: Helpers
 ) => Promise<string>
 
-export type Render = (
-  globals: Globals,
-) => Promise<string>
-
 export interface Token extends Loc {
   name: string
   value: string | null

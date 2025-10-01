@@ -8,7 +8,7 @@ import { Validator } from './validator'
 export class Compiler {
   constructor(public options: Required<EngineOptions>) {}
 
-  async compile(token: Token | null) {
+  async compile(token: Token | null, filepath?: string) {
     const ctx = new Context(this.options)
     const out = new OutScript(this.options)
     const sourcemap = new SourceMap(this.options)
@@ -42,7 +42,7 @@ export class Compiler {
         }
         catch (error: any) {
           if (this.options.debug) {
-            throw new CompileError(error.message, token)
+            throw new CompileError(error.message, token, filepath)
           }
 
           return { value: '', script: (async () => 'invalid template') as unknown as Script, sourcemap }

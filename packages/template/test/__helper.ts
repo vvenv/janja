@@ -46,7 +46,5 @@ export async function render(
     })()
   }
 
-  const opt = { ...defaultOptions, ...options }
-
-  return (await new Engine(opt).compile(template)).render(data)
+  return new Engine({ ...defaultOptions, ...options }).render(template, data)
 }

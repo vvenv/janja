@@ -1,5 +1,5 @@
 import type { SourceMap } from './source-map'
-import type { EngineOptions, Filters, Globals, Render, Script, Tag } from './types'
+import type { EngineOptions, Filters, Globals, Script, Tag } from './types'
 import { Compiler } from './compiler'
 import { escape } from './escape'
 import * as filters from './filters'
@@ -25,7 +25,11 @@ export const defaultOptions: Required<EngineOptions> = {
   cache: false,
 }
 
-const cache = new Map<string, Render>()
+const cache = new Map<string, {
+  template: string
+  script: Script
+  sourcemap: SourceMap
+}>()
 
 export class Engine {
   protected options: Required<EngineOptions>
@@ -49,46 +53,43 @@ export class Engine {
     Object.assign(this.options.tags, tags)
   }
 
-  async load(filepath: string) {
+  async render(
+    template: string,
+    globals: Globals,
+  ) {
+    const { script, sourcemap } = await this._compile(template)
+    return this._render(template, globals, script, sourcemap)
+  }
+
+  async renderFile(filepath: string, globals: Globals) {
     if (this.options.cache && cache.has(filepath)) {
-      return cache.get(filepath)
+      const { template, script, sourcemap } = cache.get(filepath)!
+      return this._render(template, globals, script, sourcemap)
     }
 
     const template = await this.options.loader!(filepath)
-
-    return {
-      template,
-      compile: async () => this.compile(template, filepath),
+    const { script, sourcemap } = await this._compile(template)
+    if (this.options.cache) {
+      cache.set(filepath, { template, script, sourcemap })
     }
+    return this._render(template, globals, script, sourcemap)
   }
 
-  async compile(template: string, filepath?: string) {
-    const { value, script, sourcemap } = await new Compiler(this.options).compile(
+  private async _compile(template: string, filepath?: string) {
+    return new Compiler(this.options).compile(
       await new Tokenizer(this.options).parse(template),
+      filepath,
     )
-
-    const render = async (globals: Globals) => this.render(globals, script, template, sourcemap)
-
-    if (this.options.cache && filepath) {
-      cache.set(filepath, render)
-    }
-
-    return {
-      value,
-      script,
-      sourcemap,
-      render,
-    }
   }
 
-  async render(
-    globals: Globals,
-    func: Script,
+  private async _render(
     template: string,
+    globals: Globals,
+    script: Script,
     sourcemap: SourceMap,
   ) {
     try {
-      return await func(
+      return await script(
         { ...this.options.globals, ...globals },
         { ...this.options.filters, ...filters },
         (v: unknown) => {

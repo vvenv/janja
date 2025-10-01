@@ -113,7 +113,7 @@ This is a comment with variable "name='{{= name }}'"
 const defaultData
   = (!reset && localStorage.getItem('data')) || `{
   "name": "engine",
-  "url": "https://github.com/vvenv/engine",
+  "url": "https://github.com/vvenv/jianjia",
   "array": [
     "Alice",
     "Bob",
@@ -137,22 +137,14 @@ const defaultData
     "C": "Charlie",
     "D": "David",
     "E": "Eve"
-  },
-  "empty": [],
-  "info": {
-    "source": "Sample Data for Demonstration",
-    "version": "1.0",
-    "lastUpdated": "2024-10-27"
   }
 }
 `
 
 const templateEl = document.querySelector<HTMLTextAreaElement>('#template')!
 const dataEl = document.querySelector<HTMLTextAreaElement>('#data')!
-const codeEl = document.querySelector<HTMLDivElement>('#code')!
 const resultEl = document.querySelector<HTMLDivElement>('#result')!
 const previewEl = document.querySelector<HTMLDivElement>('#preview')!
-const performanceEl = document.querySelector<HTMLPreElement>('#performance')!
 
 async function update() {
   try {
@@ -174,34 +166,12 @@ async function update() {
 
     const parsedData = JSON.parse(data)
 
-    const { Engine } = await import('template')
+    const { render } = await import('template')
 
-    const engine = new Engine({
+    const output = await render(template, parsedData, {
       debug,
       trimWhitespace: true,
     })
-
-    const start = performance.now()
-    const { render, script } = await engine.compile(template)
-    const compileEnd = performance.now()
-    const output = await render(parsedData)
-    const end = performance.now()
-
-    codeEl.innerHTML = await codeToHtml(
-      await formatCode(script.toString(), 'javascript'),
-      'javascript',
-    )
-
-    const compileTime = Math.floor((compileEnd - start) * 1000) / 1000
-    const renderTime = Math.floor((end - compileEnd) * 1000) / 1000
-    const total = Math.floor((end - start) * 1000) / 1000
-
-    performanceEl.textContent = `| Stage     | Time
-|-----------+---------
-| compile   | +${compileTime}ms
-| render    | +${renderTime}ms
-|-----------+---------
-| Total     | =${total}ms`
 
     resultEl.innerHTML = await codeToHtml(
       await formatCode(output, 'html'),

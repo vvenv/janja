@@ -178,7 +178,8 @@ it('invalid', async () => {
     " JianJia  if tag must have a value
 
     {{ #if }}
-    "
+
+    0:9"
   `,
   )
   expect(await compile('{{ elif }}', { debug: true })).toMatchInlineSnapshot(
@@ -186,7 +187,8 @@ it('invalid', async () => {
     " JianJia  elif tag must have a value
 
     {{ elif }}
-    "
+
+    0:10"
   `,
   )
   expect(await compile('{{ elif x }}', { debug: true })).toMatchInlineSnapshot(
@@ -194,7 +196,8 @@ it('invalid', async () => {
     " JianJia  elif tag must follow if tag
 
     {{ elif x }}
-    "
+
+    0:12"
   `,
   )
   expect(await compile('{{ else }}', { debug: true })).toMatchInlineSnapshot(
@@ -202,7 +205,8 @@ it('invalid', async () => {
     " JianJia  else tag must follow if tag
 
     {{ else }}
-    "
+
+    0:10"
   `,
   )
   expect(await compile('{{ /if }}', { debug: true })).toMatchInlineSnapshot(
@@ -210,7 +214,8 @@ it('invalid', async () => {
     " JianJia  Unexpected /if
 
     {{ /if }}
-    "
+
+    0:9"
   `,
   )
 })

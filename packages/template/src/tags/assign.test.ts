@@ -56,7 +56,8 @@ it('invalid', async () => {
     " JianJia  assign tag must have a value
 
     {{ assign }}
-    "
+
+    0:12"
   `,
   )
   expect(
@@ -66,7 +67,8 @@ it('invalid', async () => {
     " JianJia  Unexpected /assign
 
     {{ /assign }}
-    "
+
+    0:13"
   `,
   )
   expect(
@@ -76,7 +78,8 @@ it('invalid', async () => {
     " JianJia  assign tag must have a variable
 
     {{ assign x = y = 1 }}
-    "
+
+    0:22"
   `,
   )
   expect(
@@ -86,7 +89,8 @@ it('invalid', async () => {
     " JianJia  assign tag must have a variable
 
     {{ assign 1 = "a" }}
-    "
+
+    0:20"
   `,
   )
   expect(
@@ -96,7 +100,8 @@ it('invalid', async () => {
     " JianJia  assign tag must have a variable
 
     {{ #assign x, y }}
-    "
+
+    0:18"
   `,
   )
 })

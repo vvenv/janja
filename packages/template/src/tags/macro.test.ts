@@ -34,7 +34,8 @@ it('invalid', async () => {
     " JianJia  assign tag must have a value
 
     {{ #macro }}
-    "
+
+    0:12"
   `,
   )
   expect(await compile('{{ #macro 1 }}{{ /macro }}', { debug: true })).toMatchInlineSnapshot(
@@ -42,7 +43,8 @@ it('invalid', async () => {
     " JianJia  assign tag must have a valid name
 
     {{ #macro 1 }}
-    "
+
+    0:14"
   `,
   )
   expect(await compile('{{ caller }}', { debug: true })).toMatchInlineSnapshot(
@@ -50,7 +52,8 @@ it('invalid', async () => {
     " JianJia  caller tag must be inside a macro tag
 
     {{ caller }}
-    "
+
+    0:12"
   `,
   )
 })

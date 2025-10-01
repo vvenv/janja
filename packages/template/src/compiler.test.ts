@@ -73,7 +73,8 @@ it('invalid', async () => {
     " JianJia  Unexpected /if
 
     {{ /if }}
-    "
+
+    0:9"
   `,
   )
 })

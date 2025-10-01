@@ -209,7 +209,8 @@ it('compile error', async () => {
       " JianJia  Unexpected /if
 
       {{ /if }}
-      "
+
+      24:33"
     `)
 })
 

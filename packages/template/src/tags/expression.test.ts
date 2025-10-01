@@ -242,7 +242,8 @@ it('invalid', async () => {
     " JianJia  invalid expression: window
 
     {{= window }}
-    "
+
+    0:13"
   `,
   )
 })

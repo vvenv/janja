@@ -5,6 +5,7 @@ export class CompileError extends Error {
   constructor(
     message: string,
     private token: Token,
+    private filepath?: string,
   ) {
     super(message)
     this.name = 'CompileError'
@@ -15,6 +16,7 @@ export class CompileError extends Error {
     return `${c.bgRed(c.bold(' JianJia '))} ${c.red(this.message)}
 
 ${this.token.raw}
-`
+
+${this.filepath ? `at ${this.filepath}:` : ''}${this.token.start}:${this.token.end}`
   }
 }

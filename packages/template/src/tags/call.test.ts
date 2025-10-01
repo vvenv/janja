@@ -36,7 +36,8 @@ it('invalid', async () => {
     " JianJia  call tag must have a value
 
     {{ #call }}
-    "
+
+    0:11"
   `,
   )
 })

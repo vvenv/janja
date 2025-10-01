@@ -6,6 +6,6 @@ export default {
   ext: 'jianjia',
   render: async function (templatePath, data) {
     const template = fs.readFileSync(templatePath, 'utf-8');
-    return (await new Engine().compile(template)).render(data);
+    return new Engine().render(template, data);
   },
 };

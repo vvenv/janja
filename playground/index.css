@@ -33,21 +33,13 @@ pre.error {
 }
 
 #app>li {
-  flex: 4;
+  flex: 6;
   min-width: 0;
   padding: 0;
   border: 1px solid #11151b;
   height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-#app>li:first-child {
-  flex: 4;
-}
-
-#app>li:last-child {
-  flex: 4;
 }
 
 #app>li>label,
@@ -72,20 +64,18 @@ pre.error {
   z-index: 1;
 }
 
-#code,
 #result {
   flex: 1;
-  margin: 1px 0;
+  padding: 1rem;
   min-height: 0;
   display: flex;
   flex-direction: column;
 }
 
-#code>pre,
 #result>pre {
   flex: 1;
   margin: 0;
-  padding: 1rem;
+  padding: 0;
   overflow: auto;
   line-height: 2;
   font-family: monospace;
@@ -95,8 +85,4 @@ pre.error {
   flex: 1;
   padding: 1rem;
   overflow: auto;
-}
-
-#performance {
-  padding: 1rem;
 }
