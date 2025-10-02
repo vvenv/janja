@@ -193,7 +193,7 @@ it('invalid', async () => {
   )
   expect(await compile('{{ /if }}', { debug: true })).toMatchInlineSnapshot(
     `
-    " JianJia  Unexpected /if
+    " JianJia  unexpected /if
 
     {{ /if }}
 

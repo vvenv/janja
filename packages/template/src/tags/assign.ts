@@ -62,7 +62,7 @@ export const tag: Tag = {
 
     if (END_ASSIGN.includes(name)) {
       if (!validator.consume(END_ASSIGN)) {
-        throw new Error(`Unexpected ${name}`)
+        throw new Error(`unexpected ${name}`)
       }
 
       return out.pushLine('return s;})("")});')

@@ -43,7 +43,7 @@ it('invalid', async () => {
   )
   expect(await compile('{{ /macro }}', { debug: true })).toMatchInlineSnapshot(
     `
-    " JianJia  Unexpected /macro
+    " JianJia  unexpected /macro
 
     {{ /macro }}
 

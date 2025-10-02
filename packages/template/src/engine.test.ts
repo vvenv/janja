@@ -208,7 +208,7 @@ it('invalid', async () => {
     .toMatchInlineSnapshot(`"compile error"`)
   expect(await render('{{ #for name in names }}{{ /if }}', {}, { debug: true }))
     .toMatchInlineSnapshot(`
-      " JianJia  Unexpected /if
+      " JianJia  unexpected /if
 
       {{ /if }}
 

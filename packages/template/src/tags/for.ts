@@ -85,7 +85,7 @@ export const tag: Tag = {
 
     if (END_FOR.includes(name)) {
       if (!validator.consume(END_FOR)) {
-        throw new Error(`Unexpected ${name}`)
+        throw new Error(`unexpected ${name}`)
       }
 
       ctx.reset()

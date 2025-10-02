@@ -83,7 +83,7 @@ it('invalid', async () => {
   expect(await compile('{{ /comment }}', { debug: true }),
   ).toMatchInlineSnapshot(
     `
-    " JianJia  Unexpected /comment
+    " JianJia  unexpected /comment
 
     {{ /comment }}
 

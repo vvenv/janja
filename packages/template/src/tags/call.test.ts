@@ -36,7 +36,7 @@ it('invalid', async () => {
   )
   expect(await compile('{{ /call }}', { debug: true })).toMatchInlineSnapshot(
     `
-    " JianJia  Unexpected /call
+    " JianJia  unexpected /call
 
     {{ /call }}
 

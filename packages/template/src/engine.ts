@@ -1,5 +1,5 @@
 import type { SourceMap } from './source-map'
-import type { Config, Filters, Globals, Script, Tag } from './types'
+import type { Config, Globals, Script } from './types'
 import { Compiler } from './compiler'
 import { config } from './config'
 import { escape } from './escape'
@@ -20,20 +20,8 @@ export class Engine {
 
   constructor({ globals, filters, tags, ...options }: Config = {}) {
     this.options = { ...config, ...options }
-    this.registerGlobals(globals)
-    this.registerFilters(filters)
-    this.registerTags(tags)
-  }
-
-  registerGlobals(globals?: Globals) {
     Object.assign(this.options.globals, globals)
-  }
-
-  registerFilters(filters?: Filters) {
     Object.assign(this.options.filters, filters)
-  }
-
-  registerTags(tags?: Record<string, Tag[]>) {
     Object.assign(this.options.tags, tags)
   }
 

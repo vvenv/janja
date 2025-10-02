@@ -67,7 +67,7 @@ it('invalid', async () => {
     await compile('{{ /assign }}', { debug: true }),
   ).toMatchInlineSnapshot(
     `
-    " JianJia  Unexpected /assign
+    " JianJia  unexpected /assign
 
     {{ /assign }}
 

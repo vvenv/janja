@@ -200,7 +200,7 @@ it('invalid', async () => {
     `"expected tokens end_for, endfor, /for, but got nothing"`,
   )
   expect(await compile('{{ /for }}', { debug: true })).toMatchInlineSnapshot(`
-    " JianJia  Unexpected /for
+    " JianJia  unexpected /for
 
     {{ /for }}
 

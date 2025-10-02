@@ -33,7 +33,7 @@ export const tag: Tag = {
 
     if (END_COMMENT.includes(name)) {
       if (!validator.consume(END_COMMENT)) {
-        throw new Error(`Unexpected ${name}`)
+        throw new Error(`unexpected ${name}`)
       }
 
       if (out.options.stripComments) {
