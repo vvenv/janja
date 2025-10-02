@@ -3,7 +3,7 @@ import type {
   Config,
   Token,
 } from './types'
-import { BLOCK, END_BLOCK, SUPER } from './tags/block'
+import { BLOCK, END_BLOCK, SUPER } from './config'
 
 export class Tokenizer implements AST {
   private template = ''
@@ -56,6 +56,8 @@ export class Tokenizer implements AST {
       name: 'str',
       value,
       raw: value,
+      previous: null,
+      next: null,
       start,
       end,
     })
@@ -67,6 +69,8 @@ export class Tokenizer implements AST {
 
     const base = {
       raw: match[0],
+      previous: null,
+      next: null,
       stripBefore: match[1] === '-',
       stripAfter: match[4] === '-',
       start,
@@ -108,41 +112,30 @@ export class Tokenizer implements AST {
   }
 
   private async layout(value: string | null) {
-    if (!value) {
-      throw new Error('missing layout file path')
-    }
-
-    const [,,path] = value.match(/^(['"`])(.+)\1$/) ?? []
+    const [,,path] = value?.match(/^(['"`])(.+)\1$/) ?? []
 
     if (!path) {
       throw new Error('missing layout file path')
     }
 
-    const content = await this.options.loader!(`layouts/${path}.jianjia`)
-
-    let cursor = await new Tokenizer(this.options).parse(content)
-
-    while (cursor) {
-      this.push(cursor)
-      cursor = cursor.next
-    }
+    await this.child(`layouts/${path}.jianjia`)
   }
 
   private async include(value: string | null) {
-    if (!value) {
-      throw new Error('missing include file path')
-    }
-
-    const [,,path, optional] = value.match(/^(['"`])(.+)\1(\?)?$/) ?? []
+    const [,,path, optional] = value?.match(/^(['"`])(.+)\1(\?)?$/) ?? []
 
     if (!path) {
       throw new Error('missing include file path')
     }
 
+    await this.child(`partials/${path}.jianjia`, !!optional)
+  }
+
+  private async child(path: string, optional?: boolean) {
     let content
 
     try {
-      content = await this.options.loader!(`partials/${path}.jianjia`)
+      content = await this.options.loader!(path)
     }
     catch (error: any) {
       if (optional) {
@@ -164,9 +157,7 @@ export class Tokenizer implements AST {
     }
   }
 
-  private push(_token: Omit<Token, 'previous' | 'next'>) {
-    const token: Token = { ..._token, previous: null, next: null }
-
+  private push(token: Token) {
     if (BLOCK.includes(token.name)) {
       if (!token.value) {
         throw new Error('block tag must have a value')
@@ -240,13 +231,13 @@ export class Tokenizer implements AST {
         next.previous = null
       }
 
-      const body = this.createBlockBody(chunks.pop(), chunks)
+      const body = this.rebuildBlockBody(chunks.pop(), chunks)
 
-      this.rebuildChain(body, previous, next)
+      this.rebuildBlockChain(body, previous, next)
     }
   }
 
-  private createBlockBody(child: Token[] | undefined, parents: Token[][]) {
+  private rebuildBlockBody(child: Token[] | undefined, parents: Token[][]) {
     if (!child) {
       return []
     }
@@ -255,7 +246,7 @@ export class Tokenizer implements AST {
 
     child.forEach((token) => {
       if (SUPER.includes(token.name)) {
-        this.createBlockBody(
+        this.rebuildBlockBody(
           parents.pop(),
           parents,
         ).forEach(t => chunk.push(t))
@@ -268,7 +259,7 @@ export class Tokenizer implements AST {
     return chunk
   }
 
-  private rebuildChain(
+  private rebuildBlockChain(
     tokens: Token[],
     previous: Token | null,
     next: Token | null,

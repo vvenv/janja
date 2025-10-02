@@ -115,30 +115,12 @@ it('elif', async () => {
   )
 })
 
-describe('filter', async () => {
-  it('basic', async () => {
-    expect(
-      await compile('{{ #if name | length }}{{= name }}{{ /if }}'),
-    ).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";if(await f.length.call(c,c.name,c)){s+=e(c.name);}return s;})();"`,
-    )
-  })
-
-  it('multiple', async () => {
-    expect(
-      await compile('{{ #if name | length | odd }}{{= name }}{{ /if }}'),
-    ).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";if(await f.odd.call(c,await f.length.call(c,c.name,c),c)){s+=e(c.name);}return s;})();"`,
-    )
-  })
-
-  it('w/ args', async () => {
-    expect(
-      await compile('{{ #if names | join: "" == "foobar" }}yes{{ /if }}'),
-    ).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";if(await f.join.call(c,c.names,"")==="foobar"){s+="yes";}return s;})();"`,
-    )
-  })
+it('nested', async () => {
+  expect((await compile(
+    '{{ #if x }}{{ #if x }}x{{ elif y }}y{{ else }}z{{ /if }}{{ elif y }}{{ #if x }}x{{ elif y }}y{{ else }}z{{ /if }}{{ else }}{{ #if x }}x{{ elif y }}y{{ else }}z{{ /if }}{{ /if }}',
+  ))).toMatchInlineSnapshot(
+    `""use strict";return(async()=>{let s="";if(c.x){if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}else if(c.y){if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}else{if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}return s;})();"`,
+  )
 })
 
 it('whitespace control', async () => {
@@ -218,4 +200,30 @@ it('invalid', async () => {
     0:9"
   `,
   )
+})
+
+describe('filter', async () => {
+  it('basic', async () => {
+    expect(
+      await compile('{{ #if name | length }}{{= name }}{{ /if }}'),
+    ).toMatchInlineSnapshot(
+      `""use strict";return(async()=>{let s="";if(await f.length.call(c,c.name,c)){s+=e(c.name);}return s;})();"`,
+    )
+  })
+
+  it('multiple', async () => {
+    expect(
+      await compile('{{ #if name | length | odd }}{{= name }}{{ /if }}'),
+    ).toMatchInlineSnapshot(
+      `""use strict";return(async()=>{let s="";if(await f.odd.call(c,await f.length.call(c,c.name,c),c)){s+=e(c.name);}return s;})();"`,
+    )
+  })
+
+  it('w/ args', async () => {
+    expect(
+      await compile('{{ #if names | join: "" == "foobar" }}yes{{ /if }}'),
+    ).toMatchInlineSnapshot(
+      `""use strict";return(async()=>{let s="";if(await f.join.call(c,c.names,"")==="foobar"){s+="yes";}return s;})();"`,
+    )
+  })
 })

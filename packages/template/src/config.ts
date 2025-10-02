@@ -8,6 +8,10 @@ export const FILTERS = 'f' // Filters can be async
 export const ESCAPE = 'e'
 export const HELPERS = 'h'
 
+export const BLOCK = ['block', '#block']
+export const SUPER = ['super']
+export const END_BLOCK = ['end_block', 'endblock', '/block']
+
 export const config: Required<Config> = {
   debug: false,
   globals: {
