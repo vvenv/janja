@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { render } from '../test/__helper'
-import { loader } from './loaders/file-loader'
+import { config } from './config'
 
 describe('autoEscape', async () => {
   it('enabled', async () => {
@@ -120,7 +120,7 @@ it('layout', async () => {
       '{{ layout "default" }}',
       {},
       {
-        loader: path => loader(`test/${path}`),
+        loader: path => config.loader(`test/${path}`),
       },
     ),
   ).toMatchInlineSnapshot(`
@@ -142,7 +142,7 @@ it('include', async () => {
       '{{ layout "default" }}x{{ include "head" }}y{{ include "body" }}z',
       {},
       {
-        loader: path => loader(`test/${path}`),
+        loader: path => config.loader(`test/${path}`),
       },
     ),
   ).toMatchInlineSnapshot(`
@@ -167,7 +167,7 @@ it('include / not found', async () => {
       {},
       {
         debug: true,
-        loader: path => loader(`test/${path}`),
+        loader: path => config.loader(`test/${path}`),
       },
     ),
   ).toMatchInlineSnapshot(`"file not found: test/partials/fallback.jianjia"`)
@@ -180,7 +180,7 @@ it('include / optional', async () => {
       {},
       {
         debug: true,
-        loader: path => loader(`test/${path}`),
+        loader: path => config.loader(`test/${path}`),
       },
     ),
   ).toMatchInlineSnapshot(`""`)

@@ -1,6 +1,7 @@
 import type { Config } from './types'
 import * as filters from './filters'
-import { loader } from './loaders/url-loader'
+import { loader as fileLoader } from './loaders/file-loader'
+import { loader as urlLoader } from './loaders/url-loader'
 import { tags } from './tags'
 
 export const CONTEXT = 'c'
@@ -23,6 +24,6 @@ export const config: Required<Config> = {
   strictMode: true,
   stripComments: false,
   trimWhitespace: false,
-  loader,
+  loader: typeof window === 'undefined' ? fileLoader : urlLoader,
   cache: false,
 }
