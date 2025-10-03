@@ -28,13 +28,6 @@ it('escape "', () => {
   expect(out.value).toMatchInlineSnapshot('"s+="\\"";"')
 })
 
-it('escape \\{{ ', () => {
-  const out = _out()
-
-  out.pushStr('\\{{ x }}')
-  expect(out.value).toMatchInlineSnapshot('"s+="{{ x }}";"')
-})
-
 it('escape dynamic values with external function', () => {
   const out = _out()
 

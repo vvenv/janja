@@ -1,5 +1,6 @@
 import type { Config, Loc, Script } from './types'
 import { CONTEXT, ESCAPE, FILTERS, HELPERS } from './config'
+import { unescapeTag } from './utils/unescape-tag'
 
 export class OutScript {
   private content = ''
@@ -61,7 +62,7 @@ export class OutScript {
     if (s) {
       const start = this.content.length + this.strOffset
 
-      s = this.unescapeTag(s)
+      s = unescapeTag(s)
         .replace(/\\/g, '\\\\')
         .replace(/"/g, '\\"')
         .replace(/[\n\r]/g, '\\n')
@@ -83,9 +84,5 @@ export class OutScript {
       start,
       end: start + v.length,
     }
-  }
-
-  unescapeTag(v: string) {
-    return v.replace(/\\(\{|\})/g, '$1')
   }
 }

@@ -3,6 +3,7 @@ import { compileStatement } from '../utils/compile-statement'
 import { hasKeyword } from '../utils/has-keyword'
 import { isEvil } from '../utils/is-evil'
 import { parseStatement } from '../utils/parse-statement'
+import { unescapeTag } from '../utils/unescape-tag'
 
 const EXPRESSION = '='
 
@@ -36,7 +37,7 @@ export const tag: Tag = {
           [
             {
               ...statement,
-              value: out.unescapeTag(statement.value),
+              value: unescapeTag(statement.value),
             },
           ],
           context,
