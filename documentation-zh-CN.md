@@ -5,13 +5,13 @@
 ### **if / elif / else**：条件判断
 
 ```jianjia
-{{ #if condition }}内容{{ elif other }}内容{{ else }}内容{{ /if }}
+{{ if condition }}内容{{ elif other }}内容{{ else }}内容{{ endif }}
 ```
 
 ### **for**：循环遍历
 
 ```jianjia
-{{ #for item in items }}{{= item }}{{ /for }}
+{{ for item in items }}{{= item }}{{ endfor }}
 ```
 
 ### **assign**：变量赋值
@@ -19,26 +19,26 @@
 ```jianjia
 {{ assign foo = 123 }}
 {{ assign a, b = obj }}
-{{ #assign foo }}内容{{ /assign }}
+{{ assign foo }}内容{{ endassign }}
 ```
 
 ### **block / super**：模板继承与区块
 
 ```jianjia
-{{ #block title }}{{ super }}默认标题{{ /block }}
+{{ block title }}{{ super }}默认标题{{ endblock }}
 ```
 
 ### **macro / caller**：宏定义与调用
 
 ```jianjia
-{{ #macro my_macro: x, y }}内容{{ caller }}{{ /macro }}
+{{ macro my_macro: x, y }}内容{{ caller }}{{ endmacro }}
 {{ my_macro 1 2 }}
 ```
 
 ### **call**：调用宏
 
 ```jianjia
-{{ #call my_macro "foo" "bar" }}内容{{ /call }}
+{{ call my_macro "foo" "bar" }}内容{{ endcall }}
 ```
 
 ### **break / continue**：循环控制
@@ -51,8 +51,8 @@
 ### **comment**：注释
 
 ```jianjia
-{{! 这是注释 }}
-{{ #comment }}多行注释{{ /comment }}
+{{# 这是注释 }}
+{{ comment }}多行注释{{ endcomment }}
 ```
 
 ### **expression（=）**：表达式输出

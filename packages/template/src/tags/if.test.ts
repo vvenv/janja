@@ -3,12 +3,12 @@ import { compile } from '../../test/__helper'
 
 it('basic', async () => {
   expect(
-    await compile('{{ #if name }}{{= name }}{{ /if }}'),
+    await compile('{{ if name }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name){s+=e(c.name);}return s;})();"`,
   )
   expect(
-    await compile('{{ #if name }}{{= name }}{{ /if }}'),
+    await compile('{{ if name }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name){s+=e(c.name);}return s;})();"`,
   )
@@ -16,12 +16,12 @@ it('basic', async () => {
 
 it('not', async () => {
   expect(
-    await compile('{{ #if not name }}{{= name }}{{ /if }}'),
+    await compile('{{ if not name }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(!c.name){s+=e(c.name);}return s;})();"`,
   )
   expect(
-    await compile('{{ #if !name }}{{= name }}{{ /if }}'),
+    await compile('{{ if !name }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(!c.name){s+=e(c.name);}return s;})();"`,
   )
@@ -29,23 +29,23 @@ it('not', async () => {
 
 it('and', async () => {
   expect(
-    await compile('{{ #if x and y }}{{= z }}{{ /if }}'),
+    await compile('{{ if x and y }}{{= z }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.x&&c.y){s+=e(c.z);}return s;})();"`,
   )
-  expect(await compile('{{ #if !x&&y }}{{= z }}{{ /if }}')).toMatchInlineSnapshot(
+  expect(await compile('{{ if !x&&y }}{{= z }}{{ endif }}')).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(!c.x&&c.y){s+=e(c.z);}return s;})();"`,
   )
 })
 
 it('in', async () => {
   expect(
-    await compile('{{ #if name in names }}{{= name }}{{ /if }}'),
+    await compile('{{ if name in names }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name in c.names){s+=e(c.name);}return s;})();"`,
   )
   expect(
-    await compile('{{ #if name in ["foo", "bar"] }}{{= name }}{{ /if }}'),
+    await compile('{{ if name in ["foo", "bar"] }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name in ["foo", "bar"]){s+=e(c.name);}return s;})();"`,
   )
@@ -53,22 +53,22 @@ it('in', async () => {
 
 it('equal', async () => {
   expect(
-    await compile('{{ #if name eq other }}{{= name }}{{ /if }}'),
+    await compile('{{ if name eq other }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name===c.other){s+=e(c.name);}return s;})();"`,
   )
   expect(
-    await compile('{{ #if name == other }}{{= name }}{{ /if }}'),
+    await compile('{{ if name == other }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name===c.other){s+=e(c.name);}return s;})();"`,
   )
   expect(
-    await compile('{{ #if name === other }}{{= name }}{{ /if }}'),
+    await compile('{{ if name === other }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name===c.other){s+=e(c.name);}return s;})();"`,
   )
   expect(
-    await compile('{{ #if name == "foo" }}{{= name }}{{ /if }}'),
+    await compile('{{ if name == "foo" }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name==="foo"){s+=e(c.name);}return s;})();"`,
   )
@@ -76,22 +76,22 @@ it('equal', async () => {
 
 it('not equal', async () => {
   expect(
-    await compile('{{ #if name ne other }}{{= name }}{{ /if }}'),
+    await compile('{{ if name ne other }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name!==c.other){s+=e(c.name);}return s;})();"`,
   )
   expect(
-    await compile('{{ #if name != other }}{{= name }}{{ /if }}'),
+    await compile('{{ if name != other }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name!==c.other){s+=e(c.name);}return s;})();"`,
   )
   expect(
-    await compile('{{ #if name !== other }}{{= name }}{{ /if }}'),
+    await compile('{{ if name !== other }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name!==c.other){s+=e(c.name);}return s;})();"`,
   )
   expect(
-    await compile('{{ #if name != "foo" }}{{= name }}{{ /if }}'),
+    await compile('{{ if name != "foo" }}{{= name }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name!=="foo"){s+=e(c.name);}return s;})();"`,
   )
@@ -99,7 +99,7 @@ it('not equal', async () => {
 
 it('else', async () => {
   expect(
-    await compile('{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}'),
+    await compile('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name){s+=e(c.name);}else{s+=e("*");}return s;})();"`,
   )
@@ -108,7 +108,7 @@ it('else', async () => {
 it('elif', async () => {
   expect(
     await compile(
-      '{{ #if name == "foo" }}>>>{{ elif name == "bar" }}---{{ elif name == "baz" }}...{{ else }}{{= name }}{{ /if }}',
+      '{{ if name == "foo" }}>>>{{ elif name == "bar" }}---{{ elif name == "baz" }}...{{ else }}{{= name }}{{ endif }}',
     ),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.name==="foo"){s+=">>>";}else if(c.name==="bar"){s+="---";}else if(c.name==="baz"){s+="...";}else{s+=e(c.name);}return s;})();"`,
@@ -117,7 +117,7 @@ it('elif', async () => {
 
 it('nested', async () => {
   expect((await compile(
-    '{{ #if x }}{{ #if x }}x{{ elif y }}y{{ else }}z{{ /if }}{{ elif y }}{{ #if x }}x{{ elif y }}y{{ else }}z{{ /if }}{{ else }}{{ #if x }}x{{ elif y }}y{{ else }}z{{ /if }}{{ /if }}',
+    '{{ if x }}{{ if x }}x{{ elif y }}y{{ else }}z{{ endif }}{{ elif y }}{{ if x }}x{{ elif y }}y{{ else }}z{{ endif }}{{ else }}{{ if x }}x{{ elif y }}y{{ else }}z{{ endif }}{{ endif }}',
   ))).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";if(c.x){if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}else if(c.y){if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}else{if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}return s;})();"`,
   )
@@ -126,28 +126,28 @@ it('nested', async () => {
 it('whitespace control', async () => {
   expect(
     await compile(
-      ' hello {{ #if name }} {{= name }} {{ else }} world {{ /if }} ',
+      ' hello {{ if name }} {{= name }} {{ else }} world {{ endif }} ',
     ),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";s+=" hello ";if(c.name){s+=" ";s+=e(c.name);s+=" ";}else{s+=" world ";}s+=" ";return s;})();"`,
   )
   expect(
     await compile(
-      ' hello {{- #if name -}} {{-= name -}} {{- else -}} world {{- /if -}} ',
+      ' hello {{- if name -}} {{-= name -}} {{- else -}} world {{- endif -}} ',
     ),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";s+=" hello";if(c.name){s+=e(c.name);}else{s+="world";}return s;})();"`,
   )
   expect(
     await compile(
-      ' hello {{- #if name }} {{-= name }} {{- else }} world {{- /if }} ',
+      ' hello {{- if name }} {{-= name }} {{- else }} world {{- endif }} ',
     ),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";s+=" hello";if(c.name){s+=e(c.name);}else{s+=" world";}s+=" ";return s;})();"`,
   )
   expect(
     await compile(
-      ' hello {{ #if name -}} {{= name -}} {{ else -}} world {{ /if -}} ',
+      ' hello {{ if name -}} {{= name -}} {{ else -}} world {{ endif -}} ',
     ),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";s+=" hello ";if(c.name){s+=e(c.name);}else{s+="world ";}return s;})();"`,
@@ -155,13 +155,13 @@ it('whitespace control', async () => {
 })
 
 it('invalid', async () => {
-  expect(await compile('{{ #if }}', { debug: true })).toMatchInlineSnapshot(
+  expect(await compile('{{ if }}', { debug: true })).toMatchInlineSnapshot(
     `
     " JianJia  if tag must have a value
 
-    {{ #if }}
+    {{ if }}
 
-    0:9"
+    0:8"
   `,
   )
   expect(await compile('{{ elif }}', { debug: true })).toMatchInlineSnapshot(
@@ -191,13 +191,13 @@ it('invalid', async () => {
     0:10"
   `,
   )
-  expect(await compile('{{ /if }}', { debug: true })).toMatchInlineSnapshot(
+  expect(await compile('{{ endif }}', { debug: true })).toMatchInlineSnapshot(
     `
-    " JianJia  unexpected /if
+    " JianJia  unexpected endif
 
-    {{ /if }}
+    {{ endif }}
 
-    0:9"
+    0:11"
   `,
   )
 })
@@ -205,7 +205,7 @@ it('invalid', async () => {
 describe('filter', async () => {
   it('basic', async () => {
     expect(
-      await compile('{{ #if name | length }}{{= name }}{{ /if }}'),
+      await compile('{{ if name | length }}{{= name }}{{ endif }}'),
     ).toMatchInlineSnapshot(
       `""use strict";return(async()=>{let s="";if(await f.length.call(c,c.name,c)){s+=e(c.name);}return s;})();"`,
     )
@@ -213,7 +213,7 @@ describe('filter', async () => {
 
   it('multiple', async () => {
     expect(
-      await compile('{{ #if name | length | odd }}{{= name }}{{ /if }}'),
+      await compile('{{ if name | length | odd }}{{= name }}{{ endif }}'),
     ).toMatchInlineSnapshot(
       `""use strict";return(async()=>{let s="";if(await f.odd.call(c,await f.length.call(c,c.name,c),c)){s+=e(c.name);}return s;})();"`,
     )
@@ -221,7 +221,7 @@ describe('filter', async () => {
 
   it('w/ args', async () => {
     expect(
-      await compile('{{ #if names | join: "" == "foobar" }}yes{{ /if }}'),
+      await compile('{{ if names | join: "" == "foobar" }}yes{{ endif }}'),
     ).toMatchInlineSnapshot(
       `""use strict";return(async()=>{let s="";if(await f.join.call(c,c.names,"")==="foobar"){s+="yes";}return s;})();"`,
     )

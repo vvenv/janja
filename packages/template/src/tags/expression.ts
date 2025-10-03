@@ -4,17 +4,17 @@ import { hasKeyword } from '../utils/has-keyword'
 import { isEvil } from '../utils/is-evil'
 import { parseStatement } from '../utils/parse-statement'
 
-const EXPRESSION = ['=']
+const EXPRESSION = '='
 
 /**
  * @example {{= x | f }}
  * @example {{= 'a' if x else 'b' }}
  */
 export const tag: Tag = {
-  names: [...EXPRESSION],
+  names: [EXPRESSION],
 
   compile({ token: { name, value }, ctx: { context }, out }) {
-    if (EXPRESSION.includes(name)) {
+    if (name === EXPRESSION) {
       if (!verifyExpression(value!)) {
         throw new Error(`invalid expression: ${value}`)
       }

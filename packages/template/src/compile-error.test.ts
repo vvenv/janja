@@ -5,7 +5,7 @@ it('compile error', () => {
   const error = new CompileError('if tag must have a value', {
     name: 'if',
     value: '',
-    raw: '{{ #if }}',
+    raw: '{{ if }}',
     previous: null,
     next: null,
     start: 0,
@@ -16,7 +16,7 @@ it('compile error', () => {
   expect(error.details).toMatchInlineSnapshot(`
     " JianJia  if tag must have a value
 
-    {{ #if }}
+    {{ if }}
 
     0:9"
   `)
@@ -26,7 +26,7 @@ it('compile error w/ filepath', () => {
   const error = new CompileError('if tag must have a value', {
     name: 'if',
     value: '',
-    raw: '{{ #if }}',
+    raw: '{{ if }}',
     previous: null,
     next: null,
     start: 0,
@@ -37,7 +37,7 @@ it('compile error w/ filepath', () => {
   expect(error.details).toMatchInlineSnapshot(`
     " JianJia  if tag must have a value
 
-    {{ #if }}
+    {{ if }}
 
     at /path/to/file.jianjia:0:9"
   `)

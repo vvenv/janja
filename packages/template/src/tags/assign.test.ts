@@ -17,10 +17,10 @@ it('inline', async () => {
 })
 
 it('block', async () => {
-  expect(await compile('{{ #assign x }}{{= y }}{{ /assign }}')).toMatchInlineSnapshot(
+  expect(await compile('{{ assign x }}{{= y }}{{ endassign }}')).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";Object.assign(c,{x:await(async(s)=>{s+=e(c.y);return s;})("")});return s;})();"`,
   )
-  expect(await compile('{{ #assign x }}a{{ /assign }}')).toMatchInlineSnapshot(
+  expect(await compile('{{ assign x }}a{{ endassign }}')).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";Object.assign(c,{x:await(async(s)=>{s+="a";return s;})("")});return s;})();"`,
   )
 })
@@ -64,14 +64,14 @@ it('invalid', async () => {
   `,
   )
   expect(
-    await compile('{{ /assign }}', { debug: true }),
+    await compile('{{ endassign }}', { debug: true }),
   ).toMatchInlineSnapshot(
     `
-    " JianJia  unexpected /assign
+    " JianJia  unexpected endassign
 
-    {{ /assign }}
+    {{ endassign }}
 
-    0:13"
+    0:15"
   `,
   )
   expect(
@@ -97,14 +97,14 @@ it('invalid', async () => {
   `,
   )
   expect(
-    await compile('{{ #assign x, y }}a{{ /assign }}', { debug: true }),
+    await compile('{{ assign x, y }}a{{ endassign }}', { debug: true }),
   ).toMatchInlineSnapshot(
     `
     " JianJia  assign tag must have a variable
 
-    {{ #assign x, y }}
+    {{ assign x, y }}
 
-    0:18"
+    0:17"
   `,
   )
 })

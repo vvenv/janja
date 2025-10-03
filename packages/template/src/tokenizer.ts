@@ -24,7 +24,7 @@ export class Tokenizer implements AST {
     this.template = template
     this.blocks = {}
 
-    const tagRe = /\{\{(-)?(=|!)? (.+?) (-)?\}\}/gs
+    const tagRe = /\{\{(-)?([=#])? (.+?) (-)?\}\}/gs
 
     let match
     let index = 0
@@ -77,23 +77,16 @@ export class Tokenizer implements AST {
       end,
     }
 
-    if (match[2] === '=') {
-      this.push ({
-        ...base,
-        name: '=',
-        value: match[3],
-      })
-    }
-    else if (match[2] === '!') {
+    if (match[2] === '=' || match[2] === '#') {
       this.push({
         ...base,
-        name: '!',
+        name: match[2],
         value: match[3],
       })
     }
     else {
       const [, identifier, value = null]
-        = match[3].match(/^([#/]?[a-z]+)(?: (.+))?$/) ?? []
+        = match[3].match(/^([a-z]+)(?: (.+))?$/) ?? []
 
       if (identifier === 'layout') {
         await this.layout(value)

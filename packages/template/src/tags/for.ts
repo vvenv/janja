@@ -3,20 +3,20 @@ import { HELPERS } from '../config'
 import { compileStatement } from '../utils/compile-statement'
 import { parseStatement } from '../utils/parse-statement'
 
-const FOR = ['for', '#for']
-const BREAK = ['break']
-const CONTINUE = ['continue']
-const END_FOR = ['end_for', 'endfor', '/for']
+const FOR = 'for'
+const BREAK = 'break'
+const CONTINUE = 'continue'
+const END_FOR = 'endfor'
 
 /**
- * @example {{ #for item in items }}{{= item }}{{ /for }}
- * @example {{ #for key, value in items }}{{= key }}:{{= value }}{{ /for }}
+ * @example {{ for item in items }}{{= item }}{{ endfor }}
+ * @example {{ for key, value in items }}{{= key }}:{{= value }}{{ endfor }}
  */
 export const tag: Tag = {
-  names: [...FOR, ...BREAK, ...CONTINUE, ...END_FOR],
+  names: [FOR, BREAK, CONTINUE, END_FOR],
 
   async compile({ token: { name, value }, index, ctx, out, validator }) {
-    if (FOR.includes(name)) {
+    if (name === FOR) {
       if (!value) {
         throw new Error('for tag must have a value')
       }
@@ -67,7 +67,7 @@ export const tag: Tag = {
       return out.pushLine(...lines)
     }
 
-    if (BREAK.includes(name)) {
+    if (name === BREAK) {
       if (!validator.matchAny(END_FOR)) {
         throw new Error('break tag must be inside a for loop')
       }
@@ -75,7 +75,7 @@ export const tag: Tag = {
       return out.pushLine('break;')
     }
 
-    if (CONTINUE.includes(name)) {
+    if (name === CONTINUE) {
       if (!validator.matchAny(END_FOR)) {
         throw new Error('continue tag must be inside a for loop')
       }
@@ -83,7 +83,7 @@ export const tag: Tag = {
       return out.pushLine('continue;')
     }
 
-    if (END_FOR.includes(name)) {
+    if (name === END_FOR) {
       if (!validator.consume(END_FOR)) {
         throw new Error(`unexpected ${name}`)
       }

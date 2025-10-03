@@ -1,18 +1,18 @@
 import type { Tag } from '../types'
 import { parseActualArgs } from '../utils/parse-actual-args'
 
-const CALL = ['call', '#call']
-const END_CALL = ['end_call', 'endcall', '/call']
+const CALL = 'call'
+const END_CALL = 'endcall'
 const RE = /^([a-z$_][\w$]*)(?:: (.+)|\b)/
 
 /**
- * @example {{ #call my_macro: "foo", "bar" }}...{{ /call }}
+ * @example {{ call my_macro: "foo", "bar" }}...{{ endcall }}
  */
 export const tag: Tag = {
-  names: [...CALL, ...END_CALL],
+  names: [CALL, END_CALL],
 
   async compile({ token: { name, value }, ctx: { context }, out, validator }) {
-    if (CALL.includes(name)) {
+    if (name === CALL) {
       if (!value) {
         throw new Error('call tag must have a value')
       }
@@ -30,7 +30,7 @@ export const tag: Tag = {
       return out.pushLine(`await ${context}.${_name}(${[...args, 'async()=>{'].join(',')}`)
     }
 
-    if (END_CALL.includes(name)) {
+    if (name === END_CALL) {
       if (!validator.consume(END_CALL)) {
         throw new Error(`unexpected ${name}`)
       }

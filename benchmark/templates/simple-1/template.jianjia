@@ -2,21 +2,21 @@
   <div class="colors">
     <span class="hello">Hello {{= name }}! <strong>You have {{= messageCount }} messages!</strong></span>
 
-    {{ #if colors }}
+    {{ if colors }}
     <ul>
-      {{ #for color in colors }}
+      {{ for color in colors }}
       <li class="color">{{= color }}</li>
-      {{ /for }}
+      {{ endfor }}
     </ul>
     {{ else }}
     <div>
       No colors!
     </div>
-    {{ /if }}
+    {{ endif }}
   </div>
-  {{ #if primary }}
+  {{ if primary }}
   <button type="button" class="primary">Click me!</button>
   {{ else }}
     <button type="button" class="secondary">Click me!</button>
-  {{ /if }}
+  {{ endif }}
 </div>

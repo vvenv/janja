@@ -6,7 +6,7 @@
 </head>
 <body>
   <div class="friends">
-    {{ #for friend in friends }}
+    {{ for friend in friends }}
     <div class="friend">
       <ul>
         <li>Name: {{= friend.getFullNameDust }}</li>
@@ -31,33 +31,33 @@
         <li>
           About: {{= friend.about }}
         </li>
-        {{ #if friend.tags }}
+        {{ if friend.tags }}
         <li>
           Tags:
           <ul>
-            {{ #for tag in friend.tags }}
+            {{ for tag in friend.tags }}
             <li>
               {{= tag }}
             </li>
-            {{ /for }}
+            {{ endfor }}
           </ul>
         </li>
-        {{ /if }}
-        {{ #if friend.friends }}
+        {{ endif }}
+        {{ if friend.friends }}
         <li>
           Friends:
           <ul>
-            {{ #for friend in friend.friends }}
+            {{ for friend in friend.friends }}
             <li>
               {{= friend.name }} ({{= friend.id }})
             </li>
-            {{ /for }}
+            {{ endfor }}
           </ul>
         </li>
-        {{ /if }}
+        {{ endif }}
       </ul>
     </div>
-    {{ /for }}
+    {{ endfor }}
   </div>
 </body>
 </html>

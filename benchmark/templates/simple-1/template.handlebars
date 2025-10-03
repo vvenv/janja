@@ -2,7 +2,7 @@
   <div class="colors">
       <span class="hello">Hello {{name}}! <strong>You have {{messageCount}} messages!</strong></span>
 
-      {{#if colors}}
+      {{if colors}}
       <ul>
           {{#each colors}}
           <li class="color">{{this}}</li>
@@ -14,5 +14,5 @@
       </div>
       {{/if}}
   </div>
-  <button type="button" class="{{#if primary}}primary{{else}}secondary{{/if}}">Click me!</button>
+  <button type="button" class="{{if primary}}primary{{else}}secondary{{/if}}">Click me!</button>
 </div>

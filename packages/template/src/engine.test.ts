@@ -49,15 +49,15 @@ it('interpolate', async () => {
 
 it('for loop', async () => {
   expect(
-    await render('{{ #for name in names }}{{ name }}{{ /for }}', {
+    await render('{{ for name in names }}{{ name }}{{ endfor }}', {
       names: ['foo', 'bar'],
     }),
-  ).toMatchInlineSnapshot('""')
+  ).toMatchInlineSnapshot(`""`)
   expect(
     await render(
-      `{{ #for name in names -}}
+      `{{ for name in names -}}
   {{= name }}
-{{- /for }}`,
+{{- endfor }}`,
       {
         names: ['foo', 'bar'],
       },
@@ -68,7 +68,7 @@ it('for loop', async () => {
 it('for loop - nested', async () => {
   expect(
     await render(
-      '{{ #for _as in ass }}{{ #for a in _as }}|{{= a }} in {{= _as }} in {{= ass }}|{{ /for }}{{ /for }}',
+      '{{ for _as in ass }}{{ for a in _as }}|{{= a }} in {{= _as }} in {{= ass }}|{{ endfor }}{{ endfor }}',
       {
         ass: ['foo', 'bar'],
       },
@@ -80,19 +80,19 @@ it('for loop - nested', async () => {
 
 it('if - else', async () => {
   expect(
-    await render('{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}', {
+    await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}', {
       name: 'foo',
     }),
-  ).toMatchInlineSnapshot('"foo"')
+  ).toMatchInlineSnapshot(`"foo"`)
   expect(
-    await render('{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}', {}),
-  ).toMatchInlineSnapshot('"*"')
+    await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}', {}),
+  ).toMatchInlineSnapshot(`"*"`)
 })
 
 it('mixed', async () => {
   expect(
     await render(
-      '{{ #for name in names }}{{ #if name }}{{= name }}{{ else }}{{= "*" }}{{ /if }}{{ /for }}',
+      '{{ for name in names }}{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}{{ endfor }}',
       {
         names: ['foo', '', 'bar'],
       },
@@ -103,7 +103,7 @@ it('mixed', async () => {
 it('destructing', async () => {
   expect(
     await render(
-      '{{ #for name in names }}{{ #for k, v in name }}{{= k }}{{= v }}{{ /for }}{{ /for }}',
+      '{{ for name in names }}{{ for k, v in name }}{{= k }}{{= v }}{{ endfor }}{{ endfor }}',
       {
         names: [
           { x: 1, y: 3 },
@@ -204,26 +204,26 @@ it('custom tag', async () => {
 })
 
 it('invalid', async () => {
-  expect(await render('{{ #for name in names }}{{ /if }}', {}))
+  expect(await render('{{ for name in names }}{{ endif }}', {}))
     .toMatchInlineSnapshot(`"compile error"`)
-  expect(await render('{{ #for name in names }}{{ /if }}', {}, { debug: true }))
+  expect(await render('{{ for name in names }}{{ endif }}', {}, { debug: true }))
     .toMatchInlineSnapshot(`
-      " JianJia  unexpected /if
+      " JianJia  unexpected endif
 
-      {{ /if }}
+      {{ endif }}
 
-      24:33"
+      23:34"
     `)
   expect(
-    await render('{{ #for name in names }}{{ /for }}', {}),
+    await render('{{ for name in names }}{{ endfor }}', {}),
   ).toMatchInlineSnapshot(`"render error"`)
   expect(
-    await render('{{ #for name in names }}{{ /for }}', {}, { debug: true }),
+    await render('{{ for name in names }}{{ endfor }}', {}, { debug: true }),
   ).toMatchInlineSnapshot(`
     " JianJia  Cannot convert undefined or null to object
 
-    1: {{ #for name in names }}{{ /for }}
-       ^^^^^^^^^^^^^^^^^^^^^^^^
+    1: {{ for name in names }}{{ endfor }}
+       ^^^^^^^^^^^^^^^^^^^^^^^
     "
   `)
 })

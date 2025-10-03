@@ -1,20 +1,20 @@
 import type { Tag } from '../types'
 import { parseFormalArgs } from '../utils/parse-formal-args'
 
-const MACRO = ['macro', '#macro']
-const CALLER = ['caller']
-const END_MACRO = ['end_macro', 'endmacro', '/macro']
+const MACRO = 'macro'
+const CALLER = 'caller'
+const END_MACRO = 'endmacro'
 const RE = /^([a-z$_][\w$]*)(?:: (.+))?$/
 
 /**
- * @example {{ #macro my_macro: x, y }}...{{ caller }}{{ /macro }}{{ my_macro: "foo", 1 }}
- *                    ^^^^^^^^  ^^^^                                 ^^^^^^^^  ^^^^^^^^
+ * @example {{ macro my_macro: x, y }}...{{ caller }}{{ endmacro }}{{ my_macro: "foo", 1 }}
+ *                   ^^^^^^^^  ^^^^                                   ^^^^^^^^  ^^^^^^^^
  */
 export const tag: Tag = {
   names: [...MACRO, ...CALLER, ...END_MACRO],
 
   async compile({ token: { name, value }, index, ctx, out, validator }) {
-    if (MACRO.includes(name)) {
+    if (name === MACRO) {
       if (!value) {
         throw new Error('assign tag must have a value')
       }
@@ -50,7 +50,7 @@ export const tag: Tag = {
       return out.pushLine(...lines)
     }
 
-    if (CALLER.includes(name)) {
+    if (name === CALLER) {
       if (!validator.match(END_MACRO)) {
         throw new Error('caller tag must be inside a macro tag')
       }
@@ -58,7 +58,7 @@ export const tag: Tag = {
       return out.pushLine('await _c?.();')
     }
 
-    if (END_MACRO.includes(name)) {
+    if (name === END_MACRO) {
       if (!validator.consume(END_MACRO)) {
         throw new Error(`unexpected ${name}`)
       }

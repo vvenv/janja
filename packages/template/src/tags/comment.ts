@@ -1,43 +1,35 @@
 import type { Tag } from '../types'
 
-const COMMENT = ['comment', '#comment', '!']
-const END_COMMENT = ['end_comment', 'endcomment', '/comment']
+const COMMENT = 'comment'
+const END_COMMENT = 'endcomment'
 
 /**
- * @example {{! This is a comment }}
- * @example {{ #comment }} This is a comment {{ /comment }}
+ * @example {{# This is a comment }}
+ * @example {{ comment }} This is a comment {{ endcomment }}
  */
 export const tag: Tag = {
-  names: [...COMMENT, ...END_COMMENT],
+  names: [COMMENT, '#', END_COMMENT],
 
   async compile({ token: { name, value }, out, validator }) {
-    if (COMMENT.includes(name)) {
-      // inline comment
-      if (value) {
-        if (out.options.stripComments) {
-          return
-        }
-
-        return out.pushStr(`<!--${value}-->`)
-      }
-
-      // block comment
-      validator.expect(END_COMMENT)
-
-      if (out.options.stripComments) {
+    // inline comment
+    if (name === '#') {
+      if (!value || out.options.stripComments) {
         return
       }
+
+      return out.pushStr(`<!--${value}-->`)
+    }
+
+    // block comment
+    if (name === COMMENT) {
+      validator.expect(END_COMMENT)
 
       return out.pushStr('<!--')
     }
 
-    if (END_COMMENT.includes(name)) {
+    if (name === END_COMMENT) {
       if (!validator.consume(END_COMMENT)) {
         throw new Error(`unexpected ${name}`)
-      }
-
-      if (out.options.stripComments) {
-        return
       }
 
       return out.pushStr('-->')

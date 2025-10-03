@@ -1,24 +1,24 @@
 import type { Config } from './types'
 
 export class Validator {
-  expected: string[][] = []
+  expected: string[] = []
 
   constructor(public options: Required<Config>) {}
 
-  expect(names: string[]) {
-    this.expected.push(names)
+  expect(name: string) {
+    this.expected.push(name)
   }
 
-  matchAny(names: string[]) {
-    return this.expected.some(e => e.some(name => names.includes(name)))
+  matchAny(name: string) {
+    return this.expected.includes(name)
   }
 
-  match(names: string[]) {
-    return this.expected.at(-1)?.some(name => names.includes(name))
+  match(name: string) {
+    return this.expected.at(-1) === name
   }
 
-  consume(names: string[]) {
-    if (this.match(names)) {
+  consume(name: string) {
+    if (this.match(name)) {
       this.expected.pop()
 
       return true
@@ -29,7 +29,7 @@ export class Validator {
 
   validate() {
     if (this.expected.length) {
-      throw new Error(`expected tokens ${this.expected.flatMap(e => e).join(', ')}, but got nothing`)
+      throw new Error(`expected tokens ${this.expected.join(', ')}, but got nothing`)
     }
   }
 }

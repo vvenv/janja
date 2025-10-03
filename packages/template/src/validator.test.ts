@@ -2,194 +2,75 @@ import { describe, expect, it } from 'vitest'
 import { config } from './config'
 import { Validator } from './validator'
 
-describe('validator', () => {
-  describe('expect', () => {
-    it('should add expected token names', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo', 'bar'])
-      expect(validator.expected).toEqual([['foo', 'bar']])
-    })
-
-    it('should support multiple expectations', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo', 'bar'])
-      validator.expect(['baz'])
-      expect(validator.expected).toEqual([['foo', 'bar'], ['baz']])
-    })
+describe('expect', () => {
+  it('should add expected token names', () => {
+    const validator = new Validator(config)
+    validator.expect('endif')
+    expect(validator.expected).toEqual(['endif'])
   })
+})
 
-  describe('matchAny', () => {
-    it('should return true if any expected token matches any provided name', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo', 'bar'])
-      validator.expect(['baz'])
+it('matchAny', () => {
+  const validator = new Validator(config)
 
-      expect(validator.matchAny(['foo'])).toBe(true)
-      expect(validator.matchAny(['bar'])).toBe(true)
-      expect(validator.matchAny(['baz'])).toBe(true)
-      expect(validator.matchAny(['foo', 'unknown'])).toBe(true)
-    })
+  expect(validator.matchAny('endif')).toBe(false)
+  expect(validator.matchAny('endfor')).toBe(false)
 
-    it('should return false if no expected tokens match any provided name', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo', 'bar'])
-      validator.expect(['baz'])
+  validator.expect('endif')
+  validator.expect('endfor')
 
-      expect(validator.matchAny(['unknown'])).toBe(false)
-      expect(validator.matchAny(['other', 'unknown'])).toBe(false)
-    })
+  expect(validator.matchAny('endif')).toBe(true)
+  expect(validator.matchAny('endfor')).toBe(true)
+  expect(validator.matchAny('endcall')).toBe(false)
+})
 
-    it('should return false when no expectations exist', () => {
-      const validator = new Validator(config)
-      expect(validator.matchAny(['foo'])).toBe(false)
-    })
+it('match', () => {
+  const validator = new Validator(config)
 
-    it('should return false when provided names are empty', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo'])
-      expect(validator.matchAny([])).toBe(false)
-    })
-  })
+  expect(validator.match('endif')).toBe(false)
+  expect(validator.match('endfor')).toBe(false)
 
-  describe('match', () => {
-    it('should return true if the last expected token matches any provided name', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo', 'bar'])
-      validator.expect(['baz'])
+  validator.expect('endif')
+  validator.expect('endfor')
 
-      expect(validator.match(['baz'])).toBe(true)
-      expect(validator.match(['baz', 'unknown'])).toBe(true)
-    })
+  expect(validator.match('endif')).toBe(false)
+  expect(validator.match('endfor')).toBe(true)
+  expect(validator.match('endcall')).toBe(false)
+})
 
-    it('should return false if the last expected token does not match any provided name', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo', 'bar'])
-      validator.expect(['baz'])
+it('consume', () => {
+  const validator = new Validator(config)
 
-      expect(validator.match(['foo'])).toBe(false)
-      expect(validator.match(['bar'])).toBe(false)
-      expect(validator.match(['unknown'])).toBe(false)
-    })
+  expect(validator.consume('endif')).toBe(false)
+  expect(validator.consume('endfor')).toBe(false)
 
-    it('should return undefined when no expectations exist', () => {
-      const validator = new Validator(config)
-      expect(validator.match(['foo'])).toBeUndefined()
-    })
+  validator.expect('endif')
+  validator.expect('endfor')
 
-    it('should return false when provided names are empty', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo'])
-      expect(validator.match([])).toBe(false)
-    })
-  })
+  expect(validator.consume('endif')).toBe(false)
+  expect(validator.consume('endfor')).toBe(true)
+  expect(validator.consume('endcall')).toBe(false)
+})
 
-  describe('consume', () => {
-    it('should consume and return true when last expected token matches', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo', 'bar'])
-      validator.expect(['baz'])
+it('validate', () => {
+  const validator = new Validator(config)
+  validator.expect('endif')
+  validator.consume('endif')
 
-      expect(validator.consume(['baz'])).toBe(true)
-      expect(validator.expected).toEqual([['foo', 'bar']])
-    })
+  expect(() => validator.validate()).not.toThrow()
+})
 
-    it('should not consume and return false when last expected token does not match', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo', 'bar'])
-      validator.expect(['baz'])
+it('validate w/ throw', () => {
+  const validator = new Validator(config)
+  validator.expect('endif')
 
-      expect(validator.consume(['foo'])).toBe(false)
-      expect(validator.expected).toEqual([['foo', 'bar'], ['baz']])
-    })
+  expect(() => validator.validate()).toThrow('expected tokens endif, but got nothing')
+})
 
-    it('should return false when no expectations exist', () => {
-      const validator = new Validator(config)
-      expect(validator.consume(['foo'])).toBe(false)
-    })
+it('validate w/ throw #2', () => {
+  const validator = new Validator(config)
+  validator.expect('endif')
+  validator.expect('endfor')
 
-    it('should consume multiple expectations in LIFO order', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo'])
-      validator.expect(['bar'])
-      validator.expect(['baz'])
-
-      expect(validator.consume(['baz'])).toBe(true)
-      expect(validator.expected).toEqual([['foo'], ['bar']])
-
-      expect(validator.consume(['bar'])).toBe(true)
-      expect(validator.expected).toEqual([['foo']])
-
-      expect(validator.consume(['foo'])).toBe(true)
-      expect(validator.expected).toEqual([])
-    })
-  })
-
-  describe('validate', () => {
-    it('should not throw when all expectations are consumed', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo'])
-      validator.consume(['foo'])
-
-      expect(() => validator.validate()).not.toThrow()
-    })
-
-    it('should throw when expectations remain unconsumed', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo'])
-
-      expect(() => validator.validate()).toThrow('expected tokens foo, but got nothing')
-    })
-
-    it('should throw with multiple unconsumed expectations', () => {
-      const validator = new Validator(config)
-      validator.expect(['foo', 'bar'])
-      validator.expect(['baz'])
-
-      expect(() => validator.validate()).toThrow('expected tokens foo, bar, baz, but got nothing')
-    })
-
-    it('should not throw when no expectations were set', () => {
-      const validator = new Validator(config)
-      expect(() => validator.validate()).not.toThrow()
-    })
-  })
-
-  describe('integration scenarios', () => {
-    it('should handle complex validation workflow', () => {
-      const validator = new Validator(config)
-
-      // Set up nested expectations
-      validator.expect(['if', 'for'])
-      validator.expect(['endif', 'endfor'])
-
-      // Check if any tokens match
-      expect(validator.matchAny(['if', 'other'])).toBe(true)
-      expect(validator.matchAny(['other', 'unknown'])).toBe(false)
-
-      // Match specific last expectation
-      expect(validator.match(['endif'])).toBe(true)
-      expect(validator.match(['if'])).toBe(false)
-
-      // Consume the last expectation
-      expect(validator.consume(['endif'])).toBe(true)
-      expect(validator.expected).toEqual([['if', 'for']])
-
-      // Now the first expectation becomes the last
-      expect(validator.match(['if'])).toBe(true)
-      expect(validator.consume(['for'])).toBe(true)
-      expect(validator.expected).toEqual([])
-
-      // Validation should pass
-      expect(() => validator.validate()).not.toThrow()
-    })
-
-    it('should handle empty token arrays', () => {
-      const validator = new Validator(config)
-      validator.expect([])
-
-      expect(validator.matchAny(['foo'])).toBe(false)
-      expect(validator.match(['foo'])).toBe(false)
-      expect(validator.consume(['foo'])).toBe(false)
-    })
-  })
+  expect(() => validator.validate()).toThrow('expected tokens endif, endfor, but got nothing')
 })

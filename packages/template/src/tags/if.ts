@@ -2,20 +2,20 @@ import type { Tag } from '../types'
 import { compileStatement } from '../utils/compile-statement'
 import { parseStatement } from '../utils/parse-statement'
 
-const IF = ['if', '#if']
-const ELIF = ['elif']
-const ELSE = ['else']
-const END_IF = ['end_if', 'endif', '/if']
+const IF = 'if'
+const ELIF = 'elif'
+const ELSE = 'else'
+const END_IF = 'endif'
 
 /**
- * @example {{ #if my_var | my_filter }}yes{{ else }}no{{ /if }}
- *             ^^^ ^^^^^^^^^^^^^^^^^^         ^^^^        ^^^
+ * @example {{ if my_var | my_filter }}yes{{ else }}no{{ endif }}
+ *             ^^^ ^^^^^^^^^^^^^^^^^         ^^^^        ^^^^^
  */
 export const tag: Tag = {
-  names: [...IF, ...ELIF, ...ELSE, ...END_IF],
+  names: [IF, ELIF, ELSE, END_IF],
 
   async compile({ token: { name, value }, ctx: { context }, out, validator }) {
-    if (IF.includes(name)) {
+    if (name === IF) {
       if (!value) {
         throw new Error('if tag must have a value')
       }
@@ -27,7 +27,7 @@ export const tag: Tag = {
       )
     }
 
-    if (ELIF.includes(name)) {
+    if (name === ELIF) {
       if (!value) {
         throw new Error('elif tag must have a value')
       }
@@ -41,7 +41,7 @@ export const tag: Tag = {
       )
     }
 
-    if (ELSE.includes(name)) {
+    if (name === ELSE) {
       if (!validator.match(END_IF)) {
         throw new Error('else tag must follow if tag')
       }
@@ -49,7 +49,7 @@ export const tag: Tag = {
       return out.pushLine('}else{')
     }
 
-    if (END_IF.includes(name)) {
+    if (name === END_IF) {
       if (!validator.consume(END_IF)) {
         throw new Error(`unexpected ${name}`)
       }

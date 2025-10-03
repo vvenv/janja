@@ -24,28 +24,28 @@ it('layout', async () => {
       "end": 18,
       "name": "str",
       "next": {
-        "end": 35,
-        "name": "#block",
+        "end": 34,
+        "name": "block",
         "next": {
-          "end": 57,
+          "end": 56,
           "name": "str",
           "next": {
-            "end": 69,
-            "name": "/block",
+            "end": 70,
+            "name": "endblock",
             "next": {
-              "end": 91,
+              "end": 92,
               "name": "str",
               "next": {
                 "end": 108,
-                "name": "#block",
+                "name": "block",
                 "next": {
                   "end": 132,
                   "name": "str",
                   "next": {
-                    "end": 144,
-                    "name": "/block",
+                    "end": 146,
+                    "name": "endblock",
                     "next": {
-                      "end": 163,
+                      "end": 165,
                       "name": "str",
                       "next": null,
                       "previous": [Circular],
@@ -53,14 +53,14 @@ it('layout', async () => {
       </body>
     </html>
     ",
-                      "start": 144,
+                      "start": 146,
                       "value": "
       </body>
     </html>
     ",
                     },
                     "previous": [Circular],
-                    "raw": "{{ /block }}",
+                    "raw": "{{ endblock }}",
                     "start": 132,
                     "stripAfter": false,
                     "stripBefore": false,
@@ -72,8 +72,8 @@ it('layout', async () => {
                   "value": "<h1>Hello, JianJia!</h1>",
                 },
                 "previous": [Circular],
-                "raw": "{{ #block body }}",
-                "start": 91,
+                "raw": "{{ block body }}",
+                "start": 92,
                 "stripAfter": false,
                 "stripBefore": false,
                 "value": "body",
@@ -83,26 +83,26 @@ it('layout', async () => {
       </head>
       <body>
       ",
-              "start": 69,
+              "start": 70,
               "value": "
       </head>
       <body>
       ",
             },
             "previous": [Circular],
-            "raw": "{{ /block }}",
-            "start": 57,
+            "raw": "{{ endblock }}",
+            "start": 56,
             "stripAfter": false,
             "stripBefore": false,
             "value": null,
           },
           "previous": [Circular],
           "raw": "<title>JianJia</title>",
-          "start": 35,
+          "start": 34,
           "value": "<title>JianJia</title>",
         },
         "previous": [Circular],
-        "raw": "{{ #block head }}",
+        "raw": "{{ block head }}",
         "start": 18,
         "stripAfter": false,
         "stripBefore": false,
@@ -121,40 +121,40 @@ it('layout', async () => {
 })
 
 it('block', async () => {
-  expect(await new Tokenizer(config).parse('{{ #block title }}1{{ /block }}{{ #block title }}2{{ /block }}{{ #block title }}{{ super }}3{{ /block }}')).toMatchInlineSnapshot(`
+  expect(await new Tokenizer(config).parse('{{ block title }}1{{ endblock }}{{ block title }}2{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}')).toMatchInlineSnapshot(`
     {
-      "end": 80,
-      "name": "#block",
+      "end": 81,
+      "name": "block",
       "next": {
         "end": 49,
-        "name": "#block",
+        "name": "block",
         "next": {
           "end": 50,
           "name": "str",
           "next": {
-            "end": 62,
-            "name": "/block",
+            "end": 64,
+            "name": "endblock",
             "next": {
-              "end": 92,
+              "end": 93,
               "name": "str",
               "next": {
-                "end": 104,
-                "name": "/block",
+                "end": 107,
+                "name": "endblock",
                 "next": null,
                 "previous": [Circular],
-                "raw": "{{ /block }}",
-                "start": 92,
+                "raw": "{{ endblock }}",
+                "start": 93,
                 "stripAfter": false,
                 "stripBefore": false,
                 "value": null,
               },
               "previous": [Circular],
               "raw": "3",
-              "start": 91,
+              "start": 92,
               "value": "3",
             },
             "previous": [Circular],
-            "raw": "{{ /block }}",
+            "raw": "{{ endblock }}",
             "start": 50,
             "stripAfter": false,
             "stripBefore": false,
@@ -166,15 +166,15 @@ it('block', async () => {
           "value": "2",
         },
         "previous": [Circular],
-        "raw": "{{ #block title }}",
-        "start": 31,
+        "raw": "{{ block title }}",
+        "start": 32,
         "stripAfter": false,
         "stripBefore": false,
         "value": "title",
       },
       "previous": null,
-      "raw": "{{ #block title }}",
-      "start": 62,
+      "raw": "{{ block title }}",
+      "start": 64,
       "stripAfter": false,
       "stripBefore": false,
       "value": "title",

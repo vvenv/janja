@@ -3,7 +3,7 @@ import { RenderError } from './render-error'
 
 it('render error', () => {
   const error = new RenderError('test error', {
-    source: '{{ #if }}{{ else }}{{ /if }}',
+    source: '{{ if }}{{ else }}{{ endif }}',
     error: {
       stack: '<anonymous>:1:1)',
     } as any,
@@ -28,7 +28,7 @@ it('render error', () => {
   expect(error.details).toMatchInlineSnapshot(`
     " JianJia  test error
 
-    1: {{ #if }}{{ else }}{{ /if }}
+    1: {{ if }}{{ else }}{{ endif }}
        ^^^^^^^^^
                           ^^^^^^^^^
     "
@@ -37,7 +37,7 @@ it('render error', () => {
 
 it('render error w/ missed', () => {
   const error = new RenderError('test error', {
-    source: '{{ #if }}{{ else }}{{ /if }}',
+    source: '{{ if }}{{ else }}{{ endif }}',
     error: {
       stack: '',
     } as any,

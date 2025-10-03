@@ -4,11 +4,11 @@
   </head>
   <body>
     <p>{{= text }}</p>
-    {{ #for project in projects }}
+    {{ for project in projects }}
       <a href="{{= project.url }}">{{= project.name }}</a>
       <p>{{= project.description }}</p>
     {{ else }}
       No projects
-    {{ /for }}
+    {{ endfor }}
   </body>
 </html>

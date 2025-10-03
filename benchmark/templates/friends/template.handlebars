@@ -17,7 +17,7 @@
                 <li>Company: {{this.company}}</li>
                 <li>Email: <a href="mailto:{{this.email}}">{{this.email}}</a></li>
                 <li>About: {{this.about}}</li>
-                {{#if this.tags}}
+                {{if this.tags}}
                 <li>Tags:
                     <ul>
                         {{#each this.tags}}
@@ -26,7 +26,7 @@
                     </ul>
                 </li>
                 {{/if}}
-                {{#if this.friends}}
+                {{if this.friends}}
                 <li>Friends:
                     <ul>
                         {{#each this.friends}}

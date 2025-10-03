@@ -2,21 +2,21 @@ import type { Tag } from '../types'
 import { compileStatement } from '../utils/compile-statement'
 import { parseStatement } from '../utils/parse-statement'
 
-const ASSIGN = ['assign', '#assign']
-const END_ASSIGN = ['end_assign', 'endassign', '/assign']
+const ASSIGN = 'assign'
+const END_ASSIGN = 'endassign'
 const RE
   = /^(?:([a-z$_][\w$]*)|([a-z$_][\w$]*(?:, [a-z$_][\w$]*)*) = ((['"`])(?:\\\4|(?!\4).)*\4|[^=]+))$/i
 
 /**
  * @example {{ assign left = right }}
  * @example {{ assign left_1, left_2 = right }}
- * @example {{ #assign variable }} this is {{= my_value }} {{ /assign }}
+ * @example {{ assign variable }} this is {{= my_value }} {{ endassign }}
  */
 export const tag: Tag = {
-  names: [...ASSIGN, ...END_ASSIGN],
+  names: [ASSIGN, END_ASSIGN],
 
   async compile({ token: { name, value }, ctx: { context }, out, validator }) {
-    if (ASSIGN.includes(name)) {
+    if (name === ASSIGN) {
       if (!value) {
         throw new Error('assign tag must have a value')
       }
@@ -60,7 +60,7 @@ export const tag: Tag = {
       )
     }
 
-    if (END_ASSIGN.includes(name)) {
+    if (name === END_ASSIGN) {
       if (!validator.consume(END_ASSIGN)) {
         throw new Error(`unexpected ${name}`)
       }

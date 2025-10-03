@@ -1,5 +1,5 @@
 <div class="search-results-container">
-  
+
   <div class="searching" id="searching">
     <div class="wait-indicator-icon"></div> Searching...
   </div>
@@ -9,7 +9,7 @@
       <span class="count"><span id="count">{{totalCount}}</span> results</span>
       <div class="view-modifiers">
         <div class="view-select">
-          View: 
+          View:
           <div class="view-icon view-icon-selected" id="viewIconGallery">
             <i class="icon-th"></i>
           </div>
@@ -31,15 +31,15 @@
             <h4 class="title">
               <a href="{{this.viewItemUrl}}">{{this.title}}</a>
             </h4>
-            
+
             {{this.description}}
 
-            {{#if this.featured}}
+            {{if this.featured}}
             <div>
               Featured!
             </div>
             {{/if}}
-            {{#if this.sizes}}
+            {{if this.sizes}}
             <div>
               Sizes available:
               <ul>

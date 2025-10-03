@@ -1,6 +1,6 @@
-{{ #for account in accounts }}
+{{ for account in accounts }}
 <div>
-  {{ #if account.status eq "closed" }}
+  {{ if account.status eq "closed" }}
   <div>
       Your account has been closed!
   </div>
@@ -13,6 +13,6 @@
       Bank balance:
       <span class="{{= "negative" if account.balance lt 0 else "positive" }}">{{= account.balanceFormatted }}</span>
   </div>
-  {{ /if }}
+  {{ endif }}
 </div>
-{{ /for }}
+{{ endfor }}

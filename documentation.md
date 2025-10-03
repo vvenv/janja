@@ -5,13 +5,13 @@
 ### **if / elif / else**: Conditional Statements
 
 ```jianjia
-{{ #if condition }}Content{{ elif other }}Content{{ else }}Content{{ /if }}
+{{ if condition }}Content{{ elif other }}Content{{ else }}Content{{ endif }}
 ```
 
 ### **for**: Looping
 
 ```jianjia
-{{ #for item in items }}{{= item }}{{ /for }}
+{{ for item in items }}{{= item }}{{ endfor }}
 ```
 
 ### **assign**: Variable Assignment
@@ -19,26 +19,26 @@
 ```jianjia
 {{ assign foo = 123 }}
 {{ assign a, b = obj }}
-{{ #assign foo }}Content{{ /assign }}
+{{ assign foo }}Content{{ endassign }}
 ```
 
 ### **block / super**: Template Inheritance & Blocks
 
 ```jianjia
-{{ #block title }}{{ super }}Default Title{{ /block }}
+{{ block title }}{{ super }}Default Title{{ endblock }}
 ```
 
 ### **macro / caller**: Macro Definition & Invocation
 
 ```jianjia
-{{ #macro my_macro: x, y }}Content{{ caller }}{{ /macro }}
+{{ macro my_macro: x, y }}Content{{ caller }}{{ endmacro }}
 {{ my_macro 1 2 }}
 ```
 
 ### **call**: Macro Invocation
 
 ```jianjia
-{{ #call my_macro "foo" "bar" }}Content{{ /call }}
+{{ call my_macro "foo" "bar" }}Content{{ endcall }}
 ```
 
 ### **break / continue**: Loop Control
@@ -51,8 +51,8 @@
 ### **comment**: Comments
 
 ```jianjia
-{{! This is a comment }}
-{{ #comment }}Multi-line comment{{ /comment }}
+{{# This is a comment }}
+{{ comment }}Multi-line comment{{ endcomment }}
 ```
 
 ### **expression (=)**: Expression Output

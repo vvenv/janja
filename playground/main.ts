@@ -42,44 +42,44 @@ const debug = sp.has('debug')
 
 const defaultTemplate
   = (!reset && localStorage.getItem('template'))
-    || `{{! This is a comment }}
-{{! This is a
+    || `{{# This is a comment }}
+{{# This is a
 comment }}
-{{ #comment }}
+{{ comment }}
 This is a comment with variable "name='{{= name }}'"
-{{ /comment }}
+{{ endcomment }}
 {{ layout "default" }}
 {{ include "header" }}
-{{ #block body }}
+{{ block body }}
   {{ super }}
   <div>
     <h2>{{= name }}</h2>
     <p>Please visit <a href="{{= url }}">Github Repository</a></p>
 
     <ul>
-      {{ #for name in array | reverse }}
+      {{ for name in array | reverse }}
         <li>
-          {{ #if name | reverse | lower == "bob" }}
+          {{ if name | reverse | lower == "bob" }}
             ***
           {{ else }}
             {{= loop.index + 1 }} - {{= name | reverse | lower }}
-          {{ /if }}
+          {{ endif }}
         </li>
-      {{ /for }}
+      {{ endfor }}
     </ul>
     ---
     <ul>
-      {{ #for a, b in nested }}
+      {{ for a, b in nested }}
         <li>
         {{= a }} - {{= b }}
         </li>
-      {{ /for }}
+      {{ endfor }}
     </ul>
     ---
     <ul>
-      {{ #for name in object }}
+      {{ for name in object }}
         <li>
-          {{ #if name == "Bob" }}
+          {{ if name == "Bob" }}
             ***
           {{ elif name == "Eve" }}
             ---
@@ -87,15 +87,15 @@ This is a comment with variable "name='{{= name }}'"
             ...
           {{ else }}
             {{= loop.index }} - {{= name }}
-          {{ /if }}
+          {{ endif }}
         </li>
-      {{ /for }}
+      {{ endfor }}
     </ul>
     ---
     <ul>
-      {{ #for key, name in object }}
+      {{ for key, name in object }}
         <li>
-          {{ #if name == "Bob" }}
+          {{ if name == "Bob" }}
             ***
           {{ elif name == "Eve" }}
             ---
@@ -103,12 +103,12 @@ This is a comment with variable "name='{{= name }}'"
             ...
           {{ else }}
             {{= loop.index }} {{= key }} - {{= name }}
-          {{ /if }}
+          {{ endif }}
         </li>
-      {{ /for }}
+      {{ endfor }}
     </ul>
   </div>
-{{ /block }}`
+{{ endblock }}`
 
 const defaultData
   = (!reset && localStorage.getItem('data')) || `{
