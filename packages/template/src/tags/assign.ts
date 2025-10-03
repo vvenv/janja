@@ -15,7 +15,7 @@ const RE
 export const tag: Tag = {
   names: [ASSIGN, END_ASSIGN],
 
-  async compile({ token: { name, value }, ctx: { context }, out, validator }) {
+  async compile({ token: { name, value }, ctx, out }) {
     if (name === ASSIGN) {
       if (!value) {
         throw new Error('assign tag must have a value')
@@ -26,6 +26,8 @@ export const tag: Tag = {
       if (!left) {
         throw new Error('assign tag must have a variable')
       }
+
+      const { context } = ctx
 
       const names = left.split(/, +/)
 
@@ -51,7 +53,7 @@ export const tag: Tag = {
         return out.pushLine(...lines)
       }
 
-      validator.expect(END_ASSIGN)
+      ctx.expect(END_ASSIGN)
 
       // block assignment
       return out.pushLine(
@@ -61,7 +63,7 @@ export const tag: Tag = {
     }
 
     if (name === END_ASSIGN) {
-      if (!validator.consume(END_ASSIGN)) {
+      if (!ctx.consume(END_ASSIGN)) {
         throw new Error(`unexpected ${name}`)
       }
 

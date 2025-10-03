@@ -1,6 +1,5 @@
 import type { Context } from './context'
 import type { OutScript } from './out-script'
-import type { Validator } from './validator'
 
 export type MaybePromise<T> = T | Promise<T>
 
@@ -71,13 +70,12 @@ export interface Tag {
    * - Return `false` to pass the control to the next tag.
    * - Return `void` to continue compiling.
    */
-  compile?: (
+  compile: (
     arg: {
       token: Token
       index: number
       ctx: Context
       out: OutScript
-      validator: Validator
     },
   ) => MaybePromise<Loc | void | false>
 }

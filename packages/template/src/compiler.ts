@@ -3,7 +3,6 @@ import { CompileError } from './compile-error'
 import { Context } from './context'
 import { OutScript } from './out-script'
 import { SourceMap } from './source-map'
-import { Validator } from './validator'
 
 export class Compiler {
   constructor(public options: Required<Config>) {}
@@ -12,7 +11,6 @@ export class Compiler {
     const ctx = new Context(this.options)
     const out = new OutScript(this.options)
     const sourcemap = new SourceMap(this.options)
-    const validator = new Validator(this.options)
 
     out.start()
     let i = 0
@@ -22,13 +20,12 @@ export class Compiler {
 
       for (const tag of tags) {
         try {
-          const r = await tag.compile?.(
+          const r = await tag.compile(
             {
               token,
               index: i++,
               ctx,
               out,
-              validator,
             },
           )
 
@@ -48,7 +45,7 @@ export class Compiler {
       token = token.next
     }
 
-    validator.validate()
+    ctx.validate()
 
     out.end()
 

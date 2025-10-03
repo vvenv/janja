@@ -11,7 +11,7 @@ const RE = /^([a-z$_][\w$]*)(?:: (.+)|\b)/
 export const tag: Tag = {
   names: [CALL, END_CALL],
 
-  async compile({ token: { name, value }, ctx: { context }, out, validator }) {
+  async compile({ token: { name, value }, ctx, out }) {
     if (name === CALL) {
       if (!value) {
         throw new Error('call tag must have a value')
@@ -23,7 +23,8 @@ export const tag: Tag = {
         throw new Error('call tag must have a valid name')
       }
 
-      validator.expect(END_CALL)
+      const { context } = ctx
+      ctx.expect(END_CALL)
 
       const args = parseActualArgs(_args, context)
 
@@ -31,7 +32,7 @@ export const tag: Tag = {
     }
 
     if (name === END_CALL) {
-      if (!validator.consume(END_CALL)) {
+      if (!ctx.consume(END_CALL)) {
         throw new Error(`unexpected ${name}`)
       }
 

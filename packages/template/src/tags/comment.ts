@@ -10,7 +10,7 @@ const END_COMMENT = 'endcomment'
 export const tag: Tag = {
   names: [COMMENT, '#', END_COMMENT],
 
-  async compile({ token: { name, value }, out, validator }) {
+  async compile({ token: { name, value }, ctx, out }) {
     // inline comment
     if (name === '#') {
       if (!value || out.options.stripComments) {
@@ -22,13 +22,13 @@ export const tag: Tag = {
 
     // block comment
     if (name === COMMENT) {
-      validator.expect(END_COMMENT)
+      ctx.expect(END_COMMENT)
 
       return out.pushStr('<!--')
     }
 
     if (name === END_COMMENT) {
-      if (!validator.consume(END_COMMENT)) {
+      if (!ctx.consume(END_COMMENT)) {
         throw new Error(`unexpected ${name}`)
       }
 

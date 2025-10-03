@@ -15,13 +15,13 @@ const END_FOR = 'endfor'
 export const tag: Tag = {
   names: [FOR, BREAK, CONTINUE, END_FOR],
 
-  async compile({ token: { name, value }, index, ctx, out, validator }) {
+  async compile({ token: { name, value }, index, ctx, out }) {
     if (name === FOR) {
       if (!value) {
         throw new Error('for tag must have a value')
       }
 
-      validator.expect(END_FOR)
+      ctx.expect(END_FOR)
 
       const [{ value: v }, , ...right] = parseStatement(value)
       const { context } = ctx
@@ -39,7 +39,7 @@ export const tag: Tag = {
       )
 
       lines.push(
-        `const ${ctx.affix(index)}={`,
+        `const ${ctx.in(index)}={`,
         `...${context},`,
       )
 
@@ -68,7 +68,7 @@ export const tag: Tag = {
     }
 
     if (name === BREAK) {
-      if (!validator.matchAny(END_FOR)) {
+      if (!ctx.matchAny(END_FOR)) {
         throw new Error('break tag must be inside a for loop')
       }
 
@@ -76,7 +76,7 @@ export const tag: Tag = {
     }
 
     if (name === CONTINUE) {
-      if (!validator.matchAny(END_FOR)) {
+      if (!ctx.matchAny(END_FOR)) {
         throw new Error('continue tag must be inside a for loop')
       }
 
@@ -84,11 +84,11 @@ export const tag: Tag = {
     }
 
     if (name === END_FOR) {
-      if (!validator.consume(END_FOR)) {
+      if (!ctx.consume(END_FOR)) {
         throw new Error(`unexpected ${name}`)
       }
 
-      ctx.reset()
+      ctx.out()
 
       return out.pushLine('}')
     }

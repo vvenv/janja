@@ -14,14 +14,15 @@ const END_IF = 'endif'
 export const tag: Tag = {
   names: [IF, ELIF, ELSE, END_IF],
 
-  async compile({ token: { name, value }, ctx: { context }, out, validator }) {
+  async compile({ token: { name, value }, ctx, out }) {
     if (name === IF) {
       if (!value) {
         throw new Error('if tag must have a value')
       }
 
-      validator.expect(END_IF)
+      ctx.expect(END_IF)
 
+      const { context } = ctx
       return out.pushLine(
         `if(${compileStatement(parseStatement(value), context)}){`,
       )
@@ -32,17 +33,18 @@ export const tag: Tag = {
         throw new Error('elif tag must have a value')
       }
 
-      if (!validator.match(END_IF)) {
+      if (!ctx.match(END_IF)) {
         throw new Error('elif tag must follow if tag')
       }
 
+      const { context } = ctx
       return out.pushLine(
         `}else if(${compileStatement(parseStatement(value!), context)}){`,
       )
     }
 
     if (name === ELSE) {
-      if (!validator.match(END_IF)) {
+      if (!ctx.match(END_IF)) {
         throw new Error('else tag must follow if tag')
       }
 
@@ -50,7 +52,7 @@ export const tag: Tag = {
     }
 
     if (name === END_IF) {
-      if (!validator.consume(END_IF)) {
+      if (!ctx.consume(END_IF)) {
         throw new Error(`unexpected ${name}`)
       }
 

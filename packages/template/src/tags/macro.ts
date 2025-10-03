@@ -13,7 +13,7 @@ const RE = /^([a-z$_][\w$]*)(?:: (.+))?$/
 export const tag: Tag = {
   names: [...MACRO, ...CALLER, ...END_MACRO],
 
-  async compile({ token: { name, value }, index, ctx, out, validator }) {
+  async compile({ token: { name, value }, index, ctx, out }) {
     if (name === MACRO) {
       if (!value) {
         throw new Error('assign tag must have a value')
@@ -25,7 +25,7 @@ export const tag: Tag = {
         throw new Error('assign tag must have a valid name')
       }
 
-      validator.expect(END_MACRO)
+      ctx.expect(END_MACRO)
 
       const args = parseFormalArgs(_args)
       const bareArgs = args.map(arg => arg.replace(/(?<=[a-z$_][\w$]*)=.*$/, ''))
@@ -38,7 +38,7 @@ export const tag: Tag = {
         lines.push(
           // swap args to align with the caller
           `[${[...bareArgs, '_c'].join(',')}]=[${['_c', ...bareArgs].join(',')}];`,
-          `const ${ctx.affix(index)}={`,
+          `const ${ctx.in(index)}={`,
           `...${context},`,
         )
         args.forEach((param: string) => {
@@ -51,7 +51,7 @@ export const tag: Tag = {
     }
 
     if (name === CALLER) {
-      if (!validator.match(END_MACRO)) {
+      if (!ctx.match(END_MACRO)) {
         throw new Error('caller tag must be inside a macro tag')
       }
 
@@ -59,7 +59,7 @@ export const tag: Tag = {
     }
 
     if (name === END_MACRO) {
-      if (!validator.consume(END_MACRO)) {
+      if (!ctx.consume(END_MACRO)) {
         throw new Error(`unexpected ${name}`)
       }
 

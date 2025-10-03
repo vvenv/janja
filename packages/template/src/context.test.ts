@@ -1,152 +1,83 @@
-import { describe, expect, it } from 'vitest'
+import { expect, it } from 'vitest'
 import { config, CONTEXT } from './config'
 import { Context } from './context'
 
-describe('context', () => {
-  it('should initialize with default context', () => {
-    const context = new Context(config)
-    expect(context.context).toBe(CONTEXT)
-  })
+it('context', () => {
+  const ctx = new Context(config)
+  expect(ctx.context).toBe(CONTEXT)
+  expect(ctx.in('1')).toBe('c_1')
+  expect(ctx.context).toBe('c_1')
+  expect(ctx.in(1)).toBe('c_1_1')
+  expect(ctx.context).toBe('c_1_1')
+  ctx.out()
+  expect(ctx.context).toBe('c_1')
+  ctx.out()
+  expect(ctx.context).toBe('c')
+  ctx.out()
+  expect(ctx.context).toBe('c')
+})
 
-  describe('affix', () => {
-    it('should affix string to context', () => {
-      const context = new Context(config)
-      const result = context.affix('test')
-      expect(result).toBe('c_test')
-      expect(context.context).toBe('c_test')
-    })
+it('matchAny', () => {
+  const ctx = new Context(config)
 
-    it('should affix number to context', () => {
-      const context = new Context(config)
-      const result = context.affix(123)
-      expect(result).toBe('c_123')
-      expect(context.context).toBe('c_123')
-    })
+  expect(ctx.matchAny('endif')).toBe(false)
+  expect(ctx.matchAny('endfor')).toBe(false)
 
-    it('should support multiple affixes', () => {
-      const context = new Context(config)
+  ctx.expect('endif')
+  ctx.expect('endfor')
 
-      context.affix('first')
-      expect(context.context).toBe('c_first')
+  expect(ctx.matchAny('endif')).toBe(true)
+  expect(ctx.matchAny('endfor')).toBe(true)
+  expect(ctx.matchAny('endcall')).toBe(false)
+})
 
-      context.affix('second')
-      expect(context.context).toBe('c_first_second')
+it('match', () => {
+  const ctx = new Context(config)
 
-      context.affix(42)
-      expect(context.context).toBe('c_first_second_42')
-    })
+  expect(ctx.match('endif')).toBe(false)
+  expect(ctx.match('endfor')).toBe(false)
 
-    it('should return the new context value', () => {
-      const context = new Context(config)
-      const result1 = context.affix('alpha')
-      const result2 = context.affix('beta')
+  ctx.expect('endif')
+  ctx.expect('endfor')
 
-      expect(result1).toBe('c_alpha')
-      expect(result2).toBe('c_alpha_beta')
-      expect(context.context).toBe('c_alpha_beta')
-    })
-  })
+  expect(ctx.match('endif')).toBe(false)
+  expect(ctx.match('endfor')).toBe(true)
+  expect(ctx.match('endcall')).toBe(false)
+})
 
-  describe('reset', () => {
-    it('should reset to previous context after single affix', () => {
-      const context = new Context(config)
+it('consume', () => {
+  const ctx = new Context(config)
 
-      context.affix('temp')
-      expect(context.context).toBe('c_temp')
+  expect(ctx.consume('endif')).toBe(false)
+  expect(ctx.consume('endfor')).toBe(false)
 
-      context.reset()
-      expect(context.context).toBe('c')
-    })
+  ctx.expect('endif')
+  ctx.expect('endfor')
 
-    it('should reset to previous context after multiple affixes', () => {
-      const context = new Context(config)
+  expect(ctx.consume('endif')).toBe(false)
+  expect(ctx.consume('endfor')).toBe(true)
+  expect(ctx.consume('endcall')).toBe(false)
+})
 
-      context.affix('first')
-      context.affix('second')
-      context.affix('third')
-      expect(context.context).toBe('c_first_second_third')
+it('validate', () => {
+  const ctx = new Context(config)
+  ctx.expect('endif')
+  ctx.consume('endif')
 
-      context.reset()
-      expect(context.context).toBe('c_first_second')
+  expect(() => ctx.validate()).not.toThrow()
+})
 
-      context.reset()
-      expect(context.context).toBe('c_first')
+it('validate w/ throw', () => {
+  const ctx = new Context(config)
+  ctx.expect('endif')
 
-      context.reset()
-      expect(context.context).toBe('c')
-    })
+  expect(() => ctx.validate()).toThrow('expected tokens endif, but got nothing')
+})
 
-    it('should handle reset on base context gracefully', () => {
-      const context = new Context(config)
-      expect(context.context).toBe('c')
+it('validate w/ throw #2', () => {
+  const ctx = new Context(config)
+  ctx.expect('endif')
+  ctx.expect('endfor')
 
-      context.reset()
-      expect(context.context).toBe('c')
-    })
-  })
-
-  describe('nested operations', () => {
-    it('should handle complex affix and reset patterns', () => {
-      const context = new Context(config)
-
-      // Build nested context
-      context.affix('1')
-      expect(context.context).toBe('c_1')
-
-      context.affix('2')
-      expect(context.context).toBe('c_1_2')
-
-      // Reset one level
-      context.reset()
-      expect(context.context).toBe('c_1')
-
-      // Reset one level
-      context.reset()
-      expect(context.context).toBe('c')
-
-      // Keep root level
-      context.reset()
-      expect(context.context).toBe('c')
-    })
-
-    it('should maintain context stack integrity', () => {
-      const context = new Context(config)
-
-      // Create multiple contexts
-      const contexts = ['a', 'b', 'c', 'd', 'e']
-      contexts.forEach(ctx => context.affix(ctx))
-
-      expect(context.context).toBe('c_a_b_c_d_e')
-
-      // Reset them in reverse order
-      for (let i = contexts.length - 1; i >= 0; i--) {
-        context.reset()
-        const expected = i === 0 ? 'c' : `c_${contexts.slice(0, i).join('_')}`
-        expect(context.context).toBe(expected)
-      }
-    })
-  })
-
-  describe('edge cases', () => {
-    it('should handle empty string affix', () => {
-      const context = new Context(config)
-      const result = context.affix('')
-      expect(result).toBe('c_')
-      expect(context.context).toBe('c_')
-    })
-
-    it('should handle zero as affix', () => {
-      const context = new Context(config)
-      const result = context.affix(0)
-      expect(result).toBe('c_0')
-      expect(context.context).toBe('c_0')
-    })
-
-    it('should handle special characters in affix', () => {
-      const context = new Context(config)
-      const result = context.affix('test-name.property[0]')
-      expect(result).toBe('c_test-name.property[0]')
-      expect(context.context).toBe('c_test-name.property[0]')
-    })
-  })
+  expect(() => ctx.validate()).toThrow('expected tokens endif, endfor, but got nothing')
 })
