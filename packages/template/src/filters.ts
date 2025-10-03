@@ -14,6 +14,12 @@ export function capitalize(this: Globals, value = '') {
 export function add(this: Globals, value = 0, addend = 0) {
   return value + addend
 }
+export function ceil(this: Globals, value = 0) {
+  return Math.ceil(value)
+}
+export function compact(this: Globals, value: any[] = []) {
+  return value.filter(v => v != null)
+}
 export function date(
   this: Globals,
   value: string | number = 0,
@@ -139,6 +145,9 @@ export function time(
 export function trim(this: Globals, value = '') {
   return value.trim()
 }
+export function truncate(this: Globals, value = '', length = 0, truncateStr = '...') {
+  return value.slice(0, length) + (value.length > length ? truncateStr : '')
+}
 export function unique(this: Globals, value: string | any[] = '') {
   return Array.isArray(value)
     ? Array.from(new Set(value))
@@ -146,6 +155,12 @@ export function unique(this: Globals, value: string | any[] = '') {
 }
 export function upper(this: Globals, value = '') {
   return value.toUpperCase()
+}
+export function urldecode(this: Globals, value = '') {
+  return decodeURIComponent(value)
+}
+export function urlencode(this: Globals, value = '') {
+  return encodeURIComponent(value)
 }
 export function values(this: Globals, value: ObjectType = {}) {
   return Object.values(value)

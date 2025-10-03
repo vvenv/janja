@@ -13,6 +13,8 @@
     "shiki",
     "tinyrainbow",
     "unocss",
+    "urldecode",
+    "urlencode",
     "Vitest",
     "vvenv"
   ],

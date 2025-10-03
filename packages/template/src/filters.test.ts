@@ -33,6 +33,21 @@ describe('builtin', () => {
     ).toMatchInlineSnapshot('"Foo Bar"')
   })
 
+  it('ceil', async () => {
+    expect(
+      await render('{{= x | ceil }}', { x: 1.2 }),
+    ).toMatchInlineSnapshot(`"2"`)
+    expect(
+      await render('{{= x | ceil }}', { x: '1.0' }),
+    ).toMatchInlineSnapshot(`"1"`)
+  })
+
+  it('compact', async () => {
+    expect(
+      await render('{{= x | compact }}', { x: [1, null, 2] }),
+    ).toMatchInlineSnapshot(`"1,2"`)
+  })
+
   it('date', async () => {
     expect(
       await render('{{= x | date }}', { x: '2021-01-01' }),
@@ -312,6 +327,18 @@ describe('builtin', () => {
     ).toMatchInlineSnapshot('"foo"')
   })
 
+  it('truncate', async () => {
+    expect(
+      await render('{{= x | truncate: 1 }}', { x: 'foo' }),
+    ).toMatchInlineSnapshot(`"f..."`)
+    expect(
+      await render('{{= x | truncate: 1, "-" }}', { x: 'foo' }),
+    ).toMatchInlineSnapshot(`"f-"`)
+    expect(
+      await render('{{= x | truncate: 3 }}', { x: 'foo' }),
+    ).toMatchInlineSnapshot(`"foo"`)
+  })
+
   it('unique', async () => {
     expect(
       await render('{{= x | unique }}', { x: 'foo' }),
@@ -325,6 +352,22 @@ describe('builtin', () => {
     expect(
       await render('{{= x | upper }}', { x: 'foo' }),
     ).toMatchInlineSnapshot('"FOO"')
+  })
+
+  it('urldecode', async () => {
+    expect(
+      await render('{{= x | urldecode }}', {
+        x: 'foo%40bar.com',
+      }),
+    ).toMatchInlineSnapshot(`"foo@bar.com"`)
+  })
+
+  it('urlencode', async () => {
+    expect(
+      await render('{{= x | urlencode }}', {
+        x: 'foo@bar.com',
+      }),
+    ).toMatchInlineSnapshot(`"foo%40bar.com"`)
   })
 
   it('values', async () => {
