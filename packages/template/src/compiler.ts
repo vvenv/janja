@@ -13,7 +13,6 @@ export class Compiler {
     const sourcemap = new SourceMap(this.options)
 
     out.start()
-    let i = 0
 
     while (token) {
       const tags = (this.options.tags[token.name] ?? [])
@@ -23,7 +22,6 @@ export class Compiler {
           const r = await tag.compile(
             {
               token,
-              index: i++,
               ctx,
               out,
             },

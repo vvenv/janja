@@ -15,7 +15,7 @@ const END_FOR = 'endfor'
 export const tag: Tag = {
   names: [FOR, BREAK, CONTINUE, END_FOR],
 
-  async compile({ token: { name, value }, index, ctx, out }) {
+  async compile({ token: { name, value }, ctx, out }) {
     if (name === FOR) {
       if (!value) {
         throw new Error('for tag must have a value')
@@ -29,24 +29,25 @@ export const tag: Tag = {
       const names = v.split(/, +/)
       const lines: string[] = []
 
+      const nested = ctx.in()
       lines.push(
-        `const o_${index}=${items};`,
-        `const a_${index}=Array.isArray(o_${index});`,
-        `const k_${index}=Object.keys(o_${index});`,
-        `const l_${index}=k_${index}.length;`,
-        `for(let i_${index}=0;i_${index}<l_${index};i_${index}++){`,
-        `const _item=o_${index}[k_${index}[i_${index}]];`,
+        `const o_${nested}=${items};`,
+        `const a_${nested}=Array.isArray(o_${nested});`,
+        `const k_${nested}=Object.keys(o_${nested});`,
+        `const l_${nested}=k_${nested}.length;`,
+        `for(let i_${nested}=0;i_${nested}<l_${nested};i_${nested}++){`,
+        `const _item=o_${nested}[k_${nested}[i_${nested}]];`,
       )
 
       lines.push(
-        `const ${ctx.in(index)}={`,
+        `const ${nested}={`,
         `...${context},`,
       )
 
       if (names.length > 1) {
         names.forEach((n, i) => {
           lines.push(
-            `${n}:a_${index}?${HELPERS}.getIn(_item,${i},"${n}"):${i === 0 ? `k_${index}[i_${index}]` : '_item'},`,
+            `${n}:a_${nested}?${HELPERS}.getIn(_item,${i},"${n}"):${i === 0 ? `k_${nested}[i_${nested}]` : '_item'},`,
           )
         })
       }
@@ -56,10 +57,10 @@ export const tag: Tag = {
 
       lines.push(
         'loop:{',
-        `index:i_${index},`,
-        `first:i_${index}===0,`,
-        `last:i_${index}===l_${index},`,
-        `length:l_${index}`,
+        `index:i_${nested},`,
+        `first:i_${nested}===0,`,
+        `last:i_${nested}===l_${nested},`,
+        `length:l_${nested}`,
         '}',
         '};',
       )

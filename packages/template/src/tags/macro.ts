@@ -13,7 +13,7 @@ const RE = /^([a-z$_][\w$]*)(?:: (.+))?$/
 export const tag: Tag = {
   names: [...MACRO, ...CALLER, ...END_MACRO],
 
-  async compile({ token: { name, value }, index, ctx, out }) {
+  async compile({ token: { name, value }, ctx, out }) {
     if (name === MACRO) {
       if (!value) {
         throw new Error('assign tag must have a value')
@@ -38,7 +38,7 @@ export const tag: Tag = {
         lines.push(
           // swap args to align with the caller
           `[${[...bareArgs, '_c'].join(',')}]=[${['_c', ...bareArgs].join(',')}];`,
-          `const ${ctx.in(index)}={`,
+          `const ${ctx.in()}={`,
           `...${context},`,
         )
         args.forEach((param: string) => {

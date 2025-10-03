@@ -4,13 +4,14 @@ import { CONTEXT } from './config'
 export class Context {
   context = CONTEXT
 
+  private index = 0
   private contexts: string[] = [CONTEXT]
   private expected: string[] = []
 
   constructor(public options: Required<Config>) {}
 
-  in(tail: string | number) {
-    const len = this.contexts.push(`${this.context}_${tail}`)
+  in() {
+    const len = this.contexts.push(`${this.context}_${this.index++}`)
     return (this.context = this.contexts[len - 1])
   }
 

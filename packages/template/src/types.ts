@@ -73,7 +73,6 @@ export interface Tag {
   compile: (
     arg: {
       token: Token
-      index: number
       ctx: Context
       out: OutScript
     },
