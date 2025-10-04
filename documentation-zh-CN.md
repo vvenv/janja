@@ -32,7 +32,6 @@
 
 ```jianjia
 {{ macro my_macro: x, y }}内容{{ caller }}{{ endmacro }}
-{{ my_macro 1 2 }}
 ```
 
 ### **call**：调用宏
