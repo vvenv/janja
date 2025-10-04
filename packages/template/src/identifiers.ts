@@ -5,4 +5,4 @@ export const HELPERS = 'h'
 
 export const BLOCK = 'block'
 export const SUPER = 'super'
-export const END_BLOCK = 'endblock'
+export const ENDBLOCK = 'endblock'

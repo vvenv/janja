@@ -2,14 +2,14 @@ import type { Tag } from '../types'
 import { parseActualArgs } from '../utils/parse-actual-args'
 
 const CALL = 'call'
-const END_CALL = 'endcall'
+const ENDCALL = 'endcall'
 const RE = /^([a-z$_][\w$]*)(?:: (.+)|\b)/
 
 /**
  * @example {{ call my_macro: "foo", "bar" }}...{{ endcall }}
  */
 export const tag: Tag = {
-  names: [CALL, END_CALL],
+  names: [CALL, ENDCALL],
 
   async compile({ token: { name, value }, ctx, out }) {
     if (name === CALL) {
@@ -24,15 +24,15 @@ export const tag: Tag = {
       }
 
       const { context } = ctx
-      ctx.expect(END_CALL)
+      ctx.expect(ENDCALL)
 
       const args = parseActualArgs(_args, context)
 
-      return out.pushLine(`await ${context}.${_name}(${[...args, 'async()=>{'].join(',')}`)
+      return out.pushLine(`await ${context}.${_name}?.(${[...args, 'async()=>{'].join(',')}`)
     }
 
-    if (name === END_CALL) {
-      if (!ctx.consume(END_CALL)) {
+    if (name === ENDCALL) {
+      if (!ctx.consume(ENDCALL)) {
         throw new Error(`unexpected ${name}`)
       }
 

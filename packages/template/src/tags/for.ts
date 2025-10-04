@@ -6,14 +6,14 @@ import { parseStatement } from '../utils/parse-statement'
 const FOR = 'for'
 const BREAK = 'break'
 const CONTINUE = 'continue'
-const END_FOR = 'endfor'
+const ENDFOR = 'endfor'
 
 /**
  * @example {{ for item in items }}{{= item }}{{ endfor }}
  * @example {{ for key, value in items }}{{= key }}:{{= value }}{{ endfor }}
  */
 export const tag: Tag = {
-  names: [FOR, BREAK, CONTINUE, END_FOR],
+  names: [FOR, BREAK, CONTINUE, ENDFOR],
 
   async compile({ token: { name, value }, ctx, out }) {
     if (name === FOR) {
@@ -21,7 +21,7 @@ export const tag: Tag = {
         throw new Error('for tag must have a value')
       }
 
-      ctx.expect(END_FOR)
+      ctx.expect(ENDFOR)
 
       const [{ value: v }, , ...right] = parseStatement(value)
       const { context } = ctx
@@ -69,7 +69,7 @@ export const tag: Tag = {
     }
 
     if (name === BREAK) {
-      if (!ctx.matchAny(END_FOR)) {
+      if (!ctx.matchAny(ENDFOR)) {
         throw new Error('break tag must be inside a for loop')
       }
 
@@ -77,15 +77,15 @@ export const tag: Tag = {
     }
 
     if (name === CONTINUE) {
-      if (!ctx.matchAny(END_FOR)) {
+      if (!ctx.matchAny(ENDFOR)) {
         throw new Error('continue tag must be inside a for loop')
       }
 
       return out.pushLine('continue;')
     }
 
-    if (name === END_FOR) {
-      if (!ctx.consume(END_FOR)) {
+    if (name === ENDFOR) {
+      if (!ctx.consume(ENDFOR)) {
         throw new Error(`unexpected ${name}`)
       }
 

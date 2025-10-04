@@ -1,14 +1,14 @@
 import type { Tag } from '../types'
 
 const COMMENT = 'comment'
-const END_COMMENT = 'endcomment'
+const ENDCOMMENT = 'endcomment'
 
 /**
  * @example {{# This is a comment }}
  * @example {{ comment }} This is a comment {{ endcomment }}
  */
 export const tag: Tag = {
-  names: [COMMENT, '#', END_COMMENT],
+  names: [COMMENT, '#', ENDCOMMENT],
 
   async compile({ token: { name, value }, ctx, out }) {
     // inline comment
@@ -22,13 +22,13 @@ export const tag: Tag = {
 
     // block comment
     if (name === COMMENT) {
-      ctx.expect(END_COMMENT)
+      ctx.expect(ENDCOMMENT)
 
       return out.pushStr('<!--')
     }
 
-    if (name === END_COMMENT) {
-      if (!ctx.consume(END_COMMENT)) {
+    if (name === ENDCOMMENT) {
+      if (!ctx.consume(ENDCOMMENT)) {
         throw new Error(`unexpected ${name}`)
       }
 

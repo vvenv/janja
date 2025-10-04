@@ -3,7 +3,7 @@ import { compileStatement } from '../utils/compile-statement'
 import { parseStatement } from '../utils/parse-statement'
 
 const ASSIGN = 'assign'
-const END_ASSIGN = 'endassign'
+const ENDASSIGN = 'endassign'
 const RE
   = /^(?:([a-z$_][\w$]*)|([a-z$_][\w$]*(?:, [a-z$_][\w$]*)*) = ((['"`])(?:\\\4|(?!\4).)*\4|[^=]+))$/i
 
@@ -13,7 +13,7 @@ const RE
  * @example {{ assign variable }} this is {{= my_value }} {{ endassign }}
  */
 export const tag: Tag = {
-  names: [ASSIGN, END_ASSIGN],
+  names: [ASSIGN, ENDASSIGN],
 
   async compile({ token: { name, value }, ctx, out }) {
     if (name === ASSIGN) {
@@ -53,7 +53,7 @@ export const tag: Tag = {
         return out.pushLine(...lines)
       }
 
-      ctx.expect(END_ASSIGN)
+      ctx.expect(ENDASSIGN)
 
       // block assignment
       return out.pushLine(
@@ -62,8 +62,8 @@ export const tag: Tag = {
       )
     }
 
-    if (name === END_ASSIGN) {
-      if (!ctx.consume(END_ASSIGN)) {
+    if (name === ENDASSIGN) {
+      if (!ctx.consume(ENDASSIGN)) {
         throw new Error(`unexpected ${name}`)
       }
 

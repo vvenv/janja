@@ -3,7 +3,7 @@ import type {
   Config,
   Token,
 } from './types'
-import { BLOCK, END_BLOCK, SUPER } from './identifiers'
+import { BLOCK, ENDBLOCK, SUPER } from './identifiers'
 
 export class Tokenizer implements AST {
   private template = ''
@@ -171,7 +171,7 @@ export class Tokenizer implements AST {
     else if (this.expect) {
       const chunks = this.blocks[this.expect]
 
-      if (END_BLOCK.includes(token.name)) {
+      if (ENDBLOCK.includes(token.name)) {
         this.expect = ''
       }
 

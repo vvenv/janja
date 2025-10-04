@@ -5,14 +5,14 @@ import { parseStatement } from '../utils/parse-statement'
 const IF = 'if'
 const ELIF = 'elif'
 const ELSE = 'else'
-const END_IF = 'endif'
+const ENDIF = 'endif'
 
 /**
  * @example {{ if my_var | my_filter }}yes{{ else }}no{{ endif }}
  *             ^^^ ^^^^^^^^^^^^^^^^^         ^^^^        ^^^^^
  */
 export const tag: Tag = {
-  names: [IF, ELIF, ELSE, END_IF],
+  names: [IF, ELIF, ELSE, ENDIF],
 
   async compile({ token: { name, value }, ctx, out }) {
     if (name === IF) {
@@ -20,7 +20,7 @@ export const tag: Tag = {
         throw new Error('if tag must have a value')
       }
 
-      ctx.expect(END_IF)
+      ctx.expect(ENDIF)
 
       const { context } = ctx
       return out.pushLine(
@@ -33,7 +33,7 @@ export const tag: Tag = {
         throw new Error('elif tag must have a value')
       }
 
-      if (!ctx.match(END_IF)) {
+      if (!ctx.match(ENDIF)) {
         throw new Error('elif tag must follow if tag')
       }
 
@@ -44,15 +44,15 @@ export const tag: Tag = {
     }
 
     if (name === ELSE) {
-      if (!ctx.match(END_IF)) {
+      if (!ctx.match(ENDIF)) {
         throw new Error('else tag must follow if tag')
       }
 
       return out.pushLine('}else{')
     }
 
-    if (name === END_IF) {
-      if (!ctx.consume(END_IF)) {
+    if (name === ENDIF) {
+      if (!ctx.consume(ENDIF)) {
         throw new Error(`unexpected ${name}`)
       }
 

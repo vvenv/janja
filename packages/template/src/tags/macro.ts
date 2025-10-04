@@ -3,7 +3,7 @@ import { parseFormalArgs } from '../utils/parse-formal-args'
 
 const MACRO = 'macro'
 const CALLER = 'caller'
-const END_MACRO = 'endmacro'
+const ENDMACRO = 'endmacro'
 const RE = /^([a-z$_][\w$]*)(?:: (.+))?$/
 
 /**
@@ -11,7 +11,7 @@ const RE = /^([a-z$_][\w$]*)(?:: (.+))?$/
  *                   ^^^^^^^^  ^^^^                                   ^^^^^^^^  ^^^^^^^^
  */
 export const tag: Tag = {
-  names: [...MACRO, ...CALLER, ...END_MACRO],
+  names: [MACRO, CALLER, ENDMACRO],
 
   async compile({ token: { name, value }, ctx, out }) {
     if (name === MACRO) {
@@ -25,7 +25,7 @@ export const tag: Tag = {
         throw new Error('assign tag must have a valid name')
       }
 
-      ctx.expect(END_MACRO)
+      ctx.expect(ENDMACRO)
 
       const args = parseFormalArgs(_args)
       const bareArgs = args.map(arg => arg.replace(/(?<=[a-z$_][\w$]*)=.*$/, ''))
@@ -51,15 +51,15 @@ export const tag: Tag = {
     }
 
     if (name === CALLER) {
-      if (!ctx.match(END_MACRO)) {
+      if (!ctx.match(ENDMACRO)) {
         throw new Error('caller tag must be inside a macro tag')
       }
 
       return out.pushLine('await _c?.();')
     }
 
-    if (name === END_MACRO) {
-      if (!ctx.consume(END_MACRO)) {
+    if (name === ENDMACRO) {
+      if (!ctx.consume(ENDMACRO)) {
         throw new Error(`unexpected ${name}`)
       }
 
