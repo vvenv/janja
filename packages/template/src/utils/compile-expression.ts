@@ -1,5 +1,5 @@
 import type { FilterMeta } from '../types'
-import { FILTERS } from '../config'
+import { FILTERS } from '../identifiers'
 import { addContext } from './add-context'
 import { isLiteral } from './is-literal'
 import { parseActualArgs } from './parse-actual-args'

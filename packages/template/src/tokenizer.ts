@@ -3,7 +3,7 @@ import type {
   Config,
   Token,
 } from './types'
-import { BLOCK, END_BLOCK, SUPER } from './config'
+import { BLOCK, END_BLOCK, SUPER } from './identifiers'
 
 export class Tokenizer implements AST {
   private template = ''

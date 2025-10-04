@@ -1,6 +1,7 @@
 import { expect, it } from 'vitest'
-import { config, CONTEXT } from './config'
+import { config } from './config'
 import { Context } from './context'
+import { CONTEXT } from './identifiers'
 
 it('context', () => {
   const ctx = new Context(config)

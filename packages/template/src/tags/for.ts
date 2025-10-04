@@ -1,5 +1,5 @@
 import type { Tag } from '../types'
-import { HELPERS } from '../config'
+import { HELPERS } from '../identifiers'
 import { compileStatement } from '../utils/compile-statement'
 import { parseStatement } from '../utils/parse-statement'
 

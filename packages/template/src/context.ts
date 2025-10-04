@@ -1,5 +1,5 @@
 import type { Config } from './types'
-import { CONTEXT } from './config'
+import { CONTEXT } from './identifiers'
 
 export class Context {
   context = CONTEXT

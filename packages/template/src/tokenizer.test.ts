@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest'
 import { config } from './config'
+import { loader } from './loaders/file-loader'
 import { Tokenizer } from './tokenizer'
 
 it('empty', async () => {
@@ -18,7 +19,7 @@ it('empty', async () => {
 })
 
 it('layout', async () => {
-  expect(await new Tokenizer({ ...config, loader: async path => config.loader(`test/${path}`) }).parse('{{ layout "default" }}')).toMatchInlineSnapshot(`
+  expect(await new Tokenizer({ ...config, loader: async path => loader(`test/${path}`) }).parse('{{ layout "default" }}')).toMatchInlineSnapshot(`
     {
       "end": 18,
       "name": "str",
@@ -207,9 +208,9 @@ it('invalid', async () => {
     expect(error).toMatchInlineSnapshot(`[Error: missing include file path]`)
   }
   try {
-    await new Tokenizer({ ...config, loader: async path => config.loader(`test/${path}`) }).parse('{{ include "empty" }}')
+    await new Tokenizer({ ...config, loader: async path => loader(`test/${path}`) }).parse('{{ include "empty" }}')
   }
   catch (error) {
-    expect(error).toMatchInlineSnapshot(`[TypeError: Failed to parse URL from partials/empty.jianjia]`)
+    expect(error).toMatchInlineSnapshot(`[TypeError: Failed to parse URL from test/partials/empty.jianjia]`)
   }
 })

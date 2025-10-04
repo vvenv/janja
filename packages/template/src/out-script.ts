@@ -1,5 +1,5 @@
 import type { Config, Loc, Script } from './types'
-import { CONTEXT, ESCAPE, FILTERS, HELPERS } from './config'
+import { CONTEXT, ESCAPE, FILTERS, HELPERS } from './identifiers'
 import { unescapeTag } from './utils/unescape-tag'
 
 export class OutScript {

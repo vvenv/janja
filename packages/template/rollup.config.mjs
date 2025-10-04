@@ -1,0 +1,53 @@
+import commonjs from '@rollup/plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
+import terser from '@rollup/plugin-terser'
+import typescript from '@rollup/plugin-typescript'
+import { defineConfig } from 'rollup'
+import dts from 'rollup-plugin-dts'
+import pkg from './package.json' with { type: 'json' }
+
+export default defineConfig([
+  {
+    input: 'src/index.ts',
+    output: {
+      name: 'jianjia',
+      file: pkg.browser,
+      format: 'iife',
+      extend: true,
+    },
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript(),
+      terser({
+        compress: {
+          drop_console: true,
+          ecma: 2015,
+        },
+        format: {
+          ecma: 2015,
+        },
+      }),
+    ],
+  },
+  {
+    input: 'src/index.ts',
+    output: [
+      { file: pkg.main, format: 'cjs' },
+      { file: pkg.module, format: 'es' },
+    ],
+    plugins: [
+      resolve(),
+      commonjs(),
+      typescript(),
+    ],
+  },
+  {
+    input: 'src/index.ts',
+    output: {
+      format: 'esm',
+      file: pkg.types,
+    },
+    plugins: [dts()],
+  },
+])
