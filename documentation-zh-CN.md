@@ -63,7 +63,7 @@
 
 ## 内置过滤器
 
-abs, capitalize, add, date, entries, even, fallback, first, groupby, join, json, keys, last, length, lower, map, max, min, minus, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sum, t, time, trim, unique, upper, values
+abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, groupby, join, json, keys, last, length, lower, map, max, min, minus, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sum, t, time, trim, truncate, unique, upper, urldecode, urlencode, values
 
 ### 示例
 
@@ -81,19 +81,14 @@ abs, capitalize, add, date, entries, even, fallback, first, groupby, join, json,
 ```javascript
 const myTag = {
   names: ['my_tag'],
-  parse({ ast, base }) {
-    // 解析逻辑
-    ast.start({ ...base, name: 'my_tag' })
-    ast.end({ ...base, start: base.end, name: 'end_my_tag' })
-  },
-  async compile({ template, tag, context, out }, compileContent) {
+  async compile({ out }) {
     // 编译逻辑
-    out.pushStr('自定义标签内容')
+    return out.pushStr('自定义标签内容')
   },
 }
-const engine = new Engine()
-
-engine.registerTags([myTag])
+const engine = new Engine({
+  tags: [myTag],
+})
 ```
 
 模板中即可使用
@@ -105,11 +100,11 @@ engine.registerTags([myTag])
 ### 自定义过滤器
 
 ```javascript
-const engine = new Engine()
-
-engine.registerFilters({
-  my_filter(value) {
-    return `自定义：${value}`
+const engine = new Engine({
+  filters: {
+    my_filter(value) {
+      return `自定义：${value}`
+    },
   },
 })
 ```

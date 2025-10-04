@@ -63,7 +63,7 @@
 
 ## Built-in Filters
 
-abs, capitalize, add, date, entries, even, fallback, first, groupby, join, json, keys, last, length, lower, map, max, min, minus, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sum, t, time, trim, unique, upper, values
+abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, groupby, join, json, keys, last, length, lower, map, max, min, minus, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sum, t, time, trim, truncate, unique, upper, urldecode, urlencode, values
 
 ### Examples
 
@@ -81,19 +81,14 @@ abs, capitalize, add, date, entries, even, fallback, first, groupby, join, json,
 ```javascript
 const myTag = {
   names: ['my_tag'],
-  parse({ ast, base }) {
-    // Parsing logic
-    ast.start({ ...base, name: 'my_tag' })
-    ast.end({ ...base, start: base.end, name: 'end_my_tag' })
-  },
-  async compile({ template, tag, context, out }, compileContent) {
+  async compile({ out }) {
     // Compilation logic
-    out.pushStr('Custom tag content')
+    return out.pushStr('Custom tag content')
   },
 }
-const engine = new Engine()
-
-engine.registerTags([myTag])
+const engine = new Engine({
+  tags: [myTag],
+})
 ```
 
 Usage in template:
@@ -105,11 +100,11 @@ Usage in template:
 ### Custom Filter
 
 ```javascript
-const engine = new Engine()
-
-engine.registerFilters({
-  my_filter(value) {
-    return `Custom: ${value}`
+const engine = new Engine({
+  filters: {
+    my_filter(value) {
+      return `Custom: ${value}`
+    },
   },
 })
 ```
