@@ -3,7 +3,7 @@ import type {
   Config,
   Token,
 } from './types'
-import { BLOCK, ENDBLOCK, SUPER } from './identifiers'
+import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, SUPER } from './identifiers'
 
 export class Tokenizer implements AST {
   private template = ''
@@ -88,10 +88,10 @@ export class Tokenizer implements AST {
       const [, identifier, value = null]
         = match[3].match(/^([a-z]+)(?: (.+))?$/) ?? []
 
-      if (identifier === 'layout') {
+      if (identifier === LAYOUT) {
         await this.layout(value)
       }
-      else if (identifier === 'include') {
+      else if (identifier === INCLUDE) {
         await this.include(value)
       }
       else {
