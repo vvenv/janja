@@ -3,7 +3,7 @@ import type {
   Config,
   Token,
 } from './types'
-import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, SUPER } from './identifiers'
+import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, STR, SUPER } from './identifiers'
 
 export class Tokenizer implements AST {
   private template = ''
@@ -31,15 +31,15 @@ export class Tokenizer implements AST {
 
     while ((match = tagRe.exec(template))) {
       if (match.index > index) {
-        this.slice(index, match.index)
+        this.strToken(index, match.index)
       }
 
-      await this.token(match)
+      await this.tagToken(match)
       index = match.index + match[0].length
     }
 
     if (index < template.length) {
-      this.slice(index, template.length)
+      this.strToken(index, template.length)
     }
 
     this.cursor = this.first
@@ -49,11 +49,11 @@ export class Tokenizer implements AST {
     return this.cursor
   }
 
-  private slice(start: number, end: number) {
+  private strToken(start: number, end: number) {
     const value = this.template.slice(start, end)
 
     this.push({
-      name: 'str',
+      name: STR,
       value,
       raw: value,
       previous: null,
@@ -63,7 +63,7 @@ export class Tokenizer implements AST {
     })
   }
 
-  private async token(match: RegExpExecArray) {
+  private async tagToken(match: RegExpExecArray) {
     const start = match.index
     const end = start + match[0].length
 
