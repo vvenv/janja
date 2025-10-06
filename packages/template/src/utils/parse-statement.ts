@@ -21,41 +21,39 @@ export const operators = {
   '=': '=',
 }
 
-// First level operators
-const operatorRe = / (and|or|eq|ne|gt|ge|lt|le|in|&&|\|\||===|!==|==|!=|=) /g
-
-export function parseStatement(template: string): Statement[] {
-  if (isLiteral(template)) {
+export function parseStatement(value: string): Statement[] {
+  if (isLiteral(value)) {
     return [
       {
         type: 'expression',
-        value: template,
+        value,
       },
     ]
   }
+
+  // First level operators
+  const RE = / (and|or|eq|ne|gt|ge|lt|le|in|&&|\|\||===|!==|==|!=|=) /g
 
   const statements: Statement[] = []
 
   let cursor = 0
   let match: RegExpExecArray | null
 
-  operatorRe.lastIndex = 0
-
-  while ((match = operatorRe.exec(template))) {
+  while ((match = RE.exec(value))) {
     statements.push({
       type: 'expression',
-      ...parseExpression(template.slice(cursor, match.index)),
+      ...parseExpression(value.slice(cursor, match.index)),
     })
     statements.push({
       type: 'operator',
       value: (operators as any)[match[1]],
     })
-    cursor = operatorRe.lastIndex
+    cursor = RE.lastIndex
   }
 
   statements.push({
     type: 'expression',
-    ...parseExpression(template.slice(cursor)),
+    ...parseExpression(value.slice(cursor)),
   })
 
   return statements

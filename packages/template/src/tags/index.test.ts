@@ -11,7 +11,7 @@ it('for -> if', async () => {
   expect(
     await compile('{{ for x in a }}{{ if x }}{{= x }}{{ endif }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";const o_c_0=c.a;const a_c_0=Array.isArray(o_c_0);const k_c_0=Object.keys(o_c_0);const l_c_0=k_c_0.length;for(let i_c_0=0;i_c_0<l_c_0;i_c_0++){const _item=o_c_0[k_c_0[i_c_0]];const c_0={...c,x:_item,loop:{index:i_c_0,first:i_c_0===0,last:i_c_0===l_c_0,length:l_c_0}};if(c_0.x){s+=e(c_0.x);}}return s;})();"`,
+    `""use strict";return(async()=>{let s="";{const o=c.a;const a=Array.isArray(o);const k=Object.keys(o);const l=k.length;for(let i=0;i<l;i++){const t=o[k[i]];const c_0={...c,x:t,loop:{index:i,first:i===0,last:i===l-1,length:l}};if(c_0.x){s+=e(c_0.x);}}}return s;})();"`,
   )
 })
 
@@ -19,7 +19,7 @@ it('if -> for', async () => {
   expect(
     await compile('{{ if a }}{{ for x in a }}{{= x }}{{ endfor }}{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";if(c.a){const o_c_0=c.a;const a_c_0=Array.isArray(o_c_0);const k_c_0=Object.keys(o_c_0);const l_c_0=k_c_0.length;for(let i_c_0=0;i_c_0<l_c_0;i_c_0++){const _item=o_c_0[k_c_0[i_c_0]];const c_0={...c,x:_item,loop:{index:i_c_0,first:i_c_0===0,last:i_c_0===l_c_0,length:l_c_0}};s+=e(c_0.x);}}return s;})();"`,
+    `""use strict";return(async()=>{let s="";if(c.a){{const o=c.a;const a=Array.isArray(o);const k=Object.keys(o);const l=k.length;for(let i=0;i<l;i++){const t=o[k[i]];const c_0={...c,x:t,loop:{index:i,first:i===0,last:i===l-1,length:l}};s+=e(c_0.x);}}}return s;})();"`,
   )
 })
 
@@ -29,7 +29,7 @@ it('if -> for -> if', async () => {
       '{{ if x }}{{ for x in a }}{{ if x }}{{= x }}{{ endif }}{{ endfor }}{{ endif }}',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";if(c.x){const o_c_0=c.a;const a_c_0=Array.isArray(o_c_0);const k_c_0=Object.keys(o_c_0);const l_c_0=k_c_0.length;for(let i_c_0=0;i_c_0<l_c_0;i_c_0++){const _item=o_c_0[k_c_0[i_c_0]];const c_0={...c,x:_item,loop:{index:i_c_0,first:i_c_0===0,last:i_c_0===l_c_0,length:l_c_0}};if(c_0.x){s+=e(c_0.x);}}}return s;})();"`,
+    `""use strict";return(async()=>{let s="";if(c.x){{const o=c.a;const a=Array.isArray(o);const k=Object.keys(o);const l=k.length;for(let i=0;i<l;i++){const t=o[k[i]];const c_0={...c,x:t,loop:{index:i,first:i===0,last:i===l-1,length:l}};if(c_0.x){s+=e(c_0.x);}}}}return s;})();"`,
   )
 })
 
@@ -39,7 +39,7 @@ it('for -> if/else ', async () => {
       '{{ for x in a }}{{ if x }}{{= x }}{{ else }}***{{ endif }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";const o_c_0=c.a;const a_c_0=Array.isArray(o_c_0);const k_c_0=Object.keys(o_c_0);const l_c_0=k_c_0.length;for(let i_c_0=0;i_c_0<l_c_0;i_c_0++){const _item=o_c_0[k_c_0[i_c_0]];const c_0={...c,x:_item,loop:{index:i_c_0,first:i_c_0===0,last:i_c_0===l_c_0,length:l_c_0}};if(c_0.x){s+=e(c_0.x);}else{s+="***";}}return s;})();"`,
+    `""use strict";return(async()=>{let s="";{const o=c.a;const a=Array.isArray(o);const k=Object.keys(o);const l=k.length;for(let i=0;i<l;i++){const t=o[k[i]];const c_0={...c,x:t,loop:{index:i,first:i===0,last:i===l-1,length:l}};if(c_0.x){s+=e(c_0.x);}else{s+="***";}}}return s;})();"`,
   )
 })
 
@@ -49,6 +49,6 @@ it('for -> if/else - literal', async () => {
       '{{ for x in a }}{{ if x }}{{= x }}{{ else }}{{= "***" }}{{ endif }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";const o_c_0=c.a;const a_c_0=Array.isArray(o_c_0);const k_c_0=Object.keys(o_c_0);const l_c_0=k_c_0.length;for(let i_c_0=0;i_c_0<l_c_0;i_c_0++){const _item=o_c_0[k_c_0[i_c_0]];const c_0={...c,x:_item,loop:{index:i_c_0,first:i_c_0===0,last:i_c_0===l_c_0,length:l_c_0}};if(c_0.x){s+=e(c_0.x);}else{s+=e("***");}}return s;})();"`,
+    `""use strict";return(async()=>{let s="";{const o=c.a;const a=Array.isArray(o);const k=Object.keys(o);const l=k.length;for(let i=0;i<l;i++){const t=o[k[i]];const c_0={...c,x:t,loop:{index:i,first:i===0,last:i===l-1,length:l}};if(c_0.x){s+=e(c_0.x);}else{s+=e("***");}}}return s;})();"`,
   )
 })

@@ -39,7 +39,7 @@ export const tag: Tag = {
 
       const { context } = ctx
       return out.pushLine(
-        `}else if(${compileStatement(parseStatement(value!), context)}){`,
+        `}else if(${compileStatement(parseStatement(value), context)}){`,
       )
     }
 

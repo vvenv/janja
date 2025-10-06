@@ -1,8 +1,8 @@
 import type { FilterMeta } from '../types'
 import { FILTERS } from '../identifiers'
 import { addContext } from './add-context'
+import { compileArgs } from './compile-args'
 import { isLiteral } from './is-literal'
-import { parseActualArgs } from './parse-actual-args'
 
 /**
  * Return the expression with filters applied
@@ -19,7 +19,7 @@ export function compileExpression(
       const params = [
         context,
         identifier,
-        ...(args ? parseActualArgs(args, context) : [context]),
+        ...(args ? compileArgs(args, context) : [context]),
       ]
 
       identifier = `await ${FILTERS}.${name}.call(${params.join(',')})`

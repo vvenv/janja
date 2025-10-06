@@ -1,5 +1,5 @@
 import type { Tag } from '../types'
-import { parseFormalArgs } from '../utils/parse-formal-args'
+import { parseArgs } from '../utils/parse-args'
 
 const MACRO = 'macro'
 const CALLER = 'caller'
@@ -27,7 +27,7 @@ export const tag: Tag = {
 
       ctx.expect(ENDMACRO)
 
-      const args = parseFormalArgs(_args)
+      const args = parseArgs(_args)
       const bareArgs = args.map(arg => arg.replace(/(?<=[a-z$_][\w$]*)=.*$/, ''))
       const lines: string[] = []
 

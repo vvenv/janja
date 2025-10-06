@@ -31,12 +31,13 @@ export const tag: Tag = {
 
       const nested = ctx.in()
       lines.push(
-        `const o_${nested}=${items};`,
-        `const a_${nested}=Array.isArray(o_${nested});`,
-        `const k_${nested}=Object.keys(o_${nested});`,
-        `const l_${nested}=k_${nested}.length;`,
-        `for(let i_${nested}=0;i_${nested}<l_${nested};i_${nested}++){`,
-        `const _item=o_${nested}[k_${nested}[i_${nested}]];`,
+        `{`,
+        `const o=${items};`,
+        `const a=Array.isArray(o);`,
+        `const k=Object.keys(o);`,
+        `const l=k.length;`,
+        `for(let i=0;i<l;i++){`,
+        `const t=o[k[i]];`,
       )
 
       lines.push(
@@ -47,20 +48,20 @@ export const tag: Tag = {
       if (names.length > 1) {
         names.forEach((n, i) => {
           lines.push(
-            `${n}:a_${nested}?${HELPERS}.getIn(_item,${i},"${n}"):${i === 0 ? `k_${nested}[i_${nested}]` : '_item'},`,
+            `${n}:a?${HELPERS}.getIn(t,${i},"${n}"):${i === 0 ? `k[i]` : 't'},`,
           )
         })
       }
       else {
-        lines.push(`${v}:_item,`)
+        lines.push(`${v}:t,`)
       }
 
       lines.push(
         'loop:{',
-        `index:i_${nested},`,
-        `first:i_${nested}===0,`,
-        `last:i_${nested}===l_${nested},`,
-        `length:l_${nested}`,
+        `index:i,`,
+        `first:i===0,`,
+        `last:i===l-1,`,
+        `length:l`,
         '}',
         '};',
       )
@@ -91,7 +92,7 @@ export const tag: Tag = {
 
       ctx.out()
 
-      return out.pushLine('}')
+      return out.pushLine('}', '}')
     }
   },
 }

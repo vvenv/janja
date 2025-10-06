@@ -1,5 +1,5 @@
 import type { Tag } from '../types'
-import { parseActualArgs } from '../utils/parse-actual-args'
+import { compileArgs } from '../utils/compile-args'
 
 const CALL = 'call'
 const ENDCALL = 'endcall'
@@ -26,7 +26,7 @@ export const tag: Tag = {
       const { context } = ctx
       ctx.expect(ENDCALL)
 
-      const args = parseActualArgs(_args, context)
+      const args = compileArgs(_args, context)
 
       return out.pushLine(`await ${context}.${_name}?.(${[...args, 'async()=>{'].join(',')}`)
     }

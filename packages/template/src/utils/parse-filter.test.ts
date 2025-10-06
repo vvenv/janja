@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
 import { parseFilter } from './parse-filter'
 
-it('basic', () => {
+it('name', () => {
   expect(parseFilter('abs')).toEqual({ name: 'abs' })
 })
 

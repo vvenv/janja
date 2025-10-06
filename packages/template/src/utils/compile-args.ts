@@ -2,22 +2,22 @@ import { compileExpression } from './compile-expression'
 import { isLiteral } from './is-literal'
 
 /**
- * Parse actual parameters.
+ * Compile actual parameters.
  * @example {{ x | replace: a="b" }}
  *                          ^^^^^
  * @example {{ x | replace: a, "b" }}
  *                          ^^^^^^
  */
-export function parseActualArgs(statement: string, context: string) {
+export function compileArgs(value: string, context: string) {
   const kvArgs: string[] = []
   const args: string[] = []
 
   let match
 
-  const argRe
+  const RE
     = /(?:, )?(?:([a-z$_][\w$]*)=)?(?:(['"`])((?:\\\2|(?!\2).)*?)\2|([^'"`,\s]+))/gi
 
-  while ((match = argRe.exec(statement))) {
+  while ((match = RE.exec(value))) {
     const [, name, quote, literal, arg] = match
 
     if (!name) {
@@ -39,7 +39,7 @@ export function parseActualArgs(statement: string, context: string) {
           ? `${quote}${literal}${quote}`
           : isLiteral(arg)
             ? arg
-            : parseActualArgs(arg, context)
+            : compileArgs(arg, context)
       }`,
     )
   }

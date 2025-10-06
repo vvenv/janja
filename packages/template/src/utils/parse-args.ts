@@ -3,16 +3,15 @@
  * @example `a, b="foo"`
  *           ^  ^^^^^^^
  */
-export function parseFormalArgs(statement: string) {
+export function parseArgs(statement: string) {
   const args: string[] = []
-  const argRe
+
+  const RE
     = /(?:, )?((?:[a-z$_][\w$]*=)?(['"`])(?:\\\2|(?!\2).)*?\2|[^'"`,\s]+)/gi
 
   let match
-
-  while ((match = argRe.exec(statement))) {
+  while ((match = RE.exec(statement))) {
     const [, arg] = match
-
     args.push(arg)
   }
 
