@@ -4,8 +4,8 @@ import { loader } from './loaders/file-loader'
 import { Tokenizer } from './tokenizer'
 
 it('empty', async () => {
-  expect(await new Tokenizer(config).parse('')).toMatchInlineSnapshot('null')
-  expect(await new Tokenizer(config).parse(' ')).toMatchInlineSnapshot(`
+  expect(await new Tokenizer(config).tokenize('')).toMatchInlineSnapshot('null')
+  expect(await new Tokenizer(config).tokenize(' ')).toMatchInlineSnapshot(`
     {
       "end": 1,
       "name": "str",
@@ -19,7 +19,7 @@ it('empty', async () => {
 })
 
 it('layout', async () => {
-  expect(await new Tokenizer({ ...config, loader: async path => loader(`test/${path}`) }).parse('{{ layout "default" }}')).toMatchInlineSnapshot(`
+  expect(await new Tokenizer({ ...config, loader: async path => loader(`test/${path}`) }).tokenize('{{ layout "default" }}')).toMatchInlineSnapshot(`
     {
       "end": 18,
       "name": "str",
@@ -121,7 +121,7 @@ it('layout', async () => {
 })
 
 it('block', async () => {
-  expect(await new Tokenizer(config).parse('{{ block title }}1{{ endblock }}{{ block title }}2{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}')).toMatchInlineSnapshot(`
+  expect(await new Tokenizer(config).tokenize('{{ block title }}1{{ endblock }}{{ block title }}2{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}')).toMatchInlineSnapshot(`
     {
       "end": 81,
       "name": "block",
@@ -184,31 +184,31 @@ it('block', async () => {
 
 it('invalid', async () => {
   try {
-    await new Tokenizer(config).parse('{{ layout }}')
+    await new Tokenizer(config).tokenize('{{ layout }}')
   }
   catch (error) {
     expect(error).toMatchInlineSnapshot(`[Error: missing layout file path]`)
   }
   try {
-    await new Tokenizer(config).parse('{{ layout "" }}')
+    await new Tokenizer(config).tokenize('{{ layout "" }}')
   }
   catch (error) {
     expect(error).toMatchInlineSnapshot(`[Error: missing layout file path]`)
   }
   try {
-    await new Tokenizer(config).parse('{{ include }}')
+    await new Tokenizer(config).tokenize('{{ include }}')
   }
   catch (error) {
     expect(error).toMatchInlineSnapshot(`[Error: missing include file path]`)
   }
   try {
-    await new Tokenizer(config).parse('{{ include "" }}')
+    await new Tokenizer(config).tokenize('{{ include "" }}')
   }
   catch (error) {
     expect(error).toMatchInlineSnapshot(`[Error: missing include file path]`)
   }
   try {
-    await new Tokenizer({ ...config, loader: async path => loader(`test/${path}`) }).parse('{{ include "empty" }}')
+    await new Tokenizer({ ...config, loader: async path => loader(`test/${path}`) }).tokenize('{{ include "empty" }}')
   }
   catch (error) {
     expect(error).toMatchInlineSnapshot(`[TypeError: Failed to parse URL from test/partials/empty.jianjia]`)

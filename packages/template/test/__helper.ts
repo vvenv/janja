@@ -23,7 +23,7 @@ export async function compile(
 
   const opt = { ...config, ...options }
   const { value } = await new Compiler(opt).compile(
-    await new Tokenizer(opt).parse(template),
+    await new Tokenizer(opt).tokenize(template),
   )
 
   return value

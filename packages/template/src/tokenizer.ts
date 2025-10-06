@@ -18,7 +18,7 @@ export class Tokenizer implements AST {
 
   constructor(public options: Required<Config>) {}
 
-  async parse(
+  async tokenize(
     template: string,
   ) {
     this.template = template
@@ -142,7 +142,7 @@ export class Tokenizer implements AST {
       return
     }
 
-    let cursor = await new Tokenizer(this.options).parse(content)
+    let cursor = await new Tokenizer(this.options).tokenize(content)
 
     while (cursor) {
       this.push(cursor)

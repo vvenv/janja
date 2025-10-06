@@ -50,7 +50,7 @@ export class Engine {
   private async _compile(template: string, filepath?: string) {
     try {
       return await new Compiler(this.options).compile(
-        await new Tokenizer(this.options).parse(template),
+        await new Tokenizer(this.options).tokenize(template),
         filepath,
       )
     }
