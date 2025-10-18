@@ -1,6 +1,6 @@
-import type { Config, Loc, Script } from './types'
+import type { Loc } from '@jj/utils'
+import type { Config, Script } from './types'
 import { CONTEXT, ESCAPE, FILTERS, HELPERS } from './identifiers'
-import { unescapeTag } from './utils/unescape-tag'
 
 export class OutScript {
   private content = ''
@@ -60,16 +60,12 @@ export class OutScript {
     }
 
     if (s) {
-      const start = this.content.length + this.strOffset
-
-      s = unescapeTag(s)
-        .replace(/\\/g, '\\\\')
+      this.pushLine(`s+="${s.replace(/\\/g, '\\\\')
         .replace(/"/g, '\\"')
-        .replace(/[\n\r]/g, '\\n')
-      this.pushLine(`s+="${s}";`)
+        .replace(/[\n\r]/g, '\\n')}";`)
 
       return {
-        start,
+        start: this.content.length + this.strOffset,
         end: this.content.length - 2,
       }
     }

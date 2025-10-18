@@ -2,7 +2,7 @@ import antfu from '@antfu/eslint-config'
 
 export default antfu(
   {
-    ignores: ['**/benchmark/**', '**/coverage/**', '**/dist/**'],
+    ignores: ['**/benchmark/**', '**/coverage/**', '**/dist/**', '**/*.yml'],
   },
   {
     rules: {

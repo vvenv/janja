@@ -9,8 +9,8 @@ const STR = 'str'
 export const tag: Tag = {
   names: [STR],
 
-  async compile({ token: { value, previous, next }, out }) {
-    return out.pushStr(value ?? '', {
+  async compile({ token: { raw, previous, next }, out }) {
+    return out.pushStr(raw, {
       trimStart: previous?.stripAfter,
       trimEnd: next?.stripBefore,
     })

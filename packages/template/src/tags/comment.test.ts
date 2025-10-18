@@ -1,12 +1,44 @@
 import { describe, expect, it } from 'vitest'
 import { compile } from '../../test/__helper'
 
+it('invalid', async () => {
+  try {
+    await compile('{{ comment }}')
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: expected tokens endcomment, but got nothing]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(`
+      "expected tokens endcomment, but got nothing
+
+      1: 
+      "
+    `)
+  }
+  try {
+    await compile('{{ endcomment }}')
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: unexpected endcomment]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(`
+      "unexpected endcomment
+
+      1: {{ endcomment }}
+         ^^^^^^^^^^^^^^^^
+      "
+    `)
+  }
+})
+
 it('inline', async () => {
   expect(await compile('{{# foo }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="<!--foo-->";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="<!-- foo -->";return s;})();"`,
   )
   expect(await compile('{{# foo\nbar }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="<!--foo\\nbar-->";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="<!-- foo\\nbar -->";return s;})();"`,
   )
 })
 
@@ -33,7 +65,7 @@ it('escape', async () => {
   expect(
     await compile('{{ comment }}foo\n\\{\\{= name \\}\\}\nbar{{ endcomment }}'),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\n{{= name }}\\nbar";s+="-->";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\n\\\\{\\\\{= name \\\\}\\\\}\\nbar";s+="-->";return s;})();"`,
   )
 })
 
@@ -70,24 +102,7 @@ describe('w stripComments', async () => {
     expect(
       await compile('{{ comment }}foo\n\\{\\{= name \\}\\}\nbar{{ endcomment }}', { stripComments: true }),
     ).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\n{{= name }}\\nbar";s+="-->";return s;})();"`,
+      `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\n\\\\{\\\\{= name \\\\}\\\\}\\nbar";s+="-->";return s;})();"`,
     )
   })
-})
-
-it('invalid', async () => {
-  expect(await compile('{{ comment }}', { debug: true }),
-  ).toMatchInlineSnapshot(
-    `"expected tokens endcomment, but got nothing"`,
-  )
-  expect(await compile('{{ endcomment }}', { debug: true }),
-  ).toMatchInlineSnapshot(
-    `
-    " JianJia  unexpected endcomment
-
-    {{ endcomment }}
-
-    0:16"
-  `,
-  )
 })

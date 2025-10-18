@@ -1,6 +1,60 @@
+/* eslint-disable style/no-tabs */
 import { describe, expect, it } from 'vitest'
 import { render } from '../test/__helper'
 import { loader } from './loaders/file-loader'
+
+it('invalid', async () => {
+  try {
+    await render('{{ for name of names }}{{ endif }}')
+  }
+  catch (error: any) {
+    expect(error)
+      .toMatchInlineSnapshot(
+        `[CompileError: unexpected "endif"]`,
+      )
+    expect(error.details)
+      .toMatchInlineSnapshot(
+        `
+        "unexpected "endif"
+
+           ...
+        "
+      `,
+      )
+  }
+  try {
+    await render('{{ for name of names }}{{ endfor }}')
+  }
+  catch (error: any) {
+    expect(error)
+      .toMatchInlineSnapshot(
+        `[RenderError: c.names is not iterable]`,
+      )
+    expect(error.details)
+      .toMatchInlineSnapshot(
+        `
+        "c.names is not iterable
+
+        1: {{ for name of names }}{{ endfor }}
+           ^^^^^^^^^^^^^^^^^^^^^^^
+        "
+      `,
+      )
+  }
+})
+
+it('escape tag', async () => {
+  expect(
+    await render('{{= "{{= escape }}" }}'),
+  ).toMatchInlineSnapshot(
+    `"{{= escape " }}"`,
+  )
+  expect(
+    await render('{{= "\\{\\{= escape \\}\\}" }}'),
+  ).toMatchInlineSnapshot(
+    `"{{= escape }}"`,
+  )
+})
 
 describe('autoEscape', async () => {
   it('enabled', async () => {
@@ -11,11 +65,13 @@ describe('autoEscape', async () => {
 <>`,
         { x: '<foo>\t</foo>' },
       ),
-    ).toMatchInlineSnapshot(`
+    ).toMatchInlineSnapshot(
+      `
       ""
-      &lt;foo&gt;\t&lt;/foo&gt;
+      &lt;foo&gt;	&lt;/foo&gt;
       <>"
-    `)
+    `,
+    )
   })
 
   it('disabled', async () => {
@@ -29,46 +85,56 @@ describe('autoEscape', async () => {
           autoEscape: false,
         },
       ),
-    ).toMatchInlineSnapshot(`
+    ).toMatchInlineSnapshot(
+      `
       ""
-      <foo>\t</foo>
+      <foo>	</foo>
       <>"
-    `)
+    `,
+    )
   })
 })
 
 it('interpolate', async () => {
   expect(await render('{{= name }}', { name: 'foo' })).toMatchInlineSnapshot(
-    '"foo"',
+    `"foo"`,
   )
   expect(
     await render('{{= name }} and {{= name }}', { name: 'foo' }),
-  ).toMatchInlineSnapshot('"foo and foo"')
-  expect(await render('{{= "*" }}', {})).toMatchInlineSnapshot('"*"')
+  ).toMatchInlineSnapshot(
+    `"foo and foo"`,
+  )
+  expect(await render('{{= "*" }}')).toMatchInlineSnapshot(
+    `"*"`,
+  )
 })
 
 it('for loop', async () => {
   expect(
-    await render('{{ for name in names }}{{ name }}{{ endfor }}', {
+    await render('{{ for name of names }}{{ name }}{{ endfor }}', {
       names: ['foo', 'bar'],
     }),
-  ).toMatchInlineSnapshot(`""`)
+  ).toMatchInlineSnapshot(
+    `""`,
+  )
   expect(
     await render(
-      `{{ for name in names -}}
+      `{{ for name of names -}}
   {{= name }}
 {{- endfor }}`,
       {
         names: ['foo', 'bar'],
       },
     ),
-  ).toMatchInlineSnapshot(`"foobar"`)
+  ).toMatchInlineSnapshot(
+    `"foobar"`,
+  )
 })
 
 it('for loop - nested', async () => {
   expect(
     await render(
-      '{{ for _as in ass }}{{ for a in _as }}|{{= a }} in {{= _as }} in {{= ass }}|{{ endfor }}{{ endfor }}',
+      '{{ for _as of ass }}{{ for a of _as | split }}|{{= a }} in {{= _as }} in {{= ass }}|{{ endfor }}{{ endfor }}',
       {
         ass: ['foo', 'bar'],
       },
@@ -83,27 +149,33 @@ it('if - else', async () => {
     await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}', {
       name: 'foo',
     }),
-  ).toMatchInlineSnapshot(`"foo"`)
+  ).toMatchInlineSnapshot(
+    `"foo"`,
+  )
   expect(
-    await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}', {}),
-  ).toMatchInlineSnapshot(`"*"`)
+    await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}'),
+  ).toMatchInlineSnapshot(
+    `"*"`,
+  )
 })
 
 it('mixed', async () => {
   expect(
     await render(
-      '{{ for name in names }}{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}{{ endfor }}',
+      '{{ for name of names }}{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}{{ endfor }}',
       {
         names: ['foo', '', 'bar'],
       },
     ),
-  ).toMatchInlineSnapshot(`"foo*bar"`)
+  ).toMatchInlineSnapshot(
+    `"foo*bar"`,
+  )
 })
 
 it('destructing', async () => {
   expect(
     await render(
-      '{{ for name in names }}{{ for k, v in name }}{{= k }}{{= v }}{{ endfor }}{{ endfor }}',
+      '{{ for name of names }}{{ for kv of name | entries }}{{= kv | first }}{{= kv | last }}{{ endfor }}{{ endfor }}',
       {
         names: [
           { x: 1, y: 3 },
@@ -111,7 +183,9 @@ it('destructing', async () => {
         ],
       },
     ),
-  ).toMatchInlineSnapshot(`"x1y3y2x4"`)
+  ).toMatchInlineSnapshot(
+    `"x1y3y2x4"`,
+  )
 })
 
 it('layout', async () => {
@@ -123,7 +197,8 @@ it('layout', async () => {
         loader: path => loader(`test/${path}`),
       },
     ),
-  ).toMatchInlineSnapshot(`
+  ).toMatchInlineSnapshot(
+    `
     "<html>
       <head>
       <title>JianJia</title>
@@ -133,7 +208,8 @@ it('layout', async () => {
       </body>
     </html>
     "
-  `)
+  `,
+  )
 })
 
 it('include', async () => {
@@ -145,7 +221,8 @@ it('include', async () => {
         loader: path => loader(`test/${path}`),
       },
     ),
-  ).toMatchInlineSnapshot(`
+  ).toMatchInlineSnapshot(
+    `
     "<html>
       <head>
       <title>蒹葭苍苍，白露为霜</title>
@@ -157,20 +234,33 @@ it('include', async () => {
     x
     y
     z"
-  `)
+  `,
+  )
 })
 
 it('include / not found', async () => {
-  expect(
+  try {
     await render(
       '{{ include "fallback" }}',
       {},
       {
-        debug: true,
         loader: path => loader(`test/${path}`),
       },
-    ),
-  ).toMatchInlineSnapshot(`"file not found: test/partials/fallback.jianjia"`)
+    )
+  }
+  catch (error: any) {
+    expect(
+      error,
+    ).toMatchInlineSnapshot(
+      `[Error: file not found: test/partials/fallback.jianjia]`,
+    )
+
+    expect(
+      error.details,
+    ).toMatchInlineSnapshot(
+      `undefined`,
+    )
+  }
 })
 
 it('include / optional', async () => {
@@ -179,11 +269,12 @@ it('include / optional', async () => {
       '{{ include "fallback"? }}',
       {},
       {
-        debug: true,
         loader: path => loader(`test/${path}`),
       },
     ),
-  ).toMatchInlineSnapshot(`""`)
+  ).toMatchInlineSnapshot(
+    `""`,
+  )
 })
 
 it('custom tag', async () => {
@@ -200,30 +291,7 @@ it('custom tag', async () => {
         }],
       },
     }),
-  ).toMatchInlineSnapshot('"CUSTOM"')
-})
-
-it('invalid', async () => {
-  expect(await render('{{ for name in names }}{{ endif }}', {}))
-    .toMatchInlineSnapshot(`"compile error"`)
-  expect(await render('{{ for name in names }}{{ endif }}', {}, { debug: true }))
-    .toMatchInlineSnapshot(`
-      " JianJia  unexpected endif
-
-      {{ endif }}
-
-      23:34"
-    `)
-  expect(
-    await render('{{ for name in names }}{{ endfor }}', {}),
-  ).toMatchInlineSnapshot(`"render error"`)
-  expect(
-    await render('{{ for name in names }}{{ endfor }}', {}, { debug: true }),
-  ).toMatchInlineSnapshot(`
-    " JianJia  Cannot convert undefined or null to object
-
-    1: {{ for name in names }}{{ endfor }}
-       ^^^^^^^^^^^^^^^^^^^^^^^
-    "
-  `)
+  ).toMatchInlineSnapshot(
+    `"CUSTOM"`,
+  )
 })

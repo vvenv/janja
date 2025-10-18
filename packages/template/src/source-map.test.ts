@@ -15,7 +15,8 @@ it('mapping', () => {
       end: 3,
     },
   )
-  expect(sourcemap.mappings).toMatchInlineSnapshot(`
+  expect(sourcemap.mappings).toMatchInlineSnapshot(
+    `
     [
       {
         "source": {
@@ -28,24 +29,29 @@ it('mapping', () => {
         },
       },
     ]
-  `)
+  `,
+  )
   expect(sourcemap.getLocations(0)).toMatchInlineSnapshot('[]')
   expect(sourcemap.getLocations(1)).toMatchInlineSnapshot('[]')
-  expect(sourcemap.getLocations(2)).toMatchInlineSnapshot(`
+  expect(sourcemap.getLocations(2)).toMatchInlineSnapshot(
+    `
     [
       {
         "end": 1,
         "start": 0,
       },
     ]
-  `)
-  expect(sourcemap.getLocations(3)).toMatchInlineSnapshot(`
+  `,
+  )
+  expect(sourcemap.getLocations(3)).toMatchInlineSnapshot(
+    `
     [
       {
         "end": 1,
         "start": 0,
       },
     ]
-  `)
+  `,
+  )
   expect(sourcemap.getLocations(4)).toMatchInlineSnapshot('[]')
 })

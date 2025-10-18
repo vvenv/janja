@@ -1,4 +1,4 @@
-import { Engine } from 'template';
+import { Engine } from '@jj/template';
 import fs from 'node:fs';
 
 export default {

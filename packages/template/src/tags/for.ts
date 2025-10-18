@@ -1,7 +1,7 @@
+import type { BinaryExp, IdExp, SeqExp } from '@jj/expression'
 import type { Tag } from '../types'
-import { HELPERS } from '../identifiers'
-import { compileStatement } from '../utils/compile-statement'
-import { parseStatement } from '../utils/parse-statement'
+import { compiler } from '@jj/expression'
+import { FILTERS } from '../identifiers'
 
 const FOR = 'for'
 const BREAK = 'break'
@@ -10,7 +10,7 @@ const ENDFOR = 'endfor'
 
 /**
  * @example {{ for item in items }}{{= item }}{{ endfor }}
- * @example {{ for key, value in items }}{{= key }}:{{= value }}{{ endfor }}
+ * @example {{ for (x, y) in items }}{{= x }},{{= y }}{{ endfor }}
  */
 export const tag: Tag = {
   names: [FOR, BREAK, CONTINUE, ENDFOR],
@@ -18,60 +18,37 @@ export const tag: Tag = {
   async compile({ token: { name, value }, ctx, out }) {
     if (name === FOR) {
       if (!value) {
-        throw new Error('for tag must have a value')
+        throw new Error('"for" tag must have expression')
       }
 
       ctx.expect(ENDFOR)
 
-      const [{ value: v }, , ...right] = parseStatement(value)
       const { context } = ctx
-      const items = compileStatement(right, context)
-      const names = v.split(/, +/)
-      const lines: string[] = []
 
-      const nested = ctx.in()
-      lines.push(
+      if ((value as BinaryExp).left.type === 'SEQ') {
+        return out.pushLine(
+          `{`,
+          `for(${compiler.compile(value, context, FILTERS)}){`,
+          `const ${ctx.in()}={`,
+          `...${context},`,
+          `${(((value as BinaryExp).left as SeqExp).elements as IdExp[]).map(({ value }) => value).join(',')}`,
+          '};',
+        )
+      }
+
+      return out.pushLine(
         `{`,
-        `const o=${items};`,
-        `const a=Array.isArray(o);`,
-        `const k=Object.keys(o);`,
-        `const l=k.length;`,
-        `for(let i=0;i<l;i++){`,
-        `const t=o[k[i]];`,
-      )
-
-      lines.push(
-        `const ${nested}={`,
+        `for(${compiler.compile(value, context, FILTERS)}){`,
+        `const ${ctx.in()}={`,
         `...${context},`,
-      )
-
-      if (names.length > 1) {
-        names.forEach((n, i) => {
-          lines.push(
-            `${n}:a?${HELPERS}.getIn(t,${i},"${n}"):${i === 0 ? `k[i]` : 't'},`,
-          )
-        })
-      }
-      else {
-        lines.push(`${v}:t,`)
-      }
-
-      lines.push(
-        'loop:{',
-        `index:i,`,
-        `first:i===0,`,
-        `last:i===l-1,`,
-        `length:l`,
-        '}',
+        `${((value as BinaryExp).left as IdExp).value},`,
         '};',
       )
-
-      return out.pushLine(...lines)
     }
 
     if (name === BREAK) {
       if (!ctx.matchAny(ENDFOR)) {
-        throw new Error('break tag must be inside a for loop')
+        throw new Error('"break" tag must be inside a "for" loop')
       }
 
       return out.pushLine('break;')
@@ -79,7 +56,7 @@ export const tag: Tag = {
 
     if (name === CONTINUE) {
       if (!ctx.matchAny(ENDFOR)) {
-        throw new Error('continue tag must be inside a for loop')
+        throw new Error('"continue" tag must be inside a "for" loop')
       }
 
       return out.pushLine('continue;')
@@ -92,7 +69,10 @@ export const tag: Tag = {
 
       ctx.out()
 
-      return out.pushLine('}', '}')
+      return out.pushLine(
+        '}',
+        `}`,
+      )
     }
   },
 }

@@ -1,5 +1,5 @@
 {
-  "name": "template",
+  "name": "@jj/template",
   "type": "module",
   "version": "0.0.0",
   "description": "A simple, fast, and lightweight template engine for Node.js and browsers.",
@@ -17,25 +17,20 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vitest watch",
-    "test": "vitest",
     "build": "rm -rf dist && rollup -c"
   },
   "dependencies": {
-    "tinyrainbow": "^3.0.3"
+    "@jj/expression": "workspace:^",
+    "@jj/utils": "workspace:^"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/node": "^24.6.2",
-    "@vitest/coverage-v8": "3.2.4",
-    "@vitest/ui": "3.2.4",
     "rollup": "^4.52.4",
     "rollup-plugin-dts": "^6.2.3",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.3",
-    "vite": "^7.1.9",
-    "vitest": "^3.2.4"
+    "typescript": "^5.9.3"
   }
 }

@@ -4,7 +4,6 @@ import { loader } from './loaders/url-loader'
 import { tags } from './tags'
 
 export const config: Required<Config> = {
-  debug: false,
   globals: {
     translations: {},
   },

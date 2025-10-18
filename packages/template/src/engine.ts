@@ -5,9 +5,9 @@ import { config } from './config'
 import { escape } from './escape'
 import * as filters from './filters'
 import * as helpers from './helpers'
+import { Parser } from './parser'
 import { RenderError } from './render-error'
 import { Safe } from './safe'
-import { Tokenizer } from './tokenizer'
 
 const cache = new Map<string, {
   template: string
@@ -48,22 +48,10 @@ export class Engine {
   }
 
   private async _compile(template: string, filepath?: string) {
-    try {
-      return await new Compiler(this.options).compile(
-        await new Tokenizer(this.options).tokenize(template),
-        filepath,
-      )
-    }
-    catch (error: any) {
-      if (this.options.debug) {
-        throw error
-      }
-
-      return {
-        script: async () => 'compile error',
-        sourcemap: {} as SourceMap,
-      }
-    }
+    return new Compiler(this.options).compile(
+      await new Parser(this.options).parse(template),
+      filepath,
+    )
   }
 
   private async _render(
@@ -87,15 +75,11 @@ export class Engine {
       )
     }
     catch (error: any) {
-      if (this.options.debug) {
-        throw new RenderError(error.message, {
-          source: template,
-          error,
-          sourcemap,
-        })
-      }
-
-      return 'render error'
+      throw new RenderError(error.message, {
+        source: template,
+        error,
+        sourcemap,
+      })
     }
   }
 }

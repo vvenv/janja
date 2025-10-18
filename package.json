@@ -11,9 +11,12 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "yarn workspace template run dev",
-    "build": "yarn workspace template run build",
-    "test": "yarn workspace template run test",
+    "build:e": "yarn workspace @jj/expression run build",
+    "build:t": "yarn workspace @jj/template run build",
+    "build:u": "yarn workspace @jj/utils run build",
+    "build": "yarn build:u && yarn build:e && yarn build:t",
+    "dev": "vitest watch",
+    "test": "vitest",
     "repl": "yarn workspace playground run start",
     "perf": "yarn workspace benchmark run start",
     "lint": "oxlint && eslint . --ext .ts",
@@ -22,9 +25,13 @@
   "devDependencies": {
     "@antfu/eslint-config": "^5.4.1",
     "@types/node": "^24.6.2",
+    "@vitest/coverage-v8": "3.2.4",
+    "@vitest/ui": "3.2.4",
     "eslint": "^9.36.0",
     "husky": "^9.1.7",
     "oxlint": "^1.19.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9",
+    "vitest": "^3.2.4"
   }
 }

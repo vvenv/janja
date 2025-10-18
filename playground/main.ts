@@ -1,4 +1,3 @@
-import Convert from 'ansi-to-html'
 import { codeToHtml } from './highlighter'
 
 declare global {
@@ -57,53 +56,21 @@ This is a comment with variable "name='{{= name }}'"
     <p>Please visit <a href="{{= url }}">Github Repository</a></p>
 
     <ul>
-      {{ for name in array | reverse }}
+      {{ for name of array | reverse }}
         <li>
-          {{ if name | reverse | lower == "bob" }}
+          {{ if name | reverse | lower eq "bob" }}
             ***
           {{ else }}
-            {{= loop.index + 1 }} - {{= name | reverse | lower }}
+            {{= name | reverse | lower }}
           {{ endif }}
         </li>
       {{ endfor }}
     </ul>
     ---
     <ul>
-      {{ for a, b in nested }}
+      {{ for (x, y) of nested }}
         <li>
-        {{= a }} - {{= b }}
-        </li>
-      {{ endfor }}
-    </ul>
-    ---
-    <ul>
-      {{ for name in object }}
-        <li>
-          {{ if name == "Bob" }}
-            ***
-          {{ elif name == "Eve" }}
-            ---
-          {{ elif name | lower == "david" }}
-            ...
-          {{ else }}
-            {{= loop.index }} - {{= name }}
-          {{ endif }}
-        </li>
-      {{ endfor }}
-    </ul>
-    ---
-    <ul>
-      {{ for key, name in object }}
-        <li>
-          {{ if name == "Bob" }}
-            ***
-          {{ elif name == "Eve" }}
-            ---
-          {{ elif name | lower == "david" }}
-            ...
-          {{ else }}
-            {{= loop.index }} {{= key }} - {{= name }}
-          {{ endif }}
+        {{= x }} - {{= y }}
         </li>
       {{ endfor }}
     </ul>
@@ -122,22 +89,15 @@ const defaultData
     "Eve"
   ],
   "nested": [
-    [
-      "Alice",
-      "Eve"
-    ],
-    [
-      "Bob",
-      "Charlie"
-    ]
-  ],
-  "object": {
-    "A": "Alice",
-    "B": "Bob",
-    "C": "Charlie",
-    "D": "David",
-    "E": "Eve"
-  }
+    {
+      "x": "Alice",
+      "y": "Eve"
+    },
+    {
+      "x": "Bob",
+      "y": "Charlie"
+    }
+  ]
 }
 `
 
@@ -166,7 +126,7 @@ async function update() {
 
     const parsedData = JSON.parse(data)
 
-    const { render } = await import('template')
+    const { render } = await import('@jj/template')
 
     const output = await render(template, parsedData, {
       debug,
@@ -180,9 +140,7 @@ async function update() {
     previewEl.innerHTML = output
   }
   catch (error: any) {
-    resultEl.innerHTML = `<pre class="error">${new Convert({
-      escapeXML: true,
-    }).toHtml(error.details || error.message)}</pre>`
+    resultEl.innerHTML = `<pre class="error">${error.details || error.message}</pre>`
     previewEl.innerHTML = ''
   }
 }

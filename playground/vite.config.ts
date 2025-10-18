@@ -12,7 +12,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      template: '../packages/template/src',
+      '@jj/expression': '../packages/expression',
+      '@jj/template': '../packages/template',
+      '@jj/utils': '../packages/utils',
     },
   },
 })

@@ -4,9 +4,9 @@
   </head>
   <body>
     <p>{{= text }}</p>
-    {{ for project in projects }}
-      <a href="{{= project.url }}">{{= project.name }}</a>
-      <p>{{= project.description }}</p>
+    {{ for (url, name, description) of projects }}
+      <a href="{{= url }}">{{= name }}</a>
+      <p>{{= description }}</p>
     {{ else }}
       No projects
     {{ endfor }}
