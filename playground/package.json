@@ -7,9 +7,8 @@
     "start": "vite"
   },
   "dependencies": {
-    "ansi-to-html": "^0.7.2",
-    "shiki": "^3.13.0",
-    "template": "workspace:^"
+    "@jj/template": "workspace:^",
+    "shiki": "^3.13.0"
   },
   "devDependencies": {
     "@types/node": "^24.6.2",

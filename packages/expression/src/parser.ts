@@ -1,0 +1,353 @@
+import type {
+  BinaryExp,
+  BoolExp,
+  Checker,
+  Exp,
+  IdExp,
+  IfExp,
+  NotExp,
+  NumExp,
+  PipeExp,
+  SeqExp,
+  StrExp,
+  Token,
+  TokenType,
+} from './types'
+import { ParseError } from './parse-error'
+import { precedences } from './precedences'
+import { Tokenizer } from './tokenizer'
+
+export class Parser {
+  template = ''
+  tokens: Token[] = []
+  length = 0
+  cursor = 0
+
+  parse(template: string) {
+    this.template = template
+    this.tokens = new Tokenizer().tokenize(template)
+    this.length = this.tokens.length
+    this.cursor = 0
+
+    return this.template ? this.parseExpression() : null
+  }
+
+  private parseExpression(checker?: Checker): Exp | null {
+    let left: Exp | null = null
+
+    while (true) {
+      const token = this.next()
+
+      if (!token) {
+        break
+      }
+
+      const check = checker?.(token)
+
+      if (check === 'BACK') {
+        this.back()
+        break
+      }
+
+      if (check === 'BREAK') {
+        break
+      }
+
+      if (token.type === 'LP') {
+        if (!this.peek()) {
+          throw new ParseError(`unexpected end of expression`, {
+            source: this.template,
+            loc: {
+              start: token.start,
+              end: token.end,
+            },
+          })
+        }
+
+        const elements = this.parseSequence()
+
+        const rp = this.consume('RP')
+
+        if (!rp) {
+          throw new ParseError(`expected RP after LP`, {
+            source: this.template,
+            loc: {
+              start: token.start,
+              end: token.end,
+            },
+          })
+        }
+
+        left = {
+          ...token,
+          type: 'SEQ',
+          elements,
+          end: rp.end,
+        } satisfies SeqExp
+        continue
+      }
+
+      if (token.type === 'NOT') {
+        if (!this.peek()) {
+          throw new ParseError(`unexpected end of expression`, {
+            source: this.template,
+            loc: {
+              start: token.start,
+              end: token.end,
+            },
+          })
+        }
+
+        left = {
+          ...token,
+          type: 'NOT',
+          argument: this.parseExpression(
+            t => this.isHigher(token, t) ? 'BACK' : undefined,
+          )!,
+        } satisfies NotExp
+        continue
+      }
+
+      if (token.type === 'ID') {
+        left = {
+          ...token,
+          type: 'ID',
+          value: token.value as string,
+        } satisfies IdExp
+        if (this.consume('LP')) {
+          left.args = this.parseSequence()
+
+          const rp = this.consume('RP')
+
+          if (!rp) {
+            throw new ParseError(`expected RP after LP`, {
+              source: this.template,
+              loc: {
+                start: token.start,
+                end: token.end,
+              },
+            })
+          }
+          continue
+        }
+        continue
+      }
+
+      if (token.type === 'STR') {
+        left = {
+          ...token,
+          type: 'STR',
+          value: token.value as string,
+        } satisfies StrExp
+        continue
+      }
+
+      if (token.type === 'NUM') {
+        left = {
+          ...token,
+          type: 'NUM',
+          value: token.value as number,
+        } satisfies NumExp
+        continue
+      }
+
+      if (token.type === 'BOOL') {
+        left = {
+          ...token,
+          type: 'BOOL',
+          value: token.value as boolean,
+        } satisfies BoolExp
+        continue
+      }
+
+      if (token.type === 'IF') {
+        const test = this.parseExpression(
+          t => t.type === 'ELSE' ? 'BACK' : this.isHigher(token, t) ? 'BACK' : undefined,
+        )
+        if (!test) {
+          throw new ParseError('expected test expression', {
+            source: this.template,
+            loc: {
+              start: token.start,
+              end: token.end,
+            },
+          })
+        }
+        left = {
+          ...token,
+          type: 'IF',
+          test,
+          consequent: left!,
+        } satisfies IfExp
+        if (this.consume('ELSE')) {
+          const alternative = this.parseExpression(
+            t => this.isHigher(token, t) ? 'BACK' : undefined,
+          )
+          if (!alternative) {
+            throw new ParseError('expected else expression', {
+              source: this.template,
+              loc: {
+                start: token.start,
+                end: token.end,
+              },
+            })
+          }
+          (left as IfExp).alternative = alternative
+        }
+        continue
+      }
+
+      if (token.type === 'AND'
+        || token.type === 'OR'
+        || token.type === 'EQ'
+        || token.type === 'NE'
+        || token.type === 'GT'
+        || token.type === 'LT'
+        || token.type === 'GE'
+        || token.type === 'LE'
+        || token.type === 'IN'
+        || token.type === 'NI'
+        || token.type === 'OF'
+        || token.type === 'ADD'
+        || token.type === 'SUB'
+        || token.type === 'MUL'
+        || token.type === 'DIV'
+        || token.type === 'MOD'
+        || token.type === 'SET'
+      ) {
+        if (!left) {
+          throw new ParseError(`no left operand for ${token.type}`, {
+            source: this.template,
+            loc: {
+              start: token.start,
+              end: token.end,
+            },
+          })
+        }
+
+        const right = this.parseExpression(
+          t => this.isHigher(token, t) ? 'BACK' : undefined,
+        )
+
+        if (!right) {
+          throw new ParseError(`no right operand for ${token.type}`, {
+            source: this.template,
+            loc: {
+              start: token.start,
+              end: token.end,
+            },
+          })
+        }
+
+        left = {
+          ...token,
+          type: token.type,
+          left,
+          right,
+        } satisfies BinaryExp
+        continue
+      }
+
+      if (token.type === 'PIPE') {
+        left = {
+          ...token,
+          type: 'PIPE',
+          left: left!,
+          right: this.parsePipe(),
+        } satisfies PipeExp
+        continue
+      }
+
+      this.back()
+      break
+    }
+
+    return left
+  }
+
+  private parseSequence(): Exp[] {
+    const elements: Exp[] = []
+
+    while (!this.check('RP')) {
+      const element = this.parseExpression(
+        t => t.type === 'COMMA' ? 'BREAK' : undefined,
+      )!
+      if (element) {
+        elements.push(element)
+      }
+      else {
+        break
+      }
+    }
+
+    return elements
+  }
+
+  private parsePipe(): IdExp {
+    const token = this.next()!
+
+    if (token.type !== 'ID') {
+      throw new ParseError(`expected "ID" after "PIPE"`, {
+        source: this.template,
+        loc: {
+          start: token.start,
+          end: token.end,
+        },
+      })
+    }
+
+    const right = {
+      ...token,
+      type: 'ID',
+      value: token.value as string,
+    } as IdExp
+
+    if (this.consume('LP')) {
+      const args = this.parseSequence()
+
+      if (args.length) {
+        right.args = args
+      }
+
+      const rp = this.consume('RP')
+
+      if (!rp) {
+        throw new ParseError(`expected "RP" after "LP"`, {
+          source: this.template,
+          loc: {
+            start: token.start,
+            end: token.end,
+          },
+        })
+      }
+    }
+
+    return right
+  }
+
+  private next(): Token | null {
+    return this.tokens[this.cursor++] ?? null
+  }
+
+  private back(): Token {
+    return this.tokens[this.cursor--]
+  }
+
+  private peek() {
+    return this.tokens[this.cursor] ?? null
+  }
+
+  private check(type: TokenType) {
+    return this.peek()?.type === type
+  }
+
+  private consume(type: TokenType) {
+    if (this.check(type)) {
+      return this.next()
+    }
+  }
+
+  private isHigher(a: Token, b: Token) {
+    return precedences[a.type] > precedences[b.type]
+  }
+}

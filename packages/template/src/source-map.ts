@@ -1,4 +1,5 @@
-import type { Config, Loc, Mapping } from './types'
+import type { Loc } from '@jj/utils'
+import type { Config, Mapping } from './types'
 
 /**
  * Contains the source map information.

@@ -1,11 +1,11 @@
 import type { Tag } from '../types'
-import { tag as assignTag } from './assign'
 import { tag as callTag } from './call'
 import { tag as commentTag } from './comment'
 import { tag as expressionTag } from './expression'
 import { tag as forTag } from './for'
 import { tag as ifTag } from './if'
 import { tag as macroTag } from './macro'
+import { tag as assignTag } from './set'
 import { tag as strTag } from './str'
 
 export const tags = [

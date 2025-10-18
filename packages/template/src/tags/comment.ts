@@ -1,3 +1,4 @@
+import type { StrExp } from '@jj/expression'
 import type { Tag } from '../types'
 
 const COMMENT = 'comment'
@@ -13,11 +14,11 @@ export const tag: Tag = {
   async compile({ token: { name, value }, ctx, out }) {
     // inline comment
     if (name === '#') {
-      if (!value || out.options.stripComments) {
+      if (!(value as StrExp).value || out.options.stripComments) {
         return
       }
 
-      return out.pushStr(`<!--${value}-->`)
+      return out.pushStr(`<!--${(value as StrExp).value}-->`)
     }
 
     // block comment

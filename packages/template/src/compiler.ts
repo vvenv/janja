@@ -43,7 +43,16 @@ export class Compiler {
       token = token.next
     }
 
-    ctx.validate()
+    try {
+      ctx.validate()
+    }
+    catch (error: any) {
+      throw new CompileError(error.message, {
+        raw: '',
+        start: 0,
+        end: 0,
+      } as Token, filepath)
+    }
 
     out.end()
 

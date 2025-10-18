@@ -1,18 +1,17 @@
 import type { Globals, ObjectType } from './types'
+import { formatDatetime, translate } from '@jj/utils'
 import { Safe } from './safe'
-import { formatDatetime } from './utils/format-datetime'
-import { translate } from './utils/translate'
 
 export * from './escape'
 
 export function abs(this: Globals, value = 0) {
   return Math.abs(value)
 }
-export function capitalize(this: Globals, value = '') {
-  return value.replace(/\b\w/g, match => match.toUpperCase())
-}
 export function add(this: Globals, value = 0, addend = 0) {
   return value + addend
+}
+export function capitalize(this: Globals, value = '') {
+  return value.replace(/\b\w/g, match => match.toUpperCase())
 }
 export function ceil(this: Globals, value = 0) {
   return Math.ceil(value)
@@ -33,11 +32,14 @@ export function entries(this: Globals, value: ObjectType = {}) {
 export function even(this: Globals, value: number | string = 0) {
   return +value % 2 === 0
 }
-export function fallback(this: Globals, value = '', defaultValue: any) {
-  return value || defaultValue
+export function fallback(this: Globals, value: any, defaultValue: any, anyFalsy = false) {
+  return anyFalsy ? (value || defaultValue) : (value ?? defaultValue)
 }
 export function first(this: Globals, value: string | any[] = []) {
   return [...value][0]
+}
+export function get(this: Globals, value: ObjectType, ...path: string[]) {
+  return path.reduce((acc, cur) => (acc && typeof acc === 'object' && (cur in acc)) ? acc[cur] : undefined, value)
 }
 export function groupby(this: Globals, value: ObjectType[] = [], key: string) {
   return value.reduce(

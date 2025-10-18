@@ -14,12 +14,12 @@
 {{ for item in items }}{{= item }}{{ endfor }}
 ```
 
-### **assign**: Variable Assignment
+### **set**: Variable Assignment
 
 ```jianjia
-{{ assign foo = 123 }}
-{{ assign a, b = obj }}
-{{ assign foo }}Content{{ endassign }}
+{{ set foo = 123 }}
+{{ set a, b = obj }}
+{{ set foo }}Content{{ endassign }}
 ```
 
 ### **block / super**: Template Inheritance & Blocks

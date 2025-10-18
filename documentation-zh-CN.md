@@ -14,12 +14,12 @@
 {{ for item in items }}{{= item }}{{ endfor }}
 ```
 
-### **assign**：变量赋值
+### **set**：变量赋值
 
 ```jianjia
-{{ assign foo = 123 }}
-{{ assign a, b = obj }}
-{{ assign foo }}内容{{ endassign }}
+{{ set foo = 123 }}
+{{ set a, b = obj }}
+{{ set foo }}内容{{ endassign }}
 ```
 
 ### **block / super**：模板继承与区块

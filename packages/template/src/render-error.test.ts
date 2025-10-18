@@ -25,14 +25,16 @@ it('render error', () => {
   })
   expect(error.name).toBe('RenderError')
   expect(error.message).toBe('test error')
-  expect(error.details).toMatchInlineSnapshot(`
-    " JianJia  test error
+  expect(error.details).toMatchInlineSnapshot(
+    `
+    "test error
 
     1: {{ if }}{{ else }}{{ endif }}
        ^^^^^^^^^
                           ^^^^^^^^^
     "
-  `)
+  `,
+  )
 })
 
 it('render error w/ missed', () => {
@@ -59,10 +61,12 @@ it('render error w/ missed', () => {
   })
   expect(error.name).toBe('RenderError')
   expect(error.message).toBe('test error')
-  expect(error.details).toMatchInlineSnapshot(`
-    " JianJia  test error
+  expect(error.details).toMatchInlineSnapshot(
+    `
+    "test error
 
        ...
     "
-  `)
+  `,
+  )
 })

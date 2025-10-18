@@ -8,10 +8,10 @@ on:
     branches:
       - main
     paths:
-      - 'packages/template/**/*'
+      - "packages/**/*"
   pull_request:
     paths:
-      - 'packages/template/**/*'
+      - "packages/**/*"
 
 concurrency:
   group: test-${{ github.workflow }}-${{ github.ref }}
@@ -39,5 +39,7 @@ jobs:
           key: yarn-cache-${{ hashFiles('yarn.lock') }}
       - name: Install Dependencies
         run: yarn install --immutable
+      - name: Build
+        run: yarn build
       - name: Run test
         run: yarn test --coverage

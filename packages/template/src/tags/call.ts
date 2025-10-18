@@ -1,34 +1,27 @@
 import type { Tag } from '../types'
-import { compileArgs } from '../utils/compile-args'
+import { compiler } from '@jj/expression'
+import { FILTERS } from '../identifiers'
 
 const CALL = 'call'
 const ENDCALL = 'endcall'
-const RE = /^([a-z$_][\w$]*)(?:: (.+)|\b)/
 
 /**
- * @example {{ call my_macro: "foo", "bar" }}...{{ endcall }}
+ * @example {{ call my_macro(x, "a", 1) }}...{{ endcall }}
  */
 export const tag: Tag = {
   names: [CALL, ENDCALL],
 
   async compile({ token: { name, value }, ctx, out }) {
     if (name === CALL) {
-      if (!value) {
-        throw new Error('call tag must have a value')
+      if (value?.type !== 'ID') {
+        throw new Error(`${name} tag must have a valid name`)
       }
 
-      const [, _name, _args = ''] = value.match(RE) ?? []
-
-      if (!_name) {
-        throw new Error('call tag must have a valid name')
-      }
-
-      const { context } = ctx
       ctx.expect(ENDCALL)
 
-      const args = compileArgs(_args, context)
+      const { context } = ctx
 
-      return out.pushLine(`await ${context}.${_name}?.(${[...args, 'async()=>{'].join(',')}`)
+      return out.pushLine(`await ${compiler.compile(value, context, FILTERS)}(async()=>{`)
     }
 
     if (name === ENDCALL) {
@@ -36,7 +29,7 @@ export const tag: Tag = {
         throw new Error(`unexpected ${name}`)
       }
 
-      return out.pushLine('});')
+      return out.pushLine('})();')
     }
   },
 }

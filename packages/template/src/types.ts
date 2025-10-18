@@ -1,14 +1,11 @@
+import type { Exp } from '@jj/expression'
+import type { Loc } from '@jj/utils'
 import type { Context } from './context'
 import type { OutScript } from './out-script'
 
 export type MaybePromise<T> = T | Promise<T>
 
 export type ObjectType = Record<string, any>
-
-export interface Loc {
-  start: number
-  end: number
-}
 
 export interface Mapping {
   source: Loc
@@ -17,13 +14,15 @@ export interface Mapping {
 
 export interface FilterMeta {
   name: string
-  args: string
+  args?: Statement[]
 }
 
 export interface Statement {
-  type: 'expression' | 'operator'
-  value: string
+  type: 'boolean' | 'null' | 'undefined' | 'string' | 'number' | 'expression' | 'operator' | 'identifier' | 'filters'
+  value: boolean | null | undefined | string | number
+  defaultValue?: Statement[]
   filters?: FilterMeta[]
+  args?: Statement[]
 }
 
 export interface Globals {
@@ -50,7 +49,7 @@ export type Script = (
 
 export interface Token extends Loc {
   name: string
-  value: string | null
+  value?: Exp | null
   raw: string
   previous: Token | null
   next: Token | null
@@ -80,7 +79,6 @@ export interface Tag {
 }
 
 export interface Config {
-  debug?: boolean
   globals?: Globals
   filters?: Filters
   tags?: Record<string, Tag[]>

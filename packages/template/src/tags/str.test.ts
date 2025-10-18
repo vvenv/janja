@@ -13,7 +13,7 @@ it('basic', async () => {
   )
 })
 
-it('whitespace control', async () => {
+it('whitespace', async () => {
   expect(await compile(' {{ t -}} hello world {{- t }} ')).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";s+=" ";s+="hello world";s+=" ";return s;})();"`,
   )
