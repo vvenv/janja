@@ -1823,7 +1823,7 @@ __metadata:
     "@jj/template": "workspace:^"
     ejs: "npm:^3.1.10"
     eta: "npm:^4.0.1"
-    liquidjs: "npm:^10.22.0"
+    liquidjs: "npm:^10.23.0"
   languageName: unknown
   linkType: soft
 
@@ -3631,15 +3631,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"liquidjs@npm:^10.22.0":
-  version: 10.22.0
-  resolution: "liquidjs@npm:10.22.0"
+"liquidjs@npm:^10.23.0":
+  version: 10.23.0
+  resolution: "liquidjs@npm:10.23.0"
   dependencies:
     commander: "npm:^10.0.0"
   bin:
     liquid: bin/liquid.js
     liquidjs: bin/liquid.js
-  checksum: 10c0/9f6d1ee79371b29798b59e3288beb1a413cb7c85dc6cb6e2937cf591b91af1a49f27ac95c4231c14e20c7e70c6d72f0a2b3c1ebda8cc0077d56cb70c0a5e5dbc
+  checksum: 10c0/4b11de851468f8a968ffbef8008255b292231be6a0bca957afc9ae6cc2e5430e41fa912714837a9734bc2d944ff09055c05fe97cbf4409614595dd170b3b7155
   languageName: node
   linkType: hard
 
