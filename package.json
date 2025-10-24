@@ -23,15 +23,15 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.4.1",
-    "@types/node": "^24.6.2",
-    "@vitest/coverage-v8": "3.2.4",
-    "@vitest/ui": "3.2.4",
-    "eslint": "^9.36.0",
+    "@antfu/eslint-config": "^6.0.0",
+    "@types/node": "^24.9.1",
+    "@vitest/coverage-v8": "4.0.2",
+    "@vitest/ui": "4.0.2",
+    "eslint": "^9.38.0",
     "husky": "^9.1.7",
-    "oxlint": "^1.19.0",
+    "oxlint": "^1.24.0",
     "typescript": "^5.9.3",
-    "vite": "^7.1.9",
-    "vitest": "^3.2.4"
+    "vite": "^7.1.12",
+    "vitest": "^4.0.2"
   }
 }
