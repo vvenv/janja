@@ -7,8 +7,8 @@ function compile(template: string) {
 }
 
 it('invalid', () => {
-  expect(() => compile('and')).toThrowErrorMatchingInlineSnapshot(`[ParseError: no left operand for AND]`)
-  expect(() => compile('|')).toThrowErrorMatchingInlineSnapshot(`[TypeError: Cannot read properties of null (reading 'type')]`)
+  expect(() => compile('and')).toThrowErrorMatchingInlineSnapshot(`[ParseError: no left operand for "AND"]`)
+  expect(() => compile('|')).toThrowErrorMatchingInlineSnapshot(`[ParseError: no left operand for "PIPE"]`)
 })
 
 it('empty', () => {
@@ -59,6 +59,18 @@ it('id', () => {
   )
   expect(compile('a(x,y="b")')).toMatchInlineSnapshot(
     `"c.a(c.x,(c.y="b"))"`,
+  )
+})
+
+it('dot', () => {
+  expect(compile('.')).toMatchInlineSnapshot(
+    `""""`,
+  )
+  expect(compile('a.b.c')).toMatchInlineSnapshot(
+    `"c.a.b.c"`,
+  )
+  expect(compile('a.b.c(x, y, z)')).toMatchInlineSnapshot(
+    `"c.a.b.c(c.x,c.y,c.z)"`,
   )
 })
 

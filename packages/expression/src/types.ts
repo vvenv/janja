@@ -25,6 +25,7 @@ export type TokenType
     | 'LP'
     | 'RP'
     | 'COMMA'
+    | 'DOT'
     | 'STR'
     | 'NUM'
     | 'BOOL'
@@ -72,6 +73,7 @@ export interface BaseExp extends Loc {
 export interface IdExp extends BaseExp {
   type: 'ID'
   value: string
+  path?: IdExp[]
   args?: Exp[]
 }
 

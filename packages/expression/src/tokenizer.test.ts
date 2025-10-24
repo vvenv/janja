@@ -14,7 +14,6 @@ it('invalid', () => {
   expect(() => tokenize('&')).toThrowErrorMatchingInlineSnapshot(`[ParseError: unexpect "&"]`)
   expect(() => tokenize('@')).toThrowErrorMatchingInlineSnapshot(`[ParseError: unexpect "@"]`)
   expect(() => tokenize('#')).toThrowErrorMatchingInlineSnapshot(`[ParseError: unexpect "#"]`)
-  expect(() => tokenize('.')).toThrowErrorMatchingInlineSnapshot(`[ParseError: unexpect "."]`)
   expect(() => tokenize(':')).toThrowErrorMatchingInlineSnapshot(`[ParseError: unexpect ":"]`)
   expect(() => tokenize(';')).toThrowErrorMatchingInlineSnapshot(`[ParseError: unexpect ";"]`)
 })
@@ -300,6 +299,13 @@ it('symbols', () => {
         "start": 75,
         "type": "COMMA",
         "value": ",",
+      },
+      {
+        "end": 77,
+        "raw": ".",
+        "start": 77,
+        "type": "DOT",
+        "value": ".",
       },
     ]
   `,

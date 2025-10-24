@@ -9,23 +9,32 @@ it('invalid', () => {
   expect(() => parse('not')).toThrowErrorMatchingInlineSnapshot(
     `[ParseError: unexpected end of expression]`,
   )
+  expect(() => parse('and')).toThrowErrorMatchingInlineSnapshot(
+    `[ParseError: no left operand for "AND"]`,
+  )
+  expect(() => parse('a and')).toThrowErrorMatchingInlineSnapshot(
+    `[ParseError: no right operand for "AND"]`,
+  )
   expect(() => parse('(')).toThrowErrorMatchingInlineSnapshot(
     `[ParseError: unexpected end of expression]`,
   )
   expect(() => parse('(a')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected RP after LP]`,
+    `[ParseError: expected "RP" after "LP"]`,
   )
   expect(() => parse('a(')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected RP after LP]`,
+    `[ParseError: expected "RP" after "LP"]`,
+  )
+  expect(() => parse('a.')).toThrowErrorMatchingInlineSnapshot(
+    `[ParseError: expected "ID" after "DOT"]`,
+  )
+  expect(() => parse('a.1')).toThrowErrorMatchingInlineSnapshot(
+    `[ParseError: expected "ID" after "DOT"]`,
   )
   expect(() => parse('|')).toThrowErrorMatchingInlineSnapshot(
-    `[TypeError: Cannot read properties of null (reading 'type')]`,
+    `[ParseError: no left operand for "PIPE"]`,
   )
-  expect(() => parse('and')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: no left operand for AND]`,
-  )
-  expect(() => parse('a and')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: no right operand for AND]`,
+  expect(() => parse('a |')).toThrowErrorMatchingInlineSnapshot(
+    `[ParseError: expected "ID" after "PIPE"]`,
   )
   expect(() => parse('a | 1')).toThrowErrorMatchingInlineSnapshot(
     `[ParseError: expected "ID" after "PIPE"]`,
@@ -154,6 +163,89 @@ it('id', () => {
       "start": 0,
       "type": "ID",
       "value": "abc",
+    }
+  `,
+  )
+})
+
+it('dot', () => {
+  expect(parse('.')).toMatchInlineSnapshot(
+    `null`,
+  )
+  expect(parse('a.b.c')).toMatchInlineSnapshot(
+    `
+    {
+      "end": 1,
+      "path": [
+        {
+          "end": 3,
+          "raw": "b",
+          "start": 2,
+          "type": "ID",
+          "value": "b",
+        },
+        {
+          "end": 5,
+          "raw": "c",
+          "start": 4,
+          "type": "ID",
+          "value": "c",
+        },
+      ],
+      "raw": "a",
+      "start": 0,
+      "type": "ID",
+      "value": "a",
+    }
+  `,
+  )
+  expect(parse('a.b.c(x, y, z)')).toMatchInlineSnapshot(
+    `
+    {
+      "args": [
+        {
+          "end": 7,
+          "raw": "x",
+          "start": 6,
+          "type": "ID",
+          "value": "x",
+        },
+        {
+          "end": 10,
+          "raw": "y",
+          "start": 9,
+          "type": "ID",
+          "value": "y",
+        },
+        {
+          "end": 13,
+          "raw": "z",
+          "start": 12,
+          "type": "ID",
+          "value": "z",
+        },
+      ],
+      "end": 1,
+      "path": [
+        {
+          "end": 3,
+          "raw": "b",
+          "start": 2,
+          "type": "ID",
+          "value": "b",
+        },
+        {
+          "end": 5,
+          "raw": "c",
+          "start": 4,
+          "type": "ID",
+          "value": "c",
+        },
+      ],
+      "raw": "a",
+      "start": 0,
+      "type": "ID",
+      "value": "a",
     }
   `,
   )

@@ -69,7 +69,7 @@ export class Parser {
         const rp = this.consume('RP')
 
         if (!rp) {
-          throw new ParseError(`expected RP after LP`, {
+          throw new ParseError(`expected "RP" after "LP"`, {
             source: this.template,
             loc: {
               start: token.start,
@@ -114,13 +114,18 @@ export class Parser {
           type: 'ID',
           value: token.value as string,
         } satisfies IdExp
+
+        if (this.check('DOT')) {
+          left.path = this.parsePath()
+        }
+
         if (this.consume('LP')) {
           left.args = this.parseSequence()
 
           const rp = this.consume('RP')
 
           if (!rp) {
-            throw new ParseError(`expected RP after LP`, {
+            throw new ParseError(`expected "RP" after "LP"`, {
               source: this.template,
               loc: {
                 start: token.start,
@@ -216,7 +221,7 @@ export class Parser {
         || token.type === 'SET'
       ) {
         if (!left) {
-          throw new ParseError(`no left operand for ${token.type}`, {
+          throw new ParseError(`no left operand for "${token.type}"`, {
             source: this.template,
             loc: {
               start: token.start,
@@ -230,7 +235,7 @@ export class Parser {
         )
 
         if (!right) {
-          throw new ParseError(`no right operand for ${token.type}`, {
+          throw new ParseError(`no right operand for "${token.type}"`, {
             source: this.template,
             loc: {
               start: token.start,
@@ -249,10 +254,28 @@ export class Parser {
       }
 
       if (token.type === 'PIPE') {
+        if (!left) {
+          throw new ParseError(`no left operand for "${token.type}"`, {
+            source: this.template,
+            loc: {
+              start: token.start,
+              end: token.end,
+            },
+          })
+        }
+        if (!this.check('ID')) {
+          throw new ParseError(`expected "ID" after "PIPE"`, {
+            source: this.template,
+            loc: {
+              start: token.start,
+              end: token.end,
+            },
+          })
+        }
         left = {
           ...token,
           type: 'PIPE',
-          left: left!,
+          left,
           right: this.parsePipe(),
         } satisfies PipeExp
         continue
@@ -265,7 +288,44 @@ export class Parser {
     return left
   }
 
-  private parseSequence(): Exp[] {
+  private parsePath() {
+    const ids: IdExp[] = []
+
+    while (true) {
+      const dot = this.consume('DOT')
+      if (!dot) {
+        break
+      }
+      const token = this.next()
+      if (!token) {
+        throw new ParseError('expected "ID" after "DOT"', {
+          source: this.template,
+          loc: {
+            start: dot.start,
+            end: dot.end,
+          },
+        })
+      }
+      if (token.type !== 'ID') {
+        throw new ParseError(`expected "ID" after "DOT"`, {
+          source: this.template,
+          loc: {
+            start: token.start,
+            end: token.end,
+          },
+        })
+      }
+      ids.push({
+        ...token,
+        type: 'ID',
+        value: token.value as string,
+      } satisfies IdExp)
+    }
+
+    return ids
+  }
+
+  private parseSequence() {
     const elements: Exp[] = []
 
     while (!this.check('RP')) {
@@ -283,18 +343,8 @@ export class Parser {
     return elements
   }
 
-  private parsePipe(): IdExp {
+  private parsePipe() {
     const token = this.next()!
-
-    if (token.type !== 'ID') {
-      throw new ParseError(`expected "ID" after "PIPE"`, {
-        source: this.template,
-        loc: {
-          start: token.start,
-          end: token.end,
-        },
-      })
-    }
 
     const right = {
       ...token,

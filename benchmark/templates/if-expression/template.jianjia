@@ -1,4 +1,4 @@
-{{ for account in accounts }}
+{{ for account of accounts }}
 <div>
   {{ if account.status eq "closed" }}
   <div>

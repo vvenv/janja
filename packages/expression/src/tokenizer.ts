@@ -173,7 +173,7 @@ export class Tokenizer {
   }
 
   private isSymbol(char: string) {
-    return /[+\-*/%|=(),]/.test(char)
+    return /[+\-*/%|=(),.]/.test(char)
   }
 
   private isDigit(char: string) {

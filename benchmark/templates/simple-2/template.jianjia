@@ -6,7 +6,7 @@
   <h5 class='header5'>{{= header5 }}</h5>
   <h6 class='header6'>{{= header6 }}</h6>
   <ul class='list'>
-    {{ for item in list }}
+    {{ for item of list }}
     <li class='item'>{{= item }}</li>
     {{ endfor }}
   </ul>

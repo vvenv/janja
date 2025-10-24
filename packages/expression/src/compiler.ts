@@ -56,8 +56,15 @@ export class Compiler {
     return `!${this.compileExpression(argument)}`
   }
 
-  private compileId({ value, args }: IdExp) {
-    return args ? `${this.context}.${value}(${args.map(arg => this.compileExpression(arg)).join(',')})` : `${this.context}.${value}`
+  private compileId({ value, path, args }: IdExp) {
+    let s = `${this.context}.${value}`
+    if (path) {
+      s += path.map(p => `.${p.value}`).join('')
+    }
+    if (args) {
+      s += `(${args.map(arg => this.compileExpression(arg)).join(',')})`
+    }
+    return s
   }
 
   private compileStr({ value }: StrExp) {

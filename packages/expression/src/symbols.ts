@@ -33,4 +33,5 @@ export const symbols: Record<string, TokenType> = {
   '(': 'LP',
   ')': 'RP',
   ',': 'COMMA',
+  '.': 'DOT',
 }

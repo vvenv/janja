@@ -4,11 +4,13 @@
   </head>
   <body>
     <p>{{= text }}</p>
-    {{ for (url, name, description) of projects }}
-      <a href="{{= url }}">{{= name }}</a>
-      <p>{{= description }}</p>
+    {{ if projects.length }}
+      {{ for (url, name, description) of projects }}
+        <a href="{{= url }}">{{= name }}</a>
+        <p>{{= description }}</p>
+      {{ endfor }}
     {{ else }}
       No projects
-    {{ endfor }}
+    {{ endif }}
   </body>
 </html>
