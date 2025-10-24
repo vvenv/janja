@@ -4,7 +4,6 @@ import { Compiler } from './compiler'
 import { config } from './config'
 import { escape } from './escape'
 import * as filters from './filters'
-import * as helpers from './helpers'
 import { Parser } from './parser'
 import { RenderError } from './render-error'
 import { Safe } from './safe'
@@ -71,7 +70,6 @@ export class Engine {
 
           return this.options.autoEscape ? escape(v) : v
         },
-        helpers,
       )
     }
     catch (error: any) {

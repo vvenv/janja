@@ -29,7 +29,7 @@ export const tag: Tag = {
         throw new Error(`unexpected ${name}`)
       }
 
-      return out.pushLine('})();')
+      return out.pushLine('});')
     }
   },
 }

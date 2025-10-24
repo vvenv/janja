@@ -1,5 +1,5 @@
 /* eslint-disable style/no-tabs */
-import { describe, expect, it } from 'vitest'
+import { expect, it } from 'vitest'
 import { render } from '../test/__helper'
 import { loader } from './loaders/file-loader'
 
@@ -56,46 +56,44 @@ it('escape tag', async () => {
   )
 })
 
-describe('autoEscape', async () => {
-  it('enabled', async () => {
-    expect(
-      await render(
-        `"
+it('autoEscape', async () => {
+  expect(
+    await render(
+      `"
 {{= x }}
-<>`,
-        { x: '<foo>\t</foo>' },
-      ),
-    ).toMatchInlineSnapshot(
-      `
+<foo>\t</foo>`,
+      { x: '<foo>\t</foo>' },
+    ),
+  ).toMatchInlineSnapshot(
+    `
       ""
       &lt;foo&gt;	&lt;/foo&gt;
-      <>"
+      <foo>	</foo>"
     `,
-    )
-  })
-
-  it('disabled', async () => {
-    expect(
-      await render(
-        `"
-{{= x }}
-<>`,
-        { x: '<foo>\t</foo>' },
-        {
-          autoEscape: false,
-        },
-      ),
-    ).toMatchInlineSnapshot(
-      `
-      ""
-      <foo>	</foo>
-      <>"
-    `,
-    )
-  })
+  )
 })
 
-it('interpolate', async () => {
+it('autoEscape disabled', async () => {
+  expect(
+    await render(
+      `"
+{{= x }}
+<foo>\t</foo>`,
+      { x: '<foo>\t</foo>' },
+      {
+        autoEscape: false,
+      },
+    ),
+  ).toMatchInlineSnapshot(
+    `
+    ""
+    <foo>	</foo>
+    <foo>	</foo>"
+  `,
+  )
+})
+
+it('expression', async () => {
   expect(await render('{{= name }}', { name: 'foo' })).toMatchInlineSnapshot(
     `"foo"`,
   )
@@ -111,11 +109,11 @@ it('interpolate', async () => {
 
 it('for loop', async () => {
   expect(
-    await render('{{ for name of names }}{{ name }}{{ endfor }}', {
+    await render('{{ for name of names }}{{= name }}{{ endfor }}', {
       names: ['foo', 'bar'],
     }),
   ).toMatchInlineSnapshot(
-    `""`,
+    `"foobar"`,
   )
   expect(
     await render(
@@ -144,7 +142,7 @@ it('for loop - nested', async () => {
   )
 })
 
-it('if - else', async () => {
+it('if - else - elif', async () => {
   expect(
     await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}', {
       name: 'foo',
@@ -157,9 +155,16 @@ it('if - else', async () => {
   ).toMatchInlineSnapshot(
     `"*"`,
   )
+  expect(
+    await render('{{ if name eq "foo" }}1{{ elif name eq "bar" }}2{{ else }}3{{ endif }}', {
+      name: 'bar',
+    }),
+  ).toMatchInlineSnapshot(
+    `"2"`,
+  )
 })
 
-it('mixed', async () => {
+it('for - if', async () => {
   expect(
     await render(
       '{{ for name of names }}{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}{{ endfor }}',
@@ -172,7 +177,7 @@ it('mixed', async () => {
   )
 })
 
-it('destructing', async () => {
+it('for - destructing', async () => {
   expect(
     await render(
       '{{ for name of names }}{{ for kv of name | entries }}{{= kv | first }}{{= kv | last }}{{ endfor }}{{ endfor }}',
@@ -185,6 +190,51 @@ it('destructing', async () => {
     ),
   ).toMatchInlineSnapshot(
     `"x1y3y2x4"`,
+  )
+  expect(
+    await render(
+      '{{ for (y, x) of names }}{{=x}}{{=y}}{{ endfor }}',
+      {
+        names: [
+          { x: 1, y: 3 },
+          { y: 2, x: 4 },
+        ],
+      },
+    ),
+  ).toMatchInlineSnapshot(
+    `"1342"`,
+  )
+})
+
+it('set', async () => {
+  expect(
+    await render('{{= name }}{{ set name = "bar" }}{{= name }}', {
+      name: 'foo',
+    }),
+  ).toMatchInlineSnapshot(
+    `"foobar"`,
+  )
+})
+
+it('macro - call', async () => {
+  expect(
+    await render(
+      `{{ macro foo = (name = "foo") }}{{= name }}{{caller}}{{ endmacro }}{{ call foo() }}1{{ endcall }}{{ call foo("bar") }}{{ endcall }}`,
+      {},
+    ),
+  ).toMatchInlineSnapshot(
+    `"foo1bar"`,
+  )
+})
+
+it('block', async () => {
+  expect(
+    await render(
+      `{{ block title }}0{{ endblock }}{{ block title }}1{{ endblock }}{{ block title }}{{super}}2{{ endblock }}{{ block title }}3{{super}}{{ endblock }}`,
+      {},
+    ),
+  ).toMatchInlineSnapshot(
+    `"312"`,
   )
 })
 

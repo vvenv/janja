@@ -36,6 +36,7 @@ export const precedences: Record<TokenType, number> = {
 
   PIPE: 80,
 
+  DOT: 90,
   ID: 90,
   STR: 90,
   NUM: 90,

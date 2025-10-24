@@ -187,10 +187,10 @@ it('set', () => {
     `"(c.a=c.b)"`,
   )
   expect(compile('a = (x, y)')).toMatchInlineSnapshot(
-    `"c.a=async(x,y)=>async(_c)=>{"`,
+    `"c.a=(x,y)=>async(_c)=>{"`,
   )
   expect(compile('a = (x=true, y=1, z="b")')).toMatchInlineSnapshot(
-    `"c.a=async(x=true,y=1,z="b")=>async(_c)=>{"`,
+    `"c.a=(x=true,y=1,z="b")=>async(_c)=>{"`,
   )
 })
 

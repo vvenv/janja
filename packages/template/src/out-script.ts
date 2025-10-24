@@ -1,6 +1,6 @@
 import type { Loc } from '@jj/utils'
 import type { Config, Script } from './types'
-import { CONTEXT, ESCAPE, FILTERS, HELPERS } from './identifiers'
+import { CONTEXT, ESCAPE, FILTERS } from './identifiers'
 
 export class OutScript {
   private content = ''
@@ -17,7 +17,7 @@ export class OutScript {
 
   get script() {
     // eslint-disable-next-line no-new-func
-    return new Function(CONTEXT, FILTERS, ESCAPE, HELPERS, this.value) as Script
+    return new Function(CONTEXT, FILTERS, ESCAPE, this.value) as Script
   }
 
   start() {

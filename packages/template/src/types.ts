@@ -30,10 +30,6 @@ export interface Globals {
   [key: string]: any
 }
 
-export interface Helpers {
-  getIn: (obj: any[] | ObjectType, index: number, key: string) => any
-}
-
 export type Filters = Record<string, Filter>
 
 export interface Filter {
@@ -44,7 +40,6 @@ export type Script = (
   globals: Globals,
   filters: Filters,
   escape: (v: unknown) => unknown,
-  helpers: Helpers
 ) => Promise<string>
 
 export interface Token extends Loc {

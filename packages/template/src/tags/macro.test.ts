@@ -71,24 +71,24 @@ it('invalid', async () => {
 
 it('basic', async () => {
   expect(await compile('{{ macro m = () }}MACRO{{ endmacro }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";c.m=async()=>async(_c)=>{const c_0={...c,};s+="MACRO";};return s;})();"`,
+    `""use strict";return(async()=>{let s="";c.m=()=>async(_c)=>{const c_0={...c,};s+="MACRO";};return s;})();"`,
   )
 })
 
 it('args', async () => {
   expect(await compile('{{ macro m = (x, y) }}{{= x }}{{= y }}{{ endmacro }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";c.m=async(x,y)=>async(_c)=>{const c_0={...c,x,y};s+=e(c_0.x);s+=e(c_0.y);};return s;})();"`,
+    `""use strict";return(async()=>{let s="";c.m=(x,y)=>async(_c)=>{const c_0={...c,x,y};s+=e(c_0.x);s+=e(c_0.y);};return s;})();"`,
   )
 })
 
 it('default args', async () => {
   expect(await compile('{{ macro m = (x="=", y=1, z=x) }}{{= x }}{{= y }}{{= z }}{{ endmacro }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";c.m=async(x="=",y=1,z=c.x)=>async(_c)=>{const c_0={...c,x,y,z};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);};return s;})();"`,
+    `""use strict";return(async()=>{let s="";c.m=(x="=",y=1,z=c.x)=>async(_c)=>{const c_0={...c,x,y,z};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);};return s;})();"`,
   )
 })
 
 it('caller', async () => {
   expect(await compile('{{ macro m = (x, y) }}{{= x }}{{ caller }}{{= y }}{{ endmacro }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";c.m=async(x,y)=>async(_c)=>{const c_0={...c,x,y};s+=e(c_0.x);await _c?.();s+=e(c_0.y);};return s;})();"`,
+    `""use strict";return(async()=>{let s="";c.m=(x,y)=>async(_c)=>{const c_0={...c,x,y};s+=e(c_0.x);await _c?.();s+=e(c_0.y);};return s;})();"`,
   )
 })

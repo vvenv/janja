@@ -97,7 +97,7 @@ export class Compiler {
 
   private compileSet({ left, right }: BinaryExp) {
     if (right.type === 'SEQ') {
-      return `${this.compileExpression(left)}=async(${(right.elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}=${this.compileExpression((el.right))}` : (el as IdExp).value).join(',')})=>async(_c)=>{`
+      return `${this.compileExpression(left)}=(${(right.elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}=${this.compileExpression((el.right))}` : (el as IdExp).value).join(',')})=>async(_c)=>{`
     }
     return `(${this.compileExpression(left)}=${this.compileExpression(right)})`
   }

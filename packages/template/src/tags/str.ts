@@ -4,7 +4,6 @@ const STR = 'str'
 
 /**
  * @example hello world
- *          ^^^^^^^^^^^
  */
 export const tag: Tag = {
   names: [STR],

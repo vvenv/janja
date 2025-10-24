@@ -23,6 +23,7 @@ export const operators: Record<TokenType, string> = {
   LP: '(',
   RP: ')',
   COMMA: ',',
+  DOT: '.',
   ID: '',
   STR: '',
   NUM: '',
