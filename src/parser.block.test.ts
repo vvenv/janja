@@ -42,7 +42,7 @@ it('1', async () => {
       "name": "block",
       "next": {
         "end": 18,
-        "name": "str",
+        "name": "raw",
         "next": {
           "end": 32,
           "name": "endblock",
@@ -88,13 +88,13 @@ it('2', async () => {
         "name": "block",
         "next": {
           "end": 18,
-          "name": "str",
+          "name": "raw",
           "next": {
             "end": 32,
             "name": "endblock",
             "next": {
               "end": 61,
-              "name": "str",
+              "name": "raw",
               "next": {
                 "end": 75,
                 "name": "endblock",
@@ -164,13 +164,13 @@ it('3', async () => {
         "name": "block",
         "next": {
           "end": 50,
-          "name": "str",
+          "name": "raw",
           "next": {
             "end": 64,
             "name": "endblock",
             "next": {
               "end": 93,
-              "name": "str",
+              "name": "raw",
               "next": {
                 "end": 107,
                 "name": "endblock",
@@ -238,13 +238,13 @@ it('hoist', async () => {
       "name": "block",
       "next": {
         "end": 60,
-        "name": "str",
+        "name": "raw",
         "next": {
           "end": 17,
           "name": "block",
           "next": {
             "end": 18,
-            "name": "str",
+            "name": "raw",
             "next": {
               "end": 32,
               "name": "endblock",

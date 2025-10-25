@@ -5,10 +5,10 @@ import { tag as expressionTag } from './expression'
 import { tag as forTag } from './for'
 import { tag as ifTag } from './if'
 import { tag as macroTag } from './macro'
+import { tag as rawTag } from './raw'
 import { tag as assignTag } from './set'
-import { tag as strTag } from './str'
 
-export const tags = [
+export const compilers = [
   assignTag,
   callTag,
   commentTag,
@@ -16,10 +16,10 @@ export const tags = [
   forTag,
   ifTag,
   macroTag,
-  strTag,
-].reduce((acc, tag) => {
-  for (const name of tag.names) {
-    acc[name] = [...(acc[name] || []), tag]
+  rawTag,
+].reduce((acc, compiler) => {
+  for (const name of compiler.names) {
+    acc[name] = [...(acc[name] || []), compiler]
   }
 
   return acc

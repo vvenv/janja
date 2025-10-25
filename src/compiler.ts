@@ -7,21 +7,21 @@ import { CompileError } from './utils/compile-error'
 export class Compiler {
   constructor(public options: Required<Config>) {}
 
-  async compile(token: TagToken | null, filepath?: string) {
+  async compile(tagToken: TagToken | null, filepath?: string) {
     const ctx = new Context(this.options)
     const out = new OutScript(this.options)
     const sourcemap = new SourceMap(this.options)
 
     out.start()
 
-    while (token) {
-      const tags = (this.options.tags[token.name] ?? [])
+    while (tagToken) {
+      const compilers = (this.options.compilers[tagToken.name] ?? [])
 
-      for (const tag of tags) {
+      for (const compiler of compilers) {
         try {
-          const r = await tag.compile(
+          const r = await compiler.compile(
             {
-              token,
+              token: tagToken,
               ctx,
               out,
             },
@@ -29,18 +29,18 @@ export class Compiler {
 
           if (r !== false) {
             if (r) {
-              sourcemap.addMapping(token, r)
+              sourcemap.addMapping(tagToken, r)
             }
 
             break
           }
         }
         catch (error: any) {
-          throw new CompileError(error.message, token, filepath)
+          throw new CompileError(error.message, tagToken, filepath)
         }
       }
 
-      token = token.next
+      tagToken = tagToken.next
     }
 
     try {

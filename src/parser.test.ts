@@ -32,7 +32,7 @@ it('escape tag', async () => {
       "name": "=",
       "next": {
         "end": 22,
-        "name": "str",
+        "name": "raw",
         "next": null,
         "previous": [Circular],
         "raw": "" }}",
@@ -90,7 +90,7 @@ it('empty', async () => {
     `
     {
       "end": 1,
-      "name": "str",
+      "name": "raw",
       "next": null,
       "previous": null,
       "raw": " ",

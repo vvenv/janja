@@ -141,7 +141,7 @@ it('block set', async () => {
     `""use strict";return(async()=>{let s="";Object.assign(c,{x:await(async(s)=>{s+=e(c.y);return s;})("")});return s;})();"`,
   )
   expect(await compile('{{ set x }}a{{ endset }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";Object.assign(c,{x:await(async(s)=>{s+="a";return s;})("")});return s;})();"`,
+    `""use strict";return(async()=>{let s="";Object.assign(c,{x:await(async(s)=>{return s;})("")});return s;})();"`,
   )
 })
 

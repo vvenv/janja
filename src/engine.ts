@@ -17,11 +17,11 @@ const cache = new Map<string, {
 export class Engine {
   protected options: Required<Config>
 
-  constructor({ globals, filters, tags, ...options }: Config = {}) {
+  constructor({ globals, filters, compilers, ...options }: Config = {}) {
     this.options = { ...config, ...options }
     Object.assign(this.options.globals, globals)
     Object.assign(this.options.filters, filters)
-    Object.assign(this.options.tags, tags)
+    Object.assign(this.options.compilers, compilers)
   }
 
   async render(

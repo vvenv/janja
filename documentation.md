@@ -91,7 +91,7 @@ const myTag = {
   },
 }
 const engine = new Engine({
-  tags: [myTag],
+  compilers: [myTag],
 })
 ```
 

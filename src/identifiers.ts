@@ -2,7 +2,7 @@ export const CONTEXT = 'c'
 export const FILTERS = 'f' // Filters can be async
 export const ESCAPE = 'e'
 
-export const STR = 'str'
+export const RAW = 'raw'
 export const LAYOUT = 'layout'
 export const INCLUDE = 'include'
 export const BLOCK = 'block'

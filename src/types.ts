@@ -214,7 +214,7 @@ export interface TagCompiler {
 export interface Config {
   globals?: Globals
   filters?: Filters
-  tags?: Record<string, TagCompiler[]>
+  compilers?: Record<string, TagCompiler[]>
   strictMode?: boolean
   autoEscape?: boolean
   stripComments?: boolean

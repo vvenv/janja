@@ -58,31 +58,31 @@ it('layout', async () => {
     `
     {
       "end": 18,
-      "name": "str",
+      "name": "raw",
       "next": {
         "end": 34,
         "name": "block",
         "next": {
           "end": 56,
-          "name": "str",
+          "name": "raw",
           "next": {
             "end": 70,
             "name": "endblock",
             "next": {
               "end": 92,
-              "name": "str",
+              "name": "raw",
               "next": {
                 "end": 108,
                 "name": "block",
                 "next": {
                   "end": 132,
-                  "name": "str",
+                  "name": "raw",
                   "next": {
                     "end": 146,
                     "name": "endblock",
                     "next": {
                       "end": 165,
-                      "name": "str",
+                      "name": "raw",
                       "next": null,
                       "previous": [Circular],
                       "raw": "

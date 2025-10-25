@@ -1,14 +1,14 @@
 import type { Config } from './types'
+import { compilers } from './compilers'
 import * as filters from './filters'
 import { loader } from './loaders/url-loader'
-import { tags } from './tags'
 
 export const config: Required<Config> = {
   globals: {
     translations: {},
   },
   filters: { ...filters },
-  tags: { ...tags },
+  compilers: { ...compilers },
   autoEscape: true,
   strictMode: true,
   stripComments: false,

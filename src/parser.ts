@@ -6,7 +6,7 @@ import type {
   TagToken,
 } from './types'
 import { parser } from './expression'
-import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, STR, SUPER } from './identifiers'
+import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, RAW, SUPER } from './identifiers'
 import { ParseError } from './utils/parse-error'
 import { unescapeTag } from './utils/unescape-tag'
 
@@ -59,7 +59,7 @@ export class Parser implements AST {
     const raw = this.template.slice(start, end)
 
     this.push({
-      name: STR,
+      name: RAW,
       raw,
       previous: null,
       next: null,
