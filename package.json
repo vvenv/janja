@@ -1,35 +1,50 @@
 {
   "name": "jianjia",
+  "type": "module",
   "version": "0.0.0",
-  "private": true,
   "packageManager": "yarn@4.9.2",
   "description": "A simple, fast, lightweight, and extensible template engine for Node.js and browsers.",
   "license": "MIT",
   "workspaces": [
-    "benchmark",
-    "playground",
-    "packages/*"
+    "perf",
+    "repl",
+    "."
+  ],
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.esm.js",
+    "require": "./dist/index.cjs.js"
+  },
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.esm.js",
+  "browser": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
   ],
   "scripts": {
-    "build:e": "yarn workspace @jj/expression run build",
-    "build:t": "yarn workspace @jj/template run build",
-    "build:u": "yarn workspace @jj/utils run build",
-    "build": "yarn build:u && yarn build:e && yarn build:t",
+    "build": "rm -rf dist && rollup -c",
     "dev": "vitest watch",
     "test": "vitest",
-    "repl": "yarn workspace playground run start",
-    "perf": "yarn workspace benchmark run start",
+    "repl": "yarn workspace repl run start",
+    "perf": "yarn workspace perf run start",
     "lint": "oxlint && eslint . --ext .ts",
     "prepare": "husky"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.0.0",
+    "@rollup/plugin-commonjs": "^28.0.8",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^24.9.1",
     "@vitest/coverage-v8": "4.0.2",
     "@vitest/ui": "4.0.2",
     "eslint": "^9.38.0",
     "husky": "^9.1.7",
     "oxlint": "^1.24.0",
+    "rollup": "^4.52.5",
+    "rollup-plugin-dts": "^6.2.3",
+    "tslib": "^2.8.1",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
     "vitest": "^4.0.2"

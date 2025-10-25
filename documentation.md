@@ -11,15 +11,19 @@
 ### **for**: Looping
 
 ```jianjia
-{{ for item in items }}{{= item }}{{ endfor }}
+{{ for item of array_items }}{{= item }}{{ endfor }}
+```
+
+```jianjia
+{{ for item of object_items | values }}{{= item }}{{ endfor }}
 ```
 
 ### **set**: Variable Assignment
 
 ```jianjia
 {{ set foo = 123 }}
-{{ set a, b = obj }}
-{{ set foo }}Content{{ endassign }}
+{{ set (a, b) = obj }}
+{{ set foo }}Content{{ endset }}
 ```
 
 ### **block / super**: Template Inheritance & Blocks
@@ -31,13 +35,13 @@
 ### **macro / caller**: Macro Definition & Invocation
 
 ```jianjia
-{{ macro my_macro: x, y }}Content{{ caller }}{{ endmacro }}
+{{ macro my_macro = (x, y) }}Content{{ caller }}{{ endmacro }}
 ```
 
 ### **call**: Macro Invocation
 
 ```jianjia
-{{ call my_macro "foo" "bar" }}Content{{ endcall }}
+{{ call my_macro("foo", "bar") }}Content{{ endcall }}
 ```
 
 ### **break / continue**: Loop Control
@@ -63,15 +67,15 @@
 
 ## Built-in Filters
 
-abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, groupby, join, json, keys, last, length, lower, map, max, min, minus, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sum, t, time, trim, truncate, unique, upper, urldecode, urlencode, values
+abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, get, groupby, join, json, keys, last, length, lower, map, max, min, minus, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sum, t, time, trim, truncate, unique, upper, urldecode, urlencode, values
 
 ### Examples
 
 ```jianjia
 {{= foo | upper }}
-{{= list | join: "," }}
+{{= list | join:(",") }}
 {{= obj | keys }}
-{{= arr | groupby: key_name }}
+{{= arr | groupby(key_name) }}
 ```
 
 ## Customization

@@ -5,14 +5,15 @@
     "moduleDetection": "force",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "node",
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noEmit": true,
     "isolatedModules": true,
     "skipLibCheck": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": ["src/**/*", "test/**/*", "compiler.test.ts", "compiler.ts", "index.test.ts", "index.ts", "operators.ts", "parse-error.test.ts", "parse-error.ts", "parser.test.ts", "parser.ts", "precedences.ts", "symbols.ts", "tokenizer.test.ts", "tokenizer.ts", "types.ts"]
 }

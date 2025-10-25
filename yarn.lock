@@ -614,54 +614,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jj/expression@workspace:^, @jj/expression@workspace:packages/expression":
-  version: 0.0.0-use.local
-  resolution: "@jj/expression@workspace:packages/expression"
-  dependencies:
-    "@jj/utils": "workspace:^"
-    "@rollup/plugin-commonjs": "npm:^28.0.8"
-    "@rollup/plugin-node-resolve": "npm:^16.0.3"
-    "@rollup/plugin-typescript": "npm:^12.3.0"
-    "@types/node": "npm:^24.9.1"
-    rollup: "npm:^4.52.5"
-    rollup-plugin-dts: "npm:^6.2.3"
-    tslib: "npm:^2.8.1"
-    typescript: "npm:^5.9.3"
-  languageName: unknown
-  linkType: soft
-
-"@jj/template@workspace:^, @jj/template@workspace:packages/template":
-  version: 0.0.0-use.local
-  resolution: "@jj/template@workspace:packages/template"
-  dependencies:
-    "@jj/expression": "workspace:^"
-    "@jj/utils": "workspace:^"
-    "@rollup/plugin-commonjs": "npm:^28.0.8"
-    "@rollup/plugin-node-resolve": "npm:^16.0.3"
-    "@rollup/plugin-typescript": "npm:^12.3.0"
-    "@types/node": "npm:^24.9.1"
-    rollup: "npm:^4.52.5"
-    rollup-plugin-dts: "npm:^6.2.3"
-    tslib: "npm:^2.8.1"
-    typescript: "npm:^5.9.3"
-  languageName: unknown
-  linkType: soft
-
-"@jj/utils@workspace:^, @jj/utils@workspace:packages/utils":
-  version: 0.0.0-use.local
-  resolution: "@jj/utils@workspace:packages/utils"
-  dependencies:
-    "@rollup/plugin-commonjs": "npm:^28.0.8"
-    "@rollup/plugin-node-resolve": "npm:^16.0.3"
-    "@rollup/plugin-typescript": "npm:^12.3.0"
-    "@types/node": "npm:^24.9.1"
-    rollup: "npm:^4.52.5"
-    rollup-plugin-dts: "npm:^6.2.3"
-    tslib: "npm:^2.8.1"
-    typescript: "npm:^5.9.3"
-  languageName: unknown
-  linkType: soft
-
 "@jridgewell/resolve-uri@npm:^3.1.0":
   version: 3.1.2
   resolution: "@jridgewell/resolve-uri@npm:3.1.2"
@@ -1802,7 +1754,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async@npm:^3.2.3":
+"async@npm:^3.2.6":
   version: 3.2.6
   resolution: "async@npm:3.2.6"
   checksum: 10c0/36484bb15ceddf07078688d95e27076379cc2f87b10c03b6dd8a83e89475a3c8df5848859dd06a4c95af1e4c16fc973de0171a77f18ea00be899aca2a4f85e70
@@ -1815,17 +1767,6 @@ __metadata:
   checksum: 10c0/9308baf0a7e4838a82bbfd11e01b1cb0f0cf2893bc1676c27c2a8c0e70cbae1c59120c3268517a8ae7fb6376b4639ef81ca22582611dbee4ed28df945134aaee
   languageName: node
   linkType: hard
-
-"benchmark@workspace:benchmark":
-  version: 0.0.0-use.local
-  resolution: "benchmark@workspace:benchmark"
-  dependencies:
-    "@jj/template": "workspace:^"
-    ejs: "npm:^3.1.10"
-    eta: "npm:^4.0.1"
-    liquidjs: "npm:^10.23.0"
-  languageName: unknown
-  linkType: soft
 
 "boolbase@npm:^1.0.0":
   version: 1.0.0
@@ -1938,7 +1879,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^4.0.0, chalk@npm:^4.0.2":
+"chalk@npm:^4.0.0":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -3473,30 +3414,35 @@ __metadata:
   linkType: hard
 
 "jake@npm:^10.8.5":
-  version: 10.9.2
-  resolution: "jake@npm:10.9.2"
+  version: 10.9.4
+  resolution: "jake@npm:10.9.4"
   dependencies:
-    async: "npm:^3.2.3"
-    chalk: "npm:^4.0.2"
+    async: "npm:^3.2.6"
     filelist: "npm:^1.0.4"
-    minimatch: "npm:^3.1.2"
+    picocolors: "npm:^1.1.1"
   bin:
     jake: bin/cli.js
-  checksum: 10c0/c4597b5ed9b6a908252feab296485a4f87cba9e26d6c20e0ca144fb69e0c40203d34a2efddb33b3d297b8bd59605e6c1f44f6221ca1e10e69175ecbf3ff5fe31
+  checksum: 10c0/bb52f000340d4a32f1a3893b9abe56ef2b77c25da4dbf2c0c874a8159d082dddda50a5ad10e26060198bd645b928ba8dba3b362710f46a247e335321188c5a9c
   languageName: node
   linkType: hard
 
-"jianjia@workspace:.":
+"jianjia@workspace:., jianjia@workspace:^":
   version: 0.0.0-use.local
   resolution: "jianjia@workspace:."
   dependencies:
     "@antfu/eslint-config": "npm:^6.0.0"
+    "@rollup/plugin-commonjs": "npm:^28.0.8"
+    "@rollup/plugin-node-resolve": "npm:^16.0.3"
+    "@rollup/plugin-typescript": "npm:^12.3.0"
     "@types/node": "npm:^24.9.1"
     "@vitest/coverage-v8": "npm:4.0.2"
     "@vitest/ui": "npm:4.0.2"
     eslint: "npm:^9.38.0"
     husky: "npm:^9.1.7"
     oxlint: "npm:^1.24.0"
+    rollup: "npm:^4.52.5"
+    rollup-plugin-dts: "npm:^6.2.3"
+    tslib: "npm:^2.8.1"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.1.12"
     vitest: "npm:^4.0.2"
@@ -4711,6 +4657,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"perf@workspace:perf":
+  version: 0.0.0-use.local
+  resolution: "perf@workspace:perf"
+  dependencies:
+    ejs: "npm:^3.1.10"
+    eta: "npm:^4.0.1"
+    jianjia: "workspace:^"
+    liquidjs: "npm:^10.23.0"
+  languageName: unknown
+  linkType: soft
+
 "picocolors@npm:^1.0.0, picocolors@npm:^1.1.1":
   version: 1.1.1
   resolution: "picocolors@npm:1.1.1"
@@ -4760,18 +4717,6 @@ __metadata:
   checksum: 10c0/d2bbddc5b81bd4741e1529c08ef4c5f1542bbdcf63498b73b8e1d84cff71806d1b8b1577800549bb569cb7aa20056257677b979bff48c97967cba7e64f72ae12
   languageName: node
   linkType: hard
-
-"playground@workspace:playground":
-  version: 0.0.0-use.local
-  resolution: "playground@workspace:playground"
-  dependencies:
-    "@jj/template": "workspace:^"
-    "@types/node": "npm:^24.9.1"
-    shiki: "npm:^3.13.0"
-    typescript: "npm:^5.9.3"
-    vite: "npm:^7.1.12"
-  languageName: unknown
-  linkType: soft
 
 "pluralize@npm:^8.0.0":
   version: 8.0.0
@@ -4925,6 +4870,18 @@ __metadata:
   checksum: 10c0/99d3e4e10c8c7732eb7aa843b8da2fd8b647fe144d3711b480e4647dc3bff4b1e96691ccf17f3ace24aa866a50b064236177cb25e6e4fbbb18285d99edaed83b
   languageName: node
   linkType: hard
+
+"repl@workspace:repl":
+  version: 0.0.0-use.local
+  resolution: "repl@workspace:repl"
+  dependencies:
+    "@types/node": "npm:^24.9.1"
+    jianjia: "workspace:^"
+    shiki: "npm:^3.13.0"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.1.12"
+  languageName: unknown
+  linkType: soft
 
 "resolve-from@npm:^4.0.0":
   version: 4.0.0
@@ -5723,12 +5680,12 @@ __metadata:
   linkType: hard
 
 "vfile-message@npm:^4.0.0":
-  version: 4.0.2
-  resolution: "vfile-message@npm:4.0.2"
+  version: 4.0.3
+  resolution: "vfile-message@npm:4.0.3"
   dependencies:
     "@types/unist": "npm:^3.0.0"
     unist-util-stringify-position: "npm:^4.0.0"
-  checksum: 10c0/07671d239a075f888b78f318bc1d54de02799db4e9dce322474e67c35d75ac4a5ac0aaf37b18801d91c9f8152974ea39678aa72d7198758b07f3ba04fb7d7514
+  checksum: 10c0/33d9f219610d27987689bb14fa5573d2daa146941d1a05416dd7702c4215b23f44ed81d059e70d0e4e24f9a57d5f4dc9f18d35a993f04cf9446a7abe6d72d0c0
   languageName: node
   linkType: hard
 
