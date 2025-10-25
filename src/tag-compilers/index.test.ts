@@ -39,7 +39,7 @@ it('for -> if/else ', async () => {
       '{{ for x of a }}{{ if x }}{{= x }}{{ else }}***{{ endif }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";{for(const x of c.a){const c_0={...c,x,};if(c_0.x){s+=e(c_0.x);}else{}}}return s;})();"`,
+    `""use strict";return(async()=>{let s="";{for(const x of c.a){const c_0={...c,x,};if(c_0.x){s+=e(c_0.x);}else{s+="***";}}}return s;})();"`,
   )
 })
 

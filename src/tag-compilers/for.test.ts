@@ -32,9 +32,9 @@ it('invalid', async () => {
     await compile('{{ endfor }}')
   }
   catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: unexpected endfor]`)
+    expect(error).toMatchInlineSnapshot(`[CompileError: unexpected "endfor"]`)
     expect(error.details).toMatchInlineSnapshot(`
-      "unexpected endfor
+      "unexpected "endfor"
 
       1: {{ endfor }}
          ^^^^^^^^^^^^

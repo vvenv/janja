@@ -15,14 +15,15 @@ export const tag: TagCompiler = {
   async compile({ token: { name, value }, ctx, out }) {
     if (name === SET) {
       if (!value) {
-        throw new Error('`set` tag must have expression')
+        throw new Error(`"${SET}" tag must have expression`)
       }
 
       const { context } = ctx
 
       // inline assignment
       if ((value as BinaryExp).right) {
-        return out.pushLine(compiler.compile(value, CONTEXT, FILTERS),
+        return out.pushLine(
+          compiler.compile(value, CONTEXT, FILTERS),
         )
       }
 
@@ -37,10 +38,12 @@ export const tag: TagCompiler = {
 
     if (name === ENDSET) {
       if (!ctx.consume(ENDSET)) {
-        throw new Error(`unexpected ${name}`)
+        throw new Error(`unexpected "${ENDSET}"`)
       }
 
-      return out.pushLine('return s;})("")});')
+      return out.pushLine(
+        `return s;})("")});`,
+      )
     }
   },
 }

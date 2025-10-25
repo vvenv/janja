@@ -21,10 +21,10 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: unexpected endcomment]`,
+      `[CompileError: unexpected "endcomment"]`,
     )
     expect(error.details).toMatchInlineSnapshot(`
-      "unexpected endcomment
+      "unexpected "endcomment"
 
       1: {{ endcomment }}
          ^^^^^^^^^^^^^^^^
@@ -47,12 +47,12 @@ it('block', async () => {
     `""use strict";return(async()=>{let s="";s+="<!--";s+="-->";return s;})();"`,
   )
   expect(await compile('{{ comment }}foo{{ endcomment }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="<!--";s+="-->";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="<!--";s+="foo";s+="-->";return s;})();"`,
   )
   expect(
     await compile('{{ comment }}foo\nbar{{ endcomment }}'),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="<!--";s+="-->";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\nbar";s+="-->";return s;})();"`,
   )
 })
 
@@ -60,12 +60,12 @@ it('escape', async () => {
   expect(
     await compile('{{ comment }}foo\n{{= name }}\nbar{{ endcomment }}'),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="<!--";s+=e(c.name);s+="-->";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\n";s+=e(c.name);s+="\\nbar";s+="-->";return s;})();"`,
   )
   expect(
     await compile('{{ comment }}foo\n\\{\\{= name \\}\\}\nbar{{ endcomment }}'),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="<!--";s+="-->";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\n\\\\{\\\\{= name \\\\}\\\\}\\nbar";s+="-->";return s;})();"`,
   )
 })
 
@@ -84,12 +84,12 @@ describe('w stripComments', async () => {
       `""use strict";return(async()=>{let s="";s+="<!--";s+="-->";return s;})();"`,
     )
     expect(await compile('{{ comment }}foo{{ endcomment }}', { stripComments: true })).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";s+="<!--";s+="-->";return s;})();"`,
+      `""use strict";return(async()=>{let s="";s+="<!--";s+="foo";s+="-->";return s;})();"`,
     )
     expect(
       await compile('{{ comment }}foo\nbar{{ endcomment }}', { stripComments: true }),
     ).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";s+="<!--";s+="-->";return s;})();"`,
+      `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\nbar";s+="-->";return s;})();"`,
     )
   })
 
@@ -97,12 +97,12 @@ describe('w stripComments', async () => {
     expect(
       await compile('{{ comment }}foo\n{{= name }}\nbar{{ endcomment }}', { stripComments: true }),
     ).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";s+="<!--";s+=e(c.name);s+="-->";return s;})();"`,
+      `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\n";s+=e(c.name);s+="\\nbar";s+="-->";return s;})();"`,
     )
     expect(
       await compile('{{ comment }}foo\n\\{\\{= name \\}\\}\nbar{{ endcomment }}', { stripComments: true }),
     ).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";s+="<!--";s+="-->";return s;})();"`,
+      `""use strict";return(async()=>{let s="";s+="<!--";s+="foo\\n\\\\{\\\\{= name \\\\}\\\\}\\nbar";s+="-->";return s;})();"`,
     )
   })
 })

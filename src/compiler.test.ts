@@ -7,11 +7,11 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: \`if\` tag must have expression]`,
+      `[CompileError: "if" tag must have expression]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `
-      "\`if\` tag must have expression
+      ""if" tag must have expression
 
       1: {{ if }}
          ^^^^^^^^
@@ -56,7 +56,7 @@ it('invalid', async () => {
 
 it('escape tag', async () => {
   expect(await compile('{{= "{{= escape }}" }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e("{{= escape ");return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=e("{{= escape ");s+="\\" }}";return s;})();"`,
   )
   expect(await compile('{{= "\\{\\{= escape \\}\\}" }}')).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";s+=e("{{= escape }}");return s;})();"`,
@@ -71,19 +71,19 @@ it('empty', async () => {
 
 it('html tags', async () => {
   expect(await compile('<foo>foo</foo>')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="<foo>foo</foo>";return s;})();"`,
   )
 })
 
 it('quotes', async () => {
   expect(await compile('"\'foo\'"')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="\\"'foo'\\"";return s;})();"`,
   )
 })
 
 it('line break feed', async () => {
   expect(await compile('\nfoo\n')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+="\\nfoo\\n";return s;})();"`,
   )
 })
 

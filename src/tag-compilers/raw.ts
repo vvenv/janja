@@ -1,17 +1,20 @@
 import type { TagCompiler } from '../types'
 
-const STR = 'str'
+const RAW = 'raw'
 
 /**
  * @example hello world
  */
 export const tag: TagCompiler = {
-  names: [STR],
+  names: [RAW],
 
   async compile({ token: { raw, previous, next }, out }) {
-    return out.pushStr(raw, {
-      trimStart: previous?.stripAfter,
-      trimEnd: next?.stripBefore,
-    })
+    return out.pushStr(
+      raw,
+      {
+        trimStart: previous?.stripAfter,
+        trimEnd: next?.stripBefore,
+      },
+    )
   },
 }

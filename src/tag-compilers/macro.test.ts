@@ -6,9 +6,9 @@ it('invalid', async () => {
     await compile('{{ macro }}')
   }
   catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: "macro" tag must have a "set" expression]`)
+    expect(error).toMatchInlineSnapshot(`[CompileError: "macro" tag must have "SET" expression]`)
     expect(error.details).toMatchInlineSnapshot(`
-      ""macro" tag must have a "set" expression
+      ""macro" tag must have "SET" expression
 
       1: {{ macro }}
          ^^^^^^^^^^^
@@ -19,9 +19,9 @@ it('invalid', async () => {
     await compile('{{ macro n }}')
   }
   catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: "macro" tag must have a "set" expression]`)
+    expect(error).toMatchInlineSnapshot(`[CompileError: "macro" tag must have "SET" expression]`)
     expect(error.details).toMatchInlineSnapshot(`
-      ""macro" tag must have a "set" expression
+      ""macro" tag must have "SET" expression
 
       1: {{ macro n }}
          ^^^^^^^^^^^^^
@@ -45,9 +45,9 @@ it('invalid', async () => {
     await compile('{{ macro 1 }}{{ endmacro }}')
   }
   catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: "macro" tag must have a "set" expression]`)
+    expect(error).toMatchInlineSnapshot(`[CompileError: "macro" tag must have "SET" expression]`)
     expect(error.details).toMatchInlineSnapshot(`
-      ""macro" tag must have a "set" expression
+      ""macro" tag must have "SET" expression
 
       1: {{ macro 1 }}
          ^^^^^^^^^^^^^
@@ -71,10 +71,10 @@ it('invalid', async () => {
 
 it('macro', async () => {
   expect(await compile('{{ macro m = () }}MACRO{{ endmacro }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";c.m=()=>async(_c)=>{const c_0={...c,};};return s;})();"`,
+    `""use strict";return(async()=>{let s="";c.m=()=>async(_c)=>{const c_0={...c,};s+="MACRO";};return s;})();"`,
   )
   expect(await compile('{{ macro m = () }}1{{ caller }}2{{ endmacro }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";c.m=()=>async(_c)=>{const c_0={...c,};await _c?.();};return s;})();"`,
+    `""use strict";return(async()=>{let s="";c.m=()=>async(_c)=>{const c_0={...c,};s+="1";await _c?.();s+="2";};return s;})();"`,
   )
   expect(await compile('{{ macro m = (x, y) }}{{= x }}{{= y }}{{ endmacro }}')).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";c.m=(x,y)=>async(_c)=>{const c_0={...c,x,y};s+=e(c_0.x);s+=e(c_0.y);};return s;})();"`,

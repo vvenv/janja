@@ -15,7 +15,7 @@ export const tag: TagCompiler = {
   async compile({ token: { name, value }, ctx, out }) {
     if (name === MACRO) {
       if (value?.type !== 'SET') {
-        throw new Error(`"${name}" tag must have a "set" expression`)
+        throw new Error(`"${MACRO}" tag must have "SET" expression`)
       }
 
       ctx.expect(ENDMACRO)
@@ -27,26 +27,28 @@ export const tag: TagCompiler = {
         `const ${ctx.in()}={`,
         `...${context},`,
         `${(((value as BinaryExp).right as SeqExp).elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}` : (el as IdExp).value).join(',')}`,
-        '};',
+        `};`,
       )
     }
 
     if (name === CALLER) {
       if (!ctx.matchAny(ENDMACRO)) {
-        throw new Error(`"${name}" tag must inside a "macro" tag`)
+        throw new Error(`"${CALLER}" tag must inside a "${MACRO}" tag`)
       }
 
-      return out.pushLine('await _c?.();')
+      return out.pushLine(
+        `await _c?.();`,
+      )
     }
 
     if (name === ENDMACRO) {
       if (!ctx.consume(ENDMACRO)) {
-        throw new Error(`unexpected "${name}"`)
+        throw new Error(`unexpected "${ENDMACRO}"`)
       }
 
       ctx.out()
 
-      return out.pushLine('};')
+      return out.pushLine(`};`)
     }
   },
 }

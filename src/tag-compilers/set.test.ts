@@ -6,9 +6,9 @@ it('invalid', async () => {
     await compile('{{ set }}')
   }
   catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: \`set\` tag must have expression]`)
+    expect(error).toMatchInlineSnapshot(`[CompileError: "set" tag must have expression]`)
     expect(error.details).toMatchInlineSnapshot(`
-      "\`set\` tag must have expression
+      ""set" tag must have expression
 
       1: {{ set }}
          ^^^^^^^^^
@@ -19,9 +19,9 @@ it('invalid', async () => {
     await compile('{{ endset }}')
   }
   catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: unexpected endset]`)
+    expect(error).toMatchInlineSnapshot(`[CompileError: unexpected "endset"]`)
     expect(error.details).toMatchInlineSnapshot(`
-      "unexpected endset
+      "unexpected "endset"
 
       1: {{ endset }}
          ^^^^^^^^^^^^
@@ -141,7 +141,7 @@ it('block set', async () => {
     `""use strict";return(async()=>{let s="";Object.assign(c,{x:await(async(s)=>{s+=e(c.y);return s;})("")});return s;})();"`,
   )
   expect(await compile('{{ set x }}a{{ endset }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";Object.assign(c,{x:await(async(s)=>{return s;})("")});return s;})();"`,
+    `""use strict";return(async()=>{let s="";Object.assign(c,{x:await(async(s)=>{s+="a";return s;})("")});return s;})();"`,
   )
 })
 

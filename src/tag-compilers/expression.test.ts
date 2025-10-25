@@ -22,7 +22,7 @@ it('escape tag', async () => {
   expect(await compile(
     '{{= "{{= escape }}" }}',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e("{{= escape ");return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=e("{{= escape ");s+="\\" }}";return s;})();"`,
   )
   expect(await compile(
     '{{= "{\\{= escape }\\}" }}',
@@ -131,7 +131,7 @@ describe('w/ filters', async () => {
     expect(
       await compile('{{= x | upper }} and {{= x | upper }}'),
     ).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";s+=e((await f.upper.call(c,c.x)));s+=e((await f.upper.call(c,c.x)));return s;})();"`,
+      `""use strict";return(async()=>{let s="";s+=e((await f.upper.call(c,c.x)));s+=" and ";s+=e((await f.upper.call(c,c.x)));return s;})();"`,
     )
   })
 
@@ -161,47 +161,47 @@ it('whitespace control', async () => {
   expect(await compile(
     ' {{= x }} ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" ";s+=e(c.x);s+=" ";return s;})();"`,
   )
   expect(await compile(
     ' {{=- x -}} ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" ";s+=e(c.x);return s;})();"`,
   )
   expect(await compile(
     ' {{=- x }} ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" ";s+=e(c.x);s+=" ";return s;})();"`,
   )
   expect(await compile(
     ' {{= x -}} ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" ";s+=e(c.x);return s;})();"`,
   )
   expect(await compile(
     ' 	{{= x }}	 ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" 	";s+=e(c.x);s+="	 ";return s;})();"`,
   )
   expect(await compile(
     ' 	{{=- x -}}	 ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" 	";s+=e(c.x);return s;})();"`,
   )
   expect(await compile(
     ' 	{{=- x }}	 ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" 	";s+=e(c.x);s+="	 ";return s;})();"`,
   )
   expect(await compile(
     ' 	{{= x -}}	 ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" 	";s+=e(c.x);return s;})();"`,
   )
   expect(await compile(
     ' \t\r\n{{= x }}\r\n\t ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" 	\\n\\n";s+=e(c.x);s+="\\n\\n	 ";return s;})();"`,
   )
   expect(await compile(
     ' \t\r\n{{-= x -}}\r\n\t ',
@@ -211,12 +211,12 @@ it('whitespace control', async () => {
   expect(await compile(
     ' \t\r\n{{-= x }}\r\n\t ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=e(c.x);s+="\\n\\n	 ";return s;})();"`,
   )
   expect(await compile(
     ' \t\r\n{{= x -}}\r\n\t ',
   )).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(c.x);return s;})();"`,
+    `""use strict";return(async()=>{let s="";s+=" 	\\n\\n";s+=e(c.x);return s;})();"`,
   )
 })
 

@@ -17,7 +17,7 @@ export const tag: TagCompiler = {
   async compile({ token: { name, value }, ctx, out }) {
     if (name === FOR) {
       if (!value) {
-        throw new Error('"for" tag must have expression')
+        throw new Error(`"${FOR}" tag must have expression`)
       }
 
       ctx.expect(ENDFOR)
@@ -47,23 +47,27 @@ export const tag: TagCompiler = {
 
     if (name === BREAK) {
       if (!ctx.matchAny(ENDFOR)) {
-        throw new Error('"break" tag must inside a "for" loop')
+        throw new Error(`"${BREAK}" tag must inside a "${FOR}" loop`)
       }
 
-      return out.pushLine('break;')
+      return out.pushLine(
+        `break;`,
+      )
     }
 
     if (name === CONTINUE) {
       if (!ctx.matchAny(ENDFOR)) {
-        throw new Error('"continue" tag must inside a "for" loop')
+        throw new Error(`"${CONTINUE}" tag must inside a "${FOR}" loop`)
       }
 
-      return out.pushLine('continue;')
+      return out.pushLine(
+        `continue;`,
+      )
     }
 
     if (name === ENDFOR) {
       if (!ctx.consume(ENDFOR)) {
-        throw new Error(`unexpected ${name}`)
+        throw new Error(`unexpected "${ENDFOR}"`)
       }
 
       ctx.out()

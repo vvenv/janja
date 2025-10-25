@@ -17,22 +17,28 @@ export const tag: TagCompiler = {
         return
       }
 
-      return out.pushStr(`<!--${(value as StrExp).value}-->`)
+      return out.pushStr(
+        `<!--${(value as StrExp).value}-->`,
+      )
     }
 
     // block comment
     if (name === COMMENT) {
       ctx.expect(ENDCOMMENT)
 
-      return out.pushStr('<!--')
+      return out.pushStr(
+        `<!--`,
+      )
     }
 
     if (name === ENDCOMMENT) {
       if (!ctx.consume(ENDCOMMENT)) {
-        throw new Error(`unexpected ${name}`)
+        throw new Error(`unexpected "${ENDCOMMENT}"`)
       }
 
-      return out.pushStr('-->')
+      return out.pushStr(
+        `-->`,
+      )
     }
   },
 }

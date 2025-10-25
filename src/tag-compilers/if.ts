@@ -16,7 +16,7 @@ export const tag: TagCompiler = {
   async compile({ token: { name, value }, ctx, out }) {
     if (name === IF) {
       if (!value) {
-        throw new Error('`if` tag must have expression')
+        throw new Error(`"${IF}" tag must have expression`)
       }
 
       ctx.expect(ENDIF)
@@ -29,11 +29,11 @@ export const tag: TagCompiler = {
 
     if (name === ELIF) {
       if (!value) {
-        throw new Error('"elif" tag must have expression')
+        throw new Error(`"${ELIF}" tag must have expression`)
       }
 
       if (!ctx.match(ENDIF)) {
-        throw new Error('"elif" tag must follow "if" tag')
+        throw new Error(`"${ELIF}" tag must follow "${IF}" tag`)
       }
 
       const { context } = ctx
@@ -44,18 +44,22 @@ export const tag: TagCompiler = {
 
     if (name === ELSE) {
       if (!ctx.match(ENDIF)) {
-        throw new Error('"else" tag must follow "if" tag')
+        throw new Error(`"${ELSE}" tag must follow "${IF}" tag`)
       }
 
-      return out.pushLine('}else{')
+      return out.pushLine(
+        `}else{`,
+      )
     }
 
     if (name === ENDIF) {
       if (!ctx.consume(ENDIF)) {
-        throw new Error(`unexpected "${name}"`)
+        throw new Error(`unexpected "${ENDIF}"`)
       }
 
-      return out.pushLine('}')
+      return out.pushLine(
+        `}`,
+      )
     }
   },
 }
