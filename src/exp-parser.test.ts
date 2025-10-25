@@ -1,8 +1,8 @@
 import { expect, it } from 'vitest'
-import { Parser } from './parser'
+import { ExpParser } from './exp-parser'
 
 function parse(template: string) {
-  return new Parser().parse(template)
+  return new ExpParser().parse(template)
 }
 
 it('invalid', () => {

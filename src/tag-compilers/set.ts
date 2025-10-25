@@ -1,5 +1,5 @@
 import type { BinaryExp, IdExp, TagCompiler } from '../types'
-import { compiler } from '../expression'
+import { compiler } from '../exp'
 import { CONTEXT, FILTERS } from '../identifiers'
 
 const SET = 'set'

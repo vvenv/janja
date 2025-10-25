@@ -24,11 +24,11 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: expected tokens endif, but got nothing]`,
+      `[CompileError: expected tokens "endif", but got nothing]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `
-      "expected tokens endif, but got nothing
+      "expected tokens "endif", but got nothing
 
       1: 
       "

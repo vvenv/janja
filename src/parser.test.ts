@@ -14,7 +14,7 @@ it('invalid', async () => {
       `
       "unexpect "+"
 
-      1:  x + 1 
+      1:  x + 1
             ^
       "
     `,

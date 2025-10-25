@@ -1,5 +1,5 @@
 import type { BinaryExp, IdExp, SeqExp, TagCompiler } from '../types'
-import { compiler } from '../expression'
+import { compiler } from '../exp'
 import { FILTERS } from '../identifiers'
 
 const MACRO = 'macro'

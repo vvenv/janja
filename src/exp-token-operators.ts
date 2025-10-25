@@ -1,6 +1,6 @@
-import type { ExpTokenType } from '../types'
+import type { ExpTokenType } from './types'
 
-export const operators: Record<ExpTokenType, string> = {
+export const expTokenOperators: Record<ExpTokenType, string> = {
   AND: '&&',
   OR: '||',
   NOT: '!',

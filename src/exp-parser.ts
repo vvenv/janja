@@ -12,12 +12,12 @@ import type {
   PipeExp,
   SeqExp,
   StrExp,
-} from '../types'
-import { ParseError } from '../utils/parse-error'
-import { precedences } from './precedences'
-import { Tokenizer } from './tokenizer'
+} from './types'
+import { expTokenPrecedences } from './exp-token-precedences'
+import { ExpTokenizer } from './exp-tokenizer'
+import { ParseError } from './utils/parse-error'
 
-export class Parser {
+export class ExpParser {
   template = ''
   tokens: ExpToken[] = []
   length = 0
@@ -25,14 +25,14 @@ export class Parser {
 
   parse(template: string) {
     this.template = template
-    this.tokens = new Tokenizer().tokenize(template)
+    this.tokens = new ExpTokenizer().tokenize(template)
     this.length = this.tokens.length
     this.cursor = 0
 
-    return this.template ? this.parseExpression() : null
+    return this.template ? this.parseExp() : null
   }
 
-  private parseExpression(checker?: Checker): Exp | null {
+  private parseExp(checker?: Checker): Exp | null {
     let left: Exp | null = null
 
     while (true) {
@@ -101,7 +101,7 @@ export class Parser {
         left = {
           ...token,
           type: 'NOT',
-          argument: this.parseExpression(
+          argument: this.parseExp(
             t => isHigher(token, t) ? 'BACK' : undefined,
           )!,
         } satisfies NotExp
@@ -166,7 +166,7 @@ export class Parser {
       }
 
       if (token.type === 'IF') {
-        const test = this.parseExpression(
+        const test = this.parseExp(
           t => t.type === 'ELSE' ? 'BACK' : isHigher(token, t) ? 'BACK' : undefined,
         )
         if (!test) {
@@ -185,7 +185,7 @@ export class Parser {
           consequent: left!,
         } satisfies IfExp
         if (this.consume('ELSE')) {
-          const alternative = this.parseExpression(
+          const alternative = this.parseExp(
             t => isHigher(token, t) ? 'BACK' : undefined,
           )
           if (!alternative) {
@@ -230,7 +230,7 @@ export class Parser {
           })
         }
 
-        const right = this.parseExpression(
+        const right = this.parseExp(
           t => isHigher(token, t) ? 'BACK' : undefined,
         )
 
@@ -329,7 +329,7 @@ export class Parser {
     const elements: Exp[] = []
 
     while (!this.check('RP')) {
-      const element = this.parseExpression(
+      const element = this.parseExp(
         t => t.type === 'COMMA' ? 'BREAK' : undefined,
       )!
       if (element) {
@@ -399,5 +399,5 @@ export class Parser {
 }
 
 function isHigher(a: ExpToken, b: ExpToken) {
-  return precedences[a.type] > precedences[b.type]
+  return expTokenPrecedences[a.type] > expTokenPrecedences[b.type]
 }

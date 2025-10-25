@@ -1,17 +1,17 @@
-import type { BinaryExp, BoolExp, Exp, IdExp, IfExp, NotExp, NumExp, PipeExp, SeqExp, StrExp } from '../types'
-import { operators } from './operators'
+import type { BinaryExp, BoolExp, Exp, IdExp, IfExp, NotExp, NumExp, PipeExp, SeqExp, StrExp } from './types'
+import { expTokenOperators } from './exp-token-operators'
 
-export class Compiler {
+export class ExpCompiler {
   private context!: string
   private filters!: string
 
   compile(expression: Exp | null, context: string, filters: string): string {
     this.context = context
     this.filters = filters
-    return expression ? this.compileExpression(expression) : '""'
+    return expression ? this.compileExp(expression) : '""'
   }
 
-  private compileExpression(expression: Exp): string {
+  private compileExp(expression: Exp): string {
     switch (expression.type) {
       case 'NOT':
         return this.compileNot(expression)
@@ -53,7 +53,7 @@ export class Compiler {
   }
 
   private compileNot({ argument }: NotExp) {
-    return `!${this.compileExpression(argument)}`
+    return `!${this.compileExp(argument)}`
   }
 
   private compileId({ value, path, args }: IdExp) {
@@ -62,7 +62,7 @@ export class Compiler {
       s += path.map(p => `.${p.value}`).join('')
     }
     if (args) {
-      s += `(${args.map(arg => this.compileExpression(arg)).join(',')})`
+      s += `(${args.map(arg => this.compileExp(arg)).join(',')})`
     }
     return s
   }
@@ -80,41 +80,41 @@ export class Compiler {
   }
 
   private compileSeq({ elements }: SeqExp) {
-    return elements.map(element => this.compileExpression(element)).toString()
+    return elements.map(element => this.compileExp(element)).toString()
   }
 
   private compilePipe({ left, right }: PipeExp) {
     const { value: name, args = [] } = right as IdExp
-    return `(await ${this.filters}.${name}.call(${[this.context, this.compileExpression(left), ...args.map(arg => arg.type === 'SET' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExpression(arg.right)}` : this.compileExpression(arg))].join(',')}))`
+    return `(await ${this.filters}.${name}.call(${[this.context, this.compileExp(left), ...args.map(arg => arg.type === 'SET' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExp(arg.right)}` : this.compileExp(arg))].join(',')}))`
   }
 
   private compileOf({ left, right }: BinaryExp) {
     // destructuring
     if (left.type === 'SEQ') {
-      return `const {${(left.elements as IdExp[]).map(({ value }) => value).join(',')}} of ${this.compileExpression(right)}`
+      return `const {${(left.elements as IdExp[]).map(({ value }) => value).join(',')}} of ${this.compileExp(right)}`
     }
-    return `const ${(left as IdExp).value} of ${this.compileExpression(right)}`
+    return `const ${(left as IdExp).value} of ${this.compileExp(right)}`
   }
 
   private compileSet({ left, right }: BinaryExp) {
     if (left.type === 'ID') {
       // for macros
       if (right.type === 'SEQ') {
-        return `${this.compileExpression(left)}=(${(right.elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}=${this.compileExpression((el.right))}` : (el as IdExp).value).join(',')})=>async(_c)=>{`
+        return `${this.compileExp(left)}=(${(right.elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}=${this.compileExp((el.right))}` : (el as IdExp).value).join(',')})=>async(_c)=>{`
       }
-      return `Object.assign(${this.context},{${(left as IdExp).value}:${this.compileExpression(right)}});`
+      return `Object.assign(${this.context},{${(left as IdExp).value}:${this.compileExp(right)}});`
     }
 
     // destructuring
-    return `Object.assign(${this.context},${this.filters}.pick.call(${this.context},${this.compileExpression(right)},[${((left as SeqExp).elements as IdExp[]).map(({ value }) => `"${value}"`).join(',')}]));`
+    return `Object.assign(${this.context},${this.filters}.pick.call(${this.context},${this.compileExp(right)},[${((left as SeqExp).elements as IdExp[]).map(({ value }) => `"${value}"`).join(',')}]));`
   }
 
   private compileBinary({ type, left, right }: BinaryExp) {
-    const ret = `(${this.compileExpression(left)}${operators[type]}${this.compileExpression(right)})`
+    const ret = `(${this.compileExp(left)}${expTokenOperators[type]}${this.compileExp(right)})`
     return type === 'NI' ? `(!${ret})` : ret
   }
 
   private compileTernary({ test, consequent: then, alternative }: IfExp) {
-    return `(${this.compileExpression(test)}?${this.compileExpression(then)}:${alternative ? this.compileExpression(alternative) : '""'})`
+    return `(${this.compileExp(test)}?${this.compileExp(then)}:${alternative ? this.compileExp(alternative) : '""'})`
   }
 }

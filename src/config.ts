@@ -1,7 +1,7 @@
 import type { Config } from './types'
-import { compilers } from './compilers'
 import * as filters from './filters'
 import { loader } from './loaders/url-loader'
+import { compilers } from './tag-compilers'
 
 export const config: Required<Config> = {
   globals: {

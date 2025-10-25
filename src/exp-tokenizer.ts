@@ -1,8 +1,8 @@
-import type { ExpToken } from '../types'
-import { ParseError } from '../utils/parse-error'
-import { symbols } from './symbols'
+import type { ExpToken } from './types'
+import { expTokenTypes } from './exp-token-types'
+import { ParseError } from './utils/parse-error'
 
-export class Tokenizer {
+export class ExpTokenizer {
   template = ''
   length = 0
   tokens: ExpToken[] = []
@@ -143,7 +143,7 @@ export class Tokenizer {
       break
     }
 
-    const type = value in symbols ? symbols[value as keyof typeof symbols] : 'ID'
+    const type = value in expTokenTypes ? expTokenTypes[value as keyof typeof expTokenTypes] : 'ID'
 
     this.tokens.push({
       type,
@@ -158,7 +158,7 @@ export class Tokenizer {
     const start = this.cursor
 
     this.tokens.push({
-      type: symbols[char],
+      type: expTokenTypes[char],
       value: char,
       start,
       end: this.cursor,

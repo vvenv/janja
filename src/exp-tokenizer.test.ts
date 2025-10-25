@@ -1,9 +1,9 @@
 import { expect, it } from 'vitest'
-import { symbols } from './symbols'
-import { Tokenizer } from './tokenizer'
+import { expTokenTypes } from './exp-token-types'
+import { ExpTokenizer } from './exp-tokenizer'
 
 function tokenize(template: string) {
-  return new Tokenizer().tokenize(template)
+  return new ExpTokenizer().tokenize(template)
 }
 
 it('invalid', () => {
@@ -115,7 +115,7 @@ it('bool', () => {
 })
 
 it('symbols', () => {
-  expect(tokenize(Object.keys(symbols).join(' '))).toMatchInlineSnapshot(
+  expect(tokenize(Object.keys(expTokenTypes).join(' '))).toMatchInlineSnapshot(
     `
     [
       {

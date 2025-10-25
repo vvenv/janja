@@ -1,6 +1,6 @@
-import type { ExpTokenType } from '../types'
+import type { ExpTokenType } from './types'
 
-export const precedences: Record<ExpTokenType, number> = {
+export const expTokenPrecedences: Record<ExpTokenType, number> = {
   COMMA: 5,
 
   IF: 10,

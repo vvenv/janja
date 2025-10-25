@@ -6,9 +6,9 @@ it('invalid', async () => {
     await compile('{{ call n }}')
   }
   catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: expected tokens endcall, but got nothing]`)
+    expect(error).toMatchInlineSnapshot(`[CompileError: expected tokens "endcall", but got nothing]`)
     expect(error.details).toMatchInlineSnapshot(`
-      "expected tokens endcall, but got nothing
+      "expected tokens "endcall", but got nothing
 
       1: 
       "

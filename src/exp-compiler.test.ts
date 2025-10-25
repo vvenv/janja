@@ -1,9 +1,9 @@
 import { expect, it } from 'vitest'
-import { Compiler } from './compiler'
-import { Parser } from './parser'
+import { ExpCompiler } from './exp-compiler'
+import { ExpParser } from './exp-parser'
 
 function compile(template: string) {
-  return new Compiler().compile(new Parser().parse(template), 'c', 'f')
+  return new ExpCompiler().compile(new ExpParser().parse(template), 'c', 'f')
 }
 
 it('invalid', () => {

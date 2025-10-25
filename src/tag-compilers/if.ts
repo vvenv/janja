@@ -1,5 +1,5 @@
 import type { TagCompiler } from '../types'
-import { compiler } from '../expression'
+import { compiler } from '../exp'
 import { FILTERS } from '../identifiers'
 
 const IF = 'if'

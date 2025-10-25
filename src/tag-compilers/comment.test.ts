@@ -7,10 +7,10 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: expected tokens endcomment, but got nothing]`,
+      `[CompileError: expected tokens "endcomment", but got nothing]`,
     )
     expect(error.details).toMatchInlineSnapshot(`
-      "expected tokens endcomment, but got nothing
+      "expected tokens "endcomment", but got nothing
 
       1: 
       "

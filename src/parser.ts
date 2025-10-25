@@ -5,7 +5,7 @@ import type {
   StrExp,
   TagToken,
 } from './types'
-import { parser } from './expression'
+import { parser } from './exp'
 import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, RAW, SUPER } from './identifiers'
 import { ParseError } from './utils/parse-error'
 import { unescapeTag } from './utils/unescape-tag'
