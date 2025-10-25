@@ -168,11 +168,7 @@ export interface Globals {
   [key: string]: any
 }
 
-export type Filters = Record<string, Filter>
-
-export interface Filter {
-  (value: any, ...args: any[]): any
-}
+export type Filters = Record<string, (value: any, ...args: any[]) => any>
 
 export type Script = (
   globals: Globals,
@@ -188,10 +184,6 @@ export interface TagToken extends Range {
   next: TagToken | null
   stripBefore?: boolean
   stripAfter?: boolean
-}
-
-export interface AST {
-  cursor: TagToken | null
 }
 
 export interface TagCompiler {

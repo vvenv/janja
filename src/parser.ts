@@ -1,5 +1,4 @@
 import type {
-  AST,
   Config,
   IdExp,
   StrExp,
@@ -10,17 +9,13 @@ import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, RAW, SUPER } from './identifiers'
 import { ParseError } from './utils/parse-error'
 import { unescapeTag } from './utils/unescape-tag'
 
-export class Parser implements AST {
+export class Parser {
   private template = ''
   private index = 0
-
   private first: TagToken | null = null
-
   private group = ''
-
   private blocks: Record<string, TagToken[][]> = {}
-
-  cursor: TagToken | null = null
+  private cursor: TagToken | null = null
 
   constructor(public options: Required<Config>) {}
 
