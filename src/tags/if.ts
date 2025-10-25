@@ -1,4 +1,4 @@
-import type { Tag } from '../types'
+import type { TagCompiler } from '../types'
 import { compiler } from '../expression'
 import { FILTERS } from '../identifiers'
 
@@ -10,7 +10,7 @@ const ENDIF = 'endif'
 /**
  * @example {{ if my_var | my_filter }}yes{{ else }}no{{ endif }}
  */
-export const tag: Tag = {
+export const tag: TagCompiler = {
   names: [IF, ELIF, ELSE, ENDIF],
 
   async compile({ token: { name, value }, ctx, out }) {

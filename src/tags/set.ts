@@ -1,5 +1,4 @@
-import type { BinaryExp, IdExp } from '../expression'
-import type { Tag } from '../types'
+import type { BinaryExp, IdExp, TagCompiler } from '../types'
 import { compiler } from '../expression'
 import { CONTEXT, FILTERS } from '../identifiers'
 
@@ -10,7 +9,7 @@ const ENDSET = 'endset'
  * @example {{ set left = right }}
  * @example {{ set variable }} this is {{= my_value }} {{ endset }}
  */
-export const tag: Tag = {
+export const tag: TagCompiler = {
   names: [SET, ENDSET],
 
   async compile({ token: { name, value }, ctx, out }) {

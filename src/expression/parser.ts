@@ -3,6 +3,8 @@ import type {
   BoolExp,
   Checker,
   Exp,
+  ExpToken,
+  ExpTokenType,
   IdExp,
   IfExp,
   NotExp,
@@ -10,16 +12,14 @@ import type {
   PipeExp,
   SeqExp,
   StrExp,
-  Token,
-  TokenType,
-} from './types'
-import { ParseError } from './parse-error'
+} from '../types'
+import { ParseError } from '../utils/parse-error'
 import { precedences } from './precedences'
 import { Tokenizer } from './tokenizer'
 
 export class Parser {
   template = ''
-  tokens: Token[] = []
+  tokens: ExpToken[] = []
   length = 0
   cursor = 0
 
@@ -102,7 +102,7 @@ export class Parser {
           ...token,
           type: 'NOT',
           argument: this.parseExpression(
-            t => this.isHigher(token, t) ? 'BACK' : undefined,
+            t => isHigher(token, t) ? 'BACK' : undefined,
           )!,
         } satisfies NotExp
         continue
@@ -167,7 +167,7 @@ export class Parser {
 
       if (token.type === 'IF') {
         const test = this.parseExpression(
-          t => t.type === 'ELSE' ? 'BACK' : this.isHigher(token, t) ? 'BACK' : undefined,
+          t => t.type === 'ELSE' ? 'BACK' : isHigher(token, t) ? 'BACK' : undefined,
         )
         if (!test) {
           throw new ParseError('expected test expression', {
@@ -186,7 +186,7 @@ export class Parser {
         } satisfies IfExp
         if (this.consume('ELSE')) {
           const alternative = this.parseExpression(
-            t => this.isHigher(token, t) ? 'BACK' : undefined,
+            t => isHigher(token, t) ? 'BACK' : undefined,
           )
           if (!alternative) {
             throw new ParseError('expected else expression', {
@@ -231,7 +231,7 @@ export class Parser {
         }
 
         const right = this.parseExpression(
-          t => this.isHigher(token, t) ? 'BACK' : undefined,
+          t => isHigher(token, t) ? 'BACK' : undefined,
         )
 
         if (!right) {
@@ -375,11 +375,11 @@ export class Parser {
     return right
   }
 
-  private next(): Token | null {
+  private next(): ExpToken | null {
     return this.tokens[this.cursor++] ?? null
   }
 
-  private back(): Token {
+  private back(): ExpToken {
     return this.tokens[this.cursor--]
   }
 
@@ -387,17 +387,17 @@ export class Parser {
     return this.tokens[this.cursor] ?? null
   }
 
-  private check(type: TokenType) {
+  private check(type: ExpTokenType) {
     return this.peek()?.type === type
   }
 
-  private consume(type: TokenType) {
+  private consume(type: ExpTokenType) {
     if (this.check(type)) {
       return this.next()
     }
   }
+}
 
-  private isHigher(a: Token, b: Token) {
-    return precedences[a.type] > precedences[b.type]
-  }
+function isHigher(a: ExpToken, b: ExpToken) {
+  return precedences[a.type] > precedences[b.type]
 }

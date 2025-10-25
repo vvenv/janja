@@ -1,13 +1,13 @@
-import type { Config, Token } from './types'
-import { CompileError } from './compile-error'
+import type { Config, TagToken } from './types'
 import { Context } from './context'
 import { OutScript } from './out-script'
 import { SourceMap } from './source-map'
+import { CompileError } from './utils/compile-error'
 
 export class Compiler {
   constructor(public options: Required<Config>) {}
 
-  async compile(token: Token | null, filepath?: string) {
+  async compile(token: TagToken | null, filepath?: string) {
     const ctx = new Context(this.options)
     const out = new OutScript(this.options)
     const sourcemap = new SourceMap(this.options)
@@ -51,7 +51,7 @@ export class Compiler {
         raw: '',
         start: 0,
         end: 0,
-      } as Token, filepath)
+      } as TagToken, filepath)
     }
 
     out.end()

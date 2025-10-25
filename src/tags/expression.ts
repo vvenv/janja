@@ -1,4 +1,4 @@
-import type { Tag } from '../types'
+import type { TagCompiler } from '../types'
 import { compiler } from '../expression'
 import { FILTERS } from '../identifiers'
 
@@ -8,7 +8,7 @@ const EXPRESSION = '='
  * @example {{= x | f }}
  * @example {{= 'a' if x else 'b' }}
  */
-export const tag: Tag = {
+export const tag: TagCompiler = {
   names: [EXPRESSION],
 
   compile({ token: { value }, ctx: { context }, out }) {

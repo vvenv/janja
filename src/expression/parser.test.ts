@@ -1,5 +1,9 @@
 import { expect, it } from 'vitest'
-import { parse } from './test/__helper'
+import { Parser } from './parser'
+
+function parse(template: string) {
+  return new Parser().parse(template)
+}
 
 it('invalid', () => {
   expect(() => parse('not')).toThrowErrorMatchingInlineSnapshot(

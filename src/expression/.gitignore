@@ -1,7 +1,0 @@
-dist
-node_modules
-*.local
-*.log
-yarn-debug.log*
-yarn-error.log*
-.DS_Store

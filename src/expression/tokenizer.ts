@@ -1,11 +1,11 @@
-import type { Token } from './types'
-import { ParseError } from './parse-error'
+import type { ExpToken } from '../types'
+import { ParseError } from '../utils/parse-error'
 import { symbols } from './symbols'
 
 export class Tokenizer {
   template = ''
   length = 0
-  tokens: Token[] = []
+  tokens: ExpToken[] = []
   cursor = 0
 
   tokenize(template: string) {
@@ -17,7 +17,7 @@ export class Tokenizer {
     while (this.cursor < this.length) {
       const char = this.template[this.cursor]
 
-      if (this.isWhitespace(char)) {
+      if (isWhitespace(char)) {
         this.cursor++
         continue
       }
@@ -27,17 +27,17 @@ export class Tokenizer {
         continue
       }
 
-      if (this.isDigit(char)) {
+      if (isDigit(char)) {
         this.readNumber()
         continue
       }
 
-      if (this.isIdentifierStartChar(char)) {
+      if (isIdentifierStartChar(char)) {
         this.readIdentifier()
         continue
       }
 
-      if (this.isSymbol(char)) {
+      if (isSymbol(char)) {
         this.readSymbol(char)
         continue
       }
@@ -102,7 +102,7 @@ export class Tokenizer {
     while (this.cursor < this.length) {
       const char = this.template[this.cursor]
 
-      if (this.isDigit(char)) {
+      if (isDigit(char)) {
         value += char
       }
       else if (char === '.' && !hasDot) {
@@ -133,7 +133,7 @@ export class Tokenizer {
     while (this.cursor < this.length) {
       const char = this.template[this.cursor]
 
-      if (this.isIdentifierChar(char)) {
+      if (isIdentifierChar(char)) {
         value += char
 
         this.cursor++
@@ -167,24 +167,24 @@ export class Tokenizer {
 
     this.cursor++
   }
+}
 
-  private isWhitespace(char: string) {
-    return /\s/.test(char)
-  }
+function isWhitespace(char: string) {
+  return /\s/.test(char)
+}
 
-  private isSymbol(char: string) {
-    return /[+\-*/%|=(),.]/.test(char)
-  }
+function isSymbol(char: string) {
+  return /[+\-*/%|=(),.]/.test(char)
+}
 
-  private isDigit(char: string) {
-    return /[-\d]/.test(char)
-  }
+function isDigit(char: string) {
+  return /[-\d]/.test(char)
+}
 
-  private isIdentifierStartChar(char: string) {
-    return /[a-z_$]/i.test(char)
-  }
+function isIdentifierStartChar(char: string) {
+  return /[a-z_$]/i.test(char)
+}
 
-  private isIdentifierChar(char: string) {
-    return /[\w$]/.test(char)
-  }
+function isIdentifierChar(char: string) {
+  return /[\w$]/.test(char)
 }

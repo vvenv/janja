@@ -1,24 +1,26 @@
-import type { IdExp, StrExp } from './expression'
 import type {
   AST,
   Config,
-  Token,
+  IdExp,
+  StrExp,
+  TagToken,
 } from './types'
-import { ParseError, parser } from './expression'
+import { parser } from './expression'
 import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, STR, SUPER } from './identifiers'
+import { ParseError } from './utils/parse-error'
 import { unescapeTag } from './utils/unescape-tag'
 
 export class Parser implements AST {
   private template = ''
   private index = 0
 
-  private first: Token | null = null
+  private first: TagToken | null = null
 
   private group = ''
 
-  private blocks: Record<string, Token[][]> = {}
+  private blocks: Record<string, TagToken[][]> = {}
 
-  cursor: Token | null = null
+  cursor: TagToken | null = null
 
   constructor(public options: Required<Config>) {}
 
@@ -175,7 +177,7 @@ export class Parser implements AST {
     }
   }
 
-  private push(token: Token) {
+  private push(token: TagToken) {
     if (token.name === BLOCK) {
       const { type, value } = token.value! as IdExp
 
@@ -265,12 +267,12 @@ export class Parser implements AST {
     }
   }
 
-  private rebuildBlockBody(child: Token[] | undefined, parents: Token[][]) {
+  private rebuildBlockBody(child: TagToken[] | undefined, parents: TagToken[][]) {
     if (!child) {
       return []
     }
 
-    const chunk: Token[] = []
+    const chunk: TagToken[] = []
 
     child.forEach((token) => {
       if (token.name === SUPER) {
@@ -288,9 +290,9 @@ export class Parser implements AST {
   }
 
   private rebuildBlockChain(
-    tokens: Token[],
-    previous: Token | null,
-    next: Token | null,
+    tokens: TagToken[],
+    previous: TagToken | null,
+    next: TagToken | null,
   ) {
     for (let i = 0; i < tokens.length; i++) {
       tokens[i].previous = tokens[i - 1] || previous

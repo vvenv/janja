@@ -1,5 +1,10 @@
 import { expect, it } from 'vitest'
-import { compile } from './test/__helper'
+import { Compiler } from './compiler'
+import { Parser } from './parser'
+
+function compile(template: string) {
+  return new Compiler().compile(new Parser().parse(template), 'c', 'f')
+}
 
 it('invalid', () => {
   expect(() => compile('and')).toThrowErrorMatchingInlineSnapshot(`[ParseError: no left operand for "AND"]`)

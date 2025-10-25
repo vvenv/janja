@@ -1,10 +1,10 @@
-import type { Token } from './types'
-import { highlightSource } from './utils/highlight-source'
+import type { TagToken } from '../types'
+import { highlightSource } from './highlight-source'
 
 export class CompileError extends Error {
   constructor(
     message: string,
-    private token: Token,
+    private token: TagToken,
     filepath?: string,
   ) {
     super(filepath ? `${message} at ${filepath}` : message)

@@ -1,9 +1,9 @@
-import type { Loc } from '../types'
+import type { Range } from '../types'
 
 export function highlightSource(
   message: string,
   source: string,
-  locations: Loc[],
+  locations: Range[],
 ) {
   const output: string[] = []
   const caretLines = new Set<number>()

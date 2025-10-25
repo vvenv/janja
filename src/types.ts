@@ -1,33 +1,167 @@
 import type { Context } from './context'
-import type { Exp } from './expression'
 import type { OutScript } from './out-script'
 
 export type MaybePromise<T> = T | Promise<T>
 
 export type ObjectType = Record<string, any>
 
-export interface Loc {
+export interface Range {
   start: number
   end: number
 }
 
 export interface Mapping {
-  source: Loc
-  target: Loc
+  source: Range
+  target: Range
 }
 
-export interface FilterMeta {
-  name: string
-  args?: Statement[]
+export type ExpTokenType
+  = | 'AND'
+    | 'OR'
+    | 'NOT'
+    | 'EQ'
+    | 'NE'
+    | 'GT'
+    | 'LT'
+    | 'GE'
+    | 'LE'
+    | 'IN'
+    | 'NI'
+    | 'OF'
+    | 'ADD'
+    | 'SUB'
+    | 'MUL'
+    | 'DIV'
+    | 'MOD'
+    | 'PIPE'
+    | 'IF'
+    | 'ELSE'
+    | 'SET'
+    | 'LP'
+    | 'RP'
+    | 'COMMA'
+    | 'DOT'
+    | 'STR'
+    | 'NUM'
+    | 'BOOL'
+    | 'ID'
+
+export interface ExpToken<T = ExpTokenType> extends Range {
+  type: T
+  value: string | number | boolean | null | undefined
+  raw?: string
 }
 
-export interface Statement {
-  type: 'boolean' | 'null' | 'undefined' | 'string' | 'number' | 'expression' | 'operator' | 'identifier' | 'filters'
-  value: boolean | null | undefined | string | number
-  defaultValue?: Statement[]
-  filters?: FilterMeta[]
-  args?: Statement[]
+export type Checker = (token: ExpToken) => 'BACK' | 'BREAK' | undefined
+
+export type ExpType
+  = | 'AND'
+    | 'OR'
+    | 'NOT'
+    | 'EQ'
+    | 'NE'
+    | 'GT'
+    | 'LT'
+    | 'GE'
+    | 'LE'
+    | 'IN'
+    | 'NI'
+    | 'OF'
+    | 'ADD'
+    | 'SUB'
+    | 'MUL'
+    | 'DIV'
+    | 'MOD'
+    | 'PIPE'
+    | 'IF'
+    | 'SET'
+    | 'SEQ'
+    | 'STR'
+    | 'NUM'
+    | 'BOOL'
+    | 'ID'
+
+export interface BaseExp extends Range {
+  type: ExpType
 }
+
+export interface IdExp extends BaseExp {
+  type: 'ID'
+  value: string
+  path?: IdExp[]
+  args?: Exp[]
+}
+
+export interface StrExp extends BaseExp {
+  type: 'STR'
+  value: string
+}
+
+export interface NumExp extends BaseExp {
+  type: 'NUM'
+  value: number
+}
+
+export interface BoolExp extends BaseExp {
+  type: 'BOOL'
+  value: boolean
+}
+
+export interface NotExp extends BaseExp {
+  type: 'NOT'
+  argument: Exp
+}
+
+export interface BinaryExp extends BaseExp {
+  type: 'AND'
+    | 'OR'
+    | 'EQ'
+    | 'NE'
+    | 'GT'
+    | 'LT'
+    | 'GE'
+    | 'LE'
+    | 'IN'
+    | 'NI'
+    | 'OF'
+    | 'ADD'
+    | 'SUB'
+    | 'MUL'
+    | 'DIV'
+    | 'MOD'
+    | 'SET'
+  left: Exp
+  right: Exp
+}
+
+export interface IfExp extends BaseExp {
+  type: 'IF'
+  test: Exp
+  consequent: Exp
+  alternative?: Exp
+}
+
+export interface PipeExp extends BaseExp {
+  type: 'PIPE'
+  left: Exp
+  right: Exp
+}
+
+export interface SeqExp extends BaseExp {
+  type: 'SEQ'
+  elements: Exp[]
+}
+
+export type Exp
+  = | IdExp
+    | StrExp
+    | NumExp
+    | BoolExp
+    | NotExp
+    | BinaryExp
+    | IfExp
+    | PipeExp
+    | SeqExp
 
 export interface Globals {
   translations?: Record<string, string>
@@ -46,21 +180,21 @@ export type Script = (
   escape: (v: unknown) => unknown,
 ) => Promise<string>
 
-export interface Token extends Loc {
+export interface TagToken extends Range {
   name: string
   value?: Exp | null
   raw: string
-  previous: Token | null
-  next: Token | null
+  previous: TagToken | null
+  next: TagToken | null
   stripBefore?: boolean
   stripAfter?: boolean
 }
 
 export interface AST {
-  cursor: Token | null
+  cursor: TagToken | null
 }
 
-export interface Tag {
+export interface TagCompiler {
   names: string[]
 
   /**
@@ -70,17 +204,17 @@ export interface Tag {
    */
   compile: (
     arg: {
-      token: Token
+      token: TagToken
       ctx: Context
       out: OutScript
     },
-  ) => MaybePromise<Loc | void | false>
+  ) => MaybePromise<Range | void | false>
 }
 
 export interface Config {
   globals?: Globals
   filters?: Filters
-  tags?: Record<string, Tag[]>
+  tags?: Record<string, TagCompiler[]>
   strictMode?: boolean
   autoEscape?: boolean
   stripComments?: boolean

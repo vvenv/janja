@@ -1,4 +1,4 @@
-import type { Config, Loc, Script } from './types'
+import type { Config, Range, Script } from './types'
 import { CONTEXT, ESCAPE, FILTERS } from './identifiers'
 
 export class OutScript {
@@ -31,7 +31,7 @@ export class OutScript {
     this.pushLine('return s;', '})();')
   }
 
-  pushLine(...lines: string[]): Loc {
+  pushLine(...lines: string[]): Range {
     const start = this.content.length
 
     for (const line of lines) {
@@ -47,7 +47,7 @@ export class OutScript {
   pushStr(
     s: string,
     o?: { trimStart?: boolean, trimEnd?: boolean },
-  ): Loc | void {
+  ): Range | void {
     if (s) {
       if (o?.trimStart || this.options.trimWhitespace) {
         s = s.trimStart()
@@ -70,7 +70,7 @@ export class OutScript {
     }
   }
 
-  pushVar(v: string): Loc {
+  pushVar(v: string): Range {
     const start = this.content.length + this.varOffset
 
     this.pushLine(`s+=${ESCAPE}(${v});`)

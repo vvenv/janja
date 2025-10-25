@@ -1,4 +1,4 @@
-import type { Tag } from '../types'
+import type { TagCompiler } from '../types'
 import { compiler } from '../expression'
 import { FILTERS } from '../identifiers'
 
@@ -8,7 +8,7 @@ const ENDCALL = 'endcall'
 /**
  * @example {{ call my_macro(x, "a", 1) }}...{{ endcall }}
  */
-export const tag: Tag = {
+export const tag: TagCompiler = {
   names: [CALL, ENDCALL],
 
   async compile({ token: { name, value }, ctx, out }) {

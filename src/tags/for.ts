@@ -1,5 +1,4 @@
-import type { BinaryExp, IdExp, SeqExp } from '../expression'
-import type { Tag } from '../types'
+import type { BinaryExp, IdExp, SeqExp, TagCompiler } from '../types'
 import { compiler } from '../expression'
 import { FILTERS } from '../identifiers'
 
@@ -12,7 +11,7 @@ const ENDFOR = 'endfor'
  * @example {{ for item in items }}{{= item }}{{ endfor }}
  * @example {{ for (x, y) in items }}{{= x }},{{= y }}{{ endfor }}
  */
-export const tag: Tag = {
+export const tag: TagCompiler = {
   names: [FOR, BREAK, CONTINUE, ENDFOR],
 
   async compile({ token: { name, value }, ctx, out }) {

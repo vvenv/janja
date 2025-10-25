@@ -1,5 +1,4 @@
-import type { BinaryExp, IdExp, SeqExp } from '../expression'
-import type { Tag } from '../types'
+import type { BinaryExp, IdExp, SeqExp, TagCompiler } from '../types'
 import { compiler } from '../expression'
 import { FILTERS } from '../identifiers'
 
@@ -10,7 +9,7 @@ const ENDMACRO = 'endmacro'
 /**
  * @example {{ macro my_macro = (x, y) }}...{{ caller }}{{ endmacro }}{{ my_macro("foo", 1) }}
  */
-export const tag: Tag = {
+export const tag: TagCompiler = {
   names: [MACRO, CALLER, ENDMACRO],
 
   async compile({ token: { name, value }, ctx, out }) {

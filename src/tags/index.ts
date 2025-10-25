@@ -1,4 +1,4 @@
-import type { Tag } from '../types'
+import type { TagCompiler } from '../types'
 import { tag as callTag } from './call'
 import { tag as commentTag } from './comment'
 import { tag as expressionTag } from './expression'
@@ -23,4 +23,4 @@ export const tags = [
   }
 
   return acc
-}, {} as Record<string, Tag[]>)
+}, {} as Record<string, TagCompiler[]>)

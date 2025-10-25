@@ -1,4 +1,4 @@
-import type { Config, Loc, Mapping } from './types'
+import type { Config, Mapping, Range } from './types'
 
 /**
  * Contains the source map information.
@@ -26,7 +26,7 @@ export class SourceMap {
 
   constructor(public options: Required<Config>) {}
 
-  addMapping(source: Loc, target: Loc) {
+  addMapping(source: Range, target: Range) {
     this.mappings.push({
       source,
       target,

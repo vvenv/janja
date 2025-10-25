@@ -1,9 +1,9 @@
-import type { Loc } from '../types'
+import type { Range } from '../types'
 import { highlightSource } from '../utils/highlight-source'
 
 interface ParseErrorOptions {
   source: string
-  loc: Loc
+  loc: Range
 }
 
 export class ParseError extends SyntaxError {

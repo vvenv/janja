@@ -1,11 +1,11 @@
-import type { Tag } from '../types'
+import type { TagCompiler } from '../types'
 
 const STR = 'str'
 
 /**
  * @example hello world
  */
-export const tag: Tag = {
+export const tag: TagCompiler = {
   names: [STR],
 
   async compile({ token: { raw, previous, next }, out }) {

@@ -1,6 +1,6 @@
-import type { TokenType } from './types'
+import type { ExpTokenType } from '../types'
 
-export const symbols: Record<string, TokenType> = {
+export const symbols: Record<string, ExpTokenType> = {
   'and': 'AND',
   'or': 'OR',
   'not': 'NOT',

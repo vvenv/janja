@@ -1,5 +1,4 @@
-import type { StrExp } from '../expression'
-import type { Tag } from '../types'
+import type { StrExp, TagCompiler } from '../types'
 
 const COMMENT = 'comment'
 const ENDCOMMENT = 'endcomment'
@@ -8,7 +7,7 @@ const ENDCOMMENT = 'endcomment'
  * @example {{# This is a comment }}
  * @example {{ comment }} This is a comment {{ endcomment }}
  */
-export const tag: Tag = {
+export const tag: TagCompiler = {
   names: [COMMENT, '#', ENDCOMMENT],
 
   async compile({ token: { name, value }, ctx, out }) {

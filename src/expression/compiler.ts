@@ -1,4 +1,4 @@
-import type { BinaryExp, BoolExp, Exp, IdExp, IfExp, NotExp, NumExp, PipeExp, SeqExp, StrExp } from './types'
+import type { BinaryExp, BoolExp, Exp, IdExp, IfExp, NotExp, NumExp, PipeExp, SeqExp, StrExp } from '../types'
 import { operators } from './operators'
 
 export class Compiler {
