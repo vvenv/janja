@@ -120,10 +120,10 @@ export class Parser implements AST {
   }
 
   private async layout(value: string) {
-    const [,,path] = value.match(/^(['"`])(.+)\1$/) ?? []
+    const exp = parser.parse(value)
 
-    if (!path) {
-      throw new ParseError('missing file path', {
+    if (exp?.type !== 'STR' || !exp.value) {
+      throw new ParseError(`"layout" tag must have a file path`, {
         source: this.template,
         range: {
           start: this.index,
@@ -132,14 +132,14 @@ export class Parser implements AST {
       })
     }
 
-    await this.child(`layouts/${path}.jianjia`)
+    await this.child(`layouts/${exp.value}.jianjia`)
   }
 
   private async include(value: string) {
-    const [,,path, optional] = value.match(/^(['"`])(.+)\1(\?)?$/) ?? []
+    const exp = parser.parse(value.replace(/\?$/, ''))
 
-    if (!path) {
-      throw new ParseError('missing file path', {
+    if (exp?.type !== 'STR' || !exp.value) {
+      throw new ParseError(`"include" tag must have a file path`, {
         source: this.template,
         range: {
           start: this.index,
@@ -148,7 +148,7 @@ export class Parser implements AST {
       })
     }
 
-    await this.child(`partials/${path}.jianjia`, !!optional)
+    await this.child(`partials/${exp.value}.jianjia`, value.endsWith('?'))
   }
 
   private async child(path: string, optional?: boolean) {
@@ -182,7 +182,7 @@ export class Parser implements AST {
       const { type, value } = token.value! as IdExp
 
       if (type !== 'ID') {
-        throw new ParseError('"block" tag must have a title', {
+        throw new ParseError(`"${BLOCK}" tag must have a title`, {
           source: this.template,
           range: {
             start: this.index,

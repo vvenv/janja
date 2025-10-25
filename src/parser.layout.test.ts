@@ -9,11 +9,11 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[ParseError: missing file path]`,
+      `[ParseError: "layout" tag must have a file path]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `
-      "missing file path
+      ""layout" tag must have a file path
 
       1: {{ layout }}
       "
@@ -25,11 +25,11 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[ParseError: missing file path]`,
+      `[ParseError: "layout" tag must have a file path]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `
-      "missing file path
+      ""layout" tag must have a file path
 
       1: {{ layout "" }}
          ^^

@@ -189,7 +189,7 @@ export class ExpParser {
             t => isHigher(token, t) ? 'BACK' : undefined,
           )
           if (!alternative) {
-            throw new ParseError('expected else expression', {
+            throw new ParseError('expected alternative expression', {
               source: this.template,
               range: {
                 start: token.start,
@@ -298,7 +298,7 @@ export class ExpParser {
       }
       const token = this.next()
       if (!token) {
-        throw new ParseError('expected "ID" after "DOT"', {
+        throw new ParseError(`expected "ID" after "DOT"`, {
           source: this.template,
           range: {
             start: dot.start,

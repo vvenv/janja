@@ -46,10 +46,10 @@ it('invalid', () => {
     `[ParseError: expected test expression]`,
   )
   expect(() => parse('x if y else')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected else expression]`,
+    `[ParseError: expected alternative expression]`,
   )
   expect(() => parse('x if y else ,')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected else expression]`,
+    `[ParseError: expected alternative expression]`,
   )
   expect(() => parse('x if else')).toThrowErrorMatchingInlineSnapshot(
     `[ParseError: expected test expression]`,
