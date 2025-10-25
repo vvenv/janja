@@ -1,30 +1,9 @@
 import { expect, it } from 'vitest'
-import { config } from './config'
-import { Parser } from './parser'
-
-it('invalid', async () => {
-  try {
-    await new Parser(config).parse('{{= x + 1 }}')
-  }
-  catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[ParseError: unexpect "+"]`,
-    )
-    expect(error.details).toMatchInlineSnapshot(
-      `
-      "unexpect "+"
-
-      1:  x + 1
-            ^
-      "
-    `,
-    )
-  }
-})
+import { parse } from '../test/__helper'
 
 it('escape tag', async () => {
   expect(
-    await new Parser(config).parse('{{= "{{= escape }}" }}'),
+    await parse('{{= "{{= escape }}" }}'),
   ).toMatchInlineSnapshot(
     `
     {
@@ -54,7 +33,7 @@ it('escape tag', async () => {
   `,
   )
   expect(
-    await new Parser(config).parse('{{= "\\{\\{= escape \\}\\}" }}'),
+    await parse('{{= "\\{\\{= escape \\}\\}" }}'),
   ).toMatchInlineSnapshot(
     `
     {
@@ -80,12 +59,12 @@ it('escape tag', async () => {
 
 it('empty', async () => {
   expect(
-    await new Parser(config).parse(''),
+    await parse(''),
   ).toMatchInlineSnapshot(
-    'null',
+    `null`,
   )
   expect(
-    await new Parser(config).parse(' '),
+    await parse(' '),
   ).toMatchInlineSnapshot(
     `
     {
@@ -102,7 +81,7 @@ it('empty', async () => {
 
 it('tag', async () => {
   expect(
-    await new Parser(config).parse('{{ if x -}}'),
+    await parse('{{ if x -}}'),
   ).toMatchInlineSnapshot(
     `
     {
@@ -125,7 +104,7 @@ it('tag', async () => {
   `,
   )
   expect(
-    await new Parser(config).parse('{{ if }}'),
+    await parse('{{ if }}'),
   ).toMatchInlineSnapshot(
     `
     {
@@ -145,7 +124,7 @@ it('tag', async () => {
 
 it('expression', async () => {
   expect(
-    await new Parser(config).parse('{{-= x }}'),
+    await parse('{{-= x }}'),
   ).toMatchInlineSnapshot(
     `
     {
@@ -168,7 +147,7 @@ it('expression', async () => {
   `,
   )
   expect(
-    await new Parser(config).parse('{{= }}'),
+    await parse('{{= }}'),
   ).toMatchInlineSnapshot(
     `
     {
@@ -181,6 +160,43 @@ it('expression', async () => {
       "stripAfter": false,
       "stripBefore": false,
       "value": null,
+    }
+  `,
+  )
+  expect(
+    await parse('{{= x + 1 }}'),
+  ).toMatchInlineSnapshot(
+    `
+    {
+      "end": 12,
+      "name": "=",
+      "next": null,
+      "previous": null,
+      "raw": "{{= x + 1 }}",
+      "start": 0,
+      "stripAfter": false,
+      "stripBefore": false,
+      "value": {
+        "end": 3,
+        "left": {
+          "end": 2,
+          "raw": "x",
+          "start": 1,
+          "type": "ID",
+          "value": "x",
+        },
+        "raw": "+",
+        "right": {
+          "end": 6,
+          "raw": "1",
+          "start": 5,
+          "type": "NUM",
+          "value": 1,
+        },
+        "start": 3,
+        "type": "ADD",
+        "value": "+",
+      },
     }
   `,
   )

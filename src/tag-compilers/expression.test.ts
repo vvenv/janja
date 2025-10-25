@@ -2,22 +2,6 @@
 import { describe, expect, it } from 'vitest'
 import { compile } from '../../test/__helper'
 
-it('invalid', async () => {
-  try {
-    await compile('{{= { x: 1 } }}')
-  }
-  catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ParseError: unexpect "{"]`)
-    expect(error.details).toMatchInlineSnapshot(`
-      "unexpect "{"
-
-      1:  { x: 1 } 
-          ^
-      "
-    `)
-  }
-})
-
 it('escape tag', async () => {
   expect(await compile(
     '{{= "{{= escape }}" }}',

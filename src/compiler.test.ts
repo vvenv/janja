@@ -4,6 +4,7 @@ import { compile } from '../test/__helper'
 it('invalid', async () => {
   try {
     await compile('{{ if }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -21,6 +22,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ if x }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -37,6 +39,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ endif }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(

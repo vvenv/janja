@@ -4,6 +4,7 @@ import { compile } from '../../test/__helper'
 it('invalid', async () => {
   try {
     await compile('{{ macro }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "macro" tag must have "SET" expression]`)
@@ -17,6 +18,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ macro n }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "macro" tag must have "SET" expression]`)
@@ -30,6 +32,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ endmacro }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: unexpected "endmacro"]`)
@@ -43,6 +46,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ macro 1 }}{{ endmacro }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "macro" tag must have "SET" expression]`)
@@ -56,6 +60,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ caller }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "caller" tag must inside a "macro" tag]`)

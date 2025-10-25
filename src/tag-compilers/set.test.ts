@@ -4,6 +4,7 @@ import { compile } from '../../test/__helper'
 it('invalid', async () => {
   try {
     await compile('{{ set }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "set" tag must have expression]`)
@@ -17,6 +18,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ endset }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: unexpected "endset"]`)
@@ -30,6 +32,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ set x = [1] }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[ParseError: unexpect "["]`)
@@ -43,6 +46,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ set x = {a:1} }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[ParseError: unexpect "{"]`)
@@ -56,6 +60,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ set 1 = "a" }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: Cannot read properties of undefined (reading 'map')]`)
@@ -69,6 +74,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ set x = y = 1 }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[SyntaxError: Unexpected token ';']`)

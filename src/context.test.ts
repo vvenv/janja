@@ -74,6 +74,7 @@ it('validate w/ throw', () => {
 
   try {
     ctx.validate()
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[Error: expected tokens "endif", but got nothing]`)
@@ -88,6 +89,7 @@ it('validate w/ throw #2', () => {
 
   try {
     ctx.validate()
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[Error: expected tokens "endif, endfor", but got nothing]`)

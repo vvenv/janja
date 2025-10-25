@@ -1,10 +1,10 @@
 import { expect, it } from 'vitest'
-import { config } from './config'
-import { Parser } from './parser'
+import { parse } from '../test/__helper'
 
 it('invalid', async () => {
   try {
-    await new Parser(config).parse('{{ block }}')
+    await parse('{{ block }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -15,7 +15,8 @@ it('invalid', async () => {
     )
   }
   try {
-    await new Parser(config).parse('{{ block "" }}')
+    await parse('{{ block "" }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -34,7 +35,7 @@ it('invalid', async () => {
 
 it('1', async () => {
   expect(
-    await new Parser(config).parse('{{ block title }}1{{ endblock }}'),
+    await parse('{{ block title }}1{{ endblock }}'),
   ).toMatchInlineSnapshot(
     `
     {
@@ -77,7 +78,7 @@ it('1', async () => {
 
 it('2', async () => {
   expect(
-    await new Parser(config).parse('{{ block title }}1{{ endblock }}{{ block title }}{{ super }}2{{ endblock }}'),
+    await parse('{{ block title }}1{{ endblock }}{{ block title }}{{ super }}2{{ endblock }}'),
   ).toMatchInlineSnapshot(
     `
     {
@@ -153,7 +154,7 @@ it('2', async () => {
 
 it('3', async () => {
   expect(
-    await new Parser(config).parse('{{ block title }}1{{ endblock }}{{ block title }}2{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}'),
+    await parse('{{ block title }}1{{ endblock }}{{ block title }}2{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}'),
   ).toMatchInlineSnapshot(
     `
     {
@@ -229,7 +230,7 @@ it('3', async () => {
 
 it('hoist', async () => {
   expect(
-    await new Parser(config).parse('{{ block title }}1{{ endblock }}{{ if x }}{{ block title }}2{{ super }}{{ endblock }}{{ endif }}'),
+    await parse('{{ block title }}1{{ endblock }}{{ if x }}{{ block title }}2{{ super }}{{ endblock }}{{ endif }}'),
   ).toMatchInlineSnapshot(
 
     `

@@ -4,6 +4,7 @@ import { compile } from '../../test/__helper'
 it('invalid', async () => {
   try {
     await compile('{{ call n }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: expected tokens "endcall", but got nothing]`)
@@ -16,6 +17,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ endcall }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: unexpected "endcall"]`)
@@ -29,6 +31,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ call }}3{{ endcall }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "call" tag must specify a "macro" name]`)
@@ -42,6 +45,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ call 3 }}{{ endcall }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "call" tag must specify a "macro" name]`)

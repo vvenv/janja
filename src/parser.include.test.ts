@@ -1,11 +1,11 @@
 import { expect, it } from 'vitest'
-import { config } from './config'
+import { parse } from '../test/__helper'
 import { loader } from './loaders/file-loader'
-import { Parser } from './parser'
 
 it('invalid', async () => {
   try {
-    await new Parser(config).parse('{{ include }}')
+    await parse('{{ include }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -21,7 +21,8 @@ it('invalid', async () => {
     )
   }
   try {
-    await new Parser(config).parse('{{ include "" }}')
+    await parse('{{ include "" }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -38,7 +39,11 @@ it('invalid', async () => {
     )
   }
   try {
-    await new Parser({ ...config, loader }).parse('{{ include "default" }}')
+    await parse(
+      '{{ include "default" }}',
+      { loader },
+    )
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -51,10 +56,12 @@ it('invalid', async () => {
 })
 
 it('include', async () => {
-  expect(await new Parser({
-    ...config,
-    loader: async path => loader(`test/${path}`),
-  }).parse('{{ include "head" }}{{ include "empty" }}{{ include "body" }}')).toMatchInlineSnapshot(
+  expect(await parse(
+    '{{ include "head" }}{{ include "empty" }}{{ include "body" }}',
+    {
+      loader: async path => loader(`test/${path}`),
+    },
+  )).toMatchInlineSnapshot(
     `
     {
       "end": 17,

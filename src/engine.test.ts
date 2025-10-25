@@ -6,6 +6,7 @@ import { loader } from './loaders/file-loader'
 it('invalid', async () => {
   try {
     await render('{{ for name of names }}{{ endif }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error)
@@ -24,6 +25,7 @@ it('invalid', async () => {
   }
   try {
     await render('{{ for name of names }}{{ endfor }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error)
@@ -297,6 +299,7 @@ it('include / not found', async () => {
         loader: path => loader(`test/${path}`),
       },
     )
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(

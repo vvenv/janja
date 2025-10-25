@@ -4,6 +4,7 @@ import { compile } from '../../test/__helper'
 it('invalid', async () => {
   try {
     await compile('{{ for }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "for" tag must have expression]`)
@@ -17,6 +18,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ for x }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: Cannot read properties of undefined (reading 'type')]`)
@@ -30,6 +32,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ endfor }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: unexpected "endfor"]`)
@@ -43,6 +46,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ break }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "break" tag must inside a "for" loop]`)
@@ -56,6 +60,7 @@ it('invalid', async () => {
   }
   try {
     await compile('{{ continue }}')
+    expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: "continue" tag must inside a "for" loop]`)

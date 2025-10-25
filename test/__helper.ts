@@ -4,13 +4,20 @@ import { config } from '../src/config'
 import { Engine } from '../src/engine'
 import { Parser } from '../src/parser'
 
+export async function parse(
+  template: string,
+  options?: Config,
+): Promise<any> {
+  return new Parser({ ...config, ...options }).parse(template)
+}
+
 export async function compile(
   template: string,
   options?: Config,
 ): Promise<any> {
   const opt = { ...config, ...options }
   const { value } = await new Compiler(opt).compile(
-    await new Parser(opt).parse(template),
+    await parse(template, options),
   )
 
   return value
