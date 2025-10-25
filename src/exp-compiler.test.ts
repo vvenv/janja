@@ -193,10 +193,10 @@ it('set', () => {
 
 it('set - macros', () => {
   expect(compile('a = (x, y)')).toMatchInlineSnapshot(
-    `"c.a=(x,y)=>async(_c)=>{"`,
+    `"c.a=(x,y)"`,
   )
-  expect(compile('a = (x=true, y=1, z="b")')).toMatchInlineSnapshot(
-    `"c.a=(x=true,y=1,z="b")=>async(_c)=>{"`,
+  expect(compile('a = (x=true, y=x, z="b")')).toMatchInlineSnapshot(
+    `"c.a=(x=true,y=c.x,z="b")"`,
   )
 })
 

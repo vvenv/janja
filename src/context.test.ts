@@ -72,7 +72,13 @@ it('validate w/ throw', () => {
   const ctx = new Context(config)
   ctx.expect('endif')
 
-  expect(() => ctx.validate()).toThrow('expected tokens endif, but got nothing')
+  try {
+    ctx.validate()
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[Error: expected tokens "endif", but got nothing]`)
+    expect(error.details).toMatchInlineSnapshot(`undefined`)
+  }
 })
 
 it('validate w/ throw #2', () => {
@@ -80,5 +86,11 @@ it('validate w/ throw #2', () => {
   ctx.expect('endif')
   ctx.expect('endfor')
 
-  expect(() => ctx.validate()).toThrow('expected tokens endif, endfor, but got nothing')
+  try {
+    ctx.validate()
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[Error: expected tokens "endif, endfor", but got nothing]`)
+    expect(error.details).toMatchInlineSnapshot(`undefined`)
+  }
 })

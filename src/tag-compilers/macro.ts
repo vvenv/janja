@@ -23,7 +23,7 @@ export const tag: TagCompiler = {
       const { context } = ctx
 
       return out.pushLine(
-        compiler.compile(value, context, FILTERS),
+        `${compiler.compile(value, context, FILTERS)}=>async(_c)=>{`,
         `const ${ctx.in()}={`,
         `...${context},`,
         `${(((value as BinaryExp).right as SeqExp).elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}` : (el as IdExp).value).join(',')}`,

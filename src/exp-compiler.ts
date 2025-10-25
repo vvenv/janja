@@ -100,7 +100,7 @@ export class ExpCompiler {
     if (left.type === 'ID') {
       // for macros
       if (right.type === 'SEQ') {
-        return `${this.compileExp(left)}=(${(right.elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}=${this.compileExp((el.right))}` : (el as IdExp).value).join(',')})=>async(_c)=>{`
+        return `${this.compileExp(left)}=(${(right.elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}=${this.compileExp((el.right))}` : (el as IdExp).value).join(',')})`
       }
       return `Object.assign(${this.context},{${(left as IdExp).value}:${this.compileExp(right)}});`
     }
@@ -114,7 +114,7 @@ export class ExpCompiler {
     return type === 'NI' ? `(!${ret})` : ret
   }
 
-  private compileTernary({ test, consequent: then, alternative }: IfExp) {
-    return `(${this.compileExp(test)}?${this.compileExp(then)}:${alternative ? this.compileExp(alternative) : '""'})`
+  private compileTernary({ test, consequent, alternative }: IfExp) {
+    return `(${this.compileExp(test)}?${this.compileExp(consequent)}:${alternative ? this.compileExp(alternative) : '""'})`
   }
 }
