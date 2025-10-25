@@ -1,7 +1,7 @@
 import type { Globals, ObjectType } from './types'
+import { formatDatetime } from './format-datetime'
 import { Safe } from './safe'
-import { formatDatetime } from './utils/format-datetime'
-import { translate } from './utils/translate'
+import { translate } from './translate'
 
 export * from './escape'
 

@@ -1,4 +1,4 @@
-import type { TagToken } from '../types'
+import type { TagToken } from './types'
 import { highlightSource } from './highlight-source'
 
 export class CompileError extends Error {

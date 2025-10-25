@@ -8,6 +8,9 @@ import { Parser } from './parser'
 import { RenderError } from './render-error'
 import { Safe } from './safe'
 
+export * from './exp'
+export type * from './types'
+
 const cache = new Map<string, {
   template: string
   script: Script
@@ -81,8 +84,6 @@ export class Engine {
     }
   }
 }
-
-export type * from './types'
 
 export async function render(template: string, data: ObjectType, options?: Config) {
   return new Engine(options).render(template, data)

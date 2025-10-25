@@ -1,5 +1,5 @@
-import type { Range } from '../types'
-import { highlightSource } from '../utils/highlight-source'
+import type { Range } from './types'
+import { highlightSource } from './highlight-source'
 
 interface ParseErrorOptions {
   source: string

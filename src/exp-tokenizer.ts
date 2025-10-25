@@ -1,6 +1,6 @@
 import type { ExpToken } from './types'
 import { expTokenTypes } from './exp-token-types'
-import { ParseError } from './utils/parse-error'
+import { ParseError } from './parse-error'
 
 export class ExpTokenizer {
   template = ''

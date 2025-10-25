@@ -6,8 +6,8 @@ import type {
 } from './types'
 import { parser } from './exp'
 import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, RAW, SUPER } from './identifiers'
-import { ParseError } from './utils/parse-error'
-import { unescapeTag } from './utils/unescape-tag'
+import { ParseError } from './parse-error'
+import { unescapeTag } from './unescape-tag'
 
 export class Parser {
   private template = ''

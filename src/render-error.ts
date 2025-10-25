@@ -1,5 +1,5 @@
 import type { SourceMap } from './source-map'
-import { highlightSource } from './utils/highlight-source'
+import { highlightSource } from './highlight-source'
 
 interface RenderErrorOptions {
   source: string

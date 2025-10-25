@@ -1,7 +1,7 @@
 import type { Config } from '../src/types'
+import { render as _render, renderFile as _renderFile } from '../src'
 import { Compiler } from '../src/compiler'
 import { config } from '../src/config'
-import { Engine } from '../src/engine'
 import { Parser } from '../src/parser'
 
 export async function parse(
@@ -28,5 +28,13 @@ export async function render(
   data: Record<string, any> = {},
   options?: Config,
 ): Promise<any> {
-  return new Engine({ ...config, ...options }).render(template, data)
+  return _render(template, data, { ...config, ...options })
+}
+
+export async function renderFile(
+  filepath: string,
+  data: Record<string, any> = {},
+  options?: Config,
+): Promise<any> {
+  return _renderFile(filepath, data, { ...config, ...options })
 }

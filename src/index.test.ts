@@ -1,16 +1,7 @@
 /* eslint-disable style/no-tabs */
-import type { Config, ObjectType } from '.'
 import { expect, it } from 'vitest'
-import { render as _render, renderFile as _renderFile } from '.'
+import { render, renderFile } from '../test/__helper'
 import { loader } from './loaders/file-loader'
-
-function render(template: string, data: ObjectType = {}, options?: Config) {
-  return _render(template, data, options)
-}
-
-function renderFile(filepath: string, data: ObjectType = {}, options?: Config) {
-  return _renderFile(filepath, data, options)
-}
 
 it('render', async () => {
   expect(

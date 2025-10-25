@@ -15,7 +15,7 @@ import type {
 } from './types'
 import { expTokenPrecedences } from './exp-token-precedences'
 import { ExpTokenizer } from './exp-tokenizer'
-import { ParseError } from './utils/parse-error'
+import { ParseError } from './parse-error'
 
 export class ExpParser {
   template = ''

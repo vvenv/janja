@@ -1,8 +1,8 @@
 import type { Config, TagToken } from './types'
+import { CompileError } from './compile-error'
 import { Context } from './context'
 import { OutScript } from './out-script'
 import { SourceMap } from './source-map'
-import { CompileError } from './utils/compile-error'
 
 export class Compiler {
   constructor(public options: Required<Config>) {}
