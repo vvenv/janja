@@ -125,7 +125,7 @@ export class Parser implements AST {
     if (!path) {
       throw new ParseError('missing file path', {
         source: this.template,
-        loc: {
+        range: {
           start: this.index,
           end: this.index + value.length,
         },
@@ -141,7 +141,7 @@ export class Parser implements AST {
     if (!path) {
       throw new ParseError('missing file path', {
         source: this.template,
-        loc: {
+        range: {
           start: this.index,
           end: this.index + value.length,
         },
@@ -184,7 +184,7 @@ export class Parser implements AST {
       if (type !== 'ID') {
         throw new ParseError('"block" tag must have a title', {
           source: this.template,
-          loc: {
+          range: {
             start: this.index,
             end: this.index + value.length,
           },

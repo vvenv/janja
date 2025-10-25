@@ -31,9 +31,9 @@ it('mapping', () => {
     ]
   `,
   )
-  expect(sourcemap.getLocations(0)).toMatchInlineSnapshot('[]')
-  expect(sourcemap.getLocations(1)).toMatchInlineSnapshot('[]')
-  expect(sourcemap.getLocations(2)).toMatchInlineSnapshot(
+  expect(sourcemap.getRanges(0)).toMatchInlineSnapshot('[]')
+  expect(sourcemap.getRanges(1)).toMatchInlineSnapshot('[]')
+  expect(sourcemap.getRanges(2)).toMatchInlineSnapshot(
     `
     [
       {
@@ -43,7 +43,7 @@ it('mapping', () => {
     ]
   `,
   )
-  expect(sourcemap.getLocations(3)).toMatchInlineSnapshot(
+  expect(sourcemap.getRanges(3)).toMatchInlineSnapshot(
     `
     [
       {
@@ -53,5 +53,5 @@ it('mapping', () => {
     ]
   `,
   )
-  expect(sourcemap.getLocations(4)).toMatchInlineSnapshot('[]')
+  expect(sourcemap.getRanges(4)).toMatchInlineSnapshot('[]')
 })

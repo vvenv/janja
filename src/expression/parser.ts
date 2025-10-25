@@ -57,7 +57,7 @@ export class Parser {
         if (!this.peek()) {
           throw new ParseError(`unexpected end of expression`, {
             source: this.template,
-            loc: {
+            range: {
               start: token.start,
               end: token.end,
             },
@@ -71,7 +71,7 @@ export class Parser {
         if (!rp) {
           throw new ParseError(`expected "RP" after "LP"`, {
             source: this.template,
-            loc: {
+            range: {
               start: token.start,
               end: token.end,
             },
@@ -91,7 +91,7 @@ export class Parser {
         if (!this.peek()) {
           throw new ParseError(`unexpected end of expression`, {
             source: this.template,
-            loc: {
+            range: {
               start: token.start,
               end: token.end,
             },
@@ -127,7 +127,7 @@ export class Parser {
           if (!rp) {
             throw new ParseError(`expected "RP" after "LP"`, {
               source: this.template,
-              loc: {
+              range: {
                 start: token.start,
                 end: token.end,
               },
@@ -172,7 +172,7 @@ export class Parser {
         if (!test) {
           throw new ParseError('expected test expression', {
             source: this.template,
-            loc: {
+            range: {
               start: token.start,
               end: token.end,
             },
@@ -191,7 +191,7 @@ export class Parser {
           if (!alternative) {
             throw new ParseError('expected else expression', {
               source: this.template,
-              loc: {
+              range: {
                 start: token.start,
                 end: token.end,
               },
@@ -223,7 +223,7 @@ export class Parser {
         if (!left) {
           throw new ParseError(`no left operand for "${token.type}"`, {
             source: this.template,
-            loc: {
+            range: {
               start: token.start,
               end: token.end,
             },
@@ -237,7 +237,7 @@ export class Parser {
         if (!right) {
           throw new ParseError(`no right operand for "${token.type}"`, {
             source: this.template,
-            loc: {
+            range: {
               start: token.start,
               end: token.end,
             },
@@ -257,7 +257,7 @@ export class Parser {
         if (!left) {
           throw new ParseError(`no left operand for "${token.type}"`, {
             source: this.template,
-            loc: {
+            range: {
               start: token.start,
               end: token.end,
             },
@@ -266,7 +266,7 @@ export class Parser {
         if (!this.check('ID')) {
           throw new ParseError(`expected "ID" after "PIPE"`, {
             source: this.template,
-            loc: {
+            range: {
               start: token.start,
               end: token.end,
             },
@@ -300,7 +300,7 @@ export class Parser {
       if (!token) {
         throw new ParseError('expected "ID" after "DOT"', {
           source: this.template,
-          loc: {
+          range: {
             start: dot.start,
             end: dot.end,
           },
@@ -309,7 +309,7 @@ export class Parser {
       if (token.type !== 'ID') {
         throw new ParseError(`expected "ID" after "DOT"`, {
           source: this.template,
-          loc: {
+          range: {
             start: token.start,
             end: token.end,
           },
@@ -364,7 +364,7 @@ export class Parser {
       if (!rp) {
         throw new ParseError(`expected "RP" after "LP"`, {
           source: this.template,
-          loc: {
+          range: {
             start: token.start,
             end: token.end,
           },

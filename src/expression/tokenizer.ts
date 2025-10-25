@@ -42,7 +42,7 @@ export class Tokenizer {
         continue
       }
 
-      throw new ParseError(`unexpect "${char}"`, { source: template, loc: {
+      throw new ParseError(`unexpect "${char}"`, { source: template, range: {
         start: this.cursor,
         end: this.cursor + 1,
       } })

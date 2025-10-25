@@ -33,7 +33,7 @@ export class SourceMap {
     })
   }
 
-  getLocations(offset: number) {
+  getRanges(offset: number) {
     return this.mappings
       .filter(
         ({ target: { start, end } }) => start <= offset && end >= offset,

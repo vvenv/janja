@@ -3,7 +3,7 @@ import { highlightSource } from '../utils/highlight-source'
 
 interface ParseErrorOptions {
   source: string
-  loc: Range
+  range: Range
 }
 
 export class ParseError extends SyntaxError {
@@ -17,6 +17,6 @@ export class ParseError extends SyntaxError {
   }
 
   get details() {
-    return highlightSource(this.message, this.options.source, [this.options.loc])
+    return highlightSource(this.message, this.options.source, [this.options.range])
   }
 }

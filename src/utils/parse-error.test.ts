@@ -4,7 +4,7 @@ import { ParseError } from './parse-error'
 it('parse error', () => {
   const error = new ParseError('if tag must have a value', {
     source: '{{ if }}',
-    loc: {
+    range: {
       start: 0,
       end: 9,
     },

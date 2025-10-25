@@ -3,7 +3,7 @@ import type { Range } from '../types'
 export function highlightSource(
   message: string,
   source: string,
-  locations: Range[],
+  ranges: Range[],
 ) {
   const output: string[] = []
   const caretLines = new Set<number>()
@@ -20,7 +20,7 @@ export function highlightSource(
   const indentWidth = String(lines.length).length + 2
 
   // Copy to avoid mutation
-  locations = [...locations]
+  ranges = [...ranges]
 
   let cursor = 0
   let caretLinesCount = 0
@@ -30,9 +30,9 @@ export function highlightSource(
       `${`${`${index + 1}: `.padStart(indentWidth, ' ')}`}${line}`,
     )
 
-    locations.forEach((tag) => {
+    ranges.forEach((tag) => {
       if (tag.start! < cursor) {
-        locations.splice(locations.indexOf(tag), 1)
+        ranges.splice(ranges.indexOf(tag), 1)
 
         return
       }

@@ -18,10 +18,10 @@ export class RenderError extends Error {
   }
 
   get details() {
-    const locations = this.options.sourcemap.getLocations(
+    const ranges = this.options.sourcemap.getRanges(
       +(this.options.error.stack!.match(/<anonymous>:\d:(\d+)\)/)?.[1] ?? 0),
     )
 
-    return highlightSource(this.message, this.options.source, locations)
+    return highlightSource(this.message, this.options.source, ranges)
   }
 }

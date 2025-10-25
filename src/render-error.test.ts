@@ -8,7 +8,7 @@ it('render error', () => {
       stack: '<anonymous>:1:1)',
     } as any,
     sourcemap: {
-      getLocations: (index: number) =>
+      getRanges: (index: number) =>
         index === 1
           ? [
               {
@@ -44,7 +44,7 @@ it('render error w/ missed', () => {
       stack: '',
     } as any,
     sourcemap: {
-      getLocations: (index: number) =>
+      getRanges: (index: number) =>
         index === 1
           ? [
               {

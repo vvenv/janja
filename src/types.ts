@@ -198,7 +198,7 @@ export interface TagCompiler {
   names: string[]
 
   /**
-   * - Return `Location` to indicate the range of the tag.
+   * - Return `Range` to indicate the range of the tag.
    * - Return `false` to pass the control to the next tag.
    * - Return `void` to continue compiling.
    */
