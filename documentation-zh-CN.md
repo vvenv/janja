@@ -67,7 +67,7 @@
 
 ## 内置过滤器
 
-abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, get, groupby, join, json, keys, last, length, lower, map, max, min, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sub, sum, t, time, trim, truncate, unique, upper, urldecode, urlencode, values
+abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, groupby, join, json, keys, last, length, lower, map, max, min, mul, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sub, sum, trim, truncate, unique, upper, urldecode, urlencode, values
 
 ### 示例
 

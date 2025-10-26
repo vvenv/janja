@@ -67,13 +67,13 @@
 
 ## Built-in Filters
 
-abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, get, groupby, join, json, keys, last, length, lower, map, max, min, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sub, sum, t, time, trim, truncate, unique, upper, urldecode, urlencode, values
+abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, groupby, join, json, keys, last, length, lower, map, max, min, mul, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sub, sum, trim, truncate, unique, upper, urldecode, urlencode, values
 
 ### Examples
 
 ```janja
 {{= foo | upper }}
-{{= list | join:(",") }}
+{{= list | join(",") }}
 {{= obj | keys }}
 {{= arr | groupby(key_name) }}
 ```

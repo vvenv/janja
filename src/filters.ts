@@ -18,6 +18,9 @@ export function ceil(this: Globals, value = 0) {
 export function compact(this: Globals, value: any[] = []) {
   return value.filter(v => v != null)
 }
+export function div(this: Globals, value = 0, divisor = 1) {
+  return value / divisor
+}
 export function entries(this: Globals, value: ObjectType = {}) {
   return Object.entries(value)
 }
@@ -81,6 +84,9 @@ export function max(this: Globals, value = 0, ...values: number[]) {
 }
 export function min(this: Globals, value = 0, ...values: number[]) {
   return Math.min(value, ...values)
+}
+export function mul(this: Globals, value = 0, multiplier = 1) {
+  return value * multiplier
 }
 export function odd(this: Globals, value: number | string = 0) {
   return +value % 2 === 1
