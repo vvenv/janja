@@ -21,6 +21,10 @@
 - 🛡️ **Security**: Sandbox mode, and automatic escaping.
 - 🛫 **Asynchronous Data Loading**: Supports fetching and displaying remote data asynchronously.
 
+## Play Online
+
+[StackBlitz](https://stackblitz.com/edit/janja?file=main.ts)
+
 ## Getting Started
 
 ```javascript

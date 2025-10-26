@@ -21,6 +21,10 @@
 - 🛡️ **安全性**：沙盒模式，自动转义以防止 XSS 和其他安全漏洞。
 - 🛫 **异步数据加载**：支持异步获取和显示远程数据。
 
+## 在线试玩
+
+[StackBlitz](https://stackblitz.com/edit/janja?file=main.ts)
+
 ## 快速开始
 
 ```javascript

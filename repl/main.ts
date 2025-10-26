@@ -1,4 +1,5 @@
 import { codeToHtml } from './highlighter'
+import { loader } from './loaders/url-loader'
 
 declare global {
   interface Window {
@@ -77,7 +78,8 @@ This is a comment with variable "name='{{= name }}'"
 {{ endblock }}`
 
 const defaultData
-  = (!reset && localStorage.getItem('data')) || `{
+  = (!reset && localStorage.getItem('data'))
+    || `{
   "name": "engine",
   "url": "https://github.com/vvenv/janja",
   "array": [
@@ -129,6 +131,7 @@ async function update() {
 
     const output = await render(template, parsedData, {
       trimWhitespace: true,
+      loader,
     })
 
     resultEl.innerHTML = await codeToHtml(
@@ -138,7 +141,9 @@ async function update() {
     previewEl.innerHTML = output
   }
   catch (error: any) {
-    resultEl.innerHTML = `<pre class="error">${error.details || error.message}</pre>`
+    resultEl.innerHTML = `<pre class="error">${
+      error.details || error.message
+    }</pre>`
     previewEl.innerHTML = ''
   }
 }
