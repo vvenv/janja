@@ -1,7 +1,7 @@
 /* eslint-disable style/no-tabs */
 import { expect, it } from 'vitest'
 import { render, renderFile } from '../test/__helper'
-import { loader } from './loaders/file-loader'
+import { loader } from '../test/loaders/file-loader'
 
 it('render', async () => {
   expect(
