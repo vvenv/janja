@@ -64,6 +64,14 @@ describe('builtin', () => {
     )
   })
 
+  it('div', async () => {
+    expect(
+      await render('{{= x | div(y)  }}', { x: 1, y: 2 }),
+    ).toMatchInlineSnapshot(
+      `"0.5"`,
+    )
+  })
+
   it('entries', async () => {
     expect(
       await render('{{= x | entries }}', {
@@ -311,6 +319,14 @@ describe('builtin', () => {
       await render('{{= x | min(y, z) }}', { x: 1, y: 2, z: 3 }),
     ).toMatchInlineSnapshot(
       `"1"`,
+    )
+  })
+
+  it('mul', async () => {
+    expect(
+      await render('{{= x | mul(y)  }}', { x: 1, y: 2 }),
+    ).toMatchInlineSnapshot(
+      `"2"`,
     )
   })
 
