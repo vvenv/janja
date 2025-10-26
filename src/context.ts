@@ -8,7 +8,7 @@ export class Context {
   private contexts: string[] = [CONTEXT]
   private expected: string[] = []
 
-  constructor(public options: Required<Config>) {}
+  constructor(public options: Config) {}
 
   in() {
     const len = this.contexts.push(`${this.context}_${this.index++}`)

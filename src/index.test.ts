@@ -25,7 +25,7 @@ it('renderFile w/ cache', async () => {
   expect(
     await renderFile('test.jianjia', { name: 'foo' }, {
       loader: path => loader(`test/${path}`),
-      cache: true,
+      cache: new Map(),
     }),
   ).toMatchInlineSnapshot(
     `"foo"`,
@@ -33,7 +33,7 @@ it('renderFile w/ cache', async () => {
   expect(
     await renderFile('test.jianjia', { name: 'bar' }, {
       loader: path => loader(`test/${path}`),
-      cache: true,
+      cache: new Map(),
     }),
   ).toMatchInlineSnapshot(
     `"bar"`,

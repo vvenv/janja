@@ -17,7 +17,7 @@ export class Parser {
   private blocks: Record<string, TagToken[][]> = {}
   private cursor: TagToken | null = null
 
-  constructor(public options: Required<Config>) {}
+  constructor(public options: Config) {}
 
   async parse(
     template: string,

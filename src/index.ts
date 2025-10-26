@@ -9,22 +9,18 @@ import { RenderError } from './render-error'
 import { Safe } from './safe'
 
 export * from './exp'
+export { loader as fileLoader } from './loaders/file-loader'
+export { loader as urlLoader } from './loaders/url-loader'
 export type * from './types'
 
-const cache = new Map<string, {
-  template: string
-  script: Script
-  sourcemap: SourceMap
-}>()
-
 export class Engine {
-  protected options: Required<Config>
+  protected options: Config
 
   constructor({ globals, filters, compilers, ...options }: Config = {}) {
     this.options = { ...config, ...options }
-    Object.assign(this.options.globals, globals)
-    Object.assign(this.options.filters, filters)
-    Object.assign(this.options.compilers, compilers)
+    Object.assign(this.options.globals!, globals)
+    Object.assign(this.options.filters!, filters)
+    Object.assign(this.options.compilers!, compilers)
   }
 
   async render(
@@ -36,16 +32,14 @@ export class Engine {
   }
 
   async renderFile(filepath: string, globals: Globals) {
-    if (this.options.cache && cache.has(filepath)) {
-      const { template, script, sourcemap } = cache.get(filepath)!
+    if (this.options.cache?.has(filepath)) {
+      const { template, script, sourcemap } = this.options.cache.get(filepath)!
       return this._render(template, globals, script, sourcemap)
     }
 
     const template = await this.options.loader!(filepath)
     const { script, sourcemap } = await this._compile(template)
-    if (this.options.cache) {
-      cache.set(filepath, { template, script, sourcemap })
-    }
+    this.options.cache?.set(filepath, { template, script, sourcemap })
     return this._render(template, globals, script, sourcemap)
   }
 

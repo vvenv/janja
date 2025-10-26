@@ -8,7 +8,7 @@ export class OutScript {
 
   private varOffset = `s+=${ESCAPE}(`.length
 
-  constructor(public options: Required<Config>) {}
+  constructor(public options: Config) {}
 
   get value() {
     return this.content

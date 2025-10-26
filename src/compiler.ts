@@ -5,7 +5,7 @@ import { OutScript } from './out-script'
 import { SourceMap } from './source-map'
 
 export class Compiler {
-  constructor(public options: Required<Config>) {}
+  constructor(public options: Config) {}
 
   async compile(tagToken: TagToken | null, filepath?: string) {
     const ctx = new Context(this.options)
@@ -15,7 +15,7 @@ export class Compiler {
     out.start()
 
     while (tagToken) {
-      const compilers = (this.options.compilers[tagToken.name] ?? [])
+      const compilers = (this.options.compilers![tagToken.name] ?? [])
 
       for (const compiler of compilers) {
         try {

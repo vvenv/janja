@@ -1,9 +1,8 @@
 import type { Config } from './types'
 import * as filters from './filters'
-import { loader } from './loaders/url-loader'
 import { compilers } from './tag-compilers'
 
-export const config: Required<Config> = {
+export const config: Config = {
   globals: {
     translations: {},
   },
@@ -13,6 +12,4 @@ export const config: Required<Config> = {
   strictMode: true,
   stripComments: false,
   trimWhitespace: false,
-  loader,
-  cache: false,
 }

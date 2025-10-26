@@ -3,7 +3,7 @@ import { expect, it } from 'vitest'
 import { SourceMap } from './source-map'
 
 it('mapping', () => {
-  const sourcemap = new SourceMap({} as Required<Config>)
+  const sourcemap = new SourceMap({} as Config)
 
   sourcemap.addMapping(
     {

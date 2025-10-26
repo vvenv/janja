@@ -24,7 +24,7 @@ import type { Config, Mapping, Range } from './types'
 export class SourceMap {
   public mappings: Mapping[] = []
 
-  constructor(public options: Required<Config>) {}
+  constructor(public options: Config) {}
 
   addMapping(source: Range, target: Range) {
     this.mappings.push({

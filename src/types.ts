@@ -1,5 +1,6 @@
 import type { Context } from './context'
 import type { OutScript } from './out-script'
+import type { SourceMap } from './source-map'
 
 export type MaybePromise<T> = T | Promise<T>
 
@@ -203,6 +204,12 @@ export interface TagCompiler {
   ) => MaybePromise<Range | void | false>
 }
 
+export interface CacheValue {
+  template: string
+  script: Script
+  sourcemap: SourceMap
+}
+
 export interface Config {
   globals?: Globals
   filters?: Filters
@@ -212,5 +219,9 @@ export interface Config {
   stripComments?: boolean
   trimWhitespace?: boolean
   loader?: (path: string) => Promise<string>
-  cache?: boolean
+  cache?: {
+    has: (path: string) => boolean
+    get: (path: string) => CacheValue | undefined
+    set: (path: string, content: CacheValue) => void
+  }
 }

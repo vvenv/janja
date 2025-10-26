@@ -45,7 +45,7 @@ const shortDayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const o: Record<string, (
   d: Date,
   len: number,
-  translations: Record<string, string>
+  translations: Record<string, string>,
 ) => string> = {
   y: d => `${d.getUTCFullYear()}`,
   M: (d, len) => `${d.getUTCMonth() + 1}`.padStart(len, '0'),
