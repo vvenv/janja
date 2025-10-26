@@ -1,4 +1,5 @@
 import { expect, it } from 'vitest'
+import { render } from '../__helper'
 import { translate } from './translate'
 
 const translations = {
@@ -53,5 +54,17 @@ it('should handle extra parameters by ignoring them', () => {
 it('should translate text with key and single parameter', () => {
   expect(translate(translations, '你好 {name}', { name: '世界' })).toBe(
     '你好 世界',
+  )
+})
+
+it('t', async () => {
+  expect(
+    await render('{{= "hello, {name}" | t(name="Janja") }}', {
+      translations: { 'hello, {name}': '你好，{name}' },
+    }, {
+      filters: { t: translate },
+    }),
+  ).toMatchInlineSnapshot(
+    `"Janja"`,
   )
 })

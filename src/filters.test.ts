@@ -64,19 +64,6 @@ describe('builtin', () => {
     )
   })
 
-  it('date', async () => {
-    expect(
-      await render('{{= x | date }}', { x: '2021-01-01' }),
-    ).toMatchInlineSnapshot(
-      `"2021-01-01 00:00"`,
-    )
-    expect(
-      await render('{{= x | date("y-M-d") }}', { x: '2021-01-01' }),
-    ).toMatchInlineSnapshot(
-      `"2021-1-1"`,
-    )
-  })
-
   it('entries', async () => {
     expect(
       await render('{{= x | entries }}', {
@@ -438,34 +425,6 @@ describe('builtin', () => {
       await render('{{= x | sum }}', { x: [1, 2, 3] }),
     ).toMatchInlineSnapshot(
       `"6"`,
-    )
-  })
-
-  it('t', async () => {
-    expect(
-      await render('{{= "hello, {name}" | t(name="Janja") }}', {
-        translations: { 'hello, {name}': '你好，{name}' },
-      }),
-    ).toMatchInlineSnapshot(
-      `"你好，{name}"`,
-    )
-  })
-
-  it('time', async () => {
-    expect(
-      await render('{{= x | time }}', { x: '2021-01-01' }),
-    ).toMatchInlineSnapshot(
-      `"00:00"`,
-    )
-    expect(
-      await render('{{= x | time("D") }}', { x: '2021-01-01' }),
-    ).toMatchInlineSnapshot(
-      `"Fri"`,
-    )
-    expect(
-      await render('{{= x | time("DD") }}', { x: '2021-01-01' }),
-    ).toMatchInlineSnapshot(
-      `"Friday"`,
     )
   })
 

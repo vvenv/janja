@@ -1,7 +1,5 @@
 import type { Globals, ObjectType } from './types'
-import { formatDatetime } from './format-datetime'
 import { Safe } from './safe'
-import { translate } from './translate'
 
 export * from './escape'
 
@@ -19,13 +17,6 @@ export function ceil(this: Globals, value = 0) {
 }
 export function compact(this: Globals, value: any[] = []) {
   return value.filter(v => v != null)
-}
-export function date(
-  this: Globals,
-  value: string | number = 0,
-  format = 'yy-MM-dd hh:mm',
-) {
-  return formatDatetime(this.translations, value, format)
 }
 export function entries(this: Globals, value: ObjectType = {}) {
   return Object.entries(value)
@@ -134,16 +125,6 @@ export function split(this: Globals, value = '', separator = '') {
 }
 export function sum(this: Globals, value: number[] = []) {
   return value.reduce((a, b) => a + b, 0)
-}
-export function t(this: Globals, value: string, params?: Record<string, any>) {
-  return translate(this.translations, value, params)
-}
-export function time(
-  this: Globals,
-  value: string | number = 0,
-  format = 'hh:mm',
-) {
-  return formatDatetime(this.translations, value, format)
 }
 export function trim(this: Globals, value = '') {
   return value.trim()
