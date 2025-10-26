@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - .release-please-manifest.json
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
