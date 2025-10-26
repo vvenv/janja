@@ -6,7 +6,7 @@ permissions:
 on:
   pull_request:
     paths-ignore:
-      - 'packages/**/*'
+      - "src/**/*"
 
 concurrency:
   group: lint-ignored-${{ github.workflow }}-${{ github.ref }}

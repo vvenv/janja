@@ -121,4 +121,4 @@ Usage in template:
 
 ---
 
-For more details, refer to the source code in `packages/template/src/filters.ts` and the `packages/template/src/tags/` directory.
+For more details, refer to the source code in `src/filters.ts` and the `src/tag-compilers/` directory.
