@@ -67,7 +67,7 @@
 
 ## Built-in Filters
 
-abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, get, groupby, join, json, keys, last, length, lower, map, max, min, minus, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sum, t, time, trim, truncate, unique, upper, urldecode, urlencode, values
+abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, get, groupby, join, json, keys, last, length, lower, map, max, min, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sub, sum, t, time, trim, truncate, unique, upper, urldecode, urlencode, values
 
 ### Examples
 
