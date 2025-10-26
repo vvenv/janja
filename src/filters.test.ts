@@ -314,14 +314,6 @@ describe('builtin', () => {
     )
   })
 
-  it('minus', async () => {
-    expect(
-      await render('{{= x | minus(y) }}', { x: 1, y: 2 }),
-    ).toMatchInlineSnapshot(
-      `"-1"`,
-    )
-  })
-
   it('odd', async () => {
     expect(await render('{{= x | odd }}', { x: 1 })).toMatchInlineSnapshot(
       `"true"`,
@@ -417,6 +409,14 @@ describe('builtin', () => {
       await render('{{= x | split(",") | json }}', { x: 'foo,bar' }),
     ).toMatchInlineSnapshot(
       `"["foo","bar"]"`,
+    )
+  })
+
+  it('sub', async () => {
+    expect(
+      await render('{{= x | sub(y) }}', { x: 1, y: 2 }),
+    ).toMatchInlineSnapshot(
+      `"-1"`,
     )
   })
 

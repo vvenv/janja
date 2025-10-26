@@ -82,9 +82,6 @@ export function max(this: Globals, value = 0, ...values: number[]) {
 export function min(this: Globals, value = 0, ...values: number[]) {
   return Math.min(value, ...values)
 }
-export function minus(this: Globals, value = 0, minuend = 0) {
-  return value - minuend
-}
 export function odd(this: Globals, value: number | string = 0) {
   return +value % 2 === 1
 }
@@ -122,6 +119,9 @@ export function sort(this: Globals, value: string | any[] = []) {
 }
 export function split(this: Globals, value = '', separator = '') {
   return value.split(separator)
+}
+export function sub(this: Globals, value = 0, subtrahend = 0) {
+  return value - subtrahend
 }
 export function sum(this: Globals, value: number[] = []) {
   return value.reduce((a, b) => a + b, 0)
