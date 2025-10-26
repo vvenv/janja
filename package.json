@@ -32,13 +32,13 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.0.0",
-    "@rollup/plugin-commonjs": "^28.0.8",
+    "@antfu/eslint-config": "^6.1.0",
+    "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^24.9.1",
-    "@vitest/coverage-v8": "4.0.2",
-    "@vitest/ui": "4.0.2",
+    "@vitest/coverage-v8": "4.0.3",
+    "@vitest/ui": "4.0.3",
     "eslint": "^9.38.0",
     "husky": "^9.1.7",
     "oxlint": "^1.24.0",
@@ -47,6 +47,6 @@
     "tslib": "^2.8.1",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
-    "vitest": "^4.0.2"
+    "vitest": "^4.0.3"
   }
 }
