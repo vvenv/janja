@@ -2,7 +2,7 @@
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
   "packages": {
-    ".": { "release-as": "" }
+    "src": { "release-as": "" }
   },
   "plugins": ["node-workspace"],
   "always-link-local": false

@@ -6,15 +6,13 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "allowImportingTsExtensions": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noEmit": true,
     "isolatedModules": true,
     "skipLibCheck": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["repl/**/*.ts", "src/**/*.ts", "test/**/*.ts"]
+  "include": ["**/*.ts"]
 }

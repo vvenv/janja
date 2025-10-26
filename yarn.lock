@@ -3436,26 +3436,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"janja@workspace:., janja@workspace:^":
+"janja.js@workspace:.":
   version: 0.0.0-use.local
-  resolution: "janja@workspace:."
+  resolution: "janja.js@workspace:."
   dependencies:
     "@antfu/eslint-config": "npm:^6.1.0"
-    "@rollup/plugin-commonjs": "npm:^28.0.9"
-    "@rollup/plugin-node-resolve": "npm:^16.0.3"
-    "@rollup/plugin-typescript": "npm:^12.3.0"
     "@types/node": "npm:^24.9.1"
     "@vitest/coverage-v8": "npm:4.0.3"
     "@vitest/ui": "npm:4.0.3"
     eslint: "npm:^9.38.0"
     husky: "npm:^9.1.7"
     oxlint: "npm:^1.24.0"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.1.12"
+    vitest: "npm:^4.0.3"
+  languageName: unknown
+  linkType: soft
+
+"janja@workspace:^, janja@workspace:src":
+  version: 0.0.0-use.local
+  resolution: "janja@workspace:src"
+  dependencies:
+    "@rollup/plugin-commonjs": "npm:^28.0.9"
+    "@rollup/plugin-node-resolve": "npm:^16.0.3"
+    "@rollup/plugin-typescript": "npm:^12.3.0"
+    "@types/node": "npm:^24.9.1"
     rollup: "npm:^4.52.5"
     rollup-plugin-dts: "npm:^6.2.3"
     tslib: "npm:^2.8.1"
     typescript: "npm:^5.9.3"
-    vite: "npm:^7.1.12"
-    vitest: "npm:^4.0.3"
   languageName: unknown
   linkType: soft
 

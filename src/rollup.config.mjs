@@ -7,7 +7,7 @@ import pkg from './package.json' with { type: 'json' }
 
 export default defineConfig([
   {
-    input: 'src/index.ts',
+    input: 'index.ts',
     output: {
       name: 'janja',
       file: pkg.browser,
@@ -21,7 +21,7 @@ export default defineConfig([
     ],
   },
   {
-    input: 'src/index.ts',
+    input: 'index.ts',
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
@@ -33,7 +33,7 @@ export default defineConfig([
     ],
   },
   {
-    input: 'src/index.ts',
+    input: 'index.ts',
     output: {
       format: 'esm',
       file: pkg.types,
