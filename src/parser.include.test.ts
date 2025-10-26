@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 import { parse } from '../test/__helper'
-import { loader } from './loaders/file-loader'
+import { loader } from '../test/loaders/file-loader'
 
 it('invalid', async () => {
   try {
