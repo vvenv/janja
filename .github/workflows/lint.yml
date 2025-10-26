@@ -8,10 +8,10 @@ on:
     branches:
       - main
     paths:
-      - 'packages/**/*'
+      - "src/**/*"
   pull_request:
     paths:
-      - 'packages/**/*'
+      - "src/**/*"
 
 concurrency:
   group: lint-${{ github.workflow }}-${{ github.ref }}

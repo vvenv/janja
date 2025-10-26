@@ -121,4 +121,4 @@ const engine = new Engine({
 
 ---
 
-如需更多细节，可参考源码 `packages/template/src/filters.ts` 和 `packages/template/src/tags/` 目录实现。
+如需更多细节，可参考源码 `src/filters.ts` 和 `src/tag-compilers/` 目录实现。
