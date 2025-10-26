@@ -1,4 +1,6 @@
+import type { Globals } from '../../src/types'
 import { expect, it } from 'vitest'
+import { render } from '../__helper'
 import { formatDatetime as fd } from './format-datetime'
 
 it('number', () => {
@@ -46,4 +48,45 @@ it('translate', () => {
       'N NN D DD',
     ),
   ).toMatchInlineSnapshot('"一月 一月 Fri Friday"')
+})
+
+it('date', async () => {
+  expect(
+    await render('{{= x | date }}', { x: '2021-01-01' }, {
+      filters: { date(this: Globals, value: string | number, format = 'yy-MM-dd hh:mm') { return fd(this.translations, value, format) } },
+    }),
+  ).toMatchInlineSnapshot(
+    `"2021-01-01 00:00"`,
+  )
+  expect(
+    await render('{{= x | date("y-M-d") }}', { x: '2021-01-01' }, {
+      filters: { date(this: Globals, value: string | number, format = 'yy-MM-dd hh:mm') { return fd(this.translations, value, format) } },
+    }),
+  ).toMatchInlineSnapshot(
+    `"2021-1-1"`,
+  )
+})
+
+it('time', async () => {
+  expect(
+    await render('{{= x | time }}', { x: '2021-01-01' }, {
+      filters: { time(this: Globals, value: string | number, format = 'hh:mm') { return fd(this.translations, value, format) } },
+    }),
+  ).toMatchInlineSnapshot(
+    `"00:00"`,
+  )
+  expect(
+    await render('{{= x | time("D") }}', { x: '2021-01-01' }, {
+      filters: { time(this: Globals, value: string | number, format = 'hh:mm') { return fd(this.translations, value, format) } },
+    }),
+  ).toMatchInlineSnapshot(
+    `"Fri"`,
+  )
+  expect(
+    await render('{{= x | time("DD") }}', { x: '2021-01-01' }, {
+      filters: { time(this: Globals, value: string | number, format = 'hh:mm') { return fd(this.translations, value, format) } },
+    }),
+  ).toMatchInlineSnapshot(
+    `"Friday"`,
+  )
 })
