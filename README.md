@@ -24,12 +24,17 @@
 ## Getting Started
 
 ```javascript
-const engine = new Engine()
-const html = await engine.render('Hello, {{= name }}！', { name: 'World' })
-// or
-// const html = await engine.renderFile('./template.html', { name: 'World' })
+import { render } from 'janja'
 
-document.body.innerHTML = html
+document.body.innerHTML = await render('Hello, {{= name }}！', { name: 'World' })
+```
+
+or
+
+```javascript
+import { renderFile } from 'janja'
+
+document.body.innerHTML = await renderFile('./template.html', { name: 'World' })
 ```
 
 [Documentation](./documentation.md)
