@@ -24,12 +24,17 @@
 ## 快速开始
 
 ```javascript
-const engine = new Engine()
-const html = await engine.render('{{= name }} 苍苍，白露为霜', { name: '蒹葭' })
-// or
-// const html = await engine.renderFile('./template.html', { name: '蒹葭' })
+import { render } from 'janja'
 
-document.body.innerHTML = html
+document.body.innerHTML = await render('{{= name }} 苍苍，白露为霜', { name: '蒹葭' })
+```
+
+or
+
+```javascript
+import { renderFile } from 'janja'
+
+document.body.innerHTML = await renderFile('./template.html', { name: '蒹葭' })
 ```
 
 [使用文档](./documentation-zh-CN.md)
