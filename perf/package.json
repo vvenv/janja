@@ -7,7 +7,7 @@
   "dependencies": {
     "ejs": "^3.1.10",
     "eta": "^4.0.1",
-    "jianjia": "workspace:^",
+    "janja": "workspace:^",
     "liquidjs": "^10.23.0"
   }
 }

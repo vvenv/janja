@@ -134,9 +134,9 @@ describe('w/ filters', async () => {
       `""use strict";return(async()=>{let s="";s+=e((await f.split.call(c,c.name,"")));return s;})();"`,
     )
     expect(
-      await compile('{{= "hello, {name}" | t(name="JianJia") }}'),
+      await compile('{{= "hello, {name}" | t(name="Janja") }}'),
     ).toMatchInlineSnapshot(
-      `""use strict";return(async()=>{let s="";s+=e((await f.t.call(c,"hello, {name}",c.name="JianJia")));return s;})();"`,
+      `""use strict";return(async()=>{let s="";s+=e((await f.t.call(c,"hello, {name}",c.name="Janja")));return s;})();"`,
     )
   })
 })

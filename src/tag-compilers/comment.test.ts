@@ -13,7 +13,7 @@ it('invalid', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "expected tokens "endcomment", but got nothing
 
-      1: 
+
       "
     `)
   }

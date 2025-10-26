@@ -3436,9 +3436,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jianjia@workspace:., jianjia@workspace:^":
+"janja@workspace:., janja@workspace:^":
   version: 0.0.0-use.local
-  resolution: "jianjia@workspace:."
+  resolution: "janja@workspace:."
   dependencies:
     "@antfu/eslint-config": "npm:^6.1.0"
     "@rollup/plugin-commonjs": "npm:^28.0.9"
@@ -4671,7 +4671,7 @@ __metadata:
   dependencies:
     ejs: "npm:^3.1.10"
     eta: "npm:^4.0.1"
-    jianjia: "workspace:^"
+    janja: "workspace:^"
     liquidjs: "npm:^10.23.0"
   languageName: unknown
   linkType: soft
@@ -4884,7 +4884,7 @@ __metadata:
   resolution: "repl@workspace:repl"
   dependencies:
     "@types/node": "npm:^24.9.1"
-    jianjia: "workspace:^"
+    janja: "workspace:^"
     shiki: "npm:^3.14.0"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.1.12"

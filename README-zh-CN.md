@@ -3,7 +3,7 @@
 <p align="center">一个简单、快速、轻量且可扩展的 Node.js 和浏览器模板引擎。</p>
 
 <p align="center">
-  <a href="https://github.com/vvenv/jianjia/actions/workflows/test.yml"><img src="https://github.com/vvenv/jianjia/actions/workflows/test.yml/badge.svg" alt="test"></a>
+  <a href="https://github.com/vvenv/janja/actions/workflows/test.yml"><img src="https://github.com/vvenv/janja/actions/workflows/test.yml/badge.svg" alt="test"></a>
 </p>
 
 <p align="center">
@@ -36,4 +36,4 @@ document.body.innerHTML = html
 
 ## 许可证
 
-`JianJia` 在 [MIT 许可证](https://opensource.org/licenses/MIT) 下发布。你可以自由使用、修改和分发它，只要你遵守许可证条款。
+`Janja` 在 [MIT 许可证](https://opensource.org/licenses/MIT) 下发布。你可以自由使用、修改和分发它，只要你遵守许可证条款。

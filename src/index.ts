@@ -9,8 +9,6 @@ import { RenderError } from './render-error'
 import { Safe } from './safe'
 
 export * from './exp'
-export { loader as fileLoader } from './loaders/file-loader'
-export { loader as urlLoader } from './loaders/url-loader'
 export type * from './types'
 
 export class Engine {

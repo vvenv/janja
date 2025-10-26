@@ -32,7 +32,7 @@ it('invalid', async () => {
       `
       "expected tokens "endif", but got nothing
 
-      1: 
+
       "
     `,
     )
@@ -92,7 +92,7 @@ it('line break feed', async () => {
 
 it('translate', async () => {
   expect(
-    await compile('{{ "hello, {name}" | t name="JianJia" }}'),
+    await compile('{{ "hello, {name}" | t name="Janja" }}'),
   ).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";return s;})();"`,
   )

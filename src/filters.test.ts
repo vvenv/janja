@@ -443,7 +443,7 @@ describe('builtin', () => {
 
   it('t', async () => {
     expect(
-      await render('{{= "hello, {name}" | t(name="JianJia") }}', {
+      await render('{{= "hello, {name}" | t(name="Janja") }}', {
         translations: { 'hello, {name}': '你好，{name}' },
       }),
     ).toMatchInlineSnapshot(

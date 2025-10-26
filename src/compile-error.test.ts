@@ -33,12 +33,12 @@ it('compile error w/ filepath', () => {
     next: null,
     start: 0,
     end: 9,
-  }, '/path/to/file.jianjia')
+  }, '/path/to/file.janja')
   expect(error.name).toMatchInlineSnapshot(`"CompileError"`)
-  expect(error.message).toMatchInlineSnapshot(`"if tag must have a value at /path/to/file.jianjia"`)
+  expect(error.message).toMatchInlineSnapshot(`"if tag must have a value at /path/to/file.janja"`)
   expect(error.details).toMatchInlineSnapshot(
     `
-    "if tag must have a value at /path/to/file.jianjia
+    "if tag must have a value at /path/to/file.janja
 
     1: {{ if }}
        ^^^^^^^^

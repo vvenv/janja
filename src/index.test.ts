@@ -13,7 +13,7 @@ it('render', async () => {
 
 it('renderFile', async () => {
   expect(
-    await renderFile('test.jianjia', { name: 'foo' }, {
+    await renderFile('test.janja', { name: 'foo' }, {
       loader: path => loader(`test/${path}`),
     }),
   ).toMatchInlineSnapshot(
@@ -23,7 +23,7 @@ it('renderFile', async () => {
 
 it('renderFile w/ cache', async () => {
   expect(
-    await renderFile('test.jianjia', { name: 'foo' }, {
+    await renderFile('test.janja', { name: 'foo' }, {
       loader: path => loader(`test/${path}`),
       cache: new Map(),
     }),
@@ -31,7 +31,7 @@ it('renderFile w/ cache', async () => {
     `"foo"`,
   )
   expect(
-    await renderFile('test.jianjia', { name: 'bar' }, {
+    await renderFile('test.janja', { name: 'bar' }, {
       loader: path => loader(`test/${path}`),
       cache: new Map(),
     }),
@@ -290,10 +290,10 @@ it('layout', async () => {
     `
     "<html>
       <head>
-      <title>JianJia</title>
+      <title>Janja</title>
       </head>
       <body>
-      <h1>Hello, JianJia!</h1>
+      <h1>Hello, Janja!</h1>
       </body>
     </html>
     "
@@ -342,7 +342,7 @@ it('include / not found', async () => {
     expect(
       error,
     ).toMatchInlineSnapshot(
-      `[Error: file not found: test/partials/fallback.jianjia]`,
+      `[Error: file not found: test/partials/fallback.janja]`,
     )
 
     expect(

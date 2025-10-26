@@ -26,8 +26,12 @@ export function highlightSource(
   let caretLinesCount = 0
 
   lines.forEach((line, index) => {
+    if (!line) {
+      return
+    }
+
     output.push(
-      `${`${`${index + 1}: `.padStart(indentWidth, ' ')}`}${line}`,
+      `${`${index + 1}: `.padStart(indentWidth, ' ')}${line}`,
     )
 
     ranges.forEach((tag) => {

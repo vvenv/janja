@@ -79,7 +79,7 @@ This is a comment with variable "name='{{= name }}'"
 const defaultData
   = (!reset && localStorage.getItem('data')) || `{
   "name": "engine",
-  "url": "https://github.com/vvenv/jianjia",
+  "url": "https://github.com/vvenv/janja",
   "array": [
     "Alice",
     "Bob",
@@ -125,7 +125,7 @@ async function update() {
 
     const parsedData = JSON.parse(data)
 
-    const { render } = await import('jianjia')
+    const { render } = await import('janja')
 
     const output = await render(template, parsedData, {
       trimWhitespace: true,

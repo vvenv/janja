@@ -1,6 +1,6 @@
 ## Benchmark
 
-| Template \ Engine | ejs | eta | jianjia | liquidjs |
+| Template \ Engine | ejs | eta | janja | liquidjs |
 |-------------------|:--------:|:--------:|:--------:|:--------:|
 | **friends** | 🟡 1.05 | 🟢 0.18 | 🟡 0.65 | ⚫ 5.26 |
 | **if-expression** | 🟡 0.06 | 🟢 0.04 | 🟡 0.07 | ⚫ 0.20 |

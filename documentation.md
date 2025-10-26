@@ -4,23 +4,23 @@
 
 ### **if / elif / else**: Conditional Statements
 
-```jianjia
+```janja
 {{ if condition }}Content{{ elif other }}Content{{ else }}Content{{ endif }}
 ```
 
 ### **for**: Looping
 
-```jianjia
+```janja
 {{ for item of array_items }}{{= item }}{{ endfor }}
 ```
 
-```jianjia
+```janja
 {{ for item of object_items | values }}{{= item }}{{ endfor }}
 ```
 
 ### **set**: Variable Assignment
 
-```jianjia
+```janja
 {{ set foo = 123 }}
 {{ set (a, b) = obj }}
 {{ set foo }}Content{{ endset }}
@@ -28,39 +28,39 @@
 
 ### **block / super**: Template Inheritance & Blocks
 
-```jianjia
+```janja
 {{ block title }}{{ super }}Default Title{{ endblock }}
 ```
 
 ### **macro / caller**: Macro Definition & Invocation
 
-```jianjia
+```janja
 {{ macro my_macro = (x, y) }}Content{{ caller }}{{ endmacro }}
 ```
 
 ### **call**: Macro Invocation
 
-```jianjia
+```janja
 {{ call my_macro("foo", "bar") }}Content{{ endcall }}
 ```
 
 ### **break / continue**: Loop Control
 
-```jianjia
+```janja
 {{ break }}
 {{ continue }}
 ```
 
 ### **comment**: Comments
 
-```jianjia
+```janja
 {{# This is a comment }}
 {{ comment }}Multi-line comment{{ endcomment }}
 ```
 
 ### **expression (=)**: Expression Output
 
-```jianjia
+```janja
 {{= foo | upper }}
 {{= a if cond else b }}
 ```
@@ -71,7 +71,7 @@ abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, get, 
 
 ### Examples
 
-```jianjia
+```janja
 {{= foo | upper }}
 {{= list | join:(",") }}
 {{= obj | keys }}
@@ -97,7 +97,7 @@ const engine = new Engine({
 
 Usage in template:
 
-```jianjia
+```janja
 {{ my_tag }}
 ```
 
@@ -115,7 +115,7 @@ const engine = new Engine({
 
 Usage in template:
 
-```jianjia
+```janja
 {{= foo | my_filter }}
 ```
 

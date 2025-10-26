@@ -4,23 +4,23 @@
 
 ### **if / elif / else**：条件判断
 
-```jianjia
+```janja
 {{ if condition }}内容{{ elif other }}内容{{ else }}内容{{ endif }}
 ```
 
 ### **for**：循环遍历
 
-```jianjia
+```janja
 {{ for item of array_items }}{{= item }}{{ endfor }}
 ```
 
-```jianjia
+```janja
 {{ for item of object_items | values }}{{= item }}{{ endfor }}
 ```
 
 ### **set**：变量赋值
 
-```jianjia
+```janja
 {{ set foo = 123 }}
 {{ set (a, b) = obj }}
 {{ set foo }}内容{{ endset }}
@@ -28,39 +28,39 @@
 
 ### **block / super**：模板继承与区块
 
-```jianjia
+```janja
 {{ block title }}{{ super }}默认标题{{ endblock }}
 ```
 
 ### **macro / caller**：宏定义与调用
 
-```jianjia
+```janja
 {{ macro my_macro = (x, y) }}内容{{ caller }}{{ endmacro }}
 ```
 
 ### **call**：调用宏
 
-```jianjia
+```janja
 {{ call my_macro("foo", "bar") }}内容{{ endcall }}
 ```
 
 ### **break / continue**：循环控制
 
-```jianjia
+```janja
 {{ break }}
 {{ continue }}
 ```
 
 ### **comment**：注释
 
-```jianjia
+```janja
 {{# 这是注释 }}
 {{ comment }}多行注释{{ endcomment }}
 ```
 
 ### **expression（=）**：表达式输出
 
-```jianjia
+```janja
 {{= foo | upper }}
 {{= a if cond else b }}
 ```
@@ -71,7 +71,7 @@ abs, capitalize, add, ceil, compact, date, entries, even, fallback, first, get, 
 
 ### 示例
 
-```jianjia
+```janja
 {{= foo | upper }}
 {{= list | join(",") }}
 {{= obj | keys }}
@@ -97,7 +97,7 @@ const engine = new Engine({
 
 模板中即可使用
 
-```jianjia
+```janja
 {{ my_tag }}
 ```
 
@@ -115,7 +115,7 @@ const engine = new Engine({
 
 模板中即可使用
 
-```jianjia
+```janja
 {{= foo | my_filter }}
 ```
 

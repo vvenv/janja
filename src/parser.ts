@@ -127,7 +127,7 @@ export class Parser {
       })
     }
 
-    await this.child(`layouts/${exp.value}.jianjia`)
+    await this.child(`layouts/${exp.value}.janja`)
   }
 
   private async include(value: string) {
@@ -143,7 +143,7 @@ export class Parser {
       })
     }
 
-    await this.child(`partials/${exp.value}.jianjia`, value.endsWith('?'))
+    await this.child(`partials/${exp.value}.janja`, value.endsWith('?'))
   }
 
   private async child(path: string, optional?: boolean) {

@@ -1,9 +1,9 @@
-# JianJia
+# Janja
 
 <p align="center">A simple, fast, lightweight, and extensible template engine for Node.js and browsers.</p>
 
 <p align="center">
-  <a href="https://github.com/vvenv/jianjia/actions/workflows/test.yml"><img src="https://github.com/vvenv/jianjia/actions/workflows/test.yml/badge.svg" alt="test"></a>
+  <a href="https://github.com/vvenv/janja/actions/workflows/test.yml"><img src="https://github.com/vvenv/janja/actions/workflows/test.yml/badge.svg" alt="test"></a>
 </p>
 
 <p align="center">
@@ -36,4 +36,4 @@ document.body.innerHTML = html
 
 ## License
 
-`JianJia` is released under the [MIT License](https://opensource.org/licenses/MIT). You are free to use, modify, and distribute it as long as you comply with the license terms.
+`Janja` is released under the [MIT License](https://opensource.org/licenses/MIT). You are free to use, modify, and distribute it as long as you comply with the license terms.

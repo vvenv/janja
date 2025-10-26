@@ -47,7 +47,7 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[Error: file not found: partials/default.jianjia]`,
+      `[Error: file not found: partials/default.janja]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `undefined`,

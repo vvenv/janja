@@ -9,7 +9,7 @@ export default defineConfig([
   {
     input: 'src/index.ts',
     output: {
-      name: 'jianjia',
+      name: 'janja',
       file: pkg.browser,
       format: 'iife',
       extend: true,

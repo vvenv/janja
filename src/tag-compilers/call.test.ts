@@ -11,7 +11,7 @@ it('invalid', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "expected tokens "endcall", but got nothing
 
-      1: 
+
       "
     `)
   }

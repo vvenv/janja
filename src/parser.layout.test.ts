@@ -47,7 +47,7 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[Error: file not found: layouts/default.jianjia]`,
+      `[Error: file not found: layouts/default.janja]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `undefined`,
@@ -70,25 +70,25 @@ it('layout', async () => {
         "end": 34,
         "name": "block",
         "next": {
-          "end": 56,
+          "end": 54,
           "name": "raw",
           "next": {
-            "end": 70,
+            "end": 68,
             "name": "endblock",
             "next": {
-              "end": 92,
+              "end": 90,
               "name": "raw",
               "next": {
-                "end": 108,
+                "end": 106,
                 "name": "block",
                 "next": {
-                  "end": 132,
+                  "end": 128,
                   "name": "raw",
                   "next": {
-                    "end": 146,
+                    "end": 142,
                     "name": "endblock",
                     "next": {
-                      "end": 165,
+                      "end": 161,
                       "name": "raw",
                       "next": null,
                       "previous": [Circular],
@@ -96,22 +96,22 @@ it('layout', async () => {
       </body>
     </html>
     ",
-                      "start": 146,
+                      "start": 142,
                     },
                     "previous": [Circular],
                     "raw": "{{ endblock }}",
-                    "start": 132,
+                    "start": 128,
                     "stripAfter": false,
                     "stripBefore": false,
                     "value": null,
                   },
                   "previous": [Circular],
-                  "raw": "<h1>Hello, JianJia!</h1>",
-                  "start": 108,
+                  "raw": "<h1>Hello, Janja!</h1>",
+                  "start": 106,
                 },
                 "previous": [Circular],
                 "raw": "{{ block body }}",
-                "start": 92,
+                "start": 90,
                 "stripAfter": false,
                 "stripBefore": false,
                 "value": {
@@ -127,17 +127,17 @@ it('layout', async () => {
       </head>
       <body>
       ",
-              "start": 70,
+              "start": 68,
             },
             "previous": [Circular],
             "raw": "{{ endblock }}",
-            "start": 56,
+            "start": 54,
             "stripAfter": false,
             "stripBefore": false,
             "value": null,
           },
           "previous": [Circular],
-          "raw": "<title>JianJia</title>",
+          "raw": "<title>Janja</title>",
           "start": 34,
         },
         "previous": [Circular],
