@@ -1,7 +1,7 @@
 import type { Config } from '../src/types'
-import { render as _render, renderFile as _renderFile } from '../src'
 import { Compiler } from '../src/compiler'
 import { config } from '../src/config'
+import { render as _render, renderFile as _renderFile } from '../src/index'
 import { Parser } from '../src/parser'
 
 export async function parse(
