@@ -10,7 +10,7 @@ const ENDCOMMENT = 'endcomment'
 export const tag: TagCompiler = {
   names: [COMMENT, '#', ENDCOMMENT],
 
-  async compile({ token: { name, value }, ctx, out }) {
+  async compile({ tag: { name, value }, ctx, out }) {
     // inline comment
     if (name === '#') {
       if (!(value as StrExp).value || out.options.stripComments) {

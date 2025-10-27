@@ -14,7 +14,7 @@ const ENDFOR = 'endfor'
 export const tag: TagCompiler = {
   names: [FOR, BREAK, CONTINUE, ENDFOR],
 
-  async compile({ token: { name, value }, ctx, out }) {
+  async compile({ tag: { name, value }, ctx, out }) {
     if (name === FOR) {
       if (!value) {
         throw new Error(`"${FOR}" tag must have expression`)

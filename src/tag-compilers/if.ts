@@ -13,7 +13,7 @@ const ENDIF = 'endif'
 export const tag: TagCompiler = {
   names: [IF, ELIF, ELSE, ENDIF],
 
-  async compile({ token: { name, value }, ctx, out }) {
+  async compile({ tag: { name, value }, ctx, out }) {
     if (name === IF) {
       if (!value) {
         throw new Error(`"${IF}" tag must have expression`)

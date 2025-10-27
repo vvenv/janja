@@ -11,7 +11,7 @@ const ENDCALL = 'endcall'
 export const tag: TagCompiler = {
   names: [CALL, ENDCALL],
 
-  async compile({ token: { name, value }, ctx, out }) {
+  async compile({ tag: { name, value }, ctx, out }) {
     if (name === CALL) {
       if (value?.type !== 'ID') {
         throw new Error(`"${CALL}" tag must specify a "macro" name`)
