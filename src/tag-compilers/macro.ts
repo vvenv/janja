@@ -6,6 +6,8 @@ const MACRO = 'macro'
 const CALLER = 'caller'
 const ENDMACRO = 'endmacro'
 
+const CALLER_PN = '_c'
+
 /**
  * @example {{ macro my_macro = (x, y) }}...{{ caller }}{{ endmacro }}{{ my_macro("foo", 1) }}
  */
@@ -21,12 +23,16 @@ export const tag: TagCompiler = {
       ctx.expect(ENDMACRO)
 
       const { context } = ctx
-
+      const { elements } = (value as BinaryExp).right as SeqExp
       return out.pushLine(
-        `${compiler.compile(value, context, FILTERS)}=>async(_c)=>{`,
+        `${compiler.compile(value, context, FILTERS)}=>async(${CALLER_PN})=>{`,
         `const ${ctx.in()}={`,
         `...${context},`,
-        `${(((value as BinaryExp).right as SeqExp).elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}` : (el as IdExp).value).join(',')}`,
+        elements.map(
+          el => el.type === 'SET'
+            ? (el.left as IdExp).value
+            : (el as IdExp).value,
+        ).join(','),
         `};`,
       )
     }
@@ -37,7 +43,7 @@ export const tag: TagCompiler = {
       }
 
       return out.pushLine(
-        `await _c?.();`,
+        `await ${CALLER_PN}?.();`,
       )
     }
 

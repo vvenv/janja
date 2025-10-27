@@ -21,9 +21,9 @@ it('invalid', async () => {
     expect(true).toBe(false)
   }
   catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: Cannot read properties of undefined (reading 'type')]`)
+    expect(error).toMatchInlineSnapshot(`[CompileError: Cannot destructure property 'type' of 'value.left' as it is undefined.]`)
     expect(error.details).toMatchInlineSnapshot(`
-      "Cannot read properties of undefined (reading 'type')
+      "Cannot destructure property 'type' of 'value.left' as it is undefined.
 
       1: {{ for x }}
          ^^^^^^^^^^^
