@@ -11,8 +11,9 @@ export class Context {
   constructor(public options: Config) {}
 
   in() {
-    const len = this.contexts.push(`${this.context}_${this.index++}`)
-    return (this.context = this.contexts[len - 1])
+    this.context = `${this.context}_${this.index++}`
+    this.contexts.push(this.context)
+    return this.context
   }
 
   out() {
@@ -20,7 +21,7 @@ export class Context {
       return
     }
     this.contexts.pop()
-    this.context = this.contexts[this.contexts.length - 1]
+    this.context = this.contexts.at(-1) ?? CONTEXT
   }
 
   expect(name: string) {

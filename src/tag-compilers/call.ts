@@ -20,7 +20,6 @@ export const tag: TagCompiler = {
       ctx.expect(ENDCALL)
 
       const { context } = ctx
-
       return out.pushLine(
         `await ${compiler.compile(value, context, FILTERS)}(async()=>{`,
       )

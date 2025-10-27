@@ -23,14 +23,14 @@ export const tag: TagCompiler = {
       ctx.expect(ENDFOR)
 
       const { context } = ctx
-
-      if ((value as BinaryExp).left.type === 'SEQ') {
+      const { type, elements } = (value as BinaryExp).left as SeqExp
+      if (type === 'SEQ') {
         return out.pushLine(
           `{`,
           `for(${compiler.compile(value, context, FILTERS)}){`,
           `const ${ctx.in()}={`,
           `...${context},`,
-          `${(((value as BinaryExp).left as SeqExp).elements as IdExp[]).map(({ value }) => value).join(',')}`,
+          (elements as IdExp[]).map(({ value }) => value).join(','),
           `};`,
         )
       }
@@ -71,7 +71,6 @@ export const tag: TagCompiler = {
       }
 
       ctx.out()
-
       return out.pushLine(
         `}}`,
       )
