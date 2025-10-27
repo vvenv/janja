@@ -2,7 +2,7 @@ import type {
   Config,
   IdExp,
   StrExp,
-  TagToken,
+  Tag,
 } from './types'
 import { parser } from './exp'
 import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, RAW, SUPER } from './identifiers'
@@ -12,10 +12,10 @@ import { unescapeTag } from './unescape-tag'
 export class Parser {
   private template = ''
   private index = 0
-  private first: TagToken | null = null
+  private first: Tag | null = null
   private group = ''
-  private blocks: Record<string, TagToken[][]> = {}
-  private cursor: TagToken | null = null
+  private blocks: Record<string, Tag[][]> = {}
+  private cursor: Tag | null = null
 
   constructor(public options: Config) {}
 
@@ -32,15 +32,15 @@ export class Parser {
 
     while ((match = tagRe.exec(template))) {
       if (match.index > this.index) {
-        this.strToken(this.index, match.index)
+        this.addRaw(this.index, match.index)
       }
 
-      await this.tagToken(match)
+      await this.addTag(match)
       this.index = match.index + match[0].length
     }
 
     if (this.index < template.length) {
-      this.strToken(this.index, template.length)
+      this.addRaw(this.index, template.length)
     }
 
     this.cursor = this.first
@@ -50,12 +50,10 @@ export class Parser {
     return this.cursor
   }
 
-  private strToken(start: number, end: number) {
-    const raw = this.template.slice(start, end)
-
+  private addRaw(start: number, end: number) {
     this.push({
       name: RAW,
-      raw,
+      raw: this.template.slice(start, end),
       previous: null,
       next: null,
       start,
@@ -63,7 +61,7 @@ export class Parser {
     })
   }
 
-  private async tagToken(match: RegExpExecArray) {
+  private async addTag(match: RegExpExecArray) {
     const start = match.index
     const end = start + match[0].length
 
@@ -172,9 +170,9 @@ export class Parser {
     }
   }
 
-  private push(token: TagToken) {
-    if (token.name === BLOCK) {
-      const { type, value } = token.value! as IdExp
+  private push(tag: Tag) {
+    if (tag.name === BLOCK) {
+      const { type, value } = tag.value! as IdExp
 
       if (type !== 'ID') {
         throw new ParseError(`"${BLOCK}" tag must have a title`, {
@@ -190,22 +188,22 @@ export class Parser {
 
       // child blocks
       if (this.blocks[value]) {
-        this.blocks[value].push([token])
+        this.blocks[value].push([tag])
 
         return
       }
 
       // parent block
-      this.blocks[value] = [[token]]
+      this.blocks[value] = [[tag]]
     }
     else if (this.group) {
       const chunks = this.blocks[this.group]
 
-      if (token.name === ENDBLOCK) {
+      if (tag.name === ENDBLOCK) {
         this.group = ''
       }
 
-      chunks.at(-1)!.push(token)
+      chunks.at(-1)!.push(tag)
 
       // child blocks
       if (chunks.length > 1) {
@@ -214,14 +212,14 @@ export class Parser {
     }
 
     if (this.cursor) {
-      token.previous = this.cursor
-      this.cursor.next = token
+      tag.previous = this.cursor
+      this.cursor.next = tag
     }
     else {
-      this.first = token
+      this.first = tag
     }
 
-    this.cursor = token
+    this.cursor = tag
   }
 
   /**
@@ -262,22 +260,22 @@ export class Parser {
     }
   }
 
-  private rebuildBlockBody(child: TagToken[] | undefined, parents: TagToken[][]) {
+  private rebuildBlockBody(child: Tag[] | undefined, parents: Tag[][]) {
     if (!child) {
       return []
     }
 
-    const chunk: TagToken[] = []
+    const chunk: Tag[] = []
 
-    child.forEach((token) => {
-      if (token.name === SUPER) {
+    child.forEach((tag) => {
+      if (tag.name === SUPER) {
         this.rebuildBlockBody(
           parents.pop(),
           parents,
         ).forEach(t => chunk.push(t))
       }
       else {
-        chunk.push(token)
+        chunk.push(tag)
       }
     })
 
@@ -285,25 +283,25 @@ export class Parser {
   }
 
   private rebuildBlockChain(
-    tokens: TagToken[],
-    previous: TagToken | null,
-    next: TagToken | null,
+    tags: Tag[],
+    previous: Tag | null,
+    next: Tag | null,
   ) {
-    for (let i = 0; i < tokens.length; i++) {
-      tokens[i].previous = tokens[i - 1] || previous
-      tokens[i].next = tokens[i + 1] || next
+    for (let i = 0; i < tags.length; i++) {
+      tags[i].previous = tags[i - 1] || previous
+      tags[i].next = tags[i + 1] || next
     }
 
     if (previous) {
-      [previous.next] = tokens
+      [previous.next] = tags
     }
 
     if (next) {
-      next.previous = tokens[tokens.length - 1]
+      next.previous = tags[tags.length - 1]
     }
 
     if (!this.first) {
-      [this.first] = tokens
+      [this.first] = tags
       this.cursor = this.first
     }
   }

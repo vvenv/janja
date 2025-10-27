@@ -11,7 +11,7 @@ const EXPRESSION = '='
 export const tag: TagCompiler = {
   names: [EXPRESSION],
 
-  compile({ token: { value }, ctx: { context }, out }) {
+  compile({ tag: { value }, ctx: { context }, out }) {
     return out.pushVar(
       compiler.compile(value!, context, FILTERS),
     )

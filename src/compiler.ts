@@ -1,4 +1,4 @@
-import type { Config, TagToken } from './types'
+import type { Config, Tag } from './types'
 import { CompileError } from './compile-error'
 import { Context } from './context'
 import { OutScript } from './out-script'
@@ -7,21 +7,21 @@ import { SourceMap } from './source-map'
 export class Compiler {
   constructor(public options: Config) {}
 
-  async compile(tagToken: TagToken | null, filepath?: string) {
+  async compile(tag: Tag | null, filepath?: string) {
     const ctx = new Context(this.options)
     const out = new OutScript(this.options)
     const sourcemap = new SourceMap(this.options)
 
     out.start()
 
-    while (tagToken) {
-      const compilers = (this.options.compilers![tagToken.name] ?? [])
+    while (tag) {
+      const compilers = (this.options.compilers![tag.name] ?? [])
 
       for (const compiler of compilers) {
         try {
           const r = await compiler.compile(
             {
-              token: tagToken,
+              tag,
               ctx,
               out,
             },
@@ -29,18 +29,18 @@ export class Compiler {
 
           if (r !== false) {
             if (r) {
-              sourcemap.addMapping(tagToken, r)
+              sourcemap.addMapping(tag, r)
             }
 
             break
           }
         }
         catch (error: any) {
-          throw new CompileError(error.message, tagToken, filepath)
+          throw new CompileError(error.message, tag, filepath)
         }
       }
 
-      tagToken = tagToken.next
+      tag = tag.next
     }
 
     try {
@@ -51,7 +51,7 @@ export class Compiler {
         raw: '',
         start: 0,
         end: 0,
-      } as TagToken, filepath)
+      } as Tag, filepath)
     }
 
     out.end()

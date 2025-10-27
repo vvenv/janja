@@ -8,7 +8,7 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[TypeError: Cannot destructure property 'type' of 'token.value' as it is null.]`,
+      `[TypeError: Cannot destructure property 'type' of 'tag.value' as it is null.]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `undefined`,

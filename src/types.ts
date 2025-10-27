@@ -177,12 +177,12 @@ export type Script = (
   escape: (v: unknown) => unknown,
 ) => Promise<string>
 
-export interface TagToken extends Range {
+export interface Tag extends Range {
   name: string
   value?: Exp | null
   raw: string
-  previous: TagToken | null
-  next: TagToken | null
+  previous: Tag | null
+  next: Tag | null
   stripBefore?: boolean
   stripAfter?: boolean
 }
@@ -197,7 +197,7 @@ export interface TagCompiler {
    */
   compile: (
     arg: {
-      token: TagToken
+      tag: Tag
       ctx: Context
       out: OutScript
     },

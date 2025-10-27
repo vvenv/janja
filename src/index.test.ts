@@ -373,7 +373,7 @@ it('custom tag', async () => {
       compilers: {
         custom: [{
           names: ['custom'],
-          compile: async ({ token: { name }, out }) => {
+          compile: async ({ tag: { name }, out }) => {
             if (name === 'custom') {
               out.pushStr('CUSTOM')
             }

@@ -8,7 +8,7 @@ const RAW = 'raw'
 export const tag: TagCompiler = {
   names: [RAW],
 
-  async compile({ token: { raw, previous, next }, out }) {
+  async compile({ tag: { raw, previous, next }, out }) {
     return out.pushStr(
       raw,
       {

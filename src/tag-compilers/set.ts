@@ -12,7 +12,7 @@ const ENDSET = 'endset'
 export const tag: TagCompiler = {
   names: [SET, ENDSET],
 
-  async compile({ token: { name, value }, ctx, out }) {
+  async compile({ tag: { name, value }, ctx, out }) {
     if (name === SET) {
       if (!value) {
         throw new Error(`"${SET}" tag must have expression`)

@@ -14,7 +14,7 @@ const CALLER_PN = '_c'
 export const tag: TagCompiler = {
   names: [MACRO, CALLER, ENDMACRO],
 
-  async compile({ token: { name, value }, ctx, out }) {
+  async compile({ tag: { name, value }, ctx, out }) {
     if (name === MACRO) {
       if (value?.type !== 'SET') {
         throw new Error(`"${MACRO}" tag must have "SET" expression`)
