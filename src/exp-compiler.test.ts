@@ -104,6 +104,12 @@ it('or', () => {
   )
 })
 
+it('is', () => {
+  expect(compile('a is b')).toMatchInlineSnapshot(
+    `"(typeof c.a===c.b)"`,
+  )
+})
+
 it('of', () => {
   expect(compile('a of b')).toMatchInlineSnapshot(
     `"const a of c.b"`,

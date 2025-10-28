@@ -426,6 +426,34 @@ it('or', () => {
   )
 })
 
+it('is', () => {
+  expect(parse('a is b')).toMatchInlineSnapshot(
+    `
+    {
+      "end": 4,
+      "left": {
+        "end": 1,
+        "raw": "a",
+        "start": 0,
+        "type": "ID",
+        "value": "a",
+      },
+      "raw": "is",
+      "right": {
+        "end": 6,
+        "raw": "b",
+        "start": 5,
+        "type": "ID",
+        "value": "b",
+      },
+      "start": 2,
+      "type": "IS",
+      "value": "is",
+    }
+  `,
+  )
+})
+
 it('eq', () => {
   expect(parse('a eq b')).toMatchInlineSnapshot(
     `

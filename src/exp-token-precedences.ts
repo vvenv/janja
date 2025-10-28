@@ -15,6 +15,7 @@ export const expTokenPrecedences: Record<ExpTokenType, number> = {
 
   AND: 30,
 
+  IS: 40,
   EQ: 40,
   NE: 40,
   GT: 40,
