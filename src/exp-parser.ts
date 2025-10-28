@@ -1,17 +1,15 @@
 import type {
   BinaryExp,
-  BoolExp,
   Checker,
   Exp,
   ExpToken,
   ExpTokenType,
   IdExp,
   IfExp,
+  LitExp,
   NotExp,
-  NumExp,
   PipeExp,
   SeqExp,
-  StrExp,
 } from './types'
 import { expTokenPrecedences } from './exp-token-precedences'
 import { ExpTokenizer } from './exp-tokenizer'
@@ -138,30 +136,11 @@ export class ExpParser {
         continue
       }
 
-      if (token.type === 'STR') {
+      if (token.type === 'LIT') {
         left = {
           ...token,
-          type: 'STR',
-          value: token.value as string,
-        } satisfies StrExp
-        continue
-      }
-
-      if (token.type === 'NUM') {
-        left = {
-          ...token,
-          type: 'NUM',
-          value: token.value as number,
-        } satisfies NumExp
-        continue
-      }
-
-      if (token.type === 'BOOL') {
-        left = {
-          ...token,
-          type: 'BOOL',
-          value: token.value as boolean,
-        } satisfies BoolExp
+          type: 'LIT',
+        } satisfies LitExp
         continue
       }
 

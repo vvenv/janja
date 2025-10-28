@@ -1,4 +1,4 @@
-import type { BinaryExp, BoolExp, Exp, IdExp, IfExp, NotExp, NumExp, PipeExp, SeqExp, StrExp } from './types'
+import type { BinaryExp, Exp, IdExp, IfExp, LitExp, NotExp, PipeExp, SeqExp } from './types'
 import { expTokenOperators } from './exp-token-operators'
 
 export class ExpCompiler {
@@ -17,12 +17,8 @@ export class ExpCompiler {
         return this.compileNot(expression)
       case 'ID':
         return this.compileId(expression)
-      case 'STR':
-        return this.compileStr(expression)
-      case 'NUM':
-        return this.compileNum(expression)
-      case 'BOOL':
-        return this.compileBool(expression)
+      case 'LIT':
+        return this.compileLit(expression)
       case 'PIPE':
         return this.compilePipe(expression)
       case 'OF':
@@ -67,16 +63,8 @@ export class ExpCompiler {
     return s
   }
 
-  private compileStr({ value }: StrExp) {
+  private compileLit({ value }: LitExp) {
     return JSON.stringify(value)
-  }
-
-  private compileNum({ value }: NumExp) {
-    return value.toString()
-  }
-
-  private compileBool({ value }: BoolExp) {
-    return value.toString()
   }
 
   private compileSeq({ elements }: SeqExp) {

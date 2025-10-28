@@ -85,7 +85,7 @@ export class ExpTokenizer {
     this.cursor++
 
     this.tokens.push({
-      type: 'STR',
+      type: 'LIT',
       value,
       start,
       end: this.cursor,
@@ -117,7 +117,7 @@ export class ExpTokenizer {
     }
 
     this.tokens.push({
-      type: 'NUM',
+      type: 'LIT',
       value: Number.parseFloat(value),
       start,
       end: this.cursor,
@@ -147,7 +147,7 @@ export class ExpTokenizer {
 
     this.tokens.push({
       type,
-      value: type === 'BOOL' ? value === 'true' : value,
+      value: type === 'LIT' ? value === 'true' ? true : value === 'false' ? false : value : value,
       start,
       end: this.cursor,
       raw: value,

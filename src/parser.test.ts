@@ -26,7 +26,7 @@ it('escape tag', async () => {
         "end": 14,
         "raw": ""{{= escape "",
         "start": 1,
-        "type": "STR",
+        "type": "LIT",
         "value": "{{= escape ",
       },
     }
@@ -49,7 +49,7 @@ it('escape tag', async () => {
         "end": 16,
         "raw": ""{{= escape }}"",
         "start": 1,
-        "type": "STR",
+        "type": "LIT",
         "value": "{{= escape }}",
       },
     }
@@ -190,7 +190,7 @@ it('expression', async () => {
           "end": 6,
           "raw": "1",
           "start": 5,
-          "type": "NUM",
+          "type": "LIT",
           "value": 1,
         },
         "start": 3,

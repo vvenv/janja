@@ -1,7 +1,7 @@
 import type {
   Config,
   IdExp,
-  StrExp,
+  LitExp,
   Tag,
 } from './types'
 import { parser } from './exp'
@@ -80,9 +80,9 @@ export class Parser {
         ...base,
         name: match[2],
         value: {
-          type: 'STR',
+          type: 'LIT',
           value: unescapeTag(match[3]),
-        } as StrExp,
+        } as LitExp,
       })
     }
     else if (match[2] === '=') {
@@ -115,7 +115,7 @@ export class Parser {
   private async layout(value: string) {
     const exp = parser.parse(value)
 
-    if (exp?.type !== 'STR' || !exp.value) {
+    if (exp?.type !== 'LIT' || typeof exp.value !== 'string' || !exp.value) {
       throw new ParseError(`"layout" tag must have a file path`, {
         source: this.template,
         range: {
@@ -131,7 +131,7 @@ export class Parser {
   private async include(value: string) {
     const exp = parser.parse(value.replace(/\?$/, ''))
 
-    if (exp?.type !== 'STR' || !exp.value) {
+    if (exp?.type !== 'LIT' || typeof exp.value !== 'string' || !exp.value) {
       throw new ParseError(`"include" tag must have a file path`, {
         source: this.template,
         range: {

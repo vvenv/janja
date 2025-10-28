@@ -38,7 +38,5 @@ export const expTokenPrecedences: Record<ExpTokenType, number> = {
 
   DOT: 90,
   ID: 90,
-  STR: 90,
-  NUM: 90,
-  BOOL: 90,
+  LIT: 90,
 }

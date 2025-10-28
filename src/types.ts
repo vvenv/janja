@@ -42,14 +42,12 @@ export type ExpTokenType
     | 'RP'
     | 'COMMA'
     | 'DOT'
-    | 'STR'
-    | 'NUM'
-    | 'BOOL'
     | 'ID'
+    | 'LIT'
 
 export interface ExpToken<T = ExpTokenType> extends Range {
   type: T
-  value: string | number | boolean | null | undefined
+  value: string | number | boolean
   raw?: string
 }
 
@@ -77,10 +75,8 @@ export type ExpType
     | 'IF'
     | 'SET'
     | 'SEQ'
-    | 'STR'
-    | 'NUM'
-    | 'BOOL'
     | 'ID'
+    | 'LIT'
 
 export interface BaseExp extends Range {
   type: ExpType
@@ -93,19 +89,9 @@ export interface IdExp extends BaseExp {
   args?: Exp[]
 }
 
-export interface StrExp extends BaseExp {
-  type: 'STR'
-  value: string
-}
-
-export interface NumExp extends BaseExp {
-  type: 'NUM'
-  value: number
-}
-
-export interface BoolExp extends BaseExp {
-  type: 'BOOL'
-  value: boolean
+export interface LitExp extends BaseExp {
+  type: 'LIT'
+  value: string | number | boolean
 }
 
 export interface NotExp extends BaseExp {
@@ -155,9 +141,7 @@ export interface SeqExp extends BaseExp {
 
 export type Exp
   = | IdExp
-    | StrExp
-    | NumExp
-    | BoolExp
+    | LitExp
     | NotExp
     | BinaryExp
     | IfExp

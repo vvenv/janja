@@ -25,9 +25,7 @@ export const expTokenOperators: Record<ExpTokenType, string> = {
   COMMA: ',',
   DOT: '.',
   ID: '',
-  STR: '',
-  NUM: '',
+  LIT: '',
   IF: '',
   ELSE: '',
-  BOOL: '',
 }
