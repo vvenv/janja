@@ -26,6 +26,8 @@ export const expTokenTypes: Record<string, ExpTokenType> = {
 
   'true': 'LIT',
   'false': 'LIT',
+  'null': 'LIT',
+  'undefined': 'LIT',
 
   '|': 'PIPE',
 

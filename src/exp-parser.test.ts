@@ -143,6 +143,31 @@ it('boolean', () => {
   )
 })
 
+it('null and undefined', () => {
+  expect(parse('null')).toMatchInlineSnapshot(
+    `
+    {
+      "end": 4,
+      "raw": "null",
+      "start": 0,
+      "type": "LIT",
+      "value": null,
+    }
+  `,
+  )
+  expect(parse('undefined')).toMatchInlineSnapshot(
+    `
+    {
+      "end": 9,
+      "raw": "undefined",
+      "start": 0,
+      "type": "LIT",
+      "value": undefined,
+    }
+  `,
+  )
+})
+
 it('id', () => {
   expect(parse('a')).toMatchInlineSnapshot(
     `

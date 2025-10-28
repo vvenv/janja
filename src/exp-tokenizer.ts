@@ -147,7 +147,17 @@ export class ExpTokenizer {
 
     this.tokens.push({
       type,
-      value: type === 'LIT' ? value === 'true' ? true : value === 'false' ? false : value : value,
+      value: type === 'LIT'
+        ? value === 'true'
+          ? true
+          : value === 'false'
+            ? false
+            : value === 'null'
+              ? null
+              : value === 'undefined'
+                ? undefined
+                : value
+        : value,
       start,
       end: this.cursor,
       raw: value,

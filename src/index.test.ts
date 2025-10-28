@@ -367,6 +367,16 @@ it('include / optional', async () => {
   )
 })
 
+it('null', async () => {
+  expect(
+    await render(
+      '{{= null }}',
+    ),
+  ).toMatchInlineSnapshot(
+    `"null"`,
+  )
+})
+
 it('custom tag', async () => {
   expect(
     await render('{{ custom }}', {}, {

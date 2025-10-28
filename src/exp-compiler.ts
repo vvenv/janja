@@ -64,7 +64,7 @@ export class ExpCompiler {
   }
 
   private compileLit({ value }: LitExp) {
-    return JSON.stringify(value)
+    return value === undefined ? 'undefined' : JSON.stringify(value)
   }
 
   private compileSeq({ elements }: SeqExp) {
