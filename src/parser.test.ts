@@ -147,19 +147,25 @@ it('expression', async () => {
   `,
   )
   expect(
-    await parse('{{= }}'),
+    await parse('{{= null }}'),
   ).toMatchInlineSnapshot(
     `
     {
-      "end": 6,
+      "end": 11,
       "name": "=",
       "next": null,
       "previous": null,
-      "raw": "{{= }}",
+      "raw": "{{= null }}",
       "start": 0,
       "stripAfter": false,
       "stripBefore": false,
-      "value": null,
+      "value": {
+        "end": 5,
+        "raw": "null",
+        "start": 1,
+        "type": "LIT",
+        "value": null,
+      },
     }
   `,
   )

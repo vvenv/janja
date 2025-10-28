@@ -114,6 +114,35 @@ it('bool', () => {
   )
 })
 
+it('null and undefined', () => {
+  expect(tokenize('null')).toMatchInlineSnapshot(
+    `
+    [
+      {
+        "end": 4,
+        "raw": "null",
+        "start": 0,
+        "type": "LIT",
+        "value": null,
+      },
+    ]
+  `,
+  )
+  expect(tokenize('undefined')).toMatchInlineSnapshot(
+    `
+    [
+      {
+        "end": 9,
+        "raw": "undefined",
+        "start": 0,
+        "type": "LIT",
+        "value": undefined,
+      },
+    ]
+  `,
+  )
+})
+
 it('symbols', () => {
   expect(tokenize(Object.keys(expTokenTypes).join(' '))).toMatchInlineSnapshot(
     `
@@ -266,44 +295,58 @@ it('symbols', () => {
         "value": false,
       },
       {
-        "end": 67,
-        "raw": "|",
+        "end": 71,
+        "raw": "null",
         "start": 67,
+        "type": "LIT",
+        "value": null,
+      },
+      {
+        "end": 81,
+        "raw": "undefined",
+        "start": 72,
+        "type": "LIT",
+        "value": undefined,
+      },
+      {
+        "end": 82,
+        "raw": "|",
+        "start": 82,
         "type": "PIPE",
         "value": "|",
       },
       {
-        "end": 69,
+        "end": 84,
         "raw": "=",
-        "start": 69,
+        "start": 84,
         "type": "SET",
         "value": "=",
       },
       {
-        "end": 71,
+        "end": 86,
         "raw": "(",
-        "start": 71,
+        "start": 86,
         "type": "LP",
         "value": "(",
       },
       {
-        "end": 73,
+        "end": 88,
         "raw": ")",
-        "start": 73,
+        "start": 88,
         "type": "RP",
         "value": ")",
       },
       {
-        "end": 75,
+        "end": 90,
         "raw": ",",
-        "start": 75,
+        "start": 90,
         "type": "COMMA",
         "value": ",",
       },
       {
-        "end": 77,
+        "end": 92,
         "raw": ".",
-        "start": 77,
+        "start": 92,
         "type": "DOT",
         "value": ".",
       },

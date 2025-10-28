@@ -50,6 +50,15 @@ it('boolean', () => {
   )
 })
 
+it('null and undefined', () => {
+  expect(compile('null')).toMatchInlineSnapshot(
+    `"null"`,
+  )
+  expect(compile('undefined')).toMatchInlineSnapshot(
+    `"undefined"`,
+  )
+})
+
 it('id', () => {
   expect(compile('a')).toMatchInlineSnapshot(
     `"c.a"`,

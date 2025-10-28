@@ -47,7 +47,7 @@ export type ExpTokenType
 
 export interface ExpToken<T = ExpTokenType> extends Range {
   type: T
-  value: string | number | boolean
+  value: string | number | boolean | null | undefined
   raw?: string
 }
 
@@ -91,7 +91,7 @@ export interface IdExp extends BaseExp {
 
 export interface LitExp extends BaseExp {
   type: 'LIT'
-  value: string | number | boolean
+  value: string | number | boolean | null | undefined
 }
 
 export interface NotExp extends BaseExp {

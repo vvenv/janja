@@ -72,6 +72,12 @@ it('empty', async () => {
   )
 })
 
+it('null', async () => {
+  expect(await compile('{{= null }}')).toMatchInlineSnapshot(
+    `""use strict";return(async()=>{let s="";s+=e(null);return s;})();"`,
+  )
+})
+
 it('html tags', async () => {
   expect(await compile('<foo>foo</foo>')).toMatchInlineSnapshot(
     `""use strict";return(async()=>{let s="";s+="<foo>foo</foo>";return s;})();"`,
