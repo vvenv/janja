@@ -5,6 +5,7 @@ export const expTokenTypes: Record<string, ExpTokenType> = {
   'or': 'OR',
   'not': 'NOT',
 
+  'is': 'IS',
   'eq': 'EQ',
   'ne': 'NE',
   'gt': 'GT',

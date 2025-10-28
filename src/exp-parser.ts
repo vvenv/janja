@@ -183,6 +183,7 @@ export class ExpParser {
 
       if (token.type === 'AND'
         || token.type === 'OR'
+        || token.type === 'IS'
         || token.type === 'EQ'
         || token.type === 'NE'
         || token.type === 'GT'

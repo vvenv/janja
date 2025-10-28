@@ -25,6 +25,8 @@ export class ExpCompiler {
         return this.compileOf(expression)
       case 'SET':
         return this.compileSet(expression)
+      case 'IS':
+        return this.compileIs(expression)
       case 'AND':
       case 'OR':
       case 'EQ':
@@ -95,6 +97,10 @@ export class ExpCompiler {
 
     // destructuring
     return `Object.assign(${this.context},${this.filters}.pick.call(${this.context},${this.compileExp(right)},[${((left as SeqExp).elements as IdExp[]).map(({ value }) => `"${value}"`).join(',')}]));`
+  }
+
+  private compileIs({ left, right }: BinaryExp) {
+    return `(typeof ${this.compileExp(left)}===${this.compileExp(right)})`
   }
 
   private compileBinary({ type, left, right }: BinaryExp) {

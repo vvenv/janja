@@ -19,6 +19,7 @@ export interface Mapping {
 export type ExpTokenType
   = | 'AND'
     | 'OR'
+    | 'IS'
     | 'NOT'
     | 'EQ'
     | 'NE'
@@ -56,6 +57,7 @@ export type Checker = (token: ExpToken) => 'BACK' | 'BREAK' | undefined
 export type ExpType
   = | 'AND'
     | 'OR'
+    | 'IS'
     | 'NOT'
     | 'EQ'
     | 'NE'
@@ -102,6 +104,7 @@ export interface NotExp extends BaseExp {
 export interface BinaryExp extends BaseExp {
   type: 'AND'
     | 'OR'
+    | 'IS'
     | 'EQ'
     | 'NE'
     | 'GT'
