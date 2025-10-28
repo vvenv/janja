@@ -26,28 +26,28 @@ it('string', () => {
         "end": 5,
         "raw": "'foo'",
         "start": 0,
-        "type": "STR",
+        "type": "LIT",
         "value": "foo",
       },
       {
         "end": 11,
         "raw": ""bar"",
         "start": 6,
-        "type": "STR",
+        "type": "LIT",
         "value": "bar",
       },
       {
         "end": 17,
         "raw": "\`baz\`",
         "start": 12,
-        "type": "STR",
+        "type": "LIT",
         "value": "baz",
       },
       {
         "end": 28,
         "raw": ""\\"escape"",
         "start": 18,
-        "type": "STR",
+        "type": "LIT",
         "value": "\\"escape",
       },
     ]
@@ -63,21 +63,21 @@ it('number', () => {
         "end": 3,
         "raw": "123",
         "start": 0,
-        "type": "NUM",
+        "type": "LIT",
         "value": 123,
       },
       {
         "end": 9,
         "raw": "12.34",
         "start": 4,
-        "type": "NUM",
+        "type": "LIT",
         "value": 12.34,
       },
       {
         "end": 12,
         "raw": "-1",
         "start": 10,
-        "type": "NUM",
+        "type": "LIT",
         "value": -1,
       },
     ]
@@ -93,7 +93,7 @@ it('bool', () => {
         "end": 4,
         "raw": "true",
         "start": 0,
-        "type": "BOOL",
+        "type": "LIT",
         "value": true,
       },
     ]
@@ -106,7 +106,7 @@ it('bool', () => {
         "end": 5,
         "raw": "false",
         "start": 0,
-        "type": "BOOL",
+        "type": "LIT",
         "value": false,
       },
     ]
@@ -213,7 +213,7 @@ it('symbols', () => {
         "end": 41,
         "raw": "-",
         "start": 40,
-        "type": "NUM",
+        "type": "LIT",
         "value": NaN,
       },
       {
@@ -255,14 +255,14 @@ it('symbols', () => {
         "end": 60,
         "raw": "true",
         "start": 56,
-        "type": "BOOL",
+        "type": "LIT",
         "value": true,
       },
       {
         "end": 66,
         "raw": "false",
         "start": 61,
-        "type": "BOOL",
+        "type": "LIT",
         "value": false,
       },
       {
@@ -460,7 +460,7 @@ it('pipe', () => {
         "end": 12,
         "raw": ""b"",
         "start": 9,
-        "type": "STR",
+        "type": "LIT",
         "value": "b",
       },
       {
@@ -516,7 +516,7 @@ it('pipe', () => {
         "end": 27,
         "raw": "1",
         "start": 26,
-        "type": "NUM",
+        "type": "LIT",
         "value": 1,
       },
       {
@@ -553,7 +553,7 @@ it('conditional', () => {
         "end": 3,
         "raw": ""a"",
         "start": 0,
-        "type": "STR",
+        "type": "LIT",
         "value": "a",
       },
       {
@@ -580,7 +580,7 @@ it('conditional', () => {
         "end": 3,
         "raw": ""a"",
         "start": 0,
-        "type": "STR",
+        "type": "LIT",
         "value": "a",
       },
       {
@@ -608,7 +608,7 @@ it('conditional', () => {
         "end": 17,
         "raw": ""y"",
         "start": 14,
-        "type": "STR",
+        "type": "LIT",
         "value": "y",
       },
     ]
@@ -652,7 +652,7 @@ it('complex', () => {
         "end": 16,
         "raw": ""age"",
         "start": 11,
-        "type": "STR",
+        "type": "LIT",
         "value": "age",
       },
       {
@@ -673,7 +673,7 @@ it('complex', () => {
         "end": 23,
         "raw": "18",
         "start": 21,
-        "type": "NUM",
+        "type": "LIT",
         "value": 18,
       },
       {
@@ -715,7 +715,7 @@ it('complex', () => {
         "end": 45,
         "raw": ""name"",
         "start": 39,
-        "type": "STR",
+        "type": "LIT",
         "value": "name",
       },
       {
@@ -736,7 +736,7 @@ it('complex', () => {
         "end": 56,
         "raw": ""John"",
         "start": 50,
-        "type": "STR",
+        "type": "LIT",
         "value": "John",
       },
     ]

@@ -24,8 +24,8 @@ export const expTokenTypes: Record<string, ExpTokenType> = {
   'if': 'IF',
   'else': 'ELSE',
 
-  'true': 'BOOL',
-  'false': 'BOOL',
+  'true': 'LIT',
+  'false': 'LIT',
 
   '|': 'PIPE',
 
