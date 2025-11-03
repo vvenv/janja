@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.1.0",
-    "@types/node": "^24.9.1",
+    "@types/node": "^24.10.0",
     "@vitest/coverage-v8": "4.0.3",
     "@vitest/ui": "4.0.3",
     "eslint": "^9.38.0",
