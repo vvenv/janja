@@ -1,4 +1,4 @@
-import type { Config, Mapping, Range } from './types'
+import type { Loc, Mapping, Pos } from './types'
 
 /**
  * Contains the source map information.
@@ -12,31 +12,44 @@ import type { Config, Mapping, Range } from './types'
  * - sourceMap:
  *   Mapping {
  *     source: {
- *       start: 3,
- *       end: 6,
+ *       start: {
+ *         line: 2,
+ *         column: 4,
+ *       },
+ *       end: {
+ *         line: 3,
+ *         column: 5,
+ *       },
  *     },
  *     target: {
- *       start: 3,
- *       end: 8,
+ *       start: {
+ *         line: 2,
+ *         column: 3,
+ *       },
+ *       end: {
+ *         line: 3,
+ *         column: 8,
+ *       },
  *     }
  *   }
  */
 export class SourceMap {
   public mappings: Mapping[] = []
 
-  constructor(public options: Config) {}
-
-  addMapping(source: Range, target: Range) {
+  addMapping(source: Loc, target: Loc) {
     this.mappings.push({
       source,
       target,
     })
   }
 
-  getRanges(offset: number) {
+  getSourceLoc({ line, column }: Pos) {
     return this.mappings
-      .filter(
-        ({ target: { start, end } }) => start <= offset && end >= offset,
+      .filter(({ target: { start, end } }) =>
+        start.line <= line
+        && end.line >= line
+        && (start.line < line || start.column <= column)
+        && (end.line > line || end.column >= column),
       )
       .map(({ source }) => source)
   }

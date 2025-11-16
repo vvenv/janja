@@ -55,7 +55,6 @@
 
 ```janja
 {{# This is a comment }}
-{{ comment }}Multi-line comment{{ endcomment }}
 ```
 
 ### **expression (=)**: Expression Output

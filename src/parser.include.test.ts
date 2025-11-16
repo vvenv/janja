@@ -1,154 +1,144 @@
 import { expect, it } from 'vitest'
 import { parse } from '../test/__helper'
-import { loader } from '../test/loaders/file-loader'
 
-it('invalid', async () => {
+it('error', async () => {
   try {
     await parse('{{ include }}')
     expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[ParseError: "include" tag must have a file path]`,
+      `[CompileError: "include" requires expression]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `
-      ""include" tag must have a file path
+      ""include" requires expression
 
-      1: {{ include }}
+      1｜ {{ include }}
+       ｜ ^           ^
       "
     `,
-    )
-  }
-  try {
-    await parse('{{ include "" }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[ParseError: "include" tag must have a file path]`,
-    )
-    expect(error.details).toMatchInlineSnapshot(
-      `
-      ""include" tag must have a file path
-
-      1: {{ include "" }}
-         ^^
-      "
-    `,
-    )
-  }
-  try {
-    await parse(
-      '{{ include "default" }}',
-      { loader },
-    )
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[Error: file not found: partials/default.janja]`,
-    )
-    expect(error.details).toMatchInlineSnapshot(
-      `undefined`,
     )
   }
 })
 
 it('include', async () => {
-  expect(await parse(
-    '{{ include "head" }}{{ include "empty" }}{{ include "body" }}',
-    {
-      loader: async path => loader(`test/${path}`),
-    },
-  )).toMatchInlineSnapshot(
+  expect(
+    await parse(
+      '{{ include "head" }}{{ include "empty" }}{{ include "body" }}',
+    ),
+  ).toMatchInlineSnapshot(
     `
-    {
-      "end": 17,
-      "name": "block",
-      "next": {
-        "end": 43,
-        "name": "raw",
-        "next": {
-          "end": 58,
-          "name": "endblock",
-          "next": {
-            "end": 59,
-            "name": "raw",
-            "next": {
-              "end": 17,
-              "name": "block",
-              "next": {
-                "end": 37,
-                "name": "raw",
-                "next": {
-                  "end": 52,
-                  "name": "endblock",
-                  "next": {
-                    "end": 53,
-                    "name": "raw",
-                    "next": null,
-                    "previous": [Circular],
-                    "raw": "
-    ",
-                    "start": 52,
-                  },
-                  "previous": [Circular],
-                  "raw": "{{- endblock }}",
-                  "start": 37,
-                  "stripAfter": false,
-                  "stripBefore": true,
-                  "value": null,
-                },
-                "previous": [Circular],
-                "raw": "
-    <h1>蒹葭苍苍，白露为霜</h1>
-    ",
-                "start": 17,
+    TemplateNode {
+      "children": [
+        IncludeNode {
+          "loc": {
+            "end": {
+              "column": 21,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "INCLUDE",
+          "val": {
+            "loc": {
+              "end": {
+                "column": 16,
+                "line": 1,
               },
-              "previous": [Circular],
-              "raw": "{{ block body -}}",
-              "start": 0,
-              "stripAfter": true,
-              "stripBefore": false,
-              "value": {
-                "end": 4,
-                "raw": "body",
-                "start": 0,
-                "type": "ID",
-                "value": "body",
+              "start": {
+                "column": 12,
+                "line": 1,
               },
             },
-            "previous": [Circular],
-            "raw": "
-    ",
-            "start": 58,
+            "raw": ""head"",
+            "type": "LIT",
+            "value": "head",
           },
-          "previous": [Circular],
-          "raw": "{{- endblock }}",
-          "start": 43,
-          "stripAfter": false,
-          "stripBefore": true,
-          "value": null,
         },
-        "previous": [Circular],
-        "raw": "
-    <title>蒹葭苍苍，白露为霜</title>
-    ",
-        "start": 17,
+        IncludeNode {
+          "loc": {
+            "end": {
+              "column": 42,
+              "line": 1,
+            },
+            "start": {
+              "column": 21,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "INCLUDE",
+          "val": {
+            "loc": {
+              "end": {
+                "column": 37,
+                "line": 1,
+              },
+              "start": {
+                "column": 32,
+                "line": 1,
+              },
+            },
+            "raw": ""empty"",
+            "type": "LIT",
+            "value": "empty",
+          },
+        },
+        IncludeNode {
+          "loc": {
+            "end": {
+              "column": 62,
+              "line": 1,
+            },
+            "start": {
+              "column": 42,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "INCLUDE",
+          "val": {
+            "loc": {
+              "end": {
+                "column": 57,
+                "line": 1,
+              },
+              "start": {
+                "column": 53,
+                "line": 1,
+              },
+            },
+            "raw": ""body"",
+            "type": "LIT",
+            "value": "body",
+          },
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 62,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
       },
-      "previous": null,
-      "raw": "{{ block head -}}",
-      "start": 0,
-      "stripAfter": true,
-      "stripBefore": false,
-      "value": {
-        "end": 4,
-        "raw": "head",
-        "start": 0,
-        "type": "ID",
-        "value": "head",
-      },
+      "type": "TEMPLATE",
     }
   `,
   )

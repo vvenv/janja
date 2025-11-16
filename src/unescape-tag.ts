@@ -1,3 +1,3 @@
 export function unescapeTag(v: string) {
-  return v.replace(/\\(\{|\})/g, '$1')
+  return v.replace(/\\([{}])/g, '$1')
 }

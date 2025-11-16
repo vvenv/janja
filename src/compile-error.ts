@@ -1,18 +1,20 @@
-import type { Tag } from './types'
+import type { Loc } from './types'
 import { highlightSource } from './highlight-source'
 
-export class CompileError extends Error {
+export class CompileError extends SyntaxError {
   constructor(
     message: string,
-    private token: Tag,
-    filepath?: string,
+    protected src: string,
+    protected loc?: Loc,
   ) {
-    super(filepath ? `${message} at ${filepath}` : message)
+    super(message)
     this.name = 'CompileError'
-    Error.captureStackTrace?.(this, this.constructor)
+    CompileError.captureStackTrace?.(this, this.constructor)
   }
 
   get details() {
-    return highlightSource(this.message, this.token.raw, [this.token])
+    return this.loc
+      ? highlightSource(this.message, this.src, this.loc)
+      : this.message
   }
 }

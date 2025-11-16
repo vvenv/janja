@@ -1,3 +1,0 @@
-{{ block body -}}
-<h1>蒹葭苍苍，白露为霜</h1>
-{{- endblock }}

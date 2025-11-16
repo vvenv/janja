@@ -1,19 +1,71 @@
+import type { ASTNode, NodeType } from './ast'
+import type { Compiler } from './compiler'
 import type { Context } from './context'
 import type { OutScript } from './out-script'
-import type { SourceMap } from './source-map'
+import type { Parser } from './parser'
 
 export type MaybePromise<T> = T | Promise<T>
 
 export type ObjectType = Record<string, any>
 
-export interface Range {
-  start: number
-  end: number
+export enum TokenType {
+  TEXT = 'TEXT',
+  OUTPUT = 'OUTPUT',
+  DIRECTIVE = 'DIRECTIVE',
+  COMMENT = 'COMMENT',
 }
 
+export interface Pos {
+  line: number
+  column: number
+}
+
+export interface Loc {
+  start: Pos
+  end: Pos
+}
+
+export interface Strip {
+  before?: boolean
+  after?: boolean
+  start?: boolean
+  end?: boolean
+}
+
+export interface TokenBase {
+  type: TokenType
+  val: string
+  loc: Loc
+  strip: Strip
+}
+
+export interface CommentToken extends TokenBase {
+  type: TokenType.COMMENT
+}
+
+export interface DirectiveToken extends TokenBase {
+  type: TokenType.DIRECTIVE
+  name: string
+  expression: DirectiveExpression | null
+}
+
+export interface OutputToken extends TokenBase {
+  type: TokenType.OUTPUT
+}
+
+export interface TextToken extends TokenBase {
+}
+
+export interface DirectiveExpression {
+  val: string
+  loc: Loc
+}
+
+export type Token = CommentToken | DirectiveToken | OutputToken | TextToken
+
 export interface Mapping {
-  source: Range
-  target: Range
+  source: Loc
+  target: Loc
 }
 
 export type ExpTokenType
@@ -46,9 +98,10 @@ export type ExpTokenType
     | 'ID'
     | 'LIT'
 
-export interface ExpToken<T = ExpTokenType> extends Range {
+export interface ExpToken<T = ExpTokenType> {
   type: T
   value: string | number | boolean | null | undefined
+  loc: Loc
   raw?: string
 }
 
@@ -80,64 +133,64 @@ export type ExpType
     | 'ID'
     | 'LIT'
 
-export interface BaseExp extends Range {
-  type: ExpType
+export interface ExpBase<T = ExpType> {
+  type: T
+  loc: Loc
 }
 
-export interface IdExp extends BaseExp {
+export interface IdExp extends ExpBase {
   type: 'ID'
   value: string
   path?: IdExp[]
   args?: Exp[]
 }
 
-export interface LitExp extends BaseExp {
+export interface LitExp<T = string | number | boolean | null | undefined> extends ExpBase {
   type: 'LIT'
-  value: string | number | boolean | null | undefined
+  value: T
 }
 
-export interface NotExp extends BaseExp {
+export interface NotExp extends ExpBase {
   type: 'NOT'
   argument: Exp
 }
 
-export interface BinaryExp extends BaseExp {
-  type: 'AND'
-    | 'OR'
-    | 'IS'
-    | 'EQ'
-    | 'NE'
-    | 'GT'
-    | 'LT'
-    | 'GE'
-    | 'LE'
-    | 'IN'
-    | 'NI'
-    | 'OF'
-    | 'ADD'
-    | 'SUB'
-    | 'MUL'
-    | 'DIV'
-    | 'MOD'
-    | 'SET'
+export interface BinaryExp<T = 'AND'
+  | 'OR'
+  | 'IS'
+  | 'EQ'
+  | 'NE'
+  | 'GT'
+  | 'LT'
+  | 'GE'
+  | 'LE'
+  | 'IN'
+  | 'NI'
+  | 'OF'
+  | 'ADD'
+  | 'SUB'
+  | 'MUL'
+  | 'DIV'
+  | 'MOD'
+  | 'SET'> extends ExpBase<T> {
   left: Exp
   right: Exp
 }
 
-export interface IfExp extends BaseExp {
+export interface IfExp extends ExpBase {
   type: 'IF'
   test: Exp
   consequent: Exp
   alternative?: Exp
 }
 
-export interface PipeExp extends BaseExp {
+export interface PipeExp extends ExpBase {
   type: 'PIPE'
   left: Exp
   right: Exp
 }
 
-export interface SeqExp extends BaseExp {
+export interface SeqExp extends ExpBase {
   type: 'SEQ'
   elements: Exp[]
 }
@@ -151,30 +204,25 @@ export type Exp
     | PipeExp
     | SeqExp
 
-export interface Globals {
-  translations?: Record<string, string>
-  [key: string]: any
-}
-
 export type Filters = Record<string, (value: any, ...args: any[]) => any>
 
 export type Script = (
-  globals: Globals,
-  filters: Filters,
+  globals: ObjectType,
   escape: (v: unknown) => unknown,
+  filters: Filters,
 ) => Promise<string>
 
-export interface Tag extends Range {
+export interface Tag {
   name: string
   value?: Exp | null
   raw: string
   previous: Tag | null
   next: Tag | null
-  stripBefore?: boolean
-  stripAfter?: boolean
+  strip?: Strip
+  loc?: Loc
 }
 
-export interface TagCompiler {
+export interface NodeCompiler {
   names: string[]
 
   /**
@@ -188,27 +236,43 @@ export interface TagCompiler {
       ctx: Context
       out: OutScript
     },
-  ) => MaybePromise<Range | void | false>
+  ) => MaybePromise<Loc | void | false>
 }
 
 export interface CacheValue {
   template: string
-  script: Script
-  sourcemap: SourceMap
+  code: string
 }
 
-export interface Config {
-  globals?: Globals
-  filters?: Filters
-  compilers?: Record<string, TagCompiler[]>
-  strictMode?: boolean
-  autoEscape?: boolean
-  stripComments?: boolean
+export type ParserFn<T = ASTNode> = (token: DirectiveToken, parser: Parser) => T | void
+export type ParserMap = Record<string, ParserFn>
+
+export type CompilerFn<T = ASTNode> = (node: T, compiler: Compiler) => MaybePromise<void>
+export type CompilerMap = Partial<Record<NodeType, CompilerFn>>
+
+export interface BaseOptions {
+  debug?: (error: Error) => unknown
+}
+
+export interface ParserOptions extends BaseOptions {
+  commentOpen?: string
+  commentClose?: string
+  directiveOpen?: string
+  directiveClose?: string
+  outputOpen?: string
+  outputClose?: string
+  parsers?: ParserMap
+}
+
+export interface CompilerOptions extends ParserOptions {
   trimWhitespace?: boolean
+  stripComments?: boolean
+  compilers?: CompilerMap
   loader?: (path: string) => Promise<string>
-  cache?: {
-    has: (path: string) => boolean
-    get: (path: string) => CacheValue | undefined
-    set: (path: string, content: CacheValue) => void
-  }
+}
+
+export interface RendererOptions extends CompilerOptions {
+  globals?: ObjectType
+  filters?: Filters
+  autoEscape?: boolean
 }

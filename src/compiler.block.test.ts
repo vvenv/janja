@@ -1,123 +1,91 @@
 import { expect, it } from 'vitest'
 import { compile } from '../test/__helper'
 
-it('invalid', async () => {
+it('error', async () => {
   try {
     await compile('{{ block }}{{ endblock }}')
+    expect(true).toBe(false)
   }
-  catch (error) {
-    expect(
-      error,
-    ).toMatchInlineSnapshot(
-      `[TypeError: Cannot destructure property 'type' of 'tag.value' as it is null.]`,
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: "block" requires expression]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      ""block" requires expression
+
+      1｜ {{ block }}{{ endblock }}
+       ｜ ^         ^
+      "
+    `,
     )
   }
   try {
-    await compile('{{ if x }}{{ block title }}{{ endblock }}{{ endif }}')
+    await compile('{{ if x }}{{ super }}{{ endif }}')
+    expect(true).toBe(false)
   }
-  catch (error) {
-    expect(
-      error,
-    ).toMatchInlineSnapshot(
-      `[ParseError: block tag must have a title]`,
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: "super" should be used inside a block]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      ""super" should be used inside a block
+
+      1｜ {{ if x }}{{ super }}{{ endif }}
+       ｜           ^         ^
+      "
+    `,
     )
   }
-  expect(
-    await compile('{{ block title }}1{{ endblock }}{{ if x }}{{ block title }}1{{ endblock }}{{ endif }}'),
-  ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="1";if(c.x){}return s;})();"`,
-  )
-  expect(
-    await compile('{{ if x }}{{ block title }}{{ endblock }}{{ endif }}'),
-  ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";if(c.x){}return s;})();"`,
-  )
-  expect(
-    await compile('{{ if x }}{{ super }}{{ endif }}'),
-  ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";if(c.x){}return s;})();"`,
-  )
-  expect(
-    await compile('{{ if x }}{{ super }}{{ endif }}'),
-  ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";if(c.x){}return s;})();"`,
-  )
 })
 
-it('basic', async () => {
+it('block', async () => {
   expect(
     await compile(
       '{{ block title }}1{{ endblock }}',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="1";return s;})();"`,
+    `"return(async()=>{let s="";s+="1";return s;})();"`,
   )
   expect(
     await compile(
-      '{{ block title }}{{ super }}{{ endblock }}',
+      '{{ block title }}1{{ super }}2{{ endblock }}',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";return s;})();"`,
+    `"return(async()=>{let s="";s+="1";s+="2";return s;})();"`,
   )
   expect(
     await compile(
-      '{{ block title }}{{ super }}{{ endblock }}{{ block title }}{{ super }}{{ endblock }}',
+      '{{ block title }}1{{ super }}2{{ endblock }}{{ block title }}3{{ super }}4{{ endblock }}',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";return s;})();"`,
+    `"return(async()=>{let s="";s+="3";s+="1";s+="2";s+="4";return s;})();"`,
   )
   expect(
     await compile(
       '{{ block title }}1{{ endblock }}{{ block title }}2{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="2";s+="3";return s;})();"`,
+    `"return(async()=>{let s="";s+="2";s+="3";return s;})();"`,
   )
   expect(
     await compile(
       '{{ block title }}1{{ endblock }}{{ block title }}2{{ super }}{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="2";s+="1";s+="3";return s;})();"`,
+    `"return(async()=>{let s="";s+="2";s+="1";s+="3";return s;})();"`,
   )
   expect(
     await compile(
       ' {{- block title }} 1 {{- endblock }} {{ block title -}} 2 {{ super -}} {{ endblock -}} {{- block title -}} {{- super -}} 3 {{- endblock -}} ',
     ),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="2";s+=" 1";s+=" ";s+="3";s+=" ";s+=" ";return s;})();"`,
-  )
-})
-
-it('whitespace control', async () => {
-  expect(
-    await compile(' {{ block name }} x {{ endblock }} '),
-  ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=" ";s+=" x ";s+=" ";return s;})();"`,
+    `"return(async()=>{let s="";s+=" 2 ";s+=" 1 ";s+="3 ";s+=" ";return s;})();"`,
   )
   expect(
-    await compile(' {{ block name -}} x {{- endblock }} '),
+    await compile('{{ block title }}1{{ endblock }}{{ if x }}{{ block title }}2{{ endblock }}{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=" ";s+="x";s+=" ";return s;})();"`,
-  )
-  expect(
-    await compile(' {{- block name -}} x {{- endblock -}} '),
-  ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="x";return s;})();"`,
-  )
-  expect(
-    await compile(' {{- block name -}} x {{ super }} y {{- endblock -}} '),
-  ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="x ";s+=" y";return s;})();"`,
-  )
-  expect(
-    await compile(' {{- block name -}} x {{- super -}} y {{- endblock -}} '),
-  ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="x";s+="y";return s;})();"`,
-  )
-  expect(
-    await compile(' {{- block name }} x {{- super -}} y {{ endblock -}} '),
-  ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=" x";s+="y ";return s;})();"`,
+    `"return(async()=>{let s="";s+="2";if(c.x){}return s;})();"`,
   )
 })

@@ -1,83 +1,86 @@
-import type { Config, Range, Script } from './types'
+import type { Loc, Pos, Script } from './types'
 import { CONTEXT, ESCAPE, FILTERS } from './identifiers'
+import { SourceMap } from './source-map'
 
-export class OutScript {
-  private content = ''
-
-  private strOffset = 's+="'.length
-
-  private varOffset = `s+=${ESCAPE}(`.length
-
-  constructor(public options: Config) {}
-
-  get value() {
-    return this.content
-  }
+export class OutScript extends SourceMap {
+  public code = ''
 
   get script() {
-    // eslint-disable-next-line no-new-func
-    return new Function(CONTEXT, FILTERS, ESCAPE, this.value) as Script
+    return new Function(
+      CONTEXT,
+      ESCAPE,
+      FILTERS,
+      this.code,
+    ) as Script
   }
 
   start() {
-    if (this.options.strictMode) {
-      this.pushLine('"use strict";')
-    }
-
-    this.pushLine('return(async()=>{', 'let s="";')
+    this.pushRaw(
+      null,
+      'return(async()=>{',
+      'let s="";',
+    )
   }
 
   end() {
-    this.pushLine('return s;', '})();')
+    this.pushRaw(
+      null,
+      'return s;',
+      '})();',
+    )
   }
 
-  pushLine(...lines: string[]): Range {
-    const start = this.content.length
+  pushRaw(
+    loc: Loc | null,
+    ...lines: string[]
+  ) {
+    const start = this.code.length
 
     for (const line of lines) {
-      this.content += line
+      this.code += line
     }
 
-    return {
-      start,
-      end: this.content.length,
+    if (!loc) {
+      return
     }
+
+    this.addMapping(
+      loc,
+      {
+        start: {
+          line: 1,
+          column: start,
+        },
+        end: {
+          line: 1,
+          column: this.code.length,
+        },
+      },
+    )
   }
 
   pushStr(
+    loc: Loc | null,
     s: string,
-    o?: { trimStart?: boolean, trimEnd?: boolean },
-  ): Range | void {
+  ): Pos | void {
     if (s) {
-      if (o?.trimStart || this.options.trimWhitespace) {
-        s = s.trimStart()
-      }
-
-      if (o?.trimEnd || this.options.trimWhitespace) {
-        s = s.trimEnd()
-      }
-    }
-
-    if (s) {
-      this.pushLine(`s+="${s.replace(/\\/g, '\\\\')
-        .replace(/"/g, '\\"')
-        .replace(/[\n\r]/g, '\\n')}";`)
-
-      return {
-        start: this.content.length + this.strOffset,
-        end: this.content.length - 2,
-      }
+      this.pushRaw(
+        loc,
+        `s+="${s
+          .replace(/\\/g, '\\\\')
+          .replace(/"/g, '\\"')
+          .replace(/[\n\r]/g, '\\n')}";`,
+      )
     }
   }
 
-  pushVar(v: string): Range {
-    const start = this.content.length + this.varOffset
-
-    this.pushLine(`s+=${ESCAPE}(${v});`)
-
-    return {
-      start,
-      end: start + v.length,
-    }
+  pushVar(
+    loc: Loc | null,
+    v: string,
+  ) {
+    this.pushRaw(
+      loc,
+      `s+=${ESCAPE}(${v});`,
+    )
   }
 }

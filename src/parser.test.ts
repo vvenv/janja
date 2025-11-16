@@ -1,57 +1,238 @@
 import { expect, it } from 'vitest'
 import { parse } from '../test/__helper'
 
+it('error', async () => {
+  try {
+    await parse('{{ else }}')
+    expect(true).toBe(false)
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: Unknown "else" directive]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      "Unknown "else" directive
+
+      1｜ {{ else }}
+       ｜ ^        ^
+      "
+    `,
+    )
+  }
+  try {
+    await parse('{{ elseif }}')
+    expect(true).toBe(false)
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: Unexpected "elseif" directive]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      "Unexpected "elseif" directive
+
+      1｜ {{ elseif }}
+       ｜ ^          ^
+      "
+    `,
+    )
+  }
+  try {
+    await parse('{{ if }}')
+    expect(true).toBe(false)
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: "if" requires expression]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      ""if" requires expression
+
+      1｜ {{ if }}
+       ｜ ^      ^
+      "
+    `,
+    )
+  }
+  try {
+    await parse('{{ if x }}')
+    expect(true).toBe(false)
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: Unclosed "if"]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      "Unclosed "if"
+
+      1｜ {{ if x }}
+       ｜ ^        ^
+      "
+    `,
+    )
+  }
+  try {
+    await parse('{{ if x }}{{ else y }}{{ endif }}')
+    expect(true).toBe(false)
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: "else" should not have expression]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      ""else" should not have expression
+
+      1｜ {{ if x }}{{ else y }}{{ endif }}
+       ｜           ^          ^
+      "
+    `,
+    )
+  }
+  try {
+    await parse('{{ for }}')
+    expect(true).toBe(false)
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: "for" requires expression]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      ""for" requires expression
+
+      1｜ {{ for }}
+       ｜ ^       ^
+      "
+    `,
+    )
+  }
+})
+
 it('escape tag', async () => {
   expect(
-    await parse('{{= "{{= escape }}" }}'),
+    await parse('{{= "{{ escape }}" }}'),
   ).toMatchInlineSnapshot(
     `
-    {
-      "end": 18,
-      "name": "=",
-      "next": {
-        "end": 22,
-        "name": "raw",
-        "next": null,
-        "previous": [Circular],
-        "raw": "" }}",
-        "start": 18,
+    TemplateNode {
+      "children": [
+        OutputNode {
+          "exp": {
+            "loc": {
+              "end": {
+                "column": 12,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
+            "raw": ""{{ escape "",
+            "type": "LIT",
+            "value": "{{ escape ",
+          },
+          "loc": {
+            "end": {
+              "column": 18,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "OUTPUT",
+          "val": " "{{ escape ",
+        },
+        TextNode {
+          "loc": {
+            "end": {
+              "column": 22,
+              "line": 1,
+            },
+            "start": {
+              "column": 18,
+              "line": 1,
+            },
+          },
+          "strip": {},
+          "type": "TEXT",
+          "val": "" }}",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 22,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
       },
-      "previous": null,
-      "raw": "{{= "{{= escape }}",
-      "start": 0,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": {
-        "end": 14,
-        "raw": ""{{= escape "",
-        "start": 1,
-        "type": "LIT",
-        "value": "{{= escape ",
-      },
+      "type": "TEMPLATE",
     }
   `,
   )
   expect(
-    await parse('{{= "\\{\\{= escape \\}\\}" }}'),
+    await parse('{{= "\\{\\{ escape \\}\\}" }}'),
   ).toMatchInlineSnapshot(
     `
-    {
-      "end": 26,
-      "name": "=",
-      "next": null,
-      "previous": null,
-      "raw": "{{= "\\{\\{= escape \\}\\}" }}",
-      "start": 0,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": {
-        "end": 16,
-        "raw": ""{{= escape }}"",
-        "start": 1,
-        "type": "LIT",
-        "value": "{{= escape }}",
+    TemplateNode {
+      "children": [
+        OutputNode {
+          "exp": {
+            "loc": {
+              "end": {
+                "column": 14,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
+            "raw": ""{{ escape }}"",
+            "type": "LIT",
+            "value": "{{ escape }}",
+          },
+          "loc": {
+            "end": {
+              "column": 26,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "OUTPUT",
+          "val": " "{{ escape }}" ",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 26,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
       },
+      "type": "TEMPLATE",
     }
   `,
   )
@@ -61,88 +242,213 @@ it('empty', async () => {
   expect(
     await parse(''),
   ).toMatchInlineSnapshot(
-    `null`,
+    `
+    TemplateNode {
+      "children": [],
+      "loc": {
+        "end": {
+          "column": 1,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
+      "type": "TEMPLATE",
+    }
+  `,
   )
   expect(
     await parse(' '),
   ).toMatchInlineSnapshot(
     `
-    {
-      "end": 1,
-      "name": "raw",
-      "next": null,
-      "previous": null,
-      "raw": " ",
-      "start": 0,
+    TemplateNode {
+      "children": [
+        TextNode {
+          "loc": {
+            "end": {
+              "column": 2,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {},
+          "type": "TEXT",
+          "val": " ",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 2,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
+      "type": "TEMPLATE",
     }
   `,
   )
 })
 
-it('tag', async () => {
+it('comment', async () => {
   expect(
-    await parse('{{ if x -}}'),
+    await parse('{{# if x -#}}'),
   ).toMatchInlineSnapshot(
     `
-    {
-      "end": 11,
-      "name": "if",
-      "next": null,
-      "previous": null,
-      "raw": "{{ if x -}}",
-      "start": 0,
-      "stripAfter": true,
-      "stripBefore": false,
-      "value": {
-        "end": 1,
-        "raw": "x",
-        "start": 0,
-        "type": "ID",
-        "value": "x",
+    TemplateNode {
+      "children": [
+        CommentNode {
+          "loc": {
+            "end": {
+              "column": 14,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "COMMENT",
+          "val": " if x -#",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 14,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
       },
-    }
-  `,
-  )
-  expect(
-    await parse('{{ if }}'),
-  ).toMatchInlineSnapshot(
-    `
-    {
-      "end": 8,
-      "name": "if",
-      "next": null,
-      "previous": null,
-      "raw": "{{ if }}",
-      "start": 0,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": null,
+      "type": "TEMPLATE",
     }
   `,
   )
 })
 
-it('expression', async () => {
+it('directive', async () => {
   expect(
-    await parse('{{-= x }}'),
+    await parse('{{if x -}}{{endif}}'),
   ).toMatchInlineSnapshot(
     `
-    {
-      "end": 9,
-      "name": "=",
-      "next": null,
-      "previous": null,
-      "raw": "{{-= x }}",
-      "start": 0,
-      "stripAfter": false,
-      "stripBefore": true,
-      "value": {
-        "end": 2,
-        "raw": "x",
-        "start": 1,
-        "type": "ID",
-        "value": "x",
+    TemplateNode {
+      "children": [
+        IfNode {
+          "alternatives": [],
+          "body": [],
+          "loc": {
+            "end": {
+              "column": 11,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": true,
+            "before": false,
+          },
+          "test": {
+            "loc": {
+              "end": {
+                "column": 7,
+                "line": 1,
+              },
+              "start": {
+                "column": 6,
+                "line": 1,
+              },
+            },
+            "raw": "x",
+            "type": "ID",
+            "value": "x",
+          },
+          "type": "IF",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 20,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
       },
+      "type": "TEMPLATE",
+    }
+  `,
+  )
+})
+
+it('output', async () => {
+  expect(
+    await parse('{{=- x }}'),
+  ).toMatchInlineSnapshot(
+    `
+    TemplateNode {
+      "children": [
+        OutputNode {
+          "exp": {
+            "loc": {
+              "end": {
+                "column": 3,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
+            "raw": "x",
+            "type": "ID",
+            "value": "x",
+          },
+          "loc": {
+            "end": {
+              "column": 10,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": true,
+          },
+          "type": "OUTPUT",
+          "val": " x ",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 10,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
+      "type": "TEMPLATE",
     }
   `,
   )
@@ -150,22 +456,53 @@ it('expression', async () => {
     await parse('{{= null }}'),
   ).toMatchInlineSnapshot(
     `
-    {
-      "end": 11,
-      "name": "=",
-      "next": null,
-      "previous": null,
-      "raw": "{{= null }}",
-      "start": 0,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": {
-        "end": 5,
-        "raw": "null",
-        "start": 1,
-        "type": "LIT",
-        "value": null,
+    TemplateNode {
+      "children": [
+        OutputNode {
+          "exp": {
+            "loc": {
+              "end": {
+                "column": 6,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
+            "raw": "null",
+            "type": "LIT",
+            "value": null,
+          },
+          "loc": {
+            "end": {
+              "column": 12,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "OUTPUT",
+          "val": " null ",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 12,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
       },
+      "type": "TEMPLATE",
     }
   `,
   )
@@ -173,36 +510,221 @@ it('expression', async () => {
     await parse('{{= x + 1 }}'),
   ).toMatchInlineSnapshot(
     `
-    {
-      "end": 12,
-      "name": "=",
-      "next": null,
-      "previous": null,
-      "raw": "{{= x + 1 }}",
-      "start": 0,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": {
-        "end": 3,
-        "left": {
-          "end": 2,
-          "raw": "x",
-          "start": 1,
-          "type": "ID",
-          "value": "x",
+    TemplateNode {
+      "children": [
+        OutputNode {
+          "exp": {
+            "left": {
+              "loc": {
+                "end": {
+                  "column": 3,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 2,
+                  "line": 1,
+                },
+              },
+              "raw": "x",
+              "type": "ID",
+              "value": "x",
+            },
+            "loc": {
+              "end": {
+                "column": 5,
+                "line": 1,
+              },
+              "start": {
+                "column": 4,
+                "line": 1,
+              },
+            },
+            "raw": "+",
+            "right": {
+              "loc": {
+                "end": {
+                  "column": 7,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 6,
+                  "line": 1,
+                },
+              },
+              "raw": "1",
+              "type": "LIT",
+              "value": 1,
+            },
+            "type": "ADD",
+            "value": "+",
+          },
+          "loc": {
+            "end": {
+              "column": 13,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "OUTPUT",
+          "val": " x + 1 ",
         },
-        "raw": "+",
-        "right": {
-          "end": 6,
-          "raw": "1",
-          "start": 5,
-          "type": "LIT",
-          "value": 1,
+      ],
+      "loc": {
+        "end": {
+          "column": 13,
+          "line": 1,
         },
-        "start": 3,
-        "type": "ADD",
-        "value": "+",
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
       },
+      "type": "TEMPLATE",
+    }
+  `,
+  )
+})
+
+it('text', async () => {
+  expect(
+    await parse(`hello
+      world`),
+  ).toMatchInlineSnapshot(
+    `
+    TemplateNode {
+      "children": [
+        TextNode {
+          "loc": {
+            "end": {
+              "column": 12,
+              "line": 2,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {},
+          "type": "TEXT",
+          "val": "hello
+          world",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 12,
+          "line": 2,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
+      "type": "TEMPLATE",
+    }
+  `,
+  )
+})
+
+it('custom open/close markers', async () => {
+  expect(
+    await parse('<% if x %>{{ x }}<% endif %>', {
+      directiveOpen: '<%',
+      directiveClose: '%>',
+      outputOpen: '{{',
+      outputClose: '}}',
+    }),
+  ).toMatchInlineSnapshot(
+    `
+    TemplateNode {
+      "children": [
+        IfNode {
+          "alternatives": [],
+          "body": [
+            OutputNode {
+              "exp": {
+                "loc": {
+                  "end": {
+                    "column": 13,
+                    "line": 1,
+                  },
+                  "start": {
+                    "column": 12,
+                    "line": 1,
+                  },
+                },
+                "raw": "x",
+                "type": "ID",
+                "value": "x",
+              },
+              "loc": {
+                "end": {
+                  "column": 18,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 11,
+                  "line": 1,
+                },
+              },
+              "strip": {
+                "after": false,
+                "before": false,
+              },
+              "type": "OUTPUT",
+              "val": " x ",
+            },
+          ],
+          "loc": {
+            "end": {
+              "column": 11,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "test": {
+            "loc": {
+              "end": {
+                "column": 8,
+                "line": 1,
+              },
+              "start": {
+                "column": 7,
+                "line": 1,
+              },
+            },
+            "raw": "x",
+            "type": "ID",
+            "value": "x",
+          },
+          "type": "IF",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 29,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
+      "type": "TEMPLATE",
     }
   `,
   )

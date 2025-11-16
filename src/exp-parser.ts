@@ -7,27 +7,34 @@ import type {
   IdExp,
   IfExp,
   LitExp,
+  Loc,
   NotExp,
   PipeExp,
+  Pos,
   SeqExp,
 } from './types'
+import { CompileError } from './compile-error'
 import { expTokenPrecedences } from './exp-token-precedences'
 import { ExpTokenizer } from './exp-tokenizer'
-import { ParseError } from './parse-error'
 
-export class ExpParser {
-  template = ''
+export class ExpParser implements Pos {
+  val = ''
   tokens: ExpToken[] = []
-  length = 0
-  cursor = 0
+  index = 0
 
-  parse(template: string) {
-    this.template = template
-    this.tokens = new ExpTokenizer().tokenize(template)
-    this.length = this.tokens.length
-    this.cursor = 0
+  line = 1
+  column = 1
 
-    return this.template ? this.parseExp() : null
+  constructor(private readonly template: string) {}
+
+  parse(val: string, loc: Loc) {
+    this.val = val
+    this.index = 0
+    this.line = loc.start.line
+    this.column = loc.start.column
+    this.tokens = new ExpTokenizer(this.template).tokenize(val, loc)
+
+    return this.val ? this.parseExp() : null
   }
 
   private parseExp(checker?: Checker): Exp | null {
@@ -53,13 +60,11 @@ export class ExpParser {
 
       if (token.type === 'LP') {
         if (!this.peek()) {
-          throw new ParseError(`unexpected end of expression`, {
-            source: this.template,
-            range: {
-              start: token.start,
-              end: token.end,
-            },
-          })
+          throw new CompileError(
+            `unexpected end of expression`,
+            this.template,
+            token.loc,
+          )
         }
 
         const elements = this.parseSequence()
@@ -67,33 +72,32 @@ export class ExpParser {
         const rp = this.consume('RP')
 
         if (!rp) {
-          throw new ParseError(`expected "RP" after "LP"`, {
-            source: this.template,
-            range: {
-              start: token.start,
-              end: token.end,
-            },
-          })
+          throw new CompileError(
+            `expected "RP" after "LP"`,
+            this.template,
+            token.loc,
+          )
         }
 
         left = {
           ...token,
           type: 'SEQ',
           elements,
-          end: rp.end,
+          loc: {
+            start: token.loc.start,
+            end: rp.loc.end,
+          },
         } satisfies SeqExp
         continue
       }
 
       if (token.type === 'NOT') {
         if (!this.peek()) {
-          throw new ParseError(`unexpected end of expression`, {
-            source: this.template,
-            range: {
-              start: token.start,
-              end: token.end,
-            },
-          })
+          throw new CompileError(
+            `unexpected end of expression`,
+            this.template,
+            token.loc,
+          )
         }
 
         left = {
@@ -117,19 +121,16 @@ export class ExpParser {
           left.path = this.parsePath()
         }
 
-        if (this.consume('LP')) {
+        const lp = this.consume('LP')
+        if (lp) {
           left.args = this.parseSequence()
 
-          const rp = this.consume('RP')
-
-          if (!rp) {
-            throw new ParseError(`expected "RP" after "LP"`, {
-              source: this.template,
-              range: {
-                start: token.start,
-                end: token.end,
-              },
-            })
+          if (!this.consume('RP')) {
+            throw new CompileError(
+              `expected "RP" after "LP"`,
+              this.template,
+              lp.loc,
+            )
           }
           continue
         }
@@ -149,13 +150,11 @@ export class ExpParser {
           t => t.type === 'ELSE' ? 'BACK' : isHigher(token, t) ? 'BACK' : undefined,
         )
         if (!test) {
-          throw new ParseError('expected test expression', {
-            source: this.template,
-            range: {
-              start: token.start,
-              end: token.end,
-            },
-          })
+          throw new CompileError(
+            'expected test expression',
+            this.template,
+            token.loc,
+          )
         }
         left = {
           ...token,
@@ -168,13 +167,11 @@ export class ExpParser {
             t => isHigher(token, t) ? 'BACK' : undefined,
           )
           if (!alternative) {
-            throw new ParseError('expected alternative expression', {
-              source: this.template,
-              range: {
-                start: token.start,
-                end: token.end,
-              },
-            })
+            throw new CompileError(
+              'expected alternative expression',
+              this.template,
+              token.loc,
+            )
           }
           (left as IfExp).alternative = alternative
         }
@@ -201,13 +198,11 @@ export class ExpParser {
         || token.type === 'SET'
       ) {
         if (!left) {
-          throw new ParseError(`no left operand for "${token.type}"`, {
-            source: this.template,
-            range: {
-              start: token.start,
-              end: token.end,
-            },
-          })
+          throw new CompileError(
+            `no left operand for "${token.type}"`,
+            this.template,
+            token.loc,
+          )
         }
 
         const right = this.parseExp(
@@ -215,13 +210,11 @@ export class ExpParser {
         )
 
         if (!right) {
-          throw new ParseError(`no right operand for "${token.type}"`, {
-            source: this.template,
-            range: {
-              start: token.start,
-              end: token.end,
-            },
-          })
+          throw new CompileError(
+            `no right operand for "${token.type}"`,
+            this.template,
+            token.loc,
+          )
         }
 
         left = {
@@ -235,22 +228,18 @@ export class ExpParser {
 
       if (token.type === 'PIPE') {
         if (!left) {
-          throw new ParseError(`no left operand for "${token.type}"`, {
-            source: this.template,
-            range: {
-              start: token.start,
-              end: token.end,
-            },
-          })
+          throw new CompileError(
+            `no left operand for "${token.type}"`,
+            this.template,
+            token.loc,
+          )
         }
         if (!this.check('ID')) {
-          throw new ParseError(`expected "ID" after "PIPE"`, {
-            source: this.template,
-            range: {
-              start: token.start,
-              end: token.end,
-            },
-          })
+          throw new CompileError(
+            `expected "ID" after "PIPE"`,
+            this.template,
+            token.loc,
+          )
         }
         left = {
           ...token,
@@ -278,22 +267,18 @@ export class ExpParser {
       }
       const token = this.next()
       if (!token) {
-        throw new ParseError(`expected "ID" after "DOT"`, {
-          source: this.template,
-          range: {
-            start: dot.start,
-            end: dot.end,
-          },
-        })
+        throw new CompileError (
+          `expected "ID" after "DOT"`,
+          this.template,
+          dot.loc,
+        )
       }
       if (token.type !== 'ID') {
-        throw new ParseError(`expected "ID" after "DOT"`, {
-          source: this.template,
-          range: {
-            start: token.start,
-            end: token.end,
-          },
-        })
+        throw new CompileError (
+          `expected "ID" after "DOT"`,
+          this.template,
+          dot.loc,
+        )
       }
       ids.push({
         ...token,
@@ -332,23 +317,20 @@ export class ExpParser {
       value: token.value as string,
     } as IdExp
 
-    if (this.consume('LP')) {
+    const lp = this.consume('LP')
+    if (lp) {
       const args = this.parseSequence()
 
       if (args.length) {
         right.args = args
       }
 
-      const rp = this.consume('RP')
-
-      if (!rp) {
-        throw new ParseError(`expected "RP" after "LP"`, {
-          source: this.template,
-          range: {
-            start: token.start,
-            end: token.end,
-          },
-        })
+      if (!this.consume('RP')) {
+        throw new CompileError(
+          `expected "RP" after "LP"`,
+          this.template,
+          lp.loc,
+        )
       }
     }
 
@@ -356,15 +338,15 @@ export class ExpParser {
   }
 
   private next(): ExpToken | null {
-    return this.tokens[this.cursor++] ?? null
+    return this.tokens[this.index++] ?? null
   }
 
   private back(): ExpToken {
-    return this.tokens[this.cursor--]
+    return this.tokens[this.index--]
   }
 
   private peek() {
-    return this.tokens[this.cursor] ?? null
+    return this.tokens.at(this.index) ?? null
   }
 
   private check(type: ExpTokenType) {

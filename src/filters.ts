@@ -1,42 +1,42 @@
-import type { Globals, ObjectType } from './types'
+import type { ObjectType } from './types'
 import { Safe } from './safe'
 
 export * from './escape'
 
-export function abs(this: Globals, value = 0) {
+export function abs(this: ObjectType, value = 0) {
   return Math.abs(value)
 }
-export function add(this: Globals, value = 0, addend = 0) {
+export function add(this: ObjectType, value = 0, addend = 0) {
   return value + addend
 }
-export function capitalize(this: Globals, value = '') {
+export function capitalize(this: ObjectType, value = '') {
   return value.replace(/\b\w/g, match => match.toUpperCase())
 }
-export function ceil(this: Globals, value = 0) {
+export function ceil(this: ObjectType, value = 0) {
   return Math.ceil(value)
 }
-export function compact(this: Globals, value: any[] = []) {
+export function compact(this: ObjectType, value: any[] = []) {
   return value.filter(v => v != null)
 }
-export function div(this: Globals, value = 0, divisor = 1) {
+export function div(this: ObjectType, value = 0, divisor = 1) {
   return value / divisor
 }
-export function entries(this: Globals, value: ObjectType = {}) {
+export function entries(this: ObjectType, value: ObjectType = {}) {
   return Object.entries(value)
 }
-export function even(this: Globals, value: number | string = 0) {
+export function even(this: ObjectType, value: number | string = 0) {
   return +value % 2 === 0
 }
-export function fallback(this: Globals, value: any, defaultValue: any, anyFalsy = false) {
+export function fallback(this: ObjectType, value: any, defaultValue: any, anyFalsy = false) {
   return anyFalsy ? (value || defaultValue) : (value ?? defaultValue)
 }
-export function first(this: Globals, value: string | any[] = []) {
+export function first(this: ObjectType, value: string | any[] = []) {
   return [...value][0]
 }
-export function get(this: Globals, value: ObjectType, ...path: string[]) {
+export function get(this: ObjectType, value: ObjectType, ...path: string[]) {
   return path.reduce((acc, cur) => (acc && typeof acc === 'object' && (cur in acc)) ? acc[cur] : undefined, value)
 }
-export function groupby(this: Globals, value: ObjectType[] = [], key: string) {
+export function groupby(this: ObjectType, value: ObjectType[] = [], key: string) {
   return value.reduce(
     (o, v) => {
       const k = v[key]
@@ -50,108 +50,108 @@ export function groupby(this: Globals, value: ObjectType[] = [], key: string) {
   )
 }
 export function join(
-  this: Globals,
+  this: ObjectType,
   value: string | string[] = [],
   separator = '',
 ) {
   return [...value].join(separator)
 }
-export function json(this: Globals, value: any = null, indent = 0) {
+export function json(this: ObjectType, value: any = null, indent = 0) {
   return new Safe(JSON.stringify(value, null, indent))
 }
-export function keys(this: Globals, value: ObjectType = {}) {
+export function keys(this: ObjectType, value: ObjectType = {}) {
   return Object.keys(value)
 }
-export function last(this: Globals, value: string | any[] = []) {
+export function last(this: ObjectType, value: string | any[] = []) {
   return [...value].reverse()[0]
 }
-export function length(this: Globals, value = '') {
+export function length(this: ObjectType, value = '') {
   return value.length
 }
-export function lower(this: Globals, value = '') {
+export function lower(this: ObjectType, value = '') {
   return value.toLowerCase()
 }
 export function map(
-  this: Globals,
+  this: ObjectType,
   value: ObjectType[] = [],
   key: string,
   defaultValue?: any,
 ) {
   return value.map(o => o[key] ?? defaultValue)
 }
-export function max(this: Globals, value = 0, ...values: number[]) {
+export function max(this: ObjectType, value = 0, ...values: number[]) {
   return Math.max(value, ...values)
 }
-export function min(this: Globals, value = 0, ...values: number[]) {
+export function min(this: ObjectType, value = 0, ...values: number[]) {
   return Math.min(value, ...values)
 }
-export function mul(this: Globals, value = 0, multiplier = 1) {
+export function mul(this: ObjectType, value = 0, multiplier = 1) {
   return value * multiplier
 }
-export function odd(this: Globals, value: number | string = 0) {
+export function odd(this: ObjectType, value: number | string = 0) {
   return +value % 2 === 1
 }
-export function omit(this: Globals, value: ObjectType = {}, ...keys: string[]) {
+export function omit(this: ObjectType, value: ObjectType = {}, ...keys: string[]) {
   return Object.entries(value).reduce(
     (o, [k, v]) => (keys.includes(k) ? o : { ...o, [k]: v }),
     {},
   )
 }
-export function pick(this: Globals, value: ObjectType = {}, ...keys: string[]) {
+export function pick(this: ObjectType, value: ObjectType = {}, ...keys: string[]) {
   return keys.reduce((o, k) => ({ ...o, [k]: value[k] }), {})
 }
-export function repeat(this: Globals, value = '', count = 0) {
+export function repeat(this: ObjectType, value = '', count = 0) {
   return value.repeat(count)
 }
 export function replace(
-  this: Globals,
+  this: ObjectType,
   value = '',
   search: string,
   replace: string,
 ) {
   return value.replace(new RegExp(search, 'g'), replace)
 }
-export function reverse(this: Globals, value: string | any[] = []) {
+export function reverse(this: ObjectType, value: string | any[] = []) {
   return Array.isArray(value) ? value.reverse() : [...value].reverse().join('')
 }
-export function safe(this: Globals, value = '') {
+export function safe(this: ObjectType, value = '') {
   return new Safe(value)
 }
-export function slice(this: Globals, value = '', start = 0, end?: number) {
+export function slice(this: ObjectType, value = '', start = 0, end?: number) {
   return value.slice(start, end)
 }
-export function sort(this: Globals, value: string | any[] = []) {
+export function sort(this: ObjectType, value: string | any[] = []) {
   return Array.isArray(value) ? value.sort() : [...value].sort().join('')
 }
-export function split(this: Globals, value = '', separator = '') {
+export function split(this: ObjectType, value = '', separator = '') {
   return value.split(separator)
 }
-export function sub(this: Globals, value = 0, subtrahend = 0) {
+export function sub(this: ObjectType, value = 0, subtrahend = 0) {
   return value - subtrahend
 }
-export function sum(this: Globals, value: number[] = []) {
+export function sum(this: ObjectType, value: number[] = []) {
   return value.reduce((a, b) => a + b, 0)
 }
-export function trim(this: Globals, value = '') {
+export function trim(this: ObjectType, value = '') {
   return value.trim()
 }
-export function truncate(this: Globals, value = '', length = 0, truncateStr = '...') {
+export function truncate(this: ObjectType, value = '', length = 0, truncateStr = '...') {
   return value.slice(0, length) + (value.length > length ? truncateStr : '')
 }
-export function unique(this: Globals, value: string | any[] = '') {
+export function unique(this: ObjectType, value: string | any[] = '') {
   return Array.isArray(value)
     ? Array.from(new Set(value))
     : Array.from(new Set(value)).join('')
 }
-export function upper(this: Globals, value = '') {
+export function upper(this: ObjectType, value = '') {
   return value.toUpperCase()
 }
-export function urldecode(this: Globals, value = '') {
+export function urldecode(this: ObjectType, value = '') {
   return decodeURIComponent(value)
 }
-export function urlencode(this: Globals, value = '') {
+export function urlencode(this: ObjectType, value = '') {
   return encodeURIComponent(value)
 }
-export function values(this: Globals, value: ObjectType = {}) {
+export function values(this: ObjectType, value: ObjectType = {}) {
   return Object.values(value)
 }

@@ -17,7 +17,9 @@ describe('builtin', () => {
     ).toMatchInlineSnapshot(
       `"Infinity"`,
     )
-    expect(await render('{{= x | abs }}', { x: -3 })).toMatchInlineSnapshot(
+    expect(
+      await render('{{= x | abs }}', { x: -3 }),
+    ).toMatchInlineSnapshot(
       `"3"`,
     )
   })
@@ -84,22 +86,14 @@ describe('builtin', () => {
 
   it('escape', async () => {
     expect(
-      await render('{{= x }}', {
-        x: '&<>\'"',
-      }),
+      await render('{{= x }}', { x: '&<>\'"' }),
     ).toMatchInlineSnapshot(
       `"&amp;&lt;&gt;&#39;&#34;"`,
     )
     expect(
-      await render(
-        '{{ x }}',
-        {
-          x: '&<>\'"',
-        },
-        { autoEscape: false },
-      ),
+      await render('{{= x }}', { x: '&<>\'"' }, { autoEscape: false }),
     ).toMatchInlineSnapshot(
-      `""`,
+      `"&<>'""`,
     )
     expect(
       await render('{{= x | escape }}', { x: '&<>\'"' }, { autoEscape: false }),
@@ -109,7 +103,9 @@ describe('builtin', () => {
   })
 
   it('even', async () => {
-    expect(await render('{{= x | even }}', { x: 2 })).toMatchInlineSnapshot(
+    expect(
+      await render('{{= x | even }}', { x: 2 }),
+    ).toMatchInlineSnapshot(
       `"true"`,
     )
   })
@@ -244,7 +240,9 @@ describe('builtin', () => {
     ).toMatchInlineSnapshot(
       `"{"foo":"<bar>"}"`,
     )
-    expect(await render('{{= x | json(2) }}', { x: { foo: '<bar>' } }))
+    expect(
+      await render('{{= x | json(2) }}', { x: { foo: '<bar>' } }),
+    )
       .toMatchInlineSnapshot(
         `
         "{
@@ -263,7 +261,9 @@ describe('builtin', () => {
   })
 
   it('last', async () => {
-    expect(await render('{{= x | last }}', { x: 'foo' })).toMatchInlineSnapshot(
+    expect(
+      await render('{{= x | last }}', { x: 'foo' }),
+    ).toMatchInlineSnapshot(
       `"o"`,
     )
     expect(
@@ -331,7 +331,9 @@ describe('builtin', () => {
   })
 
   it('odd', async () => {
-    expect(await render('{{= x | odd }}', { x: 1 })).toMatchInlineSnapshot(
+    expect(
+      await render('{{= x | odd }}', { x: 1 }),
+    ).toMatchInlineSnapshot(
       `"true"`,
     )
   })
@@ -386,7 +388,9 @@ describe('builtin', () => {
   })
 
   it('safe', async () => {
-    expect(await render('{{= x }}', { x: '&<>\'"' })).toMatchInlineSnapshot(
+    expect(
+      await render('{{= x }}', { x: '&<>\'"' }),
+    ).toMatchInlineSnapshot(
       `"&amp;&lt;&gt;&#39;&#34;"`,
     )
     expect(
@@ -410,7 +414,9 @@ describe('builtin', () => {
   })
 
   it('sort', async () => {
-    expect(await render('{{= x | sort }}', { x: 'bar' })).toMatchInlineSnapshot(
+    expect(
+      await render('{{= x | sort }}', { x: 'bar' }),
+    ).toMatchInlineSnapshot(
       `"abr"`,
     )
     expect(

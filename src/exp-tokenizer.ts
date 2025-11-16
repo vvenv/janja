@@ -1,24 +1,42 @@
-import type { ExpToken } from './types'
+import type {
+  ExpToken,
+  Loc,
+  Pos,
+} from './types'
+import { CompileError } from './compile-error'
 import { expTokenTypes } from './exp-token-types'
-import { ParseError } from './parse-error'
+import { updatePosition } from './update-position'
 
-export class ExpTokenizer {
-  template = ''
-  length = 0
+export class ExpTokenizer implements Pos {
+  val = ''
   tokens: ExpToken[] = []
-  cursor = 0
+  index = 0
 
-  tokenize(template: string) {
-    this.template = template
-    this.length = template.length
+  line = 1
+  column = 1
+
+  constructor(private readonly template: string) {}
+
+  tokenize(val: string, loc: Loc) {
+    this.val = val
+    this.index = 0
+    this.line = loc.start.line
+    this.column = loc.start.column
     this.tokens = []
-    this.cursor = 0
 
-    while (this.cursor < this.length) {
-      const char = this.template[this.cursor]
+    while (this.index < this.val.length) {
+      const char = this.val[this.index]
 
       if (isWhitespace(char)) {
-        this.cursor++
+        if (char === '\n') {
+          this.line++
+          this.column = 0
+        }
+        else {
+          this.column++
+        }
+
+        this.index++
         continue
       }
 
@@ -42,10 +60,14 @@ export class ExpTokenizer {
         continue
       }
 
-      throw new ParseError(`unexpect "${char}"`, { source: template, range: {
-        start: this.cursor,
-        end: this.cursor + 1,
-      } })
+      throw new CompileError(
+        `Unexpect "${char}"`,
+        this.template,
+        {
+          start: { line: this.line, column: this.column },
+          end: { line: this.line, column: this.column + 1 },
+        },
+      )
     }
 
     return this.tokens
@@ -55,13 +77,13 @@ export class ExpTokenizer {
     let value = ''
     let escaped = false
 
-    const start = this.cursor
+    const start: Pos = { line: this.line, column: this.column }
 
     // Skip opening quote char
-    this.cursor++
+    this.index++
 
-    while (this.cursor < this.length) {
-      const char = this.template[this.cursor]
+    while (this.index < this.val.length) {
+      const char = this.val[this.index]
 
       if (escaped) {
         value += char
@@ -78,17 +100,19 @@ export class ExpTokenizer {
         value += char
       }
 
-      this.cursor++
+      this.index++
     }
 
     // skip closing quote char
-    this.cursor++
+    this.index++
 
     this.tokens.push({
       type: 'LIT',
       value,
-      start,
-      end: this.cursor,
+      loc: {
+        start,
+        end: updatePosition(value, this),
+      },
       raw: `${quoteChar}${value}${quoteChar}`,
     })
   }
@@ -97,10 +121,10 @@ export class ExpTokenizer {
     let value = ''
     let hasDot = false
 
-    const start = this.cursor
+    const start: Pos = { line: this.line, column: this.column }
 
-    while (this.cursor < this.length) {
-      const char = this.template[this.cursor]
+    while (this.index < this.val.length) {
+      const char = this.val[this.index]
 
       if (isDigit(char)) {
         value += char
@@ -113,14 +137,16 @@ export class ExpTokenizer {
         break
       }
 
-      this.cursor++
+      this.index++
     }
 
     this.tokens.push({
       type: 'LIT',
       value: Number.parseFloat(value),
-      start,
-      end: this.cursor,
+      loc: {
+        start,
+        end: updatePosition(value, this),
+      },
       raw: value,
     })
   }
@@ -128,15 +154,15 @@ export class ExpTokenizer {
   private readIdentifier() {
     let value = ''
 
-    const start = this.cursor
+    const start: Pos = { line: this.line, column: this.column }
 
-    while (this.cursor < this.length) {
-      const char = this.template[this.cursor]
+    while (this.index < this.val.length) {
+      const char = this.val[this.index]
 
       if (isIdentifierChar(char)) {
         value += char
 
-        this.cursor++
+        this.index++
         continue
       }
 
@@ -158,24 +184,28 @@ export class ExpTokenizer {
                 ? undefined
                 : value
         : value,
-      start,
-      end: this.cursor,
+      loc: {
+        start,
+        end: updatePosition(value, this),
+      },
       raw: value,
     })
   }
 
   private readSymbol(char: string) {
-    const start = this.cursor
+    const start: Pos = { line: this.line, column: this.column }
+
+    this.index++
 
     this.tokens.push({
       type: expTokenTypes[char],
       value: char,
-      start,
-      end: this.cursor,
+      loc: {
+        start,
+        end: updatePosition(char, this),
+      },
       raw: char,
     })
-
-    this.cursor++
   }
 }
 

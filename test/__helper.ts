@@ -1,40 +1,73 @@
-import type { Config } from '../src/types'
+import type { ObjectType, RendererOptions } from '../src/types'
 import { Compiler } from '../src/compiler'
-import { config } from '../src/config'
-import { render as _render, renderFile as _renderFile } from '../src/index'
+import { compilerOptions, parserOptions, renderOptions } from '../src/config'
 import { Parser } from '../src/parser'
+import { Renderer } from '../src/renderer'
+import { Tokenizer } from '../src/tokenizer'
+import { fileLoader } from './loaders/file-loader'
+
+const loader = async (_path: string) => fileLoader(`test/templates/${_path}.janja`)
+const debug = (error: Error) => {
+  throw error
+}
+
+export async function tokenize(
+  template: string,
+  options?: RendererOptions,
+): Promise<any> {
+  return new Tokenizer({
+    ...parserOptions,
+    ...options,
+    debug,
+  }).tokenize(template)
+}
 
 export async function parse(
   template: string,
-  options?: Config,
+  options?: RendererOptions,
 ): Promise<any> {
-  return new Parser({ ...config, ...options }).parse(template)
+  return new Parser({
+    ...parserOptions,
+    ...options,
+    debug,
+  }).parse(template)
 }
 
 export async function compile(
   template: string,
-  options?: Config,
+  options?: RendererOptions,
 ): Promise<any> {
-  const opt = { ...config, ...options }
-  const { value } = await new Compiler(opt).compile(
-    await parse(template, options),
-  )
-
-  return value
+  const { code } = await new Compiler({
+    ...compilerOptions,
+    ...options,
+    loader,
+    debug,
+  }).compile(template)
+  return code
 }
 
 export async function render(
   template: string,
-  data: Record<string, any> = {},
-  options?: Config,
+  data: ObjectType = {},
+  options?: RendererOptions,
 ): Promise<any> {
-  return _render(template, data, { ...config, ...options })
+  return new Renderer({
+    ...renderOptions,
+    ...options,
+    loader,
+    debug,
+  }).render(template, data)
 }
 
 export async function renderFile(
   filepath: string,
-  data: Record<string, any> = {},
-  options?: Config,
+  data: ObjectType = {},
+  options?: RendererOptions,
 ): Promise<any> {
-  return _renderFile(filepath, data, { ...config, ...options })
+  return new Renderer({
+    ...renderOptions,
+    ...options,
+    loader,
+    debug,
+  }).renderFile(filepath, data)
 }
