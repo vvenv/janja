@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/vvenv/janja/compare/janja-v1.1.0...janja-v2.0.0) (2025-11-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* rewrite
+
+### Code Refactoring
+
+* rewrite ([73fc01e](https://github.com/vvenv/janja/commit/73fc01e44f769c83d3c8341f373343e7151d88da))
+
 ## [1.1.0](https://github.com/vvenv/janja/compare/janja-v1.0.0...janja-v1.1.0) (2025-10-28)
 
 
