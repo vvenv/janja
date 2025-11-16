@@ -3,12 +3,19 @@ import { ExpCompiler } from './exp-compiler'
 import { ExpParser } from './exp-parser'
 
 function compile(template: string) {
-  return new ExpCompiler().compile(new ExpParser().parse(template), 'c', 'f')
+  return new ExpCompiler().compile(new ExpParser(template).parse(template, {
+    start: { line: 1, column: 1 },
+    end: { line: 1, column: template.length },
+  }), 'c', 'f')
 }
 
-it('invalid', () => {
-  expect(() => compile('and')).toThrowErrorMatchingInlineSnapshot(`[ParseError: no left operand for "AND"]`)
-  expect(() => compile('|')).toThrowErrorMatchingInlineSnapshot(`[ParseError: no left operand for "PIPE"]`)
+it('error', () => {
+  expect(() => compile('and')).toThrowErrorMatchingInlineSnapshot(
+    `[CompileError: no left operand for "AND"]`,
+  )
+  expect(() => compile('|')).toThrowErrorMatchingInlineSnapshot(
+    `[CompileError: no left operand for "PIPE"]`,
+  )
 })
 
 it('empty', () => {
@@ -78,7 +85,7 @@ it('dot', () => {
   expect(compile('a.b.c')).toMatchInlineSnapshot(
     `"c.a.b.c"`,
   )
-  expect(compile('a.b.c(x, y, z)')).toMatchInlineSnapshot(
+  expect(compile('a.b.c(x,y,z)')).toMatchInlineSnapshot(
     `"c.a.b.c(c.x,c.y,c.z)"`,
   )
 })
@@ -94,13 +101,13 @@ it('not', () => {
 
 it('and', () => {
   expect(compile('a and b')).toMatchInlineSnapshot(
-    `"(c.a&&c.b)"`,
+    `"c.a&&c.b"`,
   )
 })
 
 it('or', () => {
   expect(compile('a or b')).toMatchInlineSnapshot(
-    `"(c.a||c.b)"`,
+    `"c.a||c.b"`,
   )
 })
 
@@ -114,62 +121,62 @@ it('of', () => {
   expect(compile('a of b')).toMatchInlineSnapshot(
     `"const a of c.b"`,
   )
-  expect(compile('(x,y) of b')).toMatchInlineSnapshot(
-    `"const {x,y} of c.b"`,
+  expect(compile('(a,b) of c')).toMatchInlineSnapshot(
+    `"const {a,b} of c.c"`,
   )
 })
 
 it('eq', () => {
   expect(compile('a eq b')).toMatchInlineSnapshot(
-    `"(c.a===c.b)"`,
+    `"c.a===c.b"`,
   )
 })
 
 it('ne', () => {
   expect(compile('a ne b')).toMatchInlineSnapshot(
-    `"(c.a!==c.b)"`,
+    `"c.a!==c.b"`,
   )
 })
 
 it('gt', () => {
   expect(compile('a gt b')).toMatchInlineSnapshot(
-    `"(c.a>c.b)"`,
+    `"c.a>c.b"`,
   )
 })
 
 it('lt', () => {
   expect(compile('a lt b')).toMatchInlineSnapshot(
-    `"(c.a<c.b)"`,
+    `"c.a<c.b"`,
   )
 })
 
 it('ge', () => {
   expect(compile('a ge b')).toMatchInlineSnapshot(
-    `"(c.a>=c.b)"`,
+    `"c.a>=c.b"`,
   )
 })
 
 it('le', () => {
   expect(compile('a le b')).toMatchInlineSnapshot(
-    `"(c.a<=c.b)"`,
+    `"c.a<=c.b"`,
   )
 })
 
 it('in', () => {
   expect(compile('a in b')).toMatchInlineSnapshot(
-    `"(c.a in c.b)"`,
+    `"c.a in c.b"`,
   )
 })
 
 it('ni', () => {
   expect(compile('a ni b')).toMatchInlineSnapshot(
-    `"(!(c.a in c.b))"`,
+    `"!c.a in c.b"`,
   )
 })
 
 it('add', () => {
   expect(compile('a + b')).toMatchInlineSnapshot(
-    `"(c.a+c.b)"`,
+    `"c.a+c.b"`,
   )
 })
 
@@ -181,19 +188,19 @@ it('sub', () => {
 
 it('mul', () => {
   expect(compile('a * b')).toMatchInlineSnapshot(
-    `"(c.a*c.b)"`,
+    `"c.a*c.b"`,
   )
 })
 
 it('div', () => {
   expect(compile('a / b')).toMatchInlineSnapshot(
-    `"(c.a/c.b)"`,
+    `"c.a/c.b"`,
   )
 })
 
 it('mod', () => {
   expect(compile('a % b')).toMatchInlineSnapshot(
-    `"(c.a%c.b)"`,
+    `"c.a%c.b"`,
   )
 })
 
@@ -201,32 +208,23 @@ it('set', () => {
   expect(compile('a = b')).toMatchInlineSnapshot(
     `"Object.assign(c,{a:c.b});"`,
   )
-  expect(compile('(x, y) = z')).toMatchInlineSnapshot(
-    `"Object.assign(c,f.pick.call(c,c.z,["x","y"]));"`,
-  )
-})
-
-it('set - macros', () => {
-  expect(compile('a = (x, y)')).toMatchInlineSnapshot(
-    `"c.a=(x,y)"`,
-  )
-  expect(compile('a = (x=true, y=x, z="b")')).toMatchInlineSnapshot(
-    `"c.a=(x=true,y=c.x,z="b")"`,
+  expect(compile('(a, b) = c')).toMatchInlineSnapshot(
+    `"Object.assign(c,f.pick.call(c,c.c,["a","b"]));"`,
   )
 })
 
 it('pipe', () => {
-  expect(compile('x | f')).toMatchInlineSnapshot(
-    `"(await f.f.call(c,c.x))"`,
+  expect(compile('a | f')).toMatchInlineSnapshot(
+    `"(await f.f.call(c,c.a))"`,
   )
-  expect(compile('x | f | f2')).toMatchInlineSnapshot(
-    `"(await f.f2.call(c,(await f.f.call(c,c.x))))"`,
+  expect(compile('a | f | f2')).toMatchInlineSnapshot(
+    `"(await f.f2.call(c,(await f.f.call(c,c.a))))"`,
   )
-  expect(compile('x | f(a, "b")')).toMatchInlineSnapshot(
-    `"(await f.f.call(c,c.x,c.a,"b"))"`,
+  expect(compile('a | f(x, "y")')).toMatchInlineSnapshot(
+    `"(await f.f.call(c,c.a,c.x,"y"))"`,
   )
-  expect(compile('x | f(a, "b") | f2(not c, 1)')).toMatchInlineSnapshot(
-    `"(await f.f2.call(c,(await f.f.call(c,c.x,c.a,"b")),!c.c,1))"`,
+  expect(compile('a | f(x, "y") | f2(not z, 1)')).toMatchInlineSnapshot(
+    `"(await f.f2.call(c,(await f.f.call(c,c.a,c.x,"y")),!c.z,1))"`,
   )
 })
 
@@ -234,44 +232,44 @@ it('conditional', () => {
   expect(compile('"a" if x')).toMatchInlineSnapshot(
     `"(c.x?"a":"")"`,
   )
-  expect(compile('"a" if x else "y"')).toMatchInlineSnapshot(
-    `"(c.x?"a":"y")"`,
+  expect(compile('"a" if x else "b"')).toMatchInlineSnapshot(
+    `"(c.x?"a":"b")"`,
   )
 })
 
 it('whitespace', () => {
-  expect(compile(`  x
-    +\ty  `)).toMatchInlineSnapshot(
-    `"(c.x+c.y)"`,
+  expect(compile(`  a
+    +\tb  `)).toMatchInlineSnapshot(
+    `"c.a+c.b"`,
   )
 })
 
 it('combined', () => {
   expect(compile('user | get("age") gt 18 and user | get("name") eq "John"')).toMatchInlineSnapshot(
-    `"(((await f.get.call(c,c.user,"age"))>18)&&((await f.get.call(c,c.user,"name"))==="John"))"`,
+    `"(await f.get.call(c,c.user,"age"))>18&&(await f.get.call(c,c.user,"name"))==="John""`,
   )
-  expect(compile('not x and not y')).toMatchInlineSnapshot(
-    `"(!c.x&&!c.y)"`,
+  expect(compile('not a and not b')).toMatchInlineSnapshot(
+    `"!c.a&&!c.b"`,
   )
-  expect(compile('x or b and c')).toMatchInlineSnapshot(
-    `"(c.x||(c.b&&c.c))"`,
+  expect(compile('a or b and c')).toMatchInlineSnapshot(
+    `"c.a||c.b&&c.c"`,
   )
-  expect(compile('x and b or c')).toMatchInlineSnapshot(
-    `"((c.x&&c.b)||c.c)"`,
+  expect(compile('a and b or c')).toMatchInlineSnapshot(
+    `"c.a&&c.b||c.c"`,
   )
 })
 
 it('real world', () => {
-  expect(compile('f(x|a, y + b, z and c)')).toMatchInlineSnapshot(
-    `"c.f((await f.a.call(c,c.x)),(c.y+c.b),(c.z&&c.c))"`,
+  expect(compile('f(a|x, y + b, z and c)')).toMatchInlineSnapshot(
+    `"c.f((await f.x.call(c,c.a)),c.y+c.b,c.z&&c.c)"`,
   )
-  expect(compile('(x, y) = z')).toMatchInlineSnapshot(
-    `"Object.assign(c,f.pick.call(c,c.z,["x","y"]));"`,
+  expect(compile('(a, b) = c')).toMatchInlineSnapshot(
+    `"Object.assign(c,f.pick.call(c,c.c,["a","b"]));"`,
   )
-  expect(compile('(x, y, z) = a | b')).toMatchInlineSnapshot(
-    `"Object.assign(c,f.pick.call(c,(await f.b.call(c,c.a)),["x","y","z"]));"`,
+  expect(compile('(a, b, c) = x | y')).toMatchInlineSnapshot(
+    `"Object.assign(c,f.pick.call(c,(await f.y.call(c,c.x)),["a","b","c"]));"`,
   )
-  expect(compile('(x, y) of items | f(a, "b")')).toMatchInlineSnapshot(
-    `"const {x,y} of (await f.f.call(c,c.items,c.a,"b"))"`,
+  expect(compile('(a, b) of items | f(x, "y")')).toMatchInlineSnapshot(
+    `"const {a,b} of (await f.f.call(c,c.items,c.x,"y"))"`,
   )
 })

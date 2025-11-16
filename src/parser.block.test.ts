@@ -1,17 +1,23 @@
 import { expect, it } from 'vitest'
 import { parse } from '../test/__helper'
 
-it('invalid', async () => {
+it('error', async () => {
   try {
     await parse('{{ block }}')
     expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[TypeError: Cannot destructure property 'type' of 'tag.value' as it is null.]`,
+      `[CompileError: "block" requires expression]`,
     )
     expect(error.details).toMatchInlineSnapshot(
-      `undefined`,
+      `
+      ""block" requires expression
+
+      1｜ {{ block }}
+       ｜ ^         ^
+      "
+    `,
     )
   }
   try {
@@ -20,312 +26,191 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[ParseError: "block" tag must have a title]`,
+      `[CompileError: Unclosed "block"]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `
-      ""block" tag must have a title
+      "Unclosed "block"
 
-      1: {{ block "" }}
+      1｜ {{ block "" }}
+       ｜ ^            ^
       "
     `,
     )
   }
 })
 
-it('1', async () => {
-  expect(
-    await parse('{{ block title }}1{{ endblock }}'),
-  ).toMatchInlineSnapshot(
-    `
-    {
-      "end": 17,
-      "name": "block",
-      "next": {
-        "end": 18,
-        "name": "raw",
-        "next": {
-          "end": 32,
-          "name": "endblock",
-          "next": null,
-          "previous": [Circular],
-          "raw": "{{ endblock }}",
-          "start": 18,
-          "stripAfter": false,
-          "stripBefore": false,
-          "value": null,
-        },
-        "previous": [Circular],
-        "raw": "1",
-        "start": 17,
-      },
-      "previous": null,
-      "raw": "{{ block title }}",
-      "start": 0,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": {
-        "end": 5,
-        "raw": "title",
-        "start": 0,
-        "type": "ID",
-        "value": "title",
-      },
-    }
-  `,
-  )
-})
-
-it('2', async () => {
-  expect(
-    await parse('{{ block title }}1{{ endblock }}{{ block title }}{{ super }}2{{ endblock }}'),
-  ).toMatchInlineSnapshot(
-    `
-    {
-      "end": 49,
-      "name": "block",
-      "next": {
-        "end": 17,
-        "name": "block",
-        "next": {
-          "end": 18,
-          "name": "raw",
-          "next": {
-            "end": 32,
-            "name": "endblock",
-            "next": {
-              "end": 61,
-              "name": "raw",
-              "next": {
-                "end": 75,
-                "name": "endblock",
-                "next": null,
-                "previous": [Circular],
-                "raw": "{{ endblock }}",
-                "start": 61,
-                "stripAfter": false,
-                "stripBefore": false,
-                "value": null,
-              },
-              "previous": [Circular],
-              "raw": "2",
-              "start": 60,
-            },
-            "previous": [Circular],
-            "raw": "{{ endblock }}",
-            "start": 18,
-            "stripAfter": false,
-            "stripBefore": false,
-            "value": null,
-          },
-          "previous": [Circular],
-          "raw": "1",
-          "start": 17,
-        },
-        "previous": [Circular],
-        "raw": "{{ block title }}",
-        "start": 0,
-        "stripAfter": false,
-        "stripBefore": false,
-        "value": {
-          "end": 5,
-          "raw": "title",
-          "start": 0,
-          "type": "ID",
-          "value": "title",
-        },
-      },
-      "previous": null,
-      "raw": "{{ block title }}",
-      "start": 32,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": {
-        "end": 5,
-        "raw": "title",
-        "start": 0,
-        "type": "ID",
-        "value": "title",
-      },
-    }
-  `,
-  )
-})
-
-it('3', async () => {
-  expect(
-    await parse('{{ block title }}1{{ endblock }}{{ block title }}2{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}'),
-  ).toMatchInlineSnapshot(
-    `
-    {
-      "end": 81,
-      "name": "block",
-      "next": {
-        "end": 49,
-        "name": "block",
-        "next": {
-          "end": 50,
-          "name": "raw",
-          "next": {
-            "end": 64,
-            "name": "endblock",
-            "next": {
-              "end": 93,
-              "name": "raw",
-              "next": {
-                "end": 107,
-                "name": "endblock",
-                "next": null,
-                "previous": [Circular],
-                "raw": "{{ endblock }}",
-                "start": 93,
-                "stripAfter": false,
-                "stripBefore": false,
-                "value": null,
-              },
-              "previous": [Circular],
-              "raw": "3",
-              "start": 92,
-            },
-            "previous": [Circular],
-            "raw": "{{ endblock }}",
-            "start": 50,
-            "stripAfter": false,
-            "stripBefore": false,
-            "value": null,
-          },
-          "previous": [Circular],
-          "raw": "2",
-          "start": 49,
-        },
-        "previous": [Circular],
-        "raw": "{{ block title }}",
-        "start": 32,
-        "stripAfter": false,
-        "stripBefore": false,
-        "value": {
-          "end": 5,
-          "raw": "title",
-          "start": 0,
-          "type": "ID",
-          "value": "title",
-        },
-      },
-      "previous": null,
-      "raw": "{{ block title }}",
-      "start": 64,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": {
-        "end": 5,
-        "raw": "title",
-        "start": 0,
-        "type": "ID",
-        "value": "title",
-      },
-    }
-  `,
-  )
-})
-
-it('hoist', async () => {
+it('block', async () => {
   expect(
     await parse('{{ block title }}1{{ endblock }}{{ if x }}{{ block title }}2{{ super }}{{ endblock }}{{ endif }}'),
   ).toMatchInlineSnapshot(
 
     `
-    {
-      "end": 59,
-      "name": "block",
-      "next": {
-        "end": 60,
-        "name": "raw",
-        "next": {
-          "end": 17,
-          "name": "block",
-          "next": {
-            "end": 18,
-            "name": "raw",
-            "next": {
-              "end": 32,
-              "name": "endblock",
-              "next": {
-                "end": 85,
-                "name": "endblock",
-                "next": {
-                  "end": 42,
-                  "name": "if",
-                  "next": {
-                    "end": 96,
-                    "name": "endif",
-                    "next": null,
-                    "previous": [Circular],
-                    "raw": "{{ endif }}",
-                    "start": 85,
-                    "stripAfter": false,
-                    "stripBefore": false,
-                    "value": null,
-                  },
-                  "previous": [Circular],
-                  "raw": "{{ if x }}",
-                  "start": 32,
-                  "stripAfter": false,
-                  "stripBefore": false,
-                  "value": {
-                    "end": 1,
-                    "raw": "x",
-                    "start": 0,
-                    "type": "ID",
-                    "value": "x",
-                  },
+    TemplateNode {
+      "children": [
+        BlockNode {
+          "body": [
+            TextNode {
+              "loc": {
+                "end": {
+                  "column": 19,
+                  "line": 1,
                 },
-                "previous": [Circular],
-                "raw": "{{ endblock }}",
-                "start": 71,
-                "stripAfter": false,
-                "stripBefore": false,
-                "value": null,
+                "start": {
+                  "column": 18,
+                  "line": 1,
+                },
               },
-              "previous": [Circular],
-              "raw": "{{ endblock }}",
-              "start": 18,
-              "stripAfter": false,
-              "stripBefore": false,
-              "value": null,
+              "strip": {},
+              "type": "TEXT",
+              "val": "1",
             },
-            "previous": [Circular],
-            "raw": "1",
-            "start": 17,
+          ],
+          "loc": {
+            "end": {
+              "column": 18,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
           },
-          "previous": [Circular],
-          "raw": "{{ block title }}",
-          "start": 0,
-          "stripAfter": false,
-          "stripBefore": false,
-          "value": {
-            "end": 5,
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "BLOCK",
+          "val": {
+            "loc": {
+              "end": {
+                "column": 15,
+                "line": 1,
+              },
+              "start": {
+                "column": 10,
+                "line": 1,
+              },
+            },
             "raw": "title",
-            "start": 0,
             "type": "ID",
             "value": "title",
           },
         },
-        "previous": [Circular],
-        "raw": "2",
-        "start": 59,
+        IfNode {
+          "alternatives": [],
+          "body": [
+            BlockNode {
+              "body": [
+                TextNode {
+                  "loc": {
+                    "end": {
+                      "column": 61,
+                      "line": 1,
+                    },
+                    "start": {
+                      "column": 60,
+                      "line": 1,
+                    },
+                  },
+                  "strip": {},
+                  "type": "TEXT",
+                  "val": "2",
+                },
+                SuperNode {
+                  "loc": {
+                    "end": {
+                      "column": 72,
+                      "line": 1,
+                    },
+                    "start": {
+                      "column": 61,
+                      "line": 1,
+                    },
+                  },
+                  "strip": {
+                    "after": false,
+                    "before": false,
+                  },
+                  "type": "SUPER",
+                  "val": " super ",
+                },
+              ],
+              "loc": {
+                "end": {
+                  "column": 60,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 43,
+                  "line": 1,
+                },
+              },
+              "strip": {
+                "after": false,
+                "before": false,
+              },
+              "type": "BLOCK",
+              "val": {
+                "loc": {
+                  "end": {
+                    "column": 57,
+                    "line": 1,
+                  },
+                  "start": {
+                    "column": 52,
+                    "line": 1,
+                  },
+                },
+                "raw": "title",
+                "type": "ID",
+                "value": "title",
+              },
+            },
+          ],
+          "loc": {
+            "end": {
+              "column": 43,
+              "line": 1,
+            },
+            "start": {
+              "column": 33,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "test": {
+            "loc": {
+              "end": {
+                "column": 40,
+                "line": 1,
+              },
+              "start": {
+                "column": 39,
+                "line": 1,
+              },
+            },
+            "raw": "x",
+            "type": "ID",
+            "value": "x",
+          },
+          "type": "IF",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 97,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
       },
-      "previous": null,
-      "raw": "{{ block title }}",
-      "start": 42,
-      "stripAfter": false,
-      "stripBefore": false,
-      "value": {
-        "end": 5,
-        "raw": "title",
-        "start": 0,
-        "type": "ID",
-        "value": "title",
-      },
+      "type": "TEMPLATE",
     }
   `,
   )

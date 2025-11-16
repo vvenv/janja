@@ -1,14 +1,15 @@
-import type { Config } from './types'
 import { CONTEXT } from './identifiers'
+import { OutScript } from './out-script'
 
-export class Context {
+export class Context extends OutScript {
   context = CONTEXT
 
-  private index = 0
   private contexts: string[] = [CONTEXT]
-  private expected: string[] = []
+  private index = 0
 
-  constructor(public options: Config) {}
+  constructor() {
+    super()
+  }
 
   in() {
     this.context = `${this.context}_${this.index++}`
@@ -22,33 +23,5 @@ export class Context {
     }
     this.contexts.pop()
     this.context = this.contexts.at(-1) ?? CONTEXT
-  }
-
-  expect(name: string) {
-    this.expected.push(name)
-  }
-
-  matchAny(name: string) {
-    return this.expected.includes(name)
-  }
-
-  match(name: string) {
-    return this.expected.at(-1) === name
-  }
-
-  consume(name: string) {
-    if (this.match(name)) {
-      this.expected.pop()
-
-      return true
-    }
-
-    return false
-  }
-
-  validate() {
-    if (this.expected.length) {
-      throw new Error(`expected tokens "${this.expected.join(', ')}", but got nothing`)
-    }
   }
 }

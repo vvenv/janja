@@ -44,10 +44,7 @@ const defaultTemplate
     || `{{# This is a comment }}
 {{# This is a
 comment }}
-{{ comment }}
-This is a comment with variable "name='{{= name }}'"
-{{ endcomment }}
-{{ layout "default" }}
+{{ include "default" }}
 {{ include "header" }}
 {{ block body }}
   {{ super }}

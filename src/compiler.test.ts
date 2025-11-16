@@ -1,38 +1,21 @@
 import { expect, it } from 'vitest'
 import { compile } from '../test/__helper'
 
-it('invalid', async () => {
+it('error', async () => {
   try {
     await compile('{{ if }}')
     expect(true).toBe(false)
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: "if" tag must have expression]`,
+      `[CompileError: "if" requires expression]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `
-      ""if" tag must have expression
+      ""if" requires expression
 
-      1: {{ if }}
-         ^^^^^^^^
-      "
-    `,
-    )
-  }
-  try {
-    await compile('{{ if x }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: expected tokens "endif", but got nothing]`,
-    )
-    expect(error.details).toMatchInlineSnapshot(
-      `
-      "expected tokens "endif", but got nothing
-
-
+      1｜ {{ if }}
+       ｜ ^      ^
       "
     `,
     )
@@ -43,14 +26,32 @@ it('invalid', async () => {
   }
   catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: unexpected "endif"]`,
+      `[CompileError: Unexpected "endif" directive]`,
     )
     expect(error.details).toMatchInlineSnapshot(
       `
-      "unexpected "endif"
+      "Unexpected "endif" directive
 
-      1: {{ endif }}
-         ^^^^^^^^^^^
+      1｜ {{ endif }}
+       ｜ ^         ^
+      "
+    `,
+    )
+  }
+  try {
+    await compile('{{ x }}')
+    expect(true).toBe(false)
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: Unknown "x" directive]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      "Unknown "x" directive
+
+      1｜ {{ x }}
+       ｜ ^     ^
       "
     `,
     )
@@ -58,58 +59,62 @@ it('invalid', async () => {
 })
 
 it('escape tag', async () => {
-  expect(await compile('{{= "{{= escape }}" }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e("{{= escape ");s+="\\" }}";return s;})();"`,
+  expect(
+    await compile('{{= "{\\{ escape }\\}" }}'),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";s+=e("{{ escape }}");return s;})();"`,
   )
-  expect(await compile('{{= "\\{\\{= escape \\}\\}" }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e("{{= escape }}");return s;})();"`,
+  expect(
+    await compile('{{= "\\{\\{ escape \\}\\}" }}'),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";s+=e("{{ escape }}");return s;})();"`,
   )
 })
 
 it('empty', async () => {
-  expect(await compile('')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";return s;})();"`,
+  expect(
+    await compile(''),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";return s;})();"`,
   )
 })
 
 it('null', async () => {
-  expect(await compile('{{= null }}')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+=e(null);return s;})();"`,
+  expect(
+    await compile('{{= null }}'),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";s+=e(null);return s;})();"`,
   )
 })
 
 it('html tags', async () => {
-  expect(await compile('<foo>foo</foo>')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="<foo>foo</foo>";return s;})();"`,
+  expect(
+    await compile('<foo>foo</foo>'),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";s+="<foo>foo</foo>";return s;})();"`,
   )
 })
 
 it('quotes', async () => {
-  expect(await compile('"\'foo\'"')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="\\"'foo'\\"";return s;})();"`,
+  expect(
+    await compile('"\'foo\'"'),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";s+="\\"'foo'\\"";return s;})();"`,
   )
 })
 
 it('line break feed', async () => {
-  expect(await compile('\nfoo\n')).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";s+="\\nfoo\\n";return s;})();"`,
+  expect(
+    await compile('\nfoo\n'),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";s+="\\nfoo\\n";return s;})();"`,
   )
 })
 
-it('translate', async () => {
+it('filters', async () => {
   expect(
-    await compile('{{ "hello, {name}" | t name="Janja" }}'),
+    await compile('{{= x | f(y, true, "a", 1) }}'),
   ).toMatchInlineSnapshot(
-    `""use strict";return(async()=>{let s="";return s;})();"`,
-  )
-})
-
-it('strictMode off', async () => {
-  expect(
-    await compile('', {
-      strictMode: false,
-    }),
-  ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";return s;})();"`,
+    `"return(async()=>{let s="";s+=e((await f.f.call(c,c.x,c.y,true,"a",1)));return s;})();"`,
   )
 })

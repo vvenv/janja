@@ -1,27 +1,19 @@
-import type { SourceMap } from './source-map'
-import { highlightSource } from './highlight-source'
+import type { Loc } from './types'
+import { CompileError } from './compile-error'
 
-interface RenderErrorOptions {
-  source: string
-  error: Error
-  sourcemap: SourceMap
-}
-
-export class RenderError extends Error {
+export class RenderError extends CompileError {
   constructor(
     message: string,
-    private options: RenderErrorOptions,
+    protected src: string,
+    protected getLoc: () => Loc,
   ) {
-    super(message)
-    this.name = 'RenderError'
-    Error.captureStackTrace?.(this, this.constructor)
+    super(message, src)
+    this.name = 'CompileError'
+    RenderError.captureStackTrace?.(this, this.constructor)
   }
 
   get details() {
-    const ranges = this.options.sourcemap.getRanges(
-      +(this.options.error.stack!.match(/<anonymous>:\d:(\d+)\)/)?.[1] ?? 0),
-    )
-
-    return highlightSource(this.message, this.options.source, ranges)
+    this.loc = this.getLoc()
+    return super.details
   }
 }

@@ -1,308 +1,186 @@
+import type { ASTNode } from './ast'
 import type {
-  Config,
-  IdExp,
-  LitExp,
-  Tag,
+  CommentToken,
+  DirectiveExpression,
+  DirectiveToken,
+  OutputToken,
+  TextToken,
+  Token,
 } from './types'
-import { parser } from './exp'
-import { BLOCK, ENDBLOCK, INCLUDE, LAYOUT, RAW, SUPER } from './identifiers'
-import { ParseError } from './parse-error'
-import { unescapeTag } from './unescape-tag'
+import {
+  CommentNode,
+  OutputNode,
+  TemplateNode,
+  TextNode,
+  UnexpectedDirectiveNode,
+  UnknownDirectiveNode,
+} from './ast'
+import { CompileError } from './compile-error'
+import { ExpParser } from './exp-parser'
+import { Tokenizer } from './tokenizer'
+import { TokenType } from './types'
 
-export class Parser {
-  private template = ''
-  private index = 0
-  private first: Tag | null = null
-  private group = ''
-  private blocks: Record<string, Tag[][]> = {}
-  private cursor: Tag | null = null
+export class Parser extends Tokenizer {
+  private expParser!: ExpParser
+  protected cursor!: number
 
-  constructor(public options: Config) {}
+  parse(template: string) {
+    this.tokenize(template)
+    const start = this.tokens[0]?.loc.start ?? { line: 1, column: 1 }
+    const end = this.tokens.at(-1)?.loc.end ?? { line: 1, column: 1 }
 
-  async parse(
-    template: string,
-  ) {
-    this.template = template
-    this.index = 0
-    this.blocks = {}
+    this.expParser = new ExpParser(template)
 
-    const tagRe = /\{\{(-)?([=#])?((?:\\[{}]|(?!\{\}).)+?)(-)?\}\}/gs
-
-    let match
-
-    while ((match = tagRe.exec(template))) {
-      if (match.index > this.index) {
-        this.addRaw(this.index, match.index)
-      }
-
-      await this.addTag(match)
-      this.index = match.index + match[0].length
-    }
-
-    if (this.index < template.length) {
-      this.addRaw(this.index, template.length)
-    }
-
-    this.cursor = this.first
-
-    this.rebuildBlocks()
-
-    return this.cursor
+    this.cursor = 0
+    return new TemplateNode(this.parseUntil(), { start, end })
   }
 
-  private addRaw(start: number, end: number) {
-    this.push({
-      name: RAW,
-      raw: this.template.slice(start, end),
-      previous: null,
-      next: null,
-      start,
-      end,
-    })
+  parseUntil(names?: string[]) {
+    const nodes: ASTNode[] = []
+    let prevToken: Token | null = null
+
+    while (true) {
+      const token = this.peek()
+
+      if (!token
+        || (
+          token.type === TokenType.DIRECTIVE
+          && names?.includes((token as DirectiveToken).name.toLowerCase()))
+      ) {
+        break
+      }
+
+      if (prevToken?.strip?.after && token.type === TokenType.TEXT) {
+        token.strip.start = true
+      }
+
+      if (token.strip?.before && prevToken?.type === TokenType.TEXT) {
+        prevToken.strip.end = true
+      }
+
+      switch (token.type) {
+        case TokenType.COMMENT:
+          nodes.push(this.createComment(token as CommentToken))
+          break
+        case TokenType.DIRECTIVE:
+          nodes.push(this.createDirective(token as DirectiveToken))
+          break
+        case TokenType.OUTPUT:
+          nodes.push(this.createOutput(token as OutputToken))
+          break
+        case TokenType.TEXT:
+          nodes.push(this.createText(token as TextToken))
+          break
+      }
+
+      prevToken = token
+    }
+
+    return nodes
   }
 
-  private async addTag(match: RegExpExecArray) {
-    const start = match.index
-    const end = start + match[0].length
-
-    const base = {
-      raw: match[0],
-      previous: null,
-      next: null,
-      stripBefore: match[1] === '-',
-      stripAfter: match[4] === '-',
-      start,
-      end,
-    }
-
-    if (match[2] === '#') {
-      this.push({
-        ...base,
-        name: match[2],
-        value: {
-          type: 'LIT',
-          value: unescapeTag(match[3]),
-        } as LitExp,
-      })
-    }
-    else if (match[2] === '=') {
-      this.push({
-        ...base,
-        name: match[2],
-        value: parser.parse(unescapeTag(match[3])),
-      })
-    }
-    else {
-      const [, name, value = '']
-        = match[3].trim().match(/^([a-z]+)(?: (.+))?$/) ?? []
-
-      if (name === LAYOUT) {
-        await this.layout(value)
-      }
-      else if (name === INCLUDE) {
-        await this.include(value)
-      }
-      else {
-        this.push({
-          ...base,
-          name,
-          value: parser.parse(unescapeTag(value)),
-        })
-      }
-    }
+  private createComment({ val, loc, strip }: CommentToken) {
+    this.advance()
+    return new CommentNode(val, loc, strip)
   }
 
-  private async layout(value: string) {
-    const exp = parser.parse(value)
-
-    if (exp?.type !== 'LIT' || typeof exp.value !== 'string' || !exp.value) {
-      throw new ParseError(`"layout" tag must have a file path`, {
-        source: this.template,
-        range: {
-          start: this.index,
-          end: this.index + value.length,
-        },
-      })
-    }
-
-    await this.child(`layouts/${exp.value}.janja`)
+  private createOutput({ val, loc, strip }: OutputToken) {
+    this.advance()
+    return new OutputNode(val, loc, strip, this.parseExp({ val, loc })!)
   }
 
-  private async include(value: string) {
-    const exp = parser.parse(value.replace(/\?$/, ''))
-
-    if (exp?.type !== 'LIT' || typeof exp.value !== 'string' || !exp.value) {
-      throw new ParseError(`"include" tag must have a file path`, {
-        source: this.template,
-        range: {
-          start: this.index,
-          end: this.index + value.length,
-        },
-      })
-    }
-
-    await this.child(`partials/${exp.value}.janja`, value.endsWith('?'))
+  private createText({ val, loc, strip }: TextToken) {
+    this.advance()
+    return new TextNode(val, loc, strip)
   }
 
-  private async child(path: string, optional?: boolean) {
-    let content
-
-    try {
-      content = await this.options.loader!(path)
-    }
-    catch (error: any) {
-      if (optional) {
-        return
-      }
-
-      throw error
-    }
-
-    if (!content) {
-      return
-    }
-
-    let cursor = await new Parser(this.options).parse(content)
-
-    while (cursor) {
-      this.push(cursor)
-      cursor = cursor.next
-    }
+  private createDirective(token: DirectiveToken) {
+    return this.options.parsers[token.name.toLowerCase()]?.(token, this)
+      ?? this.createUnknownDirective(token)
   }
 
-  private push(tag: Tag) {
-    if (tag.name === BLOCK) {
-      const { type, value } = tag.value! as IdExp
+  createUnexpectedDirective(token: DirectiveToken) {
+    this.options.debug?.(
+      new CompileError(
+        `Unexpected "${token.name}" directive`,
+        this.template,
+        token.loc,
+      ),
+    )
 
-      if (type !== 'ID') {
-        throw new ParseError(`"${BLOCK}" tag must have a title`, {
-          source: this.template,
-          range: {
-            start: this.index,
-            end: this.index + value.length,
-          },
-        })
-      }
-
-      this.group = value
-
-      // child blocks
-      if (this.blocks[value]) {
-        this.blocks[value].push([tag])
-
-        return
-      }
-
-      // parent block
-      this.blocks[value] = [[tag]]
-    }
-    else if (this.group) {
-      const chunks = this.blocks[this.group]
-
-      if (tag.name === ENDBLOCK) {
-        this.group = ''
-      }
-
-      chunks.at(-1)!.push(tag)
-
-      // child blocks
-      if (chunks.length > 1) {
-        return
-      }
-    }
-
-    if (this.cursor) {
-      tag.previous = this.cursor
-      this.cursor.next = tag
-    }
-    else {
-      this.first = tag
-    }
-
-    this.cursor = tag
+    this.advance()
+    return new UnexpectedDirectiveNode(
+      token.name,
+      token.val,
+      token.loc,
+      token.strip,
+    )
   }
 
-  /**
-   * @note Block tags are hoisted to top level
-   */
-  private rebuildBlocks() {
-    for (const chunks of Object.values(this.blocks)) {
-      if (chunks.length < 2) {
-        continue
-      }
+  private createUnknownDirective(token: DirectiveToken) {
+    this.options.debug?.(
+      new CompileError(
+        `Unknown "${token.name}" directive`,
+        this.template,
+        token.loc,
+      ),
+    )
 
-      const [[{ previous }]] = chunks
-      const { next } = chunks[0].at(-1)!
+    this.advance()
+    return new UnknownDirectiveNode(
+      token.name,
+      token.val,
+      token.loc,
+      token.strip,
+    )
+  }
 
-      // break the chain
-      if (previous) {
-        if (previous.next) {
-          previous.next.previous = null
-        }
+  parseExp({ val, loc }: DirectiveExpression) {
+    return this.expParser.parse(val, loc)!
+  }
 
-        previous.next = null
-      }
-      else {
-        this.first = null
-        this.cursor = null
-      }
+  peek() {
+    return this.tokens.at(this.cursor) ?? null
+  }
 
-      if (next) {
-        if (next.previous) {
-          next.previous.next = null
-        }
+  advance() {
+    this.cursor++
+  }
 
-        next.previous = null
-      }
+  match(name: string) {
+    return (this.peek() as DirectiveToken)?.name === name
+  }
 
-      const body = this.rebuildBlockBody(chunks.pop(), chunks)
-      this.rebuildBlockChain(body, previous, next)
+  isDirective(names: string[]) {
+    const token = this.peek()
+    if (token?.type !== TokenType.DIRECTIVE) {
+      return false
+    }
+
+    return names.includes((token as DirectiveToken).name.toLowerCase())
+  }
+
+  requireExpression({ expression, name, loc }: DirectiveToken) {
+    if (!expression) {
+      throw this.options.debug?.(
+        new CompileError(
+          `"${name}" requires expression`,
+          this.template,
+          loc,
+        ),
+      )
     }
   }
 
-  private rebuildBlockBody(child: Tag[] | undefined, parents: Tag[][]) {
-    if (!child) {
-      return []
-    }
-
-    const chunk: Tag[] = []
-
-    child.forEach((tag) => {
-      if (tag.name === SUPER) {
-        this.rebuildBlockBody(
-          parents.pop(),
-          parents,
-        ).forEach(t => chunk.push(t))
-      }
-      else {
-        chunk.push(tag)
-      }
-    })
-
-    return chunk
-  }
-
-  private rebuildBlockChain(
-    tags: Tag[],
-    previous: Tag | null,
-    next: Tag | null,
-  ) {
-    for (let i = 0; i < tags.length; i++) {
-      tags[i].previous = tags[i - 1] || previous
-      tags[i].next = tags[i + 1] || next
-    }
-
-    if (previous) {
-      [previous.next] = tags
-    }
-
-    if (next) {
-      next.previous = tags[tags.length - 1]
-    }
-
-    if (!this.first) {
-      [this.first] = tags
-      this.cursor = this.first
+  requireNoExpression({ expression, name, loc }: DirectiveToken) {
+    if (expression) {
+      throw this.options.debug?.(
+        new CompileError(
+          `"${name}" should not have expression`,
+          this.template,
+          loc,
+        ),
+      )
     }
   }
 }

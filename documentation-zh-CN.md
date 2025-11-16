@@ -55,7 +55,6 @@
 
 ```janja
 {{# 这是注释 }}
-{{ comment }}多行注释{{ endcomment }}
 ```
 
 ### **expression（=）**：表达式输出

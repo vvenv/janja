@@ -2,63 +2,66 @@ import { expect, it } from 'vitest'
 import { ExpParser } from './exp-parser'
 
 function parse(template: string) {
-  return new ExpParser().parse(template)
+  return new ExpParser(template).parse(template, {
+    start: { line: 1, column: 1 },
+    end: { line: 1, column: template.length },
+  })
 }
 
-it('invalid', () => {
+it('error', () => {
   expect(() => parse('not')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: unexpected end of expression]`,
+    `[CompileError: unexpected end of expression]`,
   )
   expect(() => parse('and')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: no left operand for "AND"]`,
+    `[CompileError: no left operand for "AND"]`,
   )
   expect(() => parse('a and')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: no right operand for "AND"]`,
+    `[CompileError: no right operand for "AND"]`,
   )
   expect(() => parse('(')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: unexpected end of expression]`,
+    `[CompileError: unexpected end of expression]`,
   )
   expect(() => parse('(a')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected "RP" after "LP"]`,
+    `[CompileError: expected "RP" after "LP"]`,
   )
   expect(() => parse('a(')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected "RP" after "LP"]`,
+    `[CompileError: expected "RP" after "LP"]`,
   )
   expect(() => parse('a.')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected "ID" after "DOT"]`,
+    `[CompileError: expected "ID" after "DOT"]`,
   )
   expect(() => parse('a.1')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected "ID" after "DOT"]`,
+    `[CompileError: expected "ID" after "DOT"]`,
   )
   expect(() => parse('|')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: no left operand for "PIPE"]`,
+    `[CompileError: no left operand for "PIPE"]`,
   )
   expect(() => parse('a |')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected "ID" after "PIPE"]`,
+    `[CompileError: expected "ID" after "PIPE"]`,
   )
   expect(() => parse('a | 1')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected "ID" after "PIPE"]`,
+    `[CompileError: expected "ID" after "PIPE"]`,
   )
   expect(() => parse('a | f(')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected "RP" after "LP"]`,
+    `[CompileError: expected "RP" after "LP"]`,
   )
   expect(() => parse('x if')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected test expression]`,
+    `[CompileError: expected test expression]`,
   )
   expect(() => parse('x if y else')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected alternative expression]`,
+    `[CompileError: expected alternative expression]`,
   )
   expect(() => parse('x if y else ,')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected alternative expression]`,
+    `[CompileError: expected alternative expression]`,
   )
   expect(() => parse('x if else')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected test expression]`,
+    `[CompileError: expected test expression]`,
   )
   expect(() => parse('x if if')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected test expression]`,
+    `[CompileError: expected test expression]`,
   )
   expect(() => parse('x if ,')).toThrowErrorMatchingInlineSnapshot(
-    `[ParseError: expected test expression]`,
+    `[CompileError: expected test expression]`,
   )
 })
 
@@ -72,9 +75,17 @@ it('string', () => {
   expect(parse('\'foo\'')).toMatchInlineSnapshot(
     `
     {
-      "end": 5,
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "'foo'",
-      "start": 0,
       "type": "LIT",
       "value": "foo",
     }
@@ -83,9 +94,17 @@ it('string', () => {
   expect(parse('"bar"')).toMatchInlineSnapshot(
     `
     {
-      "end": 5,
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": ""bar"",
-      "start": 0,
       "type": "LIT",
       "value": "bar",
     }
@@ -97,9 +116,17 @@ it('number', () => {
   expect(parse('123')).toMatchInlineSnapshot(
     `
     {
-      "end": 3,
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "123",
-      "start": 0,
       "type": "LIT",
       "value": 123,
     }
@@ -108,9 +135,17 @@ it('number', () => {
   expect(parse('12.34')).toMatchInlineSnapshot(
     `
     {
-      "end": 5,
+      "loc": {
+        "end": {
+          "column": 6,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "12.34",
-      "start": 0,
       "type": "LIT",
       "value": 12.34,
     }
@@ -122,9 +157,17 @@ it('boolean', () => {
   expect(parse('true')).toMatchInlineSnapshot(
     `
     {
-      "end": 4,
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "true",
-      "start": 0,
       "type": "LIT",
       "value": true,
     }
@@ -133,9 +176,17 @@ it('boolean', () => {
   expect(parse('false')).toMatchInlineSnapshot(
     `
     {
-      "end": 5,
+      "loc": {
+        "end": {
+          "column": 6,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "false",
-      "start": 0,
       "type": "LIT",
       "value": false,
     }
@@ -147,9 +198,17 @@ it('null and undefined', () => {
   expect(parse('null')).toMatchInlineSnapshot(
     `
     {
-      "end": 4,
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "null",
-      "start": 0,
       "type": "LIT",
       "value": null,
     }
@@ -158,9 +217,17 @@ it('null and undefined', () => {
   expect(parse('undefined')).toMatchInlineSnapshot(
     `
     {
-      "end": 9,
+      "loc": {
+        "end": {
+          "column": 10,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "undefined",
-      "start": 0,
       "type": "LIT",
       "value": undefined,
     }
@@ -172,9 +239,17 @@ it('id', () => {
   expect(parse('a')).toMatchInlineSnapshot(
     `
     {
-      "end": 1,
+      "loc": {
+        "end": {
+          "column": 2,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "a",
-      "start": 0,
       "type": "ID",
       "value": "a",
     }
@@ -183,9 +258,17 @@ it('id', () => {
   expect(parse('abc')).toMatchInlineSnapshot(
     `
     {
-      "end": 3,
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "abc",
-      "start": 0,
       "type": "ID",
       "value": "abc",
     }
@@ -200,25 +283,49 @@ it('dot', () => {
   expect(parse('a.b.c')).toMatchInlineSnapshot(
     `
     {
-      "end": 1,
+      "loc": {
+        "end": {
+          "column": 2,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "path": [
         {
-          "end": 3,
+          "loc": {
+            "end": {
+              "column": 4,
+              "line": 1,
+            },
+            "start": {
+              "column": 3,
+              "line": 1,
+            },
+          },
           "raw": "b",
-          "start": 2,
           "type": "ID",
           "value": "b",
         },
         {
-          "end": 5,
+          "loc": {
+            "end": {
+              "column": 6,
+              "line": 1,
+            },
+            "start": {
+              "column": 5,
+              "line": 1,
+            },
+          },
           "raw": "c",
-          "start": 4,
           "type": "ID",
           "value": "c",
         },
       ],
       "raw": "a",
-      "start": 0,
       "type": "ID",
       "value": "a",
     }
@@ -229,46 +336,94 @@ it('dot', () => {
     {
       "args": [
         {
-          "end": 7,
+          "loc": {
+            "end": {
+              "column": 8,
+              "line": 1,
+            },
+            "start": {
+              "column": 7,
+              "line": 1,
+            },
+          },
           "raw": "x",
-          "start": 6,
           "type": "ID",
           "value": "x",
         },
         {
-          "end": 10,
+          "loc": {
+            "end": {
+              "column": 11,
+              "line": 1,
+            },
+            "start": {
+              "column": 10,
+              "line": 1,
+            },
+          },
           "raw": "y",
-          "start": 9,
           "type": "ID",
           "value": "y",
         },
         {
-          "end": 13,
+          "loc": {
+            "end": {
+              "column": 14,
+              "line": 1,
+            },
+            "start": {
+              "column": 13,
+              "line": 1,
+            },
+          },
           "raw": "z",
-          "start": 12,
           "type": "ID",
           "value": "z",
         },
       ],
-      "end": 1,
+      "loc": {
+        "end": {
+          "column": 2,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "path": [
         {
-          "end": 3,
+          "loc": {
+            "end": {
+              "column": 4,
+              "line": 1,
+            },
+            "start": {
+              "column": 3,
+              "line": 1,
+            },
+          },
           "raw": "b",
-          "start": 2,
           "type": "ID",
           "value": "b",
         },
         {
-          "end": 5,
+          "loc": {
+            "end": {
+              "column": 6,
+              "line": 1,
+            },
+            "start": {
+              "column": 5,
+              "line": 1,
+            },
+          },
           "raw": "c",
-          "start": 4,
           "type": "ID",
           "value": "c",
         },
       ],
       "raw": "a",
-      "start": 0,
       "type": "ID",
       "value": "a",
     }
@@ -281,15 +436,31 @@ it('not', () => {
     `
     {
       "argument": {
-        "end": 5,
+        "loc": {
+          "end": {
+            "column": 6,
+            "line": 1,
+          },
+          "start": {
+            "column": 5,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 4,
         "type": "ID",
         "value": "a",
       },
-      "end": 3,
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "not",
-      "start": 0,
       "type": "NOT",
       "value": "not",
     }
@@ -300,21 +471,45 @@ it('not', () => {
     {
       "argument": {
         "argument": {
-          "end": 9,
+          "loc": {
+            "end": {
+              "column": 10,
+              "line": 1,
+            },
+            "start": {
+              "column": 9,
+              "line": 1,
+            },
+          },
           "raw": "a",
-          "start": 8,
           "type": "ID",
           "value": "a",
         },
-        "end": 7,
+        "loc": {
+          "end": {
+            "column": 8,
+            "line": 1,
+          },
+          "start": {
+            "column": 5,
+            "line": 1,
+          },
+        },
         "raw": "not",
-        "start": 4,
         "type": "NOT",
         "value": "not",
       },
-      "end": 3,
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "not",
-      "start": 0,
       "type": "NOT",
       "value": "not",
     }
@@ -324,45 +519,93 @@ it('not', () => {
     `
     {
       "argument": {
-        "end": 6,
         "left": {
-          "end": 5,
+          "loc": {
+            "end": {
+              "column": 6,
+              "line": 1,
+            },
+            "start": {
+              "column": 5,
+              "line": 1,
+            },
+          },
           "raw": "x",
-          "start": 4,
           "type": "ID",
           "value": "x",
+        },
+        "loc": {
+          "end": {
+            "column": 8,
+            "line": 1,
+          },
+          "start": {
+            "column": 7,
+            "line": 1,
+          },
         },
         "raw": "|",
         "right": {
           "args": [
             {
-              "end": 11,
+              "loc": {
+                "end": {
+                  "column": 12,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 11,
+                  "line": 1,
+                },
+              },
               "raw": "a",
-              "start": 10,
               "type": "ID",
               "value": "a",
             },
             {
-              "end": 16,
+              "loc": {
+                "end": {
+                  "column": 15,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 14,
+                  "line": 1,
+                },
+              },
               "raw": ""b"",
-              "start": 13,
               "type": "LIT",
               "value": "b",
             },
           ],
-          "end": 9,
+          "loc": {
+            "end": {
+              "column": 10,
+              "line": 1,
+            },
+            "start": {
+              "column": 9,
+              "line": 1,
+            },
+          },
           "raw": "f",
-          "start": 8,
           "type": "ID",
           "value": "f",
         },
-        "start": 6,
         "type": "PIPE",
         "value": "|",
       },
-      "end": 3,
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "not",
-      "start": 0,
       "type": "NOT",
       "value": "not",
     }
@@ -374,23 +617,47 @@ it('and', () => {
   expect(parse('a and b')).toMatchInlineSnapshot(
     `
     {
-      "end": 5,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 6,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "and",
       "right": {
-        "end": 7,
+        "loc": {
+          "end": {
+            "column": 8,
+            "line": 1,
+          },
+          "start": {
+            "column": 7,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 6,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "AND",
       "value": "and",
     }
@@ -402,23 +669,47 @@ it('or', () => {
   expect(parse('a or b')).toMatchInlineSnapshot(
     `
     {
-      "end": 4,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "or",
       "right": {
-        "end": 6,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 6,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 5,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "OR",
       "value": "or",
     }
@@ -430,23 +721,47 @@ it('is', () => {
   expect(parse('a is b')).toMatchInlineSnapshot(
     `
     {
-      "end": 4,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "is",
       "right": {
-        "end": 6,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 6,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 5,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "IS",
       "value": "is",
     }
@@ -458,23 +773,47 @@ it('eq', () => {
   expect(parse('a eq b')).toMatchInlineSnapshot(
     `
     {
-      "end": 4,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "eq",
       "right": {
-        "end": 6,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 6,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 5,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "EQ",
       "value": "eq",
     }
@@ -486,23 +825,47 @@ it('ne', () => {
   expect(parse('a ne b')).toMatchInlineSnapshot(
     `
     {
-      "end": 4,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "ne",
       "right": {
-        "end": 6,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 6,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 5,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "NE",
       "value": "ne",
     }
@@ -514,23 +877,47 @@ it('add', () => {
   expect(parse('a + b')).toMatchInlineSnapshot(
     `
     {
-      "end": 2,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "+",
       "right": {
-        "end": 5,
+        "loc": {
+          "end": {
+            "column": 6,
+            "line": 1,
+          },
+          "start": {
+            "column": 5,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 4,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "ADD",
       "value": "+",
     }
@@ -542,9 +929,17 @@ it('sub', () => {
   expect(parse('a - b')).toMatchInlineSnapshot(
     `
     {
-      "end": 5,
+      "loc": {
+        "end": {
+          "column": 6,
+          "line": 1,
+        },
+        "start": {
+          "column": 5,
+          "line": 1,
+        },
+      },
       "raw": "b",
-      "start": 4,
       "type": "ID",
       "value": "b",
     }
@@ -556,23 +951,47 @@ it('mul', () => {
   expect(parse('a * b')).toMatchInlineSnapshot(
     `
     {
-      "end": 2,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "*",
       "right": {
-        "end": 5,
+        "loc": {
+          "end": {
+            "column": 6,
+            "line": 1,
+          },
+          "start": {
+            "column": 5,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 4,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "MUL",
       "value": "*",
     }
@@ -584,23 +1003,47 @@ it('div', () => {
   expect(parse('a / b')).toMatchInlineSnapshot(
     `
     {
-      "end": 2,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "/",
       "right": {
-        "end": 5,
+        "loc": {
+          "end": {
+            "column": 6,
+            "line": 1,
+          },
+          "start": {
+            "column": 5,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 4,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "DIV",
       "value": "/",
     }
@@ -612,23 +1055,47 @@ it('mod', () => {
   expect(parse('a % b')).toMatchInlineSnapshot(
     `
     {
-      "end": 2,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "%",
       "right": {
-        "end": 5,
+        "loc": {
+          "end": {
+            "column": 6,
+            "line": 1,
+          },
+          "start": {
+            "column": 5,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 4,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "MOD",
       "value": "%",
     }
@@ -640,23 +1107,47 @@ it('=', () => {
   expect(parse('a = b')).toMatchInlineSnapshot(
     `
     {
-      "end": 2,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "=",
       "right": {
-        "end": 5,
+        "loc": {
+          "end": {
+            "column": 6,
+            "line": 1,
+          },
+          "start": {
+            "column": 5,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 4,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "SET",
       "value": "=",
     }
@@ -668,23 +1159,47 @@ it('in', () => {
   expect(parse('a in b')).toMatchInlineSnapshot(
     `
     {
-      "end": 4,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "in",
       "right": {
-        "end": 6,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 6,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 5,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "IN",
       "value": "in",
     }
@@ -696,23 +1211,47 @@ it('ni', () => {
   expect(parse('a ni b')).toMatchInlineSnapshot(
     `
     {
-      "end": 4,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "ni",
       "right": {
-        "end": 6,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 6,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 5,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "NI",
       "value": "ni",
     }
@@ -724,23 +1263,47 @@ it('of', () => {
   expect(parse('a of b')).toMatchInlineSnapshot(
     `
     {
-      "end": 4,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "of",
       "right": {
-        "end": 6,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 6,
+            "line": 1,
+          },
+        },
         "raw": "b",
-        "start": 5,
         "type": "ID",
         "value": "b",
       },
-      "start": 2,
       "type": "OF",
       "value": "of",
     }
@@ -754,30 +1317,62 @@ it('sequence', () => {
     {
       "elements": [
         {
-          "end": 2,
+          "loc": {
+            "end": {
+              "column": 3,
+              "line": 1,
+            },
+            "start": {
+              "column": 2,
+              "line": 1,
+            },
+          },
           "raw": "a",
-          "start": 1,
           "type": "ID",
           "value": "a",
         },
         {
-          "end": 6,
+          "loc": {
+            "end": {
+              "column": 5,
+              "line": 1,
+            },
+            "start": {
+              "column": 4,
+              "line": 1,
+            },
+          },
           "raw": ""b"",
-          "start": 3,
           "type": "LIT",
           "value": "b",
         },
         {
-          "end": 8,
+          "loc": {
+            "end": {
+              "column": 7,
+              "line": 1,
+            },
+            "start": {
+              "column": 6,
+              "line": 1,
+            },
+          },
           "raw": "1",
-          "start": 7,
           "type": "LIT",
           "value": 1,
         },
       ],
-      "end": 8,
+      "loc": {
+        "end": {
+          "column": 8,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "(",
-      "start": 0,
       "type": "SEQ",
       "value": "(",
     }
@@ -788,72 +1383,152 @@ it('sequence', () => {
     {
       "elements": [
         {
-          "end": 2,
           "left": {
-            "end": 2,
+            "loc": {
+              "end": {
+                "column": 3,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
             "raw": "a",
-            "start": 1,
             "type": "ID",
             "value": "a",
           },
+          "loc": {
+            "end": {
+              "column": 4,
+              "line": 1,
+            },
+            "start": {
+              "column": 3,
+              "line": 1,
+            },
+          },
           "raw": "|",
           "right": {
-            "end": 4,
+            "loc": {
+              "end": {
+                "column": 5,
+                "line": 1,
+              },
+              "start": {
+                "column": 4,
+                "line": 1,
+              },
+            },
             "raw": "b",
-            "start": 3,
             "type": "ID",
             "value": "b",
           },
-          "start": 2,
           "type": "PIPE",
           "value": "|",
         },
         {
-          "end": 9,
           "left": {
-            "end": 8,
+            "loc": {
+              "end": {
+                "column": 7,
+                "line": 1,
+              },
+              "start": {
+                "column": 6,
+                "line": 1,
+              },
+            },
             "raw": ""b"",
-            "start": 5,
             "type": "LIT",
             "value": "b",
           },
+          "loc": {
+            "end": {
+              "column": 9,
+              "line": 1,
+            },
+            "start": {
+              "column": 8,
+              "line": 1,
+            },
+          },
           "raw": "+",
           "right": {
-            "end": 12,
+            "loc": {
+              "end": {
+                "column": 11,
+                "line": 1,
+              },
+              "start": {
+                "column": 10,
+                "line": 1,
+              },
+            },
             "raw": "2",
-            "start": 11,
             "type": "LIT",
             "value": 2,
           },
-          "start": 9,
           "type": "ADD",
           "value": "+",
         },
         {
-          "end": 18,
           "left": {
-            "end": 14,
+            "loc": {
+              "end": {
+                "column": 13,
+                "line": 1,
+              },
+              "start": {
+                "column": 12,
+                "line": 1,
+              },
+            },
             "raw": "1",
-            "start": 13,
             "type": "LIT",
             "value": 1,
           },
+          "loc": {
+            "end": {
+              "column": 17,
+              "line": 1,
+            },
+            "start": {
+              "column": 14,
+              "line": 1,
+            },
+          },
           "raw": "and",
           "right": {
-            "end": 20,
+            "loc": {
+              "end": {
+                "column": 19,
+                "line": 1,
+              },
+              "start": {
+                "column": 18,
+                "line": 1,
+              },
+            },
             "raw": "2",
-            "start": 19,
             "type": "LIT",
             "value": 2,
           },
-          "start": 15,
           "type": "AND",
           "value": "and",
         },
       ],
-      "end": 20,
+      "loc": {
+        "end": {
+          "column": 20,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "(",
-      "start": 0,
       "type": "SEQ",
       "value": "(",
     }
@@ -862,46 +1537,94 @@ it('sequence', () => {
   expect(parse(`x|f(a,"b",1)`)).toMatchInlineSnapshot(
     `
     {
-      "end": 1,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "x",
-        "start": 0,
         "type": "ID",
         "value": "x",
+      },
+      "loc": {
+        "end": {
+          "column": 3,
+          "line": 1,
+        },
+        "start": {
+          "column": 2,
+          "line": 1,
+        },
       },
       "raw": "|",
       "right": {
         "args": [
           {
-            "end": 5,
+            "loc": {
+              "end": {
+                "column": 6,
+                "line": 1,
+              },
+              "start": {
+                "column": 5,
+                "line": 1,
+              },
+            },
             "raw": "a",
-            "start": 4,
             "type": "ID",
             "value": "a",
           },
           {
-            "end": 9,
+            "loc": {
+              "end": {
+                "column": 8,
+                "line": 1,
+              },
+              "start": {
+                "column": 7,
+                "line": 1,
+              },
+            },
             "raw": ""b"",
-            "start": 6,
             "type": "LIT",
             "value": "b",
           },
           {
-            "end": 11,
+            "loc": {
+              "end": {
+                "column": 10,
+                "line": 1,
+              },
+              "start": {
+                "column": 9,
+                "line": 1,
+              },
+            },
             "raw": "1",
-            "start": 10,
             "type": "LIT",
             "value": 1,
           },
         ],
-        "end": 3,
+        "loc": {
+          "end": {
+            "column": 4,
+            "line": 1,
+          },
+          "start": {
+            "column": 3,
+            "line": 1,
+          },
+        },
         "raw": "f",
-        "start": 2,
         "type": "ID",
         "value": "f",
       },
-      "start": 1,
       "type": "PIPE",
       "value": "|",
     }
@@ -913,23 +1636,47 @@ it('pipe', () => {
   expect(parse('x | f')).toMatchInlineSnapshot(
     `
     {
-      "end": 2,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "x",
-        "start": 0,
         "type": "ID",
         "value": "x",
       },
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "|",
       "right": {
-        "end": 5,
+        "loc": {
+          "end": {
+            "column": 6,
+            "line": 1,
+          },
+          "start": {
+            "column": 5,
+            "line": 1,
+          },
+        },
         "raw": "f",
-        "start": 4,
         "type": "ID",
         "value": "f",
       },
-      "start": 2,
       "type": "PIPE",
       "value": "|",
     }
@@ -938,37 +1685,77 @@ it('pipe', () => {
   expect(parse('x | f | f2')).toMatchInlineSnapshot(
     `
     {
-      "end": 6,
       "left": {
-        "end": 2,
         "left": {
-          "end": 1,
+          "loc": {
+            "end": {
+              "column": 2,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
           "raw": "x",
-          "start": 0,
           "type": "ID",
           "value": "x",
         },
+        "loc": {
+          "end": {
+            "column": 4,
+            "line": 1,
+          },
+          "start": {
+            "column": 3,
+            "line": 1,
+          },
+        },
         "raw": "|",
         "right": {
-          "end": 5,
+          "loc": {
+            "end": {
+              "column": 6,
+              "line": 1,
+            },
+            "start": {
+              "column": 5,
+              "line": 1,
+            },
+          },
           "raw": "f",
-          "start": 4,
           "type": "ID",
           "value": "f",
         },
-        "start": 2,
         "type": "PIPE",
         "value": "|",
       },
+      "loc": {
+        "end": {
+          "column": 8,
+          "line": 1,
+        },
+        "start": {
+          "column": 7,
+          "line": 1,
+        },
+      },
       "raw": "|",
       "right": {
-        "end": 10,
+        "loc": {
+          "end": {
+            "column": 11,
+            "line": 1,
+          },
+          "start": {
+            "column": 9,
+            "line": 1,
+          },
+        },
         "raw": "f2",
-        "start": 8,
         "type": "ID",
         "value": "f2",
       },
-      "start": 6,
       "type": "PIPE",
       "value": "|",
     }
@@ -977,39 +1764,79 @@ it('pipe', () => {
   expect(parse('x | f(a, "b")')).toMatchInlineSnapshot(
     `
     {
-      "end": 2,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "x",
-        "start": 0,
         "type": "ID",
         "value": "x",
+      },
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
       },
       "raw": "|",
       "right": {
         "args": [
           {
-            "end": 7,
+            "loc": {
+              "end": {
+                "column": 8,
+                "line": 1,
+              },
+              "start": {
+                "column": 7,
+                "line": 1,
+              },
+            },
             "raw": "a",
-            "start": 6,
             "type": "ID",
             "value": "a",
           },
           {
-            "end": 12,
+            "loc": {
+              "end": {
+                "column": 11,
+                "line": 1,
+              },
+              "start": {
+                "column": 10,
+                "line": 1,
+              },
+            },
             "raw": ""b"",
-            "start": 9,
             "type": "LIT",
             "value": "b",
           },
         ],
-        "end": 5,
+        "loc": {
+          "end": {
+            "column": 6,
+            "line": 1,
+          },
+          "start": {
+            "column": 5,
+            "line": 1,
+          },
+        },
         "raw": "f",
-        "start": 4,
         "type": "ID",
         "value": "f",
       },
-      "start": 2,
       "type": "PIPE",
       "value": "|",
     }
@@ -1018,69 +1845,141 @@ it('pipe', () => {
   expect(parse('x | f(a, "b") | f2 (c, 1)')).toMatchInlineSnapshot(
     `
     {
-      "end": 14,
       "left": {
-        "end": 2,
         "left": {
-          "end": 1,
+          "loc": {
+            "end": {
+              "column": 2,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
           "raw": "x",
-          "start": 0,
           "type": "ID",
           "value": "x",
+        },
+        "loc": {
+          "end": {
+            "column": 4,
+            "line": 1,
+          },
+          "start": {
+            "column": 3,
+            "line": 1,
+          },
         },
         "raw": "|",
         "right": {
           "args": [
             {
-              "end": 7,
+              "loc": {
+                "end": {
+                  "column": 8,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 7,
+                  "line": 1,
+                },
+              },
               "raw": "a",
-              "start": 6,
               "type": "ID",
               "value": "a",
             },
             {
-              "end": 12,
+              "loc": {
+                "end": {
+                  "column": 11,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 10,
+                  "line": 1,
+                },
+              },
               "raw": ""b"",
-              "start": 9,
               "type": "LIT",
               "value": "b",
             },
           ],
-          "end": 5,
+          "loc": {
+            "end": {
+              "column": 6,
+              "line": 1,
+            },
+            "start": {
+              "column": 5,
+              "line": 1,
+            },
+          },
           "raw": "f",
-          "start": 4,
           "type": "ID",
           "value": "f",
         },
-        "start": 2,
         "type": "PIPE",
         "value": "|",
+      },
+      "loc": {
+        "end": {
+          "column": 14,
+          "line": 1,
+        },
+        "start": {
+          "column": 13,
+          "line": 1,
+        },
       },
       "raw": "|",
       "right": {
         "args": [
           {
-            "end": 21,
+            "loc": {
+              "end": {
+                "column": 20,
+                "line": 1,
+              },
+              "start": {
+                "column": 19,
+                "line": 1,
+              },
+            },
             "raw": "c",
-            "start": 20,
             "type": "ID",
             "value": "c",
           },
           {
-            "end": 24,
+            "loc": {
+              "end": {
+                "column": 23,
+                "line": 1,
+              },
+              "start": {
+                "column": 22,
+                "line": 1,
+              },
+            },
             "raw": "1",
-            "start": 23,
             "type": "LIT",
             "value": 1,
           },
         ],
-        "end": 18,
+        "loc": {
+          "end": {
+            "column": 17,
+            "line": 1,
+          },
+          "start": {
+            "column": 15,
+            "line": 1,
+          },
+        },
         "raw": "f2",
-        "start": 16,
         "type": "ID",
         "value": "f2",
       },
-      "start": 14,
       "type": "PIPE",
       "value": "|",
     }
@@ -1093,19 +1992,43 @@ it('conditional', () => {
     `
     {
       "consequent": {
-        "end": 3,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": ""a"",
-        "start": 0,
         "type": "LIT",
         "value": "a",
       },
-      "end": 6,
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "if",
-      "start": 4,
       "test": {
-        "end": 8,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 6,
+            "line": 1,
+          },
+        },
         "raw": "x",
-        "start": 7,
         "type": "ID",
         "value": "x",
       },
@@ -1118,26 +2041,58 @@ it('conditional', () => {
     `
     {
       "alternative": {
-        "end": 17,
+        "loc": {
+          "end": {
+            "column": 14,
+            "line": 1,
+          },
+          "start": {
+            "column": 13,
+            "line": 1,
+          },
+        },
         "raw": ""b"",
-        "start": 14,
         "type": "LIT",
         "value": "b",
       },
       "consequent": {
-        "end": 3,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": ""a"",
-        "start": 0,
         "type": "LIT",
         "value": "a",
       },
-      "end": 6,
+      "loc": {
+        "end": {
+          "column": 5,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "if",
-      "start": 4,
       "test": {
-        "end": 8,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 6,
+            "line": 1,
+          },
+        },
         "raw": "x",
-        "start": 7,
         "type": "ID",
         "value": "x",
       },
@@ -1150,84 +2105,180 @@ it('conditional', () => {
     `
     {
       "alternative": {
-        "end": 28,
         "left": {
-          "end": 27,
+          "loc": {
+            "end": {
+              "column": 24,
+              "line": 1,
+            },
+            "start": {
+              "column": 23,
+              "line": 1,
+            },
+          },
           "raw": ""b"",
-          "start": 24,
           "type": "LIT",
           "value": "b",
+        },
+        "loc": {
+          "end": {
+            "column": 26,
+            "line": 1,
+          },
+          "start": {
+            "column": 25,
+            "line": 1,
+          },
         },
         "raw": "|",
         "right": {
           "args": [
             {
-              "end": 33,
+              "loc": {
+                "end": {
+                  "column": 30,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 29,
+                  "line": 1,
+                },
+              },
               "raw": "a",
-              "start": 32,
               "type": "ID",
               "value": "a",
             },
             {
-              "end": 38,
+              "loc": {
+                "end": {
+                  "column": 33,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 32,
+                  "line": 1,
+                },
+              },
               "raw": ""b"",
-              "start": 35,
               "type": "LIT",
               "value": "b",
             },
           ],
-          "end": 31,
+          "loc": {
+            "end": {
+              "column": 28,
+              "line": 1,
+            },
+            "start": {
+              "column": 27,
+              "line": 1,
+            },
+          },
           "raw": "f",
-          "start": 30,
           "type": "ID",
           "value": "f",
         },
-        "start": 28,
         "type": "PIPE",
         "value": "|",
       },
       "consequent": {
-        "end": 4,
         "left": {
-          "end": 3,
+          "loc": {
+            "end": {
+              "column": 2,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
           "raw": ""a"",
-          "start": 0,
           "type": "LIT",
           "value": "a",
         },
+        "loc": {
+          "end": {
+            "column": 4,
+            "line": 1,
+          },
+          "start": {
+            "column": 3,
+            "line": 1,
+          },
+        },
         "raw": "|",
         "right": {
-          "end": 7,
+          "loc": {
+            "end": {
+              "column": 6,
+              "line": 1,
+            },
+            "start": {
+              "column": 5,
+              "line": 1,
+            },
+          },
           "raw": "f",
-          "start": 6,
           "type": "ID",
           "value": "f",
         },
-        "start": 4,
         "type": "PIPE",
         "value": "|",
       },
-      "end": 10,
+      "loc": {
+        "end": {
+          "column": 9,
+          "line": 1,
+        },
+        "start": {
+          "column": 7,
+          "line": 1,
+        },
+      },
       "raw": "if",
-      "start": 8,
       "test": {
-        "end": 16,
         "left": {
-          "end": 12,
+          "loc": {
+            "end": {
+              "column": 11,
+              "line": 1,
+            },
+            "start": {
+              "column": 10,
+              "line": 1,
+            },
+          },
           "raw": "x",
-          "start": 11,
           "type": "ID",
           "value": "x",
         },
+        "loc": {
+          "end": {
+            "column": 15,
+            "line": 1,
+          },
+          "start": {
+            "column": 12,
+            "line": 1,
+          },
+        },
         "raw": "and",
         "right": {
-          "end": 18,
+          "loc": {
+            "end": {
+              "column": 17,
+              "line": 1,
+            },
+            "start": {
+              "column": 16,
+              "line": 1,
+            },
+          },
           "raw": "y",
-          "start": 17,
           "type": "ID",
           "value": "y",
         },
-        "start": 13,
         "type": "AND",
         "value": "and",
       },
@@ -1242,97 +2293,201 @@ it('complex', () => {
   expect(parse('user | get("age") gt 18 and user | get("name") eq "John"')).toMatchInlineSnapshot(
     `
     {
-      "end": 27,
       "left": {
-        "end": 20,
         "left": {
-          "end": 5,
           "left": {
-            "end": 4,
+            "loc": {
+              "end": {
+                "column": 5,
+                "line": 1,
+              },
+              "start": {
+                "column": 1,
+                "line": 1,
+              },
+            },
             "raw": "user",
-            "start": 0,
             "type": "ID",
             "value": "user",
+          },
+          "loc": {
+            "end": {
+              "column": 7,
+              "line": 1,
+            },
+            "start": {
+              "column": 6,
+              "line": 1,
+            },
           },
           "raw": "|",
           "right": {
             "args": [
               {
-                "end": 16,
+                "loc": {
+                  "end": {
+                    "column": 15,
+                    "line": 1,
+                  },
+                  "start": {
+                    "column": 12,
+                    "line": 1,
+                  },
+                },
                 "raw": ""age"",
-                "start": 11,
                 "type": "LIT",
                 "value": "age",
               },
             ],
-            "end": 10,
+            "loc": {
+              "end": {
+                "column": 11,
+                "line": 1,
+              },
+              "start": {
+                "column": 8,
+                "line": 1,
+              },
+            },
             "raw": "get",
-            "start": 7,
             "type": "ID",
             "value": "get",
           },
-          "start": 5,
           "type": "PIPE",
           "value": "|",
         },
+        "loc": {
+          "end": {
+            "column": 19,
+            "line": 1,
+          },
+          "start": {
+            "column": 17,
+            "line": 1,
+          },
+        },
         "raw": "gt",
         "right": {
-          "end": 23,
+          "loc": {
+            "end": {
+              "column": 22,
+              "line": 1,
+            },
+            "start": {
+              "column": 20,
+              "line": 1,
+            },
+          },
           "raw": "18",
-          "start": 21,
           "type": "LIT",
           "value": 18,
         },
-        "start": 18,
         "type": "GT",
         "value": "gt",
       },
+      "loc": {
+        "end": {
+          "column": 26,
+          "line": 1,
+        },
+        "start": {
+          "column": 23,
+          "line": 1,
+        },
+      },
       "raw": "and",
       "right": {
-        "end": 49,
         "left": {
-          "end": 33,
           "left": {
-            "end": 32,
+            "loc": {
+              "end": {
+                "column": 31,
+                "line": 1,
+              },
+              "start": {
+                "column": 27,
+                "line": 1,
+              },
+            },
             "raw": "user",
-            "start": 28,
             "type": "ID",
             "value": "user",
+          },
+          "loc": {
+            "end": {
+              "column": 33,
+              "line": 1,
+            },
+            "start": {
+              "column": 32,
+              "line": 1,
+            },
           },
           "raw": "|",
           "right": {
             "args": [
               {
-                "end": 45,
+                "loc": {
+                  "end": {
+                    "column": 42,
+                    "line": 1,
+                  },
+                  "start": {
+                    "column": 38,
+                    "line": 1,
+                  },
+                },
                 "raw": ""name"",
-                "start": 39,
                 "type": "LIT",
                 "value": "name",
               },
             ],
-            "end": 38,
+            "loc": {
+              "end": {
+                "column": 37,
+                "line": 1,
+              },
+              "start": {
+                "column": 34,
+                "line": 1,
+              },
+            },
             "raw": "get",
-            "start": 35,
             "type": "ID",
             "value": "get",
           },
-          "start": 33,
           "type": "PIPE",
           "value": "|",
         },
+        "loc": {
+          "end": {
+            "column": 46,
+            "line": 1,
+          },
+          "start": {
+            "column": 44,
+            "line": 1,
+          },
+        },
         "raw": "eq",
         "right": {
-          "end": 56,
+          "loc": {
+            "end": {
+              "column": 51,
+              "line": 1,
+            },
+            "start": {
+              "column": 47,
+              "line": 1,
+            },
+          },
           "raw": ""John"",
-          "start": 50,
           "type": "LIT",
           "value": "John",
         },
-        "start": 47,
         "type": "EQ",
         "value": "eq",
       },
-      "start": 24,
       "type": "AND",
       "value": "and",
     }
@@ -1345,23 +2500,47 @@ it('whitespace', () => {
     +\ty  `)).toMatchInlineSnapshot(
     `
       {
-        "end": 8,
         "left": {
-          "end": 3,
+          "loc": {
+            "end": {
+              "column": 4,
+              "line": 1,
+            },
+            "start": {
+              "column": 3,
+              "line": 1,
+            },
+          },
           "raw": "x",
-          "start": 2,
           "type": "ID",
           "value": "x",
         },
+        "loc": {
+          "end": {
+            "column": 5,
+            "line": 2,
+          },
+          "start": {
+            "column": 4,
+            "line": 2,
+          },
+        },
         "raw": "+",
         "right": {
-          "end": 11,
+          "loc": {
+            "end": {
+              "column": 7,
+              "line": 2,
+            },
+            "start": {
+              "column": 6,
+              "line": 2,
+            },
+          },
           "raw": "y",
-          "start": 10,
           "type": "ID",
           "value": "y",
         },
-        "start": 8,
         "type": "ADD",
         "value": "+",
       }
@@ -1373,37 +2552,77 @@ it('precedences', () => {
   expect(parse('a + b * c')).toMatchInlineSnapshot(
     `
     {
-      "end": 2,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "+",
       "right": {
-        "end": 6,
         "left": {
-          "end": 5,
+          "loc": {
+            "end": {
+              "column": 6,
+              "line": 1,
+            },
+            "start": {
+              "column": 5,
+              "line": 1,
+            },
+          },
           "raw": "b",
-          "start": 4,
           "type": "ID",
           "value": "b",
         },
+        "loc": {
+          "end": {
+            "column": 8,
+            "line": 1,
+          },
+          "start": {
+            "column": 7,
+            "line": 1,
+          },
+        },
         "raw": "*",
         "right": {
-          "end": 9,
+          "loc": {
+            "end": {
+              "column": 10,
+              "line": 1,
+            },
+            "start": {
+              "column": 9,
+              "line": 1,
+            },
+          },
           "raw": "c",
-          "start": 8,
           "type": "ID",
           "value": "c",
         },
-        "start": 6,
         "type": "MUL",
         "value": "*",
       },
-      "start": 2,
       "type": "ADD",
       "value": "+",
     }
@@ -1412,23 +2631,47 @@ it('precedences', () => {
   expect(parse('a / b - c')).toMatchInlineSnapshot(
     `
     {
-      "end": 2,
       "left": {
-        "end": 1,
+        "loc": {
+          "end": {
+            "column": 2,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "a",
-        "start": 0,
         "type": "ID",
         "value": "a",
       },
+      "loc": {
+        "end": {
+          "column": 4,
+          "line": 1,
+        },
+        "start": {
+          "column": 3,
+          "line": 1,
+        },
+      },
       "raw": "/",
       "right": {
-        "end": 9,
+        "loc": {
+          "end": {
+            "column": 10,
+            "line": 1,
+          },
+          "start": {
+            "column": 9,
+            "line": 1,
+          },
+        },
         "raw": "c",
-        "start": 8,
         "type": "ID",
         "value": "c",
       },
-      "start": 2,
       "type": "DIV",
       "value": "/",
     }
@@ -1442,72 +2685,152 @@ it('real world', () => {
     {
       "args": [
         {
-          "end": 3,
           "left": {
-            "end": 3,
+            "loc": {
+              "end": {
+                "column": 4,
+                "line": 1,
+              },
+              "start": {
+                "column": 3,
+                "line": 1,
+              },
+            },
             "raw": "x",
-            "start": 2,
             "type": "ID",
             "value": "x",
           },
+          "loc": {
+            "end": {
+              "column": 5,
+              "line": 1,
+            },
+            "start": {
+              "column": 4,
+              "line": 1,
+            },
+          },
           "raw": "|",
           "right": {
-            "end": 5,
+            "loc": {
+              "end": {
+                "column": 6,
+                "line": 1,
+              },
+              "start": {
+                "column": 5,
+                "line": 1,
+              },
+            },
             "raw": "a",
-            "start": 4,
             "type": "ID",
             "value": "a",
           },
-          "start": 3,
           "type": "PIPE",
           "value": "|",
         },
         {
-          "end": 9,
           "left": {
-            "end": 8,
+            "loc": {
+              "end": {
+                "column": 9,
+                "line": 1,
+              },
+              "start": {
+                "column": 8,
+                "line": 1,
+              },
+            },
             "raw": "y",
-            "start": 7,
             "type": "ID",
             "value": "y",
           },
+          "loc": {
+            "end": {
+              "column": 11,
+              "line": 1,
+            },
+            "start": {
+              "column": 10,
+              "line": 1,
+            },
+          },
           "raw": "+",
           "right": {
-            "end": 12,
+            "loc": {
+              "end": {
+                "column": 13,
+                "line": 1,
+              },
+              "start": {
+                "column": 12,
+                "line": 1,
+              },
+            },
             "raw": "b",
-            "start": 11,
             "type": "ID",
             "value": "b",
           },
-          "start": 9,
           "type": "ADD",
           "value": "+",
         },
         {
-          "end": 19,
           "left": {
-            "end": 15,
+            "loc": {
+              "end": {
+                "column": 16,
+                "line": 1,
+              },
+              "start": {
+                "column": 15,
+                "line": 1,
+              },
+            },
             "raw": "z",
-            "start": 14,
             "type": "ID",
             "value": "z",
           },
+          "loc": {
+            "end": {
+              "column": 20,
+              "line": 1,
+            },
+            "start": {
+              "column": 17,
+              "line": 1,
+            },
+          },
           "raw": "and",
           "right": {
-            "end": 21,
+            "loc": {
+              "end": {
+                "column": 22,
+                "line": 1,
+              },
+              "start": {
+                "column": 21,
+                "line": 1,
+              },
+            },
             "raw": "c",
-            "start": 20,
             "type": "ID",
             "value": "c",
           },
-          "start": 16,
           "type": "AND",
           "value": "and",
         },
       ],
-      "end": 1,
+      "loc": {
+        "end": {
+          "column": 2,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
       "raw": "f",
-      "start": 0,
       "type": "ID",
       "value": "f",
     }
@@ -1516,60 +2839,124 @@ it('real world', () => {
   expect(parse('(x, y, z) = a | b')).toMatchInlineSnapshot(
     `
     {
-      "end": 10,
       "left": {
         "elements": [
           {
-            "end": 2,
+            "loc": {
+              "end": {
+                "column": 3,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
             "raw": "x",
-            "start": 1,
             "type": "ID",
             "value": "x",
           },
           {
-            "end": 5,
+            "loc": {
+              "end": {
+                "column": 6,
+                "line": 1,
+              },
+              "start": {
+                "column": 5,
+                "line": 1,
+              },
+            },
             "raw": "y",
-            "start": 4,
             "type": "ID",
             "value": "y",
           },
           {
-            "end": 8,
+            "loc": {
+              "end": {
+                "column": 9,
+                "line": 1,
+              },
+              "start": {
+                "column": 8,
+                "line": 1,
+              },
+            },
             "raw": "z",
-            "start": 7,
             "type": "ID",
             "value": "z",
           },
         ],
-        "end": 8,
+        "loc": {
+          "end": {
+            "column": 10,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "(",
-        "start": 0,
         "type": "SEQ",
         "value": "(",
       },
+      "loc": {
+        "end": {
+          "column": 12,
+          "line": 1,
+        },
+        "start": {
+          "column": 11,
+          "line": 1,
+        },
+      },
       "raw": "=",
       "right": {
-        "end": 14,
         "left": {
-          "end": 13,
+          "loc": {
+            "end": {
+              "column": 14,
+              "line": 1,
+            },
+            "start": {
+              "column": 13,
+              "line": 1,
+            },
+          },
           "raw": "a",
-          "start": 12,
           "type": "ID",
           "value": "a",
         },
+        "loc": {
+          "end": {
+            "column": 16,
+            "line": 1,
+          },
+          "start": {
+            "column": 15,
+            "line": 1,
+          },
+        },
         "raw": "|",
         "right": {
-          "end": 17,
+          "loc": {
+            "end": {
+              "column": 18,
+              "line": 1,
+            },
+            "start": {
+              "column": 17,
+              "line": 1,
+            },
+          },
           "raw": "b",
-          "start": 16,
           "type": "ID",
           "value": "b",
         },
-        "start": 14,
         "type": "PIPE",
         "value": "|",
       },
-      "start": 10,
       "type": "SET",
       "value": "=",
     }
@@ -1578,69 +2965,141 @@ it('real world', () => {
   expect(parse('(x, y) of items | f(a, "b")')).toMatchInlineSnapshot(
     `
     {
-      "end": 9,
       "left": {
         "elements": [
           {
-            "end": 2,
+            "loc": {
+              "end": {
+                "column": 3,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
             "raw": "x",
-            "start": 1,
             "type": "ID",
             "value": "x",
           },
           {
-            "end": 5,
+            "loc": {
+              "end": {
+                "column": 6,
+                "line": 1,
+              },
+              "start": {
+                "column": 5,
+                "line": 1,
+              },
+            },
             "raw": "y",
-            "start": 4,
             "type": "ID",
             "value": "y",
           },
         ],
-        "end": 5,
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
         "raw": "(",
-        "start": 0,
         "type": "SEQ",
         "value": "(",
       },
+      "loc": {
+        "end": {
+          "column": 10,
+          "line": 1,
+        },
+        "start": {
+          "column": 8,
+          "line": 1,
+        },
+      },
       "raw": "of",
       "right": {
-        "end": 16,
         "left": {
-          "end": 15,
+          "loc": {
+            "end": {
+              "column": 16,
+              "line": 1,
+            },
+            "start": {
+              "column": 11,
+              "line": 1,
+            },
+          },
           "raw": "items",
-          "start": 10,
           "type": "ID",
           "value": "items",
+        },
+        "loc": {
+          "end": {
+            "column": 18,
+            "line": 1,
+          },
+          "start": {
+            "column": 17,
+            "line": 1,
+          },
         },
         "raw": "|",
         "right": {
           "args": [
             {
-              "end": 21,
+              "loc": {
+                "end": {
+                  "column": 22,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 21,
+                  "line": 1,
+                },
+              },
               "raw": "a",
-              "start": 20,
               "type": "ID",
               "value": "a",
             },
             {
-              "end": 26,
+              "loc": {
+                "end": {
+                  "column": 25,
+                  "line": 1,
+                },
+                "start": {
+                  "column": 24,
+                  "line": 1,
+                },
+              },
               "raw": ""b"",
-              "start": 23,
               "type": "LIT",
               "value": "b",
             },
           ],
-          "end": 19,
+          "loc": {
+            "end": {
+              "column": 20,
+              "line": 1,
+            },
+            "start": {
+              "column": 19,
+              "line": 1,
+            },
+          },
           "raw": "f",
-          "start": 18,
           "type": "ID",
           "value": "f",
         },
-        "start": 16,
         "type": "PIPE",
         "value": "|",
       },
-      "start": 7,
       "type": "OF",
       "value": "of",
     }

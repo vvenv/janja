@@ -1,57 +1,55 @@
-import type { Config } from './types'
 import { expect, it } from 'vitest'
 import { SourceMap } from './source-map'
 
 it('mapping', () => {
-  const sourcemap = new SourceMap({} as Config)
+  const sourcemap = new SourceMap()
 
   sourcemap.addMapping(
     {
-      start: 0,
-      end: 1,
+      start: { line: 1, column: 1 },
+      end: { line: 1, column: 2 },
     },
     {
-      start: 2,
-      end: 3,
+      start: { line: 2, column: 3 },
+      end: { line: 2, column: 4 },
     },
   )
-  expect(sourcemap.mappings).toMatchInlineSnapshot(
+  expect(sourcemap.getSourceLoc({ line: 1, column: 1 })).toMatchInlineSnapshot('[]')
+  expect(sourcemap.getSourceLoc({ line: 1, column: 2 })).toMatchInlineSnapshot('[]')
+  expect(sourcemap.getSourceLoc({ line: 2, column: 1 })).toMatchInlineSnapshot('[]')
+  expect(sourcemap.getSourceLoc({ line: 2, column: 2 })).toMatchInlineSnapshot('[]')
+  expect(sourcemap.getSourceLoc({ line: 2, column: 3 })).toMatchInlineSnapshot(
     `
     [
       {
-        "source": {
-          "end": 1,
-          "start": 0,
+        "end": {
+          "column": 2,
+          "line": 1,
         },
-        "target": {
-          "end": 3,
-          "start": 2,
+        "start": {
+          "column": 1,
+          "line": 1,
         },
       },
     ]
   `,
   )
-  expect(sourcemap.getRanges(0)).toMatchInlineSnapshot('[]')
-  expect(sourcemap.getRanges(1)).toMatchInlineSnapshot('[]')
-  expect(sourcemap.getRanges(2)).toMatchInlineSnapshot(
+  expect(sourcemap.getSourceLoc({ line: 2, column: 4 })).toMatchInlineSnapshot(
     `
     [
       {
-        "end": 1,
-        "start": 0,
+        "end": {
+          "column": 2,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
       },
     ]
   `,
   )
-  expect(sourcemap.getRanges(3)).toMatchInlineSnapshot(
-    `
-    [
-      {
-        "end": 1,
-        "start": 0,
-      },
-    ]
-  `,
-  )
-  expect(sourcemap.getRanges(4)).toMatchInlineSnapshot('[]')
+  expect(sourcemap.getSourceLoc({ line: 2, column: 5 })).toMatchInlineSnapshot('[]')
+  expect(sourcemap.getSourceLoc({ line: 3, column: 1 })).toMatchInlineSnapshot('[]')
 })

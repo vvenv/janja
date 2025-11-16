@@ -1,47 +1,29 @@
 import { expect, it } from 'vitest'
 import { CompileError } from './compile-error'
 
-it('compile error', () => {
-  const error = new CompileError('if tag must have a value', {
-    name: 'if',
-    value: null,
-    raw: '{{ if }}',
-    previous: null,
-    next: null,
-    start: 0,
-    end: 9,
+it('parse error', () => {
+  const error = new CompileError('foo', '{{ for }}', {
+    start: {
+      line: 1,
+      column: 4,
+
+    },
+    end: {
+      line: 1,
+      column: 7,
+    },
   })
-  expect(error.name).toMatchInlineSnapshot(`"CompileError"`)
-  expect(error.message).toMatchInlineSnapshot(`"if tag must have a value"`)
-  expect(error.details).toMatchInlineSnapshot(
-    `
-    "if tag must have a value
-
-    1: {{ if }}
-       ^^^^^^^^
-    "
-  `,
+  expect(error).toMatchInlineSnapshot(
+    `[CompileError: foo]`,
   )
-})
-
-it('compile error w/ filepath', () => {
-  const error = new CompileError('if tag must have a value', {
-    name: 'if',
-    value: null,
-    raw: '{{ if }}',
-    previous: null,
-    next: null,
-    start: 0,
-    end: 9,
-  }, '/path/to/file.janja')
   expect(error.name).toMatchInlineSnapshot(`"CompileError"`)
-  expect(error.message).toMatchInlineSnapshot(`"if tag must have a value at /path/to/file.janja"`)
+  expect(error.message).toMatchInlineSnapshot(`"foo"`)
   expect(error.details).toMatchInlineSnapshot(
     `
-    "if tag must have a value at /path/to/file.janja
+    "foo
 
-    1: {{ if }}
-       ^^^^^^^^
+    1｜ {{ for }}
+     ｜    ^ ^
     "
   `,
   )

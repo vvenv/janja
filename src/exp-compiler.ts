@@ -1,11 +1,12 @@
 import type { BinaryExp, Exp, IdExp, IfExp, LitExp, NotExp, PipeExp, SeqExp } from './types'
 import { expTokenOperators } from './exp-token-operators'
+import { CONTEXT, FILTERS } from './identifiers'
 
 export class ExpCompiler {
   private context!: string
   private filters!: string
 
-  compile(expression: Exp | null, context: string, filters: string): string {
+  compile(expression: Exp | null, context = CONTEXT, filters = FILTERS) {
     this.context = context
     this.filters = filters
     return expression ? this.compileExp(expression) : '""'
@@ -88,10 +89,6 @@ export class ExpCompiler {
 
   private compileSet({ left, right }: BinaryExp) {
     if (left.type === 'ID') {
-      // for macros
-      if (right.type === 'SEQ') {
-        return `${this.compileExp(left)}=(${(right.elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}=${this.compileExp((el.right))}` : (el as IdExp).value).join(',')})`
-      }
       return `Object.assign(${this.context},{${(left as IdExp).value}:${this.compileExp(right)}});`
     }
 
@@ -104,8 +101,8 @@ export class ExpCompiler {
   }
 
   private compileBinary({ type, left, right }: BinaryExp) {
-    const ret = `(${this.compileExp(left)}${expTokenOperators[type]}${this.compileExp(right)})`
-    return type === 'NI' ? `(!${ret})` : ret
+    const ret = `${this.compileExp(left)}${expTokenOperators[type]}${this.compileExp(right)}`
+    return type === 'NI' ? `!${ret}` : ret
   }
 
   private compileTernary({ test, consequent, alternative }: IfExp) {
