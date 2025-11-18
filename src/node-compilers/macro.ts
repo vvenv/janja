@@ -15,7 +15,11 @@ async function compileMacro(
 
   compiler.pushRaw(
     loc,
-    `${expCompiler.compile(left)}=(${(elements).map(el => el.type === 'SET' ? `${(el.left as IdExp).value}=${expCompiler.compile((el.right))}` : (el as IdExp).value).join(',')})=>async(_c)=>{`,
+    `${expCompiler.compile(left)}=(${(elements).map(
+      el => el.type === 'SET'
+        ? `${(el.left as IdExp).value}=${expCompiler.compile((el.right))}`
+        : (el as IdExp).value,
+    ).join(',')})=>async(_c)=>{`,
     `const ${compiler.in()}={`,
     `...${context},`,
     elements.map(

@@ -176,30 +176,26 @@ export class Tokenizer implements Pos {
 
   private consumeTextToken() {
     const nextSpecialIndex = this.findNextSpecialIndex()
-    if (nextSpecialIndex > this.index) {
-      const start = {
-        line: this.line,
-        column: this.column,
-      }
-      const val = this.template.slice(
-        this.index,
-        nextSpecialIndex,
-      )
-      this.tokens.push({
-        type: TokenType.TEXT,
-        val: unescapeTag(val),
-        loc: {
-          start,
-          end: updatePosition(val, this),
-        },
-        strip: {},
-      })
 
-      this.index = nextSpecialIndex
+    const start = {
+      line: this.line,
+      column: this.column,
     }
-    else {
-      updatePosition(this.template[this.index++], this)
-    }
+    const val = this.template.slice(
+      this.index,
+      nextSpecialIndex,
+    )
+    this.tokens.push({
+      type: TokenType.TEXT,
+      val: unescapeTag(val),
+      loc: {
+        start,
+        end: updatePosition(val, this),
+      },
+      strip: {},
+    })
+
+    this.index = nextSpecialIndex
   }
 
   private lookahead(marker: string, offset = 0) {

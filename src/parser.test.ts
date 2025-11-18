@@ -3,6 +3,42 @@ import { parse } from '../test/__helper'
 
 it('error', async () => {
   try {
+    await parse('{{}}')
+    expect(true).toBe(false)
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: Unknown "" directive]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      "Unknown "" directive
+
+      1｜ {{}}
+       ｜ ^  ^
+      "
+    `,
+    )
+  }
+  try {
+    await parse('{{ else')
+    expect(true).toBe(false)
+  }
+  catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: Unclosed "{{"]`,
+    )
+    expect(error.details).toMatchInlineSnapshot(
+      `
+      "Unclosed "{{"
+
+      1｜ {{ else
+       ｜ ^^
+      "
+    `,
+    )
+  }
+  try {
     await parse('{{ else }}')
     expect(true).toBe(false)
   }

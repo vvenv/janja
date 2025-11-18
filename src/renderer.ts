@@ -39,27 +39,31 @@ export class Renderer {
       )
     }
     catch (error: any) {
-      if (error.name === 'CompileError') {
-        throw error
-      }
-      throw new RenderError(
-        error.message,
-        template,
-        () => {
-          const matched = error.stack!.match(/<anonymous>:(\d+):(\d+)\)/)
-          if (!matched) {
-            return error.stack ?? ''
-          }
-          const [loc] = compiler.getSourceLoc(
-            {
-              line: +matched[1] - 2,
-              column: +matched[2],
-            },
-          )
-          return loc
-        },
-      )
+      this.options.debug((() => {
+        if (error.name === 'CompileError') {
+          return error
+        }
+        return new RenderError(
+          error.message,
+          template,
+          () => {
+            const matched = error.stack!.match(/<anonymous>:(\d+):(\d+)\)/)
+            if (!matched) {
+              return error.stack ?? ''
+            }
+            const [loc] = compiler.getSourceLoc(
+              {
+                line: +matched[1] - 2,
+                column: +matched[2],
+              },
+            )
+            return loc
+          },
+        )
+      })())
     }
+
+    return ''
   }
 
   async renderFile(filepath: string, globals: ObjectType) {
