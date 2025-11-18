@@ -22,6 +22,6 @@ export class Context extends OutScript {
       return
     }
     this.contexts.pop()
-    this.context = this.contexts.at(-1) ?? CONTEXT
+    this.context = this.contexts.at(-1)!
   }
 }

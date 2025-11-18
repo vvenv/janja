@@ -15,4 +15,6 @@ it('context', () => {
   expect(ctx.context).toBe('c')
   ctx.out()
   expect(ctx.context).toBe('c')
+  ctx.out()
+  expect(ctx.context).toBe('c')
 })
