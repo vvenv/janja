@@ -14,7 +14,7 @@ function parseBlock(token: DirectiveToken, parser: Parser) {
   parser.advance()
   const body = parser.parseUntil(['endblock'])
 
-  if (parser.match('endblock')) {
+  if (parser.match(['endblock'])) {
     parser.advance()
   }
   else {

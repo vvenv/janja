@@ -5,18 +5,15 @@ import { NodeType } from '../ast'
 import { CompileError } from '../compile-error'
 
 async function compileBlock(
-  { val: { value } }: BlockNode,
+  { val: { value }, loc }: BlockNode,
   compiler: Compiler,
 ) {
-  if (!compiler.blocks.has(value)) {
-    return
-  }
-
-  compiler.state.block = value
-  const blockNode = compiler.blocks.get(value)!.pop()!
-  await compiler.compileNodes(blockNode.body)
-  compiler.blocks.delete(value)
-  compiler.state.block = undefined
+  compiler.pushRaw(
+    loc,
+    `if(b["${value}"]&&!(b["${value}"].u++)){`,
+    `s+=await b["${value}"].s?.pop()?.()??"";`,
+    `}`,
+  )
 }
 
 async function compileSuper(
@@ -33,10 +30,10 @@ async function compileSuper(
     )
     return
   }
-  const block = compiler.blocks.get(compiler.state.block)?.pop()
-  if (block) {
-    await compiler.compileNodes(block.body)
-  }
+  compiler.pushRaw(
+    loc,
+    `s+=await b["${compiler.state.block}"]?.s?.pop()?.()??"";`,
+  )
 }
 
 export const compilers: CompilerMap = {

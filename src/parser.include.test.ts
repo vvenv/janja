@@ -29,9 +29,10 @@ it('include', async () => {
     ),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         IncludeNode {
+          "body": undefined,
           "loc": {
             "end": {
               "column": 21,
@@ -64,6 +65,7 @@ it('include', async () => {
           },
         },
         IncludeNode {
+          "body": undefined,
           "loc": {
             "end": {
               "column": 42,
@@ -96,6 +98,7 @@ it('include', async () => {
           },
         },
         IncludeNode {
+          "body": undefined,
           "loc": {
             "end": {
               "column": 62,

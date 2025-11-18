@@ -11,7 +11,7 @@ function parseIf(token: DirectiveToken, parser: Parser) {
   const body = parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif'])
   const alternatives: (ElseIfNode | ElseNode)[] = []
 
-  while (parser.isDirective(['else', 'elseif', 'elsif', 'elif'])) {
+  while (parser.match(['else', 'elseif', 'elsif', 'elif'])) {
     const branchToken = parser.peek() as DirectiveToken
     alternatives.push(branchToken.name.toLowerCase() === 'else'
       ? parseElse(branchToken, parser)
@@ -19,7 +19,7 @@ function parseIf(token: DirectiveToken, parser: Parser) {
     )
   }
 
-  if (parser.match('endif')) {
+  if (parser.match(['endif'])) {
     parser.advance()
   }
   else {
@@ -46,14 +46,13 @@ function parseIf(token: DirectiveToken, parser: Parser) {
 function parseElseIf(token: DirectiveToken, parser: Parser) {
   parser.requireExpression(token)
 
-  const test = parser.parseExp(
-    token.expression!,
-  )
-
   parser.advance()
-  const body = parser.parseUntil(['else', 'elseif', 'elif', 'endif'])
+  const body = parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif'])
+
   return new ElseIfNode(
-    test,
+    parser.parseExp(
+      token.expression!,
+    ),
     body,
     token.loc,
     token.strip,
@@ -65,6 +64,7 @@ function parseElse(token: DirectiveToken, parser: Parser) {
 
   parser.advance()
   const body = parser.parseUntil(['endif'])
+
   return new ElseNode(
     body,
     token.loc,

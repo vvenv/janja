@@ -14,7 +14,7 @@ function parseFor(token: DirectiveToken, parser: Parser) {
   parser.advance()
   const body = parser.parseUntil(['endfor'])
 
-  if (parser.match('endfor')) {
+  if (parser.match(['endfor'])) {
     parser.advance()
   }
   else {

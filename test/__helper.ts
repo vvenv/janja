@@ -1,6 +1,5 @@
 import type { ObjectType, RendererOptions } from '../src/types'
 import { Compiler } from '../src/compiler'
-import { compilerOptions, parserOptions, renderOptions } from '../src/config'
 import { Parser } from '../src/parser'
 import { Renderer } from '../src/renderer'
 import { Tokenizer } from '../src/tokenizer'
@@ -16,7 +15,6 @@ export async function tokenize(
   options?: RendererOptions,
 ): Promise<any> {
   return new Tokenizer({
-    ...parserOptions,
     ...options,
     debug,
   }).tokenize(template)
@@ -27,7 +25,6 @@ export async function parse(
   options?: RendererOptions,
 ): Promise<any> {
   return new Parser({
-    ...parserOptions,
     ...options,
     debug,
   }).parse(template)
@@ -38,7 +35,6 @@ export async function compile(
   options?: RendererOptions,
 ): Promise<any> {
   const { code } = await new Compiler({
-    ...compilerOptions,
     ...options,
     loader,
     debug,
@@ -52,7 +48,6 @@ export async function render(
   options?: RendererOptions,
 ): Promise<any> {
   return new Renderer({
-    ...renderOptions,
     ...options,
     loader,
     debug,
@@ -65,7 +60,6 @@ export async function renderFile(
   options?: RendererOptions,
 ): Promise<any> {
   return new Renderer({
-    ...renderOptions,
     ...options,
     loader,
     debug,

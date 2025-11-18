@@ -1,6 +1,12 @@
 # 使用文档
 
-## 内置标签
+## 内置指令
+
+### **include**：模板继承/包含
+
+```janja
+{{ include "template" }}
+```
 
 ### **if / elif / else**：条件判断
 
@@ -79,25 +85,30 @@ abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, g
 
 ## 自定义
 
-### 自定义标签
+### 自定义指令
 
-```javascript
-const myTag = {
-  names: ['my_tag'],
-  async compile({ out }) {
-    // 编译逻辑
-    return out.pushStr('自定义标签内容')
-  },
+```typescript
+class CustomNode implements ASTNode {
+  readonly type = 'CUSTOM'
+  constructor(
+    public val: string,
+    public loc: Loc,
+    public strip: Strip,
+  ) { }
 }
-const engine = new Engine({
-  compilers: [myTag],
+render('{{ custom }}', {}, {
+  parsers: {
+    custom: (token, parser) => {
+      parser.advance()
+      return new CustomNode(token.val, token.loc, token.strip)
+    },
+  },
+  compilers: {
+    CUSTOM: async (node, compiler) => {
+      compiler.pushStr(node.loc, '<CUSTOM/>')
+    },
+  },
 })
-```
-
-模板中即可使用
-
-```janja
-{{ my_tag }}
 ```
 
 ### 自定义过滤器

@@ -1,10 +1,3 @@
 export const CONTEXT = 'c'
 export const ESCAPE = 'e'
 export const FILTERS = 'f'
-
-export const RAW = 'raw'
-export const LAYOUT = 'layout'
-export const INCLUDE = 'include'
-export const BLOCK = 'block'
-export const SUPER = 'super'
-export const ENDBLOCK = 'endblock'

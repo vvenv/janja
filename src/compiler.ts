@@ -1,10 +1,8 @@
 import type {
   ASTNode,
   BlockNode,
-  ForNode,
-  IfNode,
   IncludeNode,
-  TemplateNode,
+  RootNode,
   UnknownDirectiveNode,
 } from './ast'
 import type {
@@ -19,11 +17,12 @@ import { Parser } from './parser'
 export class Compiler extends Context {
   public options: Required<CompilerOptions>
   public template!: string
-  private root!: boolean
-  private partials!: Map<string, string>
-  public blocks!: Map<string, BlockNode[]>
-  private templateNode!: TemplateNode
   public state!: Record<string, any>
+
+  private isRoot!: boolean
+  private rootNode!: RootNode
+  private partials!: Map<string, string>
+  private blocks!: Map<string, BlockNode[]>
 
   constructor(options?: CompilerOptions) {
     super()
@@ -36,31 +35,77 @@ export class Compiler extends Context {
   async compile(
     template: string,
     root = true,
-    blocks: Map<string, BlockNode[]> = new Map(),
+    partials = new Map<string, string>(),
+    blocks = new Map<string, BlockNode[]>(),
   ) {
     this.template = template
-    this.root = root
-    this.partials = new Map<string, string>()
+    this.isRoot = root
+    this.partials = partials
     this.blocks = blocks
-    this.templateNode = new Parser(this.options).parse(template)
+    this.rootNode = new Parser(this.options).parse(template)
     this.state = {}
 
     this.start()
 
-    if (this.root) {
-      await this.parseTemplates()
+    await this.parseTemplates()
 
-      if (this.partials.size > 0) {
+    if (this.isRoot) {
+      if (this.partials.size) {
         this.pushRaw(
           null,
-          `const partials = {`,
+          `const p={`,
         )
 
         for (const [path, code] of this.partials) {
           this.pushRaw(
             null,
-            `"${path}":async function r(c,e,f){`,
+            `"${path}":async()=>{`,
             code,
+            `},`,
+          )
+        }
+
+        this.pushRaw(
+          null,
+          `};`,
+        )
+      }
+
+      if (this.blocks.size) {
+        this.pushRaw(
+          null,
+          `const b={`,
+        )
+
+        for (const [name, blocks] of this.blocks) {
+          this.pushRaw(
+            null,
+            `"${name}":{`,
+            `u:0,`,
+            `s:[`,
+          )
+
+          this.state.block = name
+
+          for (const block of blocks) {
+            this.pushRaw(
+              null,
+              `async()=>{`,
+              `let s="";`,
+            )
+            await this.compileNodes(block.body)
+            this.pushRaw(
+              null,
+              `return s;`,
+              `},`,
+            )
+          }
+
+          this.state.block = undefined
+
+          this.pushRaw(
+            null,
+            `],`,
             `},`,
           )
         }
@@ -72,7 +117,7 @@ export class Compiler extends Context {
       }
     }
 
-    await this.compileNode(this.templateNode)
+    await this.compileNode(this.rootNode)
 
     this.end()
 
@@ -80,70 +125,48 @@ export class Compiler extends Context {
   }
 
   private async parseTemplates() {
-    const astMap = new Map<string, [IncludeNode | null, string]>()
-    const queue: {
-      path: string
-      node: IncludeNode | null
-      template: string
-    }[] = [{ path: '$$', node: null, template: this.template }]
+    const { partials, blocks } = this.collectPartialsAndBlocks()
 
-    while (queue.length > 0) {
-      const { path, node, template } = queue.shift()!
-
-      if (!astMap.has(path)) {
-        astMap.set(path, [node, template])
-      }
-
-      const { includes, blocks } = this.collectIncludesAndBlocks()
-
-      for (const [path, node] of includes) {
-        if (!astMap.has(path)) {
-          try {
-            queue.push({
-              path,
-              node,
-              template: await this.options.loader(path),
-            })
-          }
-          catch {
-            this.options.debug?.(
-              new CompileError(
-                `Failed to load template from "${path}"`,
-                this.template,
-                node.loc,
-              ),
-            )
-            return
-          }
+    for (const [path, node] of partials) {
+      if (!this.partials.has(path)) {
+        let template: string | undefined
+        try {
+          template = await this.options.loader(path)
         }
-      }
-
-      for (const block of blocks) {
-        const { val: { value } } = block
-        if (!this.blocks.has(value)) {
-          this.blocks.set(value, [])
+        catch {
+          this.options.debug?.(
+            new CompileError(
+              `Failed to load template from "${path}"`,
+              this.template,
+              node.loc,
+            ),
+          )
+          return
         }
-        this.blocks.get(value)!.push(block)
+
+        if (template) {
+          await this.compilePartial(path, node, template)
+        }
       }
     }
 
-    astMap.delete('$$')
-
-    for (const [path, [node, template]] of astMap) {
-      if (!this.partials.has(path)) {
-        await this.compilePartial(path, node!, template, this.blocks)
+    for (const block of blocks) {
+      const { val: { value } } = block
+      if (!this.blocks.has(value)) {
+        this.blocks.set(value, [])
       }
+      this.blocks.get(value)!.push(block)
     }
   }
 
-  private collectIncludesAndBlocks() {
-    const includes = new Map<string, IncludeNode>()
+  private collectPartialsAndBlocks() {
+    const partials = new Map<string, IncludeNode>()
     const blocks: BlockNode[] = []
 
     const traverse = (node: ASTNode) => {
       if (node.type === NodeType.INCLUDE) {
-        if (!includes.has((node as IncludeNode).val.value)) {
-          includes.set((node as IncludeNode).val.value, node as IncludeNode)
+        if (!partials.has((node as IncludeNode).val.value)) {
+          partials.set((node as IncludeNode).val.value, node as IncludeNode)
         }
       }
 
@@ -151,37 +174,19 @@ export class Compiler extends Context {
         blocks.push(node as BlockNode)
       }
 
-      if (node.type === NodeType.TEMPLATE) {
-        (node as TemplateNode).children.forEach(traverse)
-      }
-
-      if (node.type === NodeType.IF) {
-        const ifNode = node as IfNode
-        ifNode.body.forEach(traverse)
-        ifNode.alternatives.forEach((alt) => {
-          alt.body.forEach(traverse)
-        })
-      }
-
-      if (node.type === NodeType.FOR) {
-        (node as ForNode).body.forEach(traverse)
-      }
-
-      if (node.type === NodeType.BLOCK) {
-        (node as BlockNode).body.forEach(traverse)
-      }
+      node.traverse(traverse)
     }
 
-    traverse(this.templateNode)
+    traverse(this.rootNode)
     return {
-      includes,
+      partials,
       blocks,
     }
   }
 
   private async compileNode(node: ASTNode) {
     if (node.type === NodeType.TEMPLATE) {
-      await this.compileNodes((node as TemplateNode).children)
+      await this.compileNodes((node as RootNode).body)
       return
     }
 
@@ -209,10 +214,14 @@ export class Compiler extends Context {
     path: string,
     node: IncludeNode,
     template: string,
-    blocks: Map<string, BlockNode[]>,
   ) {
     try {
-      const { code } = await new Compiler(this.options).compile(template, false, blocks)
+      const { code } = await new Compiler(this.options).compile(
+        template,
+        false,
+        this.partials,
+        this.blocks,
+      )
       this.partials.set(
         path,
         code,
