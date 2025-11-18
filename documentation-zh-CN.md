@@ -2,7 +2,7 @@
 
 ## 内置指令
 
-### **include**：模板继承/包含
+### **include**：模板继承与包含
 
 ```janja
 {{ include "template" }}
@@ -32,7 +32,9 @@
 {{ set foo }}内容{{ endset }}
 ```
 
-### **block / super**：模板继承与区块
+### **block / super**：区块覆盖与继承
+
+同名区块自动覆盖或继承，区块总是渲染在第一次出现的地方
 
 ```janja
 {{ block title }}{{ super }}默认标题{{ endblock }}
@@ -88,13 +90,15 @@ abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, g
 ### 自定义指令
 
 ```typescript
-class CustomNode implements ASTNode {
+class CustomNode extends Traversal {
   readonly type = 'CUSTOM'
   constructor(
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
 }
 render('{{ custom }}', {}, {
   parsers: {

@@ -2,6 +2,8 @@
 
 ## Built-in Directives
 
+### **include**: Template Inheritance & Inclusion
+
 ```janja
 {{ include "template" }}
 ```
@@ -30,7 +32,9 @@
 {{ set foo }}Content{{ endset }}
 ```
 
-### **block / super**: Template Inheritance & Blocks
+### **block / super**: Block Overriding & Inheritance
+
+Blocks with the same name will automatically overwrite or inherit, and blocks are always rendered where they first appear.
 
 ```janja
 {{ block title }}{{ super }}Default Title{{ endblock }}
@@ -86,13 +90,15 @@ abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, g
 ### Custom Directive
 
 ```typescript
-class CustomNode implements ASTNode {
+class CustomNode extends Traversal {
   readonly type = 'CUSTOM'
   constructor(
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
 }
 render('{{ custom }}', {}, {
   parsers: {
