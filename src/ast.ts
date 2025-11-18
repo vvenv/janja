@@ -34,195 +34,250 @@ export enum NodeType {
 export interface ASTNode {
   type: NodeType
   loc: Loc
+  body?: ASTNode[]
+  traverse: (cb: (node: ASTNode) => void) => void
 }
 
-export class TemplateNode implements ASTNode {
-  readonly type = NodeType.TEMPLATE
-  constructor(
-    public children: ASTNode[],
-    public loc: Loc,
-  ) { }
-}
-
-export class OutputNode implements ASTNode {
-  readonly type = NodeType.OUTPUT
-  constructor(
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-    public exp: Exp,
-  ) { }
-}
-
-export class TextNode implements ASTNode {
-  readonly type = NodeType.TEXT
-  constructor(
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class IfNode implements ASTNode {
-  readonly type = NodeType.IF
-  constructor(
-    public test: Exp,
-    public body: ASTNode[],
-    public alternatives: (ElseIfNode | ElseNode)[],
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class ElseIfNode implements ASTNode {
-  readonly type = NodeType.ELSE_IF
-  constructor(
-    public test: Exp,
-    public body: ASTNode[],
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class ElseNode implements ASTNode {
-  readonly type = NodeType.ELSE
-  constructor(
-    public body: ASTNode[],
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class ForNode implements ASTNode {
-  readonly type = NodeType.FOR
-  constructor(
-    public loop: BinaryExp<'OF'>,
-    public body: ASTNode[],
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class BreakNode implements ASTNode {
-  readonly type = NodeType.BREAK
-  constructor(
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class ContinueNode implements ASTNode {
-  readonly type = NodeType.CONTINUE
-  constructor(
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class UnknownDirectiveNode implements ASTNode {
-  readonly type = NodeType.UNKNOWN
-  constructor(
-    public name: string,
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class UnexpectedDirectiveNode implements ASTNode {
-  readonly type = NodeType.UNEXPECTED
-  constructor(
-    public name: string,
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class CommentNode implements ASTNode {
-  readonly type = NodeType.COMMENT
-  constructor(
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
-}
-
-export class IncludeNode implements ASTNode {
-  readonly type = NodeType.INCLUDE
-  constructor(
-    public val: LitExp<string>,
-    public loc: Loc,
-    public strip: Strip,
-  ) {
+export class Traversal implements ASTNode {
+  readonly type = null as unknown as NodeType
+  readonly loc = null as unknown as Loc
+  body?: ASTNode[]
+  traverse(cb: (node: ASTNode) => void) {
+    this.body?.forEach(cb)
   }
 }
 
-export class BlockNode implements ASTNode {
+export class RootNode extends Traversal {
+  readonly type = NodeType.TEMPLATE
+  constructor(
+    public readonly body: ASTNode[],
+    public readonly loc: Loc,
+  ) {
+    super()
+  }
+}
+
+export class OutputNode extends Traversal {
+  readonly type = NodeType.OUTPUT
+  constructor(
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+    public readonly exp: Exp,
+  ) {
+    super()
+  }
+}
+
+export class TextNode extends Traversal {
+  readonly type = NodeType.TEXT
+  constructor(
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class IfNode extends Traversal {
+  readonly type = NodeType.IF
+  constructor(
+    public readonly test: Exp,
+    public readonly body: ASTNode[],
+    public readonly alternatives: (ElseIfNode | ElseNode)[],
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+
+  traverse(cb: (node: ASTNode) => void) {
+    this.body?.forEach(cb)
+    this.alternatives?.forEach(node => node.body?.forEach(cb))
+  }
+}
+
+export class ElseIfNode extends Traversal {
+  readonly type = NodeType.ELSE_IF
+  constructor(
+    public readonly test: Exp,
+    public readonly body: ASTNode[],
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class ElseNode extends Traversal {
+  readonly type = NodeType.ELSE
+  constructor(
+    public readonly body: ASTNode[],
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class ForNode extends Traversal {
+  readonly type = NodeType.FOR
+  constructor(
+    public readonly loop: BinaryExp<'OF'>,
+    public readonly body: ASTNode[],
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class BreakNode extends Traversal {
+  readonly type = NodeType.BREAK
+  constructor(
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class ContinueNode extends Traversal {
+  readonly type = NodeType.CONTINUE
+  constructor(
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class UnknownDirectiveNode extends Traversal {
+  readonly type = NodeType.UNKNOWN
+  constructor(
+    public readonly name: string,
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class UnexpectedDirectiveNode extends Traversal {
+  readonly type = NodeType.UNEXPECTED
+  constructor(
+    public readonly name: string,
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class CommentNode extends Traversal {
+  readonly type = NodeType.COMMENT
+  constructor(
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class IncludeNode extends Traversal {
+  readonly type = NodeType.INCLUDE
+  constructor(
+    public readonly val: LitExp<string>,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
+}
+
+export class BlockNode extends Traversal {
   readonly type = NodeType.BLOCK
   constructor(
-    public val: IdExp,
-    public body: ASTNode[],
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
+    public readonly val: IdExp,
+    public readonly body: ASTNode[],
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
 }
 
-export class SuperNode implements ASTNode {
+export class SuperNode extends Traversal {
   readonly type = NodeType.SUPER
   constructor(
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
 }
 
-export class MacroNode implements ASTNode {
+export class MacroNode extends Traversal {
   readonly type = NodeType.MACRO
   constructor(
-    public val: BinaryExp<'SET'>,
-    public body: ASTNode[],
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
+    public readonly val: BinaryExp<'SET'>,
+    public readonly body: ASTNode[],
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
 }
 
-export class CallerNode implements ASTNode {
+export class CallerNode extends Traversal {
   readonly type = NodeType.CALLER
   constructor(
-    public val: string,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
+    public readonly val: string,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
 }
 
-export class CallNode implements ASTNode {
+export class CallNode extends Traversal {
   readonly type = NodeType.CALL
   constructor(
-    public val: IdExp,
-    public body: ASTNode[],
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
+    public readonly val: IdExp,
+    public readonly body: ASTNode[],
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
 }
 
-export class SetNode implements ASTNode {
+export class SetNode extends Traversal {
   readonly type = NodeType.SET
   constructor(
-    public val: BinaryExp<'SET'>,
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
+    public readonly val: BinaryExp<'SET'>,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
 }
 
-export class CaptureNode implements ASTNode {
+export class CaptureNode extends Traversal {
   readonly type = NodeType.CAPTURE
   constructor(
-    public val: IdExp,
-    public body: ASTNode[],
-    public loc: Loc,
-    public strip: Strip,
-  ) { }
+    public readonly val: IdExp,
+    public readonly body: ASTNode[],
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super()
+  }
 }

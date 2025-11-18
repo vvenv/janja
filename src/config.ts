@@ -25,6 +25,6 @@ export const compilerOptions: Required<CompilerOptions> = {
 export const renderOptions: Required<RendererOptions> = {
   ...compilerOptions,
   globals: {},
-  filters: { ...filters },
+  filters,
   autoEscape: true,
 }

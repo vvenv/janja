@@ -14,7 +14,7 @@ function parseCall(token: DirectiveToken, parser: Parser) {
   parser.advance()
   const body = parser.parseUntil(['endcall'])
 
-  if (parser.match('endcall')) {
+  if (parser.match(['endcall'])) {
     parser.advance()
   }
   else {

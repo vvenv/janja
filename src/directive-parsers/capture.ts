@@ -14,7 +14,7 @@ function parseCapture(token: DirectiveToken, parser: Parser) {
   parser.advance()
   const body = parser.parseUntil(['endcapture'])
 
-  if (parser.match('endcapture')) {
+  if (parser.match(['endcapture'])) {
     parser.advance()
   }
   else {

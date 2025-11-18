@@ -10,7 +10,7 @@ import type {
 import {
   CommentNode,
   OutputNode,
-  TemplateNode,
+  RootNode,
   TextNode,
   UnexpectedDirectiveNode,
   UnknownDirectiveNode,
@@ -32,7 +32,7 @@ export class Parser extends Tokenizer {
     this.expParser = new ExpParser(template)
 
     this.cursor = 0
-    return new TemplateNode(this.parseUntil(), { start, end })
+    return new RootNode(this.parseUntil(), { start, end })
   }
 
   parseUntil(names?: string[]) {
@@ -45,7 +45,8 @@ export class Parser extends Tokenizer {
       if (!token
         || (
           token.type === TokenType.DIRECTIVE
-          && names?.includes((token as DirectiveToken).name.toLowerCase()))
+          && names
+          && this.match(names, token))
       ) {
         break
       }
@@ -147,17 +148,8 @@ export class Parser extends Tokenizer {
     this.cursor++
   }
 
-  match(name: string) {
-    return (this.peek() as DirectiveToken)?.name === name
-  }
-
-  isDirective(names: string[]) {
-    const token = this.peek()
-    if (token?.type !== TokenType.DIRECTIVE) {
-      return false
-    }
-
-    return names.includes((token as DirectiveToken).name.toLowerCase())
+  match(names: string[], token = this.peek()) {
+    return names.includes((token as DirectiveToken)?.name)
   }
 
   requireExpression({ expression, name, loc }: DirectiveToken) {

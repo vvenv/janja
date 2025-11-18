@@ -117,9 +117,10 @@ it('escape tag', async () => {
     await parse('{{= "{{ escape }}" }}'),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         OutputNode {
+          "body": undefined,
           "exp": {
             "loc": {
               "end": {
@@ -153,6 +154,7 @@ it('escape tag', async () => {
           "val": " "{{ escape ",
         },
         TextNode {
+          "body": undefined,
           "loc": {
             "end": {
               "column": 22,
@@ -186,9 +188,10 @@ it('escape tag', async () => {
     await parse('{{= "\\{\\{ escape \\}\\}" }}'),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         OutputNode {
+          "body": undefined,
           "exp": {
             "loc": {
               "end": {
@@ -243,8 +246,8 @@ it('empty', async () => {
     await parse(''),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [],
+    RootNode {
+      "body": [],
       "loc": {
         "end": {
           "column": 1,
@@ -263,9 +266,10 @@ it('empty', async () => {
     await parse(' '),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         TextNode {
+          "body": undefined,
           "loc": {
             "end": {
               "column": 2,
@@ -302,9 +306,10 @@ it('comment', async () => {
     await parse('{{# if x -#}}'),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         CommentNode {
+          "body": undefined,
           "loc": {
             "end": {
               "column": 14,
@@ -344,8 +349,8 @@ it('directive', async () => {
     await parse('{{if x -}}{{endif}}'),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         IfNode {
           "alternatives": [],
           "body": [],
@@ -402,9 +407,10 @@ it('output', async () => {
     await parse('{{=- x }}'),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         OutputNode {
+          "body": undefined,
           "exp": {
             "loc": {
               "end": {
@@ -456,9 +462,10 @@ it('output', async () => {
     await parse('{{= null }}'),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         OutputNode {
+          "body": undefined,
           "exp": {
             "loc": {
               "end": {
@@ -510,9 +517,10 @@ it('output', async () => {
     await parse('{{= x + 1 }}'),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         OutputNode {
+          "body": undefined,
           "exp": {
             "left": {
               "loc": {
@@ -598,9 +606,10 @@ it('text', async () => {
       world`),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         TextNode {
+          "body": undefined,
           "loc": {
             "end": {
               "column": 12,
@@ -643,12 +652,13 @@ it('custom open/close markers', async () => {
     }),
   ).toMatchInlineSnapshot(
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         IfNode {
           "alternatives": [],
           "body": [
             OutputNode {
+              "body": undefined,
               "exp": {
                 "loc": {
                   "end": {

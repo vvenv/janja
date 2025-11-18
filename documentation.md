@@ -1,6 +1,10 @@
 # Documentation
 
-## Built-in Tags
+## Built-in Directives
+
+```janja
+{{ include "template" }}
+```
 
 ### **if / elif / else**: Conditional Statements
 
@@ -79,25 +83,30 @@ abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, g
 
 ## Customization
 
-### Custom Tag
+### Custom Directive
 
-```javascript
-const myTag = {
-  names: ['my_tag'],
-  async compile({ out }) {
-    // Compilation logic
-    return out.pushStr('Custom tag content')
-  },
+```typescript
+class CustomNode implements ASTNode {
+  readonly type = 'CUSTOM'
+  constructor(
+    public val: string,
+    public loc: Loc,
+    public strip: Strip,
+  ) { }
 }
-const engine = new Engine({
-  compilers: [myTag],
+render('{{ custom }}', {}, {
+  parsers: {
+    custom: (token, parser) => {
+      parser.advance()
+      return new CustomNode(token.val, token.loc, token.strip)
+    },
+  },
+  compilers: {
+    CUSTOM: async (node, compiler) => {
+      compiler.pushStr(node.loc, '<CUSTOM/>')
+    },
+  },
 })
-```
-
-Usage in template:
-
-```janja
-{{ my_tag }}
 ```
 
 ### Custom Filter

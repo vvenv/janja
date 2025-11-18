@@ -12,7 +12,6 @@ async function compileSet(
     loc,
     new ExpCompiler().compile(val, compiler.context),
   )
-  compiler.pushRaw(null, `});`)
 }
 
 export const compilers: CompilerMap = {

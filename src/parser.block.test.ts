@@ -46,11 +46,12 @@ it('block', async () => {
   ).toMatchInlineSnapshot(
 
     `
-    TemplateNode {
-      "children": [
+    RootNode {
+      "body": [
         BlockNode {
           "body": [
             TextNode {
+              "body": undefined,
               "loc": {
                 "end": {
                   "column": 19,
@@ -103,6 +104,7 @@ it('block', async () => {
             BlockNode {
               "body": [
                 TextNode {
+                  "body": undefined,
                   "loc": {
                     "end": {
                       "column": 61,
@@ -118,6 +120,7 @@ it('block', async () => {
                   "val": "2",
                 },
                 SuperNode {
+                  "body": undefined,
                   "loc": {
                     "end": {
                       "column": 72,

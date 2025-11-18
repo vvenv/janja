@@ -1,6 +1,9 @@
 /* eslint-disable style/no-tabs */
+import type { Compiler } from './compiler'
+import type { Loc, Strip } from './types'
 import { expect, it } from 'vitest'
 import { render, renderFile } from '../test/__helper'
+import { Traversal } from './ast'
 
 it('error', async () => {
   try {
@@ -225,7 +228,7 @@ it('for - if', async () => {
   )
 })
 
-it.skip('for - destructing', async () => {
+it('for - destructing', async () => {
   expect(
     await render(
       '{{ for name of names }}{{ for kv of name | entries }}{{= kv | first }}{{= kv | last }}{{ endfor }}{{ endfor }}',
@@ -254,7 +257,7 @@ it.skip('for - destructing', async () => {
   )
 })
 
-it.skip('set', async () => {
+it('set', async () => {
   expect(
     await render('{{= name }}{{ set name = "bar" }}{{= name }}', {
       name: 'foo',
@@ -264,7 +267,7 @@ it.skip('set', async () => {
   )
 })
 
-it.skip('macro - call', async () => {
+it('macro - call', async () => {
   expect(
     await render(
       `{{ macro foo = (name = "foo") }}{{= name }}{{caller}}{{ endmacro }}{{ call foo() }}1{{ endcall }}{{ call foo("bar") }}{{ endcall }}`,
@@ -320,21 +323,32 @@ it('null', async () => {
   )
 })
 
-// it('custom tag', async () => {
-//   expect(
-//     await render('{{ custom }}', {}, {
-//       compilers: {
-//         custom: [{
-//           names: ['custom'],
-//           compile: async ({ tag: { name }, out }) => {
-//             if (name === 'custom') {
-//               out.pushStr(null, 'CUSTOM')
-//             }
-//           },
-//         }],
-//       },
-//     }),
-//   ).toMatchInlineSnapshot(
-//     `"CUSTOM"`,
-//   )
-// })
+it('custom directive', async () => {
+  class CustomNode extends Traversal {
+    readonly type = 'CUSTOM' as any
+    constructor(
+      public readonly val: string,
+      public readonly loc: Loc,
+      public readonly strip: Strip,
+    ) {
+      super()
+    }
+  }
+  expect(
+    await render('{{ custom }}', {}, {
+      parsers: {
+        custom: (token, parser) => {
+          parser.advance()
+          return new CustomNode(token.val, token.loc, token.strip)
+        },
+      },
+      compilers: {
+        ['CUSTOM' as any]: async (node: CustomNode, compiler: Compiler) => {
+          compiler.pushStr(node.loc, '<CUSTOM/>')
+        },
+      },
+    }),
+  ).toMatchInlineSnapshot(
+    `"<CUSTOM/>"`,
+  )
+})

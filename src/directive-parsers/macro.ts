@@ -14,7 +14,7 @@ function parseMacro(token: DirectiveToken, parser: Parser) {
   parser.advance()
   const body = parser.parseUntil(['endmacro'])
 
-  if (parser.match('endmacro')) {
+  if (parser.match(['endmacro'])) {
     parser.advance()
   }
   else {
