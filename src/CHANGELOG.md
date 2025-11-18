@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/vvenv/janja/compare/janja-v2.0.0...janja-v2.0.1) (2025-11-18)
+
+
+### Bug Fixes
+
+* include directive ([a6ae0e7](https://github.com/vvenv/janja/commit/a6ae0e74b24973c7b672396f91ee0516092876c2))
+
 ## [2.0.0](https://github.com/vvenv/janja/compare/janja-v1.1.0...janja-v2.0.0) (2025-11-16)
 
 
