@@ -9,12 +9,24 @@ import { Safe } from './safe'
 export class Renderer {
   protected options: Required<RendererOptions>
 
-  constructor({ globals, filters, parsers, compilers, ...options }: RendererOptions = {}) {
+  constructor({
+    globals,
+    filters,
+    parsers,
+    compilers,
+    plugins,
+    ...options
+  }: RendererOptions = {}) {
     this.options = { ...renderOptions, ...options }
-    Object.assign(this.options.globals!, globals)
-    Object.assign(this.options.filters!, filters)
-    Object.assign(this.options.parsers!, parsers)
-    Object.assign(this.options.compilers!, compilers)
+    Object.assign(this.options.globals, globals)
+    Object.assign(this.options.filters, filters)
+    Object.assign(this.options.parsers, parsers)
+    Object.assign(this.options.compilers, compilers)
+    plugins?.forEach((plugin) => {
+      Object.assign(this.options.filters, plugin.filters)
+      Object.assign(this.options.parsers, plugin.parsers)
+      Object.assign(this.options.compilers, plugin.compilers)
+    })
   }
 
   async render(
@@ -67,6 +79,6 @@ export class Renderer {
   }
 
   async renderFile(filepath: string, globals: ObjectType) {
-    return this.render(await this.options.loader!(filepath), globals)
+    return this.render(await this.options.loader(filepath), globals)
   }
 }
