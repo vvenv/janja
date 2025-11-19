@@ -27,4 +27,5 @@ export const renderOptions: Required<RendererOptions> = {
   globals: {},
   filters,
   autoEscape: true,
+  plugins: [],
 }

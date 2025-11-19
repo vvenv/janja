@@ -239,9 +239,10 @@ export interface NodeCompiler {
   ) => MaybePromise<Loc | void | false>
 }
 
-export interface CacheValue {
-  template: string
-  code: string
+export interface Plugin {
+  filters?: Filters
+  parsers?: ParserMap
+  compilers?: CompilerMap
 }
 
 export type ParserFn<T = ASTNode> = (token: DirectiveToken, parser: Parser) => T | void
@@ -275,4 +276,5 @@ export interface RendererOptions extends CompilerOptions {
   globals?: ObjectType
   filters?: Filters
   autoEscape?: boolean
+  plugins?: Plugin[]
 }
