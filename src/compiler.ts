@@ -1,35 +1,38 @@
-import type {
+import {
   ASTNode,
   BlockNode,
   IncludeNode,
+  NodeType,
   RootNode,
   UnknownDirectiveNode,
-} from './ast'
-import type {
-  CompilerOptions,
-} from './types'
-import { NodeType } from './ast'
-import { CompileError } from './compile-error'
-import { compilerOptions } from './config'
-import { Context } from './context'
-import { Parser } from './parser'
+} from './ast';
+import { CompileError } from './compile-error';
+import { compilerOptions } from './config';
+import { Context } from './context';
+import { Parser } from './parser';
+import type { CompilerOptions } from './types';
 
 export class Compiler extends Context {
-  public options: Required<CompilerOptions>
-  public template!: string
-  public state!: Record<string, any>
+  public options: Required<CompilerOptions>;
 
-  private isRoot!: boolean
-  private rootNode!: RootNode
-  private partials!: Map<string, string>
-  private blocks!: Map<string, BlockNode[]>
+  public template!: string;
+
+  public state!: Record<string, any>;
+
+  private isRoot!: boolean;
+
+  private rootNode!: RootNode;
+
+  private partials!: Map<string, string>;
+
+  private blocks!: Map<string, BlockNode[]>;
 
   constructor(options?: CompilerOptions) {
-    super()
+    super();
     this.options = {
       ...compilerOptions,
       ...options,
-    }
+    };
   }
 
   async compile(
@@ -38,161 +41,135 @@ export class Compiler extends Context {
     partials = new Map<string, string>(),
     blocks = new Map<string, BlockNode[]>(),
   ) {
-    this.template = template
-    this.isRoot = root
-    this.partials = partials
-    this.blocks = blocks
-    this.rootNode = new Parser(this.options).parse(template)
-    this.state = {}
+    this.template = template;
+    this.isRoot = root;
+    this.partials = partials;
+    this.blocks = blocks;
+    this.rootNode = new Parser(this.options).parse(template);
+    this.state = {};
 
-    this.start()
+    this.start();
 
-    await this.parseTemplates()
+    await this.parseTemplates();
 
     if (this.isRoot) {
       if (this.partials.size) {
-        this.pushRaw(
-          null,
-          `const p={`,
-        )
+        this.pushRaw(null, 'const p={');
 
         for (const [path, code] of this.partials) {
-          this.pushRaw(
-            null,
-            `"${path}":async()=>{`,
-            code,
-            `},`,
-          )
+          this.pushRaw(null, `"${path}":async()=>{`, code, '},');
         }
 
-        this.pushRaw(
-          null,
-          `};`,
-        )
+        this.pushRaw(null, '};');
       }
 
       if (this.blocks.size) {
-        this.pushRaw(
-          null,
-          `const b={`,
-        )
+        this.pushRaw(null, 'const b={');
 
-        for (const [name, blocks] of this.blocks) {
-          this.pushRaw(
-            null,
-            `"${name}":{`,
-            `u:0,`,
-            `s:[`,
-          )
+        for (const [name, _blocks] of this.blocks) {
+          this.pushRaw(null, `"${name}":{`, 'u:0,', 's:[');
 
-          this.state.block = name
+          this.state.block = name;
 
-          for (const block of blocks) {
-            this.pushRaw(
-              null,
-              `async()=>{`,
-              `let s="";`,
-            )
-            await this.compileNodes(block.body)
-            this.pushRaw(
-              null,
-              `return s;`,
-              `},`,
-            )
+          for (const block of _blocks) {
+            this.pushRaw(null, 'async()=>{', 'let s="";');
+            await this.compileNodes(block.body);
+            this.pushRaw(null, 'return s;', '},');
           }
 
-          this.state.block = undefined
+          this.state.block = undefined;
 
-          this.pushRaw(
-            null,
-            `],`,
-            `},`,
-          )
+          this.pushRaw(null, '],', '},');
         }
 
-        this.pushRaw(
-          null,
-          `};`,
-        )
+        this.pushRaw(null, '};');
       }
     }
 
-    await this.compileNode(this.rootNode)
+    await this.compileNode(this.rootNode);
 
-    this.end()
+    this.end();
 
-    return this
+    return this;
   }
 
   private async parseTemplates() {
-    const { partials, blocks } = this.collectPartialsAndBlocks()
+    const { partials, blocks } = this.collectPartialsAndBlocks();
 
     for (const [path, node] of partials) {
       if (!this.partials.has(path)) {
-        let template: string | undefined
+        let template: string | undefined;
+
         try {
-          template = await this.options.loader(path)
-        }
-        catch {
+          template = await this.options.loader(path);
+        } catch {
           this.options.debug?.(
             new CompileError(
               `Failed to load template from "${path}"`,
               this.template,
               node.loc,
             ),
-          )
-          return
+          );
+
+          return;
         }
 
         if (template) {
-          await this.compilePartial(path, node, template)
+          await this.compilePartial(path, node, template);
         }
       }
     }
 
     for (const block of blocks) {
-      const { val: { value } } = block
+      const {
+        val: { value },
+      } = block;
+
       if (!this.blocks.has(value)) {
-        this.blocks.set(value, [])
+        this.blocks.set(value, []);
       }
-      this.blocks.get(value)!.push(block)
+
+      this.blocks.get(value)!.push(block);
     }
   }
 
   private collectPartialsAndBlocks() {
-    const partials = new Map<string, IncludeNode>()
-    const blocks: BlockNode[] = []
+    const partials = new Map<string, IncludeNode>();
+    const blocks: BlockNode[] = [];
 
     const traverse = (node: ASTNode) => {
       if (node.type === NodeType.INCLUDE) {
         if (!partials.has((node as IncludeNode).val.value)) {
-          partials.set((node as IncludeNode).val.value, node as IncludeNode)
+          partials.set((node as IncludeNode).val.value, node as IncludeNode);
         }
       }
 
       if (node.type === NodeType.BLOCK) {
-        blocks.push(node as BlockNode)
+        blocks.push(node as BlockNode);
       }
 
-      node.traverse(traverse)
-    }
+      node.traverse(traverse);
+    };
 
-    traverse(this.rootNode)
+    traverse(this.rootNode);
+
     return {
       partials,
       blocks,
-    }
+    };
   }
 
   private async compileNode(node: ASTNode) {
     if (node.type === NodeType.TEMPLATE) {
-      await this.compileNodes((node as RootNode).body)
-      return
+      await this.compileNodes((node as RootNode).body);
+
+      return;
     }
 
     if (this.options.compilers[node.type]) {
-      await this.options.compilers[node.type]!(node, this)
-      return
+      await this.options.compilers[node.type]!(node, this);
+
+      return;
     }
 
     this.options.debug?.(
@@ -201,12 +178,12 @@ export class Compiler extends Context {
         this.template,
         node.loc,
       ),
-    )
+    );
   }
 
   async compileNodes(nodes: ASTNode[]) {
     for (const child of nodes) {
-      await this.compileNode(child)
+      await this.compileNode(child);
     }
   }
 
@@ -221,20 +198,13 @@ export class Compiler extends Context {
         false,
         this.partials,
         this.blocks,
-      )
-      this.partials.set(
-        path,
-        code,
-      )
-    }
-    catch {
+      );
+
+      this.partials.set(path, code);
+    } catch {
       this.options.debug?.(
-        new CompileError(
-          `Failed to compile template`,
-          this.template,
-          node.loc,
-        ),
-      )
+        new CompileError('Failed to compile template', this.template, node.loc),
+      );
     }
   }
 }

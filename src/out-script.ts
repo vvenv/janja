@@ -1,68 +1,47 @@
-import type { Loc, Pos, Script } from './types'
-import { CONTEXT, ESCAPE, FILTERS } from './identifiers'
-import { SourceMap } from './source-map'
+import { CONTEXT, ESCAPE, FILTERS } from './identifiers';
+import { SourceMap } from './source-map';
+import type { Loc, Pos, Script } from './types';
 
 export class OutScript extends SourceMap {
-  public code = ''
+  public code = '';
 
   get script() {
-    return new Function(
-      CONTEXT,
-      ESCAPE,
-      FILTERS,
-      this.code,
-    ) as Script
+    // eslint-disable-next-line no-new-func
+    return new Function(CONTEXT, ESCAPE, FILTERS, this.code) as Script;
   }
 
   start() {
-    this.pushRaw(
-      null,
-      'return(async()=>{',
-      'let s="";',
-    )
+    this.pushRaw(null, 'return(async()=>{', 'let s="";');
   }
 
   end() {
-    this.pushRaw(
-      null,
-      'return s;',
-      '})();',
-    )
+    this.pushRaw(null, 'return s;', '})();');
   }
 
-  pushRaw(
-    loc: Loc | null,
-    ...lines: string[]
-  ) {
-    const start = this.code.length
+  pushRaw(loc: Loc | null, ...lines: string[]) {
+    const start = this.code.length;
 
     for (const line of lines) {
-      this.code += line
+      this.code += line;
     }
 
     if (!loc) {
-      return
+      return;
     }
 
-    this.addMapping(
-      loc,
-      {
-        start: {
-          line: 1,
-          column: start,
-        },
-        end: {
-          line: 1,
-          column: this.code.length,
-        },
+    this.addMapping(loc, {
+      start: {
+        line: 1,
+        column: start,
       },
-    )
+      end: {
+        line: 1,
+        column: this.code.length,
+      },
+    });
   }
 
-  pushStr(
-    loc: Loc | null,
-    s: string,
-  ): Pos | void {
+  pushStr(loc: Loc | null, s: string): Pos | void {
     if (s) {
       this.pushRaw(
         loc,
@@ -70,17 +49,11 @@ export class OutScript extends SourceMap {
           .replace(/\\/g, '\\\\')
           .replace(/"/g, '\\"')
           .replace(/[\n\r]/g, '\\n')}";`,
-      )
+      );
     }
   }
 
-  pushVar(
-    loc: Loc | null,
-    v: string,
-  ) {
-    this.pushRaw(
-      loc,
-      `s+=${ESCAPE}(${v});`,
-    )
+  pushVar(loc: Loc | null, v: string) {
+    this.pushRaw(loc, `s+=${ESCAPE}(${v});`);
   }
 }

@@ -1,20 +1,20 @@
-import type { ExpTokenType } from './types'
+import type { ExpTokenType } from './types';
 
 export const expTokenTypes: Record<string, ExpTokenType> = {
-  'and': 'AND',
-  'or': 'OR',
-  'not': 'NOT',
+  and: 'AND',
+  or: 'OR',
+  not: 'NOT',
 
-  'is': 'IS',
-  'eq': 'EQ',
-  'ne': 'NE',
-  'gt': 'GT',
-  'lt': 'LT',
-  'ge': 'GE',
-  'le': 'LE',
-  'in': 'IN',
-  'ni': 'NI',
-  'of': 'OF',
+  is: 'IS',
+  eq: 'EQ',
+  ne: 'NE',
+  gt: 'GT',
+  lt: 'LT',
+  ge: 'GE',
+  le: 'LE',
+  in: 'IN',
+  ni: 'NI',
+  of: 'OF',
 
   '+': 'ADD',
   '-': 'SUB',
@@ -22,13 +22,13 @@ export const expTokenTypes: Record<string, ExpTokenType> = {
   '/': 'DIV',
   '%': 'MOD',
 
-  'if': 'IF',
-  'else': 'ELSE',
+  if: 'IF',
+  else: 'ELSE',
 
-  'true': 'LIT',
-  'false': 'LIT',
-  'null': 'LIT',
-  'undefined': 'LIT',
+  true: 'LIT',
+  false: 'LIT',
+  null: 'LIT',
+  undefined: 'LIT',
 
   '|': 'PIPE',
 
@@ -37,4 +37,4 @@ export const expTokenTypes: Record<string, ExpTokenType> = {
   ')': 'RP',
   ',': 'COMMA',
   '.': 'DOT',
-}
+};

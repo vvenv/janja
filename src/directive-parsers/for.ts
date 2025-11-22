@@ -1,52 +1,43 @@
-import type { Parser } from '../parser'
-import type { BinaryExp, DirectiveToken, ParserMap } from '../types'
-import { BreakNode, ContinueNode, ForNode } from '../ast'
-import { CompileError } from '../compile-error'
-import { parseUnexpected } from '../parse-unexpected'
+import { BreakNode, ContinueNode, ForNode } from '../ast';
+import { CompileError } from '../compile-error';
+import { parseUnexpected } from '../parse-unexpected';
+import type { Parser } from '../parser';
+import type { BinaryExp, DirectiveToken, ParserMap } from '../types';
 
 function parseFor(token: DirectiveToken, parser: Parser) {
-  parser.requireExpression(token)
+  parser.requireExpression(token);
 
-  const loop = parser.parseExp(
-    token.expression!,
-  )
+  const loop = parser.parseExp(token.expression!);
 
-  parser.advance()
-  const body = parser.parseUntil(['endfor'])
+  parser.advance();
+
+  const body = parser.parseUntil(['endfor']);
 
   if (parser.match(['endfor'])) {
-    parser.advance()
-  }
-  else {
+    parser.advance();
+  } else {
     throw parser.options.debug?.(
-      new CompileError(
-        `Unclosed "${token.name}"`,
-        parser.template,
-        token.loc,
-      ),
-    )
+      new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
+    );
   }
 
-  return new ForNode(
-    loop as BinaryExp<'OF'>,
-    body,
-    token.loc,
-    token.strip,
-  )
+  return new ForNode(loop as BinaryExp<'OF'>, body, token.loc, token.strip);
 }
 
 function parseBreak(token: DirectiveToken, parser: Parser) {
-  parser.requireNoExpression(token)
+  parser.requireNoExpression(token);
 
-  parser.advance()
-  return new BreakNode(token.val, token.loc, token.strip)
+  parser.advance();
+
+  return new BreakNode(token.val, token.loc, token.strip);
 }
 
 function parseContinue(token: DirectiveToken, parser: Parser) {
-  parser.requireNoExpression(token)
+  parser.requireNoExpression(token);
 
-  parser.advance()
-  return new ContinueNode(token.val, token.loc, token.strip)
+  parser.advance();
+
+  return new ContinueNode(token.val, token.loc, token.strip);
 }
 
 export const parsers: ParserMap = {
@@ -54,4 +45,4 @@ export const parsers: ParserMap = {
   break: parseBreak,
   continue: parseContinue,
   endfor: parseUnexpected,
-}
+};

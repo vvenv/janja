@@ -1,15 +1,14 @@
-import { expect, it } from 'vitest'
-import { parse } from '../test/__helper'
+import { expect, it } from 'vitest';
+import { parse } from '../test/__helper';
 
 it('error', async () => {
   try {
-    await parse('{{ include }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
+    await parse('{{ include }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
       `[CompileError: "include" requires expression]`,
-    )
+    );
     expect(error.details).toMatchInlineSnapshot(
       `
       ""include" requires expression
@@ -18,9 +17,9 @@ it('error', async () => {
        ｜ ^           ^
       "
     `,
-    )
+    );
   }
-})
+});
 
 it('include', async () => {
   expect(
@@ -144,5 +143,5 @@ it('include', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-})
+  );
+});

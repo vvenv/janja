@@ -1,27 +1,26 @@
-import { CONTEXT } from './identifiers'
-import { OutScript } from './out-script'
+import { CONTEXT } from './identifiers';
+import { OutScript } from './out-script';
 
 export class Context extends OutScript {
-  context = CONTEXT
+  context = CONTEXT;
 
-  private contexts: string[] = [CONTEXT]
-  private index = 0
+  private contexts: string[] = [CONTEXT];
 
-  constructor() {
-    super()
-  }
+  private index = 0;
 
   in() {
-    this.context = `${this.context}_${this.index++}`
-    this.contexts.push(this.context)
-    return this.context
+    this.context = `${this.context}_${this.index++}`;
+    this.contexts.push(this.context);
+
+    return this.context;
   }
 
   out() {
     if (this.context === CONTEXT) {
-      return
+      return;
     }
-    this.contexts.pop()
-    this.context = this.contexts.at(-1)!
+
+    this.contexts.pop();
+    this.context = this.contexts.at(-1)!;
   }
 }

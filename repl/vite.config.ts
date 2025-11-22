@@ -1,5 +1,5 @@
-import { env } from 'node:process'
-import { defineConfig } from 'vite'
+import { env } from 'node:process';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   server: {
@@ -15,4 +15,4 @@ export default defineConfig({
       janja: '../src',
     },
   },
-})
+});

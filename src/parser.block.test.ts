@@ -1,15 +1,14 @@
-import { expect, it } from 'vitest'
-import { parse } from '../test/__helper'
+import { expect, it } from 'vitest';
+import { parse } from '../test/__helper';
 
 it('error', async () => {
   try {
-    await parse('{{ block }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
+    await parse('{{ block }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
       `[CompileError: "block" requires expression]`,
-    )
+    );
     expect(error.details).toMatchInlineSnapshot(
       `
       ""block" requires expression
@@ -18,16 +17,14 @@ it('error', async () => {
        ｜ ^         ^
       "
     `,
-    )
+    );
   }
+
   try {
-    await parse('{{ block "" }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unclosed "block"]`,
-    )
+    await parse('{{ block "" }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unclosed "block"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unclosed "block"
@@ -36,15 +33,16 @@ it('error', async () => {
        ｜ ^            ^
       "
     `,
-    )
+    );
   }
-})
+});
 
 it('block', async () => {
   expect(
-    await parse('{{ block title }}1{{ endblock }}{{ if x }}{{ block title }}2{{ super }}{{ endblock }}{{ endif }}'),
+    await parse(
+      '{{ block title }}1{{ endblock }}{{ if x }}{{ block title }}2{{ super }}{{ endblock }}{{ endif }}',
+    ),
   ).toMatchInlineSnapshot(
-
     `
     RootNode {
       "body": [
@@ -216,5 +214,5 @@ it('block', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-})
+  );
+});

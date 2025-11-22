@@ -1,78 +1,76 @@
-import { expect, it } from 'vitest'
-import { ExpParser } from './exp-parser'
+import { expect, it } from 'vitest';
+import { ExpParser } from './exp-parser';
 
 function parse(template: string) {
   return new ExpParser(template).parse(template, {
     start: { line: 1, column: 1 },
     end: { line: 1, column: template.length },
-  })
+  });
 }
 
 it('error', () => {
   expect(() => parse('not')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: unexpected end of expression]`,
-  )
+  );
   expect(() => parse('and')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: no left operand for "AND"]`,
-  )
+  );
   expect(() => parse('a and')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: no right operand for "AND"]`,
-  )
+  );
   expect(() => parse('(')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: unexpected end of expression]`,
-  )
+  );
   expect(() => parse('(a')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected "RP" after "LP"]`,
-  )
+  );
   expect(() => parse('a(')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected "RP" after "LP"]`,
-  )
+  );
   expect(() => parse('a.')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected "ID" after "DOT"]`,
-  )
+  );
   expect(() => parse('a.1')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected "ID" after "DOT"]`,
-  )
+  );
   expect(() => parse('|')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: no left operand for "PIPE"]`,
-  )
+  );
   expect(() => parse('a |')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected "ID" after "PIPE"]`,
-  )
+  );
   expect(() => parse('a | 1')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected "ID" after "PIPE"]`,
-  )
+  );
   expect(() => parse('a | f(')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected "RP" after "LP"]`,
-  )
+  );
   expect(() => parse('x if')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected test expression]`,
-  )
+  );
   expect(() => parse('x if y else')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected alternative expression]`,
-  )
+  );
   expect(() => parse('x if y else ,')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected alternative expression]`,
-  )
+  );
   expect(() => parse('x if else')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected test expression]`,
-  )
+  );
   expect(() => parse('x if if')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected test expression]`,
-  )
+  );
   expect(() => parse('x if ,')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: expected test expression]`,
-  )
-})
+  );
+});
 
 it('empty', () => {
-  expect(parse('')).toMatchInlineSnapshot(
-    `null`,
-  )
-})
+  expect(parse('')).toMatchInlineSnapshot(`null`);
+});
 
 it('string', () => {
-  expect(parse('\'foo\'')).toMatchInlineSnapshot(
+  expect(parse("'foo'")).toMatchInlineSnapshot(
     `
     {
       "loc": {
@@ -90,7 +88,7 @@ it('string', () => {
       "value": "foo",
     }
   `,
-  )
+  );
   expect(parse('"bar"')).toMatchInlineSnapshot(
     `
     {
@@ -109,8 +107,8 @@ it('string', () => {
       "value": "bar",
     }
   `,
-  )
-})
+  );
+});
 
 it('number', () => {
   expect(parse('123')).toMatchInlineSnapshot(
@@ -131,7 +129,7 @@ it('number', () => {
       "value": 123,
     }
   `,
-  )
+  );
   expect(parse('12.34')).toMatchInlineSnapshot(
     `
     {
@@ -150,8 +148,8 @@ it('number', () => {
       "value": 12.34,
     }
   `,
-  )
-})
+  );
+});
 
 it('boolean', () => {
   expect(parse('true')).toMatchInlineSnapshot(
@@ -172,7 +170,7 @@ it('boolean', () => {
       "value": true,
     }
   `,
-  )
+  );
   expect(parse('false')).toMatchInlineSnapshot(
     `
     {
@@ -191,8 +189,8 @@ it('boolean', () => {
       "value": false,
     }
   `,
-  )
-})
+  );
+});
 
 it('null and undefined', () => {
   expect(parse('null')).toMatchInlineSnapshot(
@@ -213,7 +211,7 @@ it('null and undefined', () => {
       "value": null,
     }
   `,
-  )
+  );
   expect(parse('undefined')).toMatchInlineSnapshot(
     `
     {
@@ -232,8 +230,8 @@ it('null and undefined', () => {
       "value": undefined,
     }
   `,
-  )
-})
+  );
+});
 
 it('id', () => {
   expect(parse('a')).toMatchInlineSnapshot(
@@ -254,7 +252,7 @@ it('id', () => {
       "value": "a",
     }
   `,
-  )
+  );
   expect(parse('abc')).toMatchInlineSnapshot(
     `
     {
@@ -273,13 +271,11 @@ it('id', () => {
       "value": "abc",
     }
   `,
-  )
-})
+  );
+});
 
 it('dot', () => {
-  expect(parse('.')).toMatchInlineSnapshot(
-    `null`,
-  )
+  expect(parse('.')).toMatchInlineSnapshot(`null`);
   expect(parse('a.b.c')).toMatchInlineSnapshot(
     `
     {
@@ -330,7 +326,7 @@ it('dot', () => {
       "value": "a",
     }
   `,
-  )
+  );
   expect(parse('a.b.c(x, y, z)')).toMatchInlineSnapshot(
     `
     {
@@ -428,8 +424,8 @@ it('dot', () => {
       "value": "a",
     }
   `,
-  )
-})
+  );
+});
 
 it('not', () => {
   expect(parse('not a')).toMatchInlineSnapshot(
@@ -465,7 +461,7 @@ it('not', () => {
       "value": "not",
     }
   `,
-  )
+  );
   expect(parse('not not a')).toMatchInlineSnapshot(
     `
     {
@@ -514,7 +510,7 @@ it('not', () => {
       "value": "not",
     }
   `,
-  )
+  );
   expect(parse('not x | f(a, "b")')).toMatchInlineSnapshot(
     `
     {
@@ -610,8 +606,8 @@ it('not', () => {
       "value": "not",
     }
   `,
-  )
-})
+  );
+});
 
 it('and', () => {
   expect(parse('a and b')).toMatchInlineSnapshot(
@@ -662,8 +658,8 @@ it('and', () => {
       "value": "and",
     }
   `,
-  )
-})
+  );
+});
 
 it('or', () => {
   expect(parse('a or b')).toMatchInlineSnapshot(
@@ -714,8 +710,8 @@ it('or', () => {
       "value": "or",
     }
   `,
-  )
-})
+  );
+});
 
 it('is', () => {
   expect(parse('a is b')).toMatchInlineSnapshot(
@@ -766,8 +762,8 @@ it('is', () => {
       "value": "is",
     }
   `,
-  )
-})
+  );
+});
 
 it('eq', () => {
   expect(parse('a eq b')).toMatchInlineSnapshot(
@@ -818,8 +814,8 @@ it('eq', () => {
       "value": "eq",
     }
   `,
-  )
-})
+  );
+});
 
 it('ne', () => {
   expect(parse('a ne b')).toMatchInlineSnapshot(
@@ -870,8 +866,8 @@ it('ne', () => {
       "value": "ne",
     }
   `,
-  )
-})
+  );
+});
 
 it('add', () => {
   expect(parse('a + b')).toMatchInlineSnapshot(
@@ -922,8 +918,8 @@ it('add', () => {
       "value": "+",
     }
   `,
-  )
-})
+  );
+});
 
 it('sub', () => {
   expect(parse('a - b')).toMatchInlineSnapshot(
@@ -944,8 +940,8 @@ it('sub', () => {
       "value": "b",
     }
   `,
-  )
-})
+  );
+});
 
 it('mul', () => {
   expect(parse('a * b')).toMatchInlineSnapshot(
@@ -996,8 +992,8 @@ it('mul', () => {
       "value": "*",
     }
   `,
-  )
-})
+  );
+});
 
 it('div', () => {
   expect(parse('a / b')).toMatchInlineSnapshot(
@@ -1048,8 +1044,8 @@ it('div', () => {
       "value": "/",
     }
   `,
-  )
-})
+  );
+});
 
 it('mod', () => {
   expect(parse('a % b')).toMatchInlineSnapshot(
@@ -1100,8 +1096,8 @@ it('mod', () => {
       "value": "%",
     }
   `,
-  )
-})
+  );
+});
 
 it('=', () => {
   expect(parse('a = b')).toMatchInlineSnapshot(
@@ -1152,8 +1148,8 @@ it('=', () => {
       "value": "=",
     }
   `,
-  )
-})
+  );
+});
 
 it('in', () => {
   expect(parse('a in b')).toMatchInlineSnapshot(
@@ -1204,8 +1200,8 @@ it('in', () => {
       "value": "in",
     }
   `,
-  )
-})
+  );
+});
 
 it('ni', () => {
   expect(parse('a ni b')).toMatchInlineSnapshot(
@@ -1256,8 +1252,8 @@ it('ni', () => {
       "value": "ni",
     }
   `,
-  )
-})
+  );
+});
 
 it('of', () => {
   expect(parse('a of b')).toMatchInlineSnapshot(
@@ -1308,8 +1304,8 @@ it('of', () => {
       "value": "of",
     }
   `,
-  )
-})
+  );
+});
 
 it('sequence', () => {
   expect(parse('(a,"b",1)')).toMatchInlineSnapshot(
@@ -1377,7 +1373,7 @@ it('sequence', () => {
       "value": "(",
     }
   `,
-  )
+  );
   expect(parse('(a|b,"b" + 2,1 and 2)')).toMatchInlineSnapshot(
     `
     {
@@ -1533,7 +1529,7 @@ it('sequence', () => {
       "value": "(",
     }
   `,
-  )
+  );
   expect(parse(`x|f(a,"b",1)`)).toMatchInlineSnapshot(
     `
     {
@@ -1629,8 +1625,8 @@ it('sequence', () => {
       "value": "|",
     }
   `,
-  )
-})
+  );
+});
 
 it('pipe', () => {
   expect(parse('x | f')).toMatchInlineSnapshot(
@@ -1681,7 +1677,7 @@ it('pipe', () => {
       "value": "|",
     }
   `,
-  )
+  );
   expect(parse('x | f | f2')).toMatchInlineSnapshot(
     `
     {
@@ -1760,7 +1756,7 @@ it('pipe', () => {
       "value": "|",
     }
   `,
-  )
+  );
   expect(parse('x | f(a, "b")')).toMatchInlineSnapshot(
     `
     {
@@ -1841,7 +1837,7 @@ it('pipe', () => {
       "value": "|",
     }
   `,
-  )
+  );
   expect(parse('x | f(a, "b") | f2 (c, 1)')).toMatchInlineSnapshot(
     `
     {
@@ -1984,8 +1980,8 @@ it('pipe', () => {
       "value": "|",
     }
   `,
-  )
-})
+  );
+});
 
 it('conditional', () => {
   expect(parse('"a" if x')).toMatchInlineSnapshot(
@@ -2036,7 +2032,7 @@ it('conditional', () => {
       "value": "if",
     }
   `,
-  )
+  );
   expect(parse('"a" if x else "b"')).toMatchInlineSnapshot(
     `
     {
@@ -2100,8 +2096,10 @@ it('conditional', () => {
       "value": "if",
     }
   `,
-  )
-  expect(parse('"a" | f if x and y else "b" | f(a, "b")')).toMatchInlineSnapshot(
+  );
+  expect(
+    parse('"a" | f if x and y else "b" | f(a, "b")'),
+  ).toMatchInlineSnapshot(
     `
     {
       "alternative": {
@@ -2286,11 +2284,13 @@ it('conditional', () => {
       "value": "if",
     }
   `,
-  )
-})
+  );
+});
 
 it('complex', () => {
-  expect(parse('user | get("age") gt 18 and user | get("name") eq "John"')).toMatchInlineSnapshot(
+  expect(
+    parse('user | get("age") gt 18 and user | get("name") eq "John"'),
+  ).toMatchInlineSnapshot(
     `
     {
       "left": {
@@ -2492,12 +2492,14 @@ it('complex', () => {
       "value": "and",
     }
   `,
-  )
-})
+  );
+});
 
 it('whitespace', () => {
-  expect(parse(`  x
-    +\ty  `)).toMatchInlineSnapshot(
+  expect(
+    parse(`  x
+    +\ty  `),
+  ).toMatchInlineSnapshot(
     `
       {
         "left": {
@@ -2545,8 +2547,8 @@ it('whitespace', () => {
         "value": "+",
       }
     `,
-  )
-})
+  );
+});
 
 it('precedences', () => {
   expect(parse('a + b * c')).toMatchInlineSnapshot(
@@ -2627,7 +2629,7 @@ it('precedences', () => {
       "value": "+",
     }
   `,
-  )
+  );
   expect(parse('a / b - c')).toMatchInlineSnapshot(
     `
     {
@@ -2676,8 +2678,8 @@ it('precedences', () => {
       "value": "/",
     }
   `,
-  )
-})
+  );
+});
 
 it('real world', () => {
   expect(parse('f(x|a, y + b, z and c)')).toMatchInlineSnapshot(
@@ -2835,7 +2837,7 @@ it('real world', () => {
       "value": "f",
     }
   `,
-  )
+  );
   expect(parse('(x, y, z) = a | b')).toMatchInlineSnapshot(
     `
     {
@@ -2961,7 +2963,7 @@ it('real world', () => {
       "value": "=",
     }
   `,
-  )
+  );
   expect(parse('(x, y) of items | f(a, "b")')).toMatchInlineSnapshot(
     `
     {
@@ -3104,5 +3106,5 @@ it('real world', () => {
       "value": "of",
     }
   `,
-  )
-})
+  );
+});

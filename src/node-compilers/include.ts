@@ -1,18 +1,14 @@
-import type { IncludeNode } from '../ast'
-import type { Compiler } from '../compiler'
-import type { CompilerMap } from '../types'
-import { NodeType } from '../ast'
+import { type IncludeNode, NodeType } from '../ast';
+import type { Compiler } from '../compiler';
+import type { CompilerMap } from '../types';
 
 async function compileInclude(
-  { val: path, loc }: IncludeNode,
+  { val: { value }, loc }: IncludeNode,
   compiler: Compiler,
 ) {
-  compiler.pushRaw(
-    loc,
-    `s+=await p["${path.value}"]?.()??"";`,
-  )
+  compiler.pushRaw(loc, `s+=await p["${value}"]?.()??"";`);
 }
 
 export const compilers: CompilerMap = {
   [NodeType.INCLUDE]: compileInclude,
-} as CompilerMap
+} as CompilerMap;
