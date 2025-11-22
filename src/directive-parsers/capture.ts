@@ -1,13 +1,15 @@
-import { CaptureNode } from '../ast';
 import { CompileError } from '../compile-error';
-import { parseUnexpected } from '../parse-unexpected';
+import { createUnexpected } from '../create-unexpected';
 import type { Parser } from '../parser';
+import { CaptureNode } from '../syntax-nodes';
 import type { DirectiveToken, IdExp, ParserMap } from '../types';
 
 function parseCapture(token: DirectiveToken, parser: Parser) {
-  parser.requireExpression(token);
+  if (!token.expression) {
+    parser.emitExpErr(token);
 
-  const val = parser.parseExp(token.expression!);
+    return;
+  }
 
   parser.advance();
 
@@ -21,10 +23,15 @@ function parseCapture(token: DirectiveToken, parser: Parser) {
     );
   }
 
-  return new CaptureNode(val as IdExp, body, token.loc, token.strip);
+  return new CaptureNode(
+    parser.parseExp(token.expression!) as IdExp,
+    body,
+    token.loc,
+    token.strip,
+  );
 }
 
 export const parsers: ParserMap = {
   capture: parseCapture,
-  endcapture: parseUnexpected,
+  endcapture: createUnexpected,
 };

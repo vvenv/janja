@@ -1,6 +1,6 @@
-import { type BlockNode, NodeType, type SuperNode } from '../ast';
 import { CompileError } from '../compile-error';
 import type { Compiler } from '../compiler';
+import { type BlockNode, NodeType, type SuperNode } from '../syntax-nodes';
 import type { CompilerMap } from '../types';
 
 async function compileBlock(

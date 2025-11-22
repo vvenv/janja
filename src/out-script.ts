@@ -1,4 +1,4 @@
-import { CONTEXT, ESCAPE, FILTERS } from './identifiers';
+import { CONTEXT, ESCAPE, FILTERS } from './param-names';
 import { SourceMap } from './source-map';
 import type { Loc, Pos, Script } from './types';
 

@@ -1,4 +1,4 @@
-import type { ExpTokenType } from './types';
+import type { ExpTokenType } from '../types';
 
 export const expTokenOperators: Record<ExpTokenType, string> = {
   AND: '&&',

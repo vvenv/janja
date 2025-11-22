@@ -1,11 +1,11 @@
+import type { Compiler } from '../compiler';
+import { ExpCompiler } from '../exp/exp-compiler';
 import {
   type BreakNode,
   type ContinueNode,
   type ForNode,
   NodeType,
-} from '../ast';
-import type { Compiler } from '../compiler';
-import { ExpCompiler } from '../exp-compiler';
+} from '../syntax-nodes';
 import type { CompilerMap, IdExp, SeqExp } from '../types';
 
 async function compileFor({ loop, body }: ForNode, compiler: Compiler) {

@@ -1,6 +1,6 @@
-import { NodeType, OutputNode } from '../ast';
 import type { Compiler } from '../compiler';
-import { ExpCompiler } from '../exp-compiler';
+import { ExpCompiler } from '../exp/exp-compiler';
+import { NodeType, OutputNode } from '../syntax-nodes';
 import { CompilerMap } from '../types';
 
 async function compileOutput({ exp }: OutputNode, compiler: Compiler) {

@@ -1,7 +1,7 @@
-import { CompileError } from './compile-error';
+import { CompileError } from '../compile-error';
+import type { ExpToken, Loc, Pos } from '../types';
+import { updatePosition } from '../update-position';
 import { expTokenTypes } from './exp-token-types';
-import type { ExpToken, Loc, Pos } from './types';
-import { updatePosition } from './update-position';
 
 export class ExpTokenizer implements Pos {
   val = '';

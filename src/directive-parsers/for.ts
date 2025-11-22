@@ -1,13 +1,15 @@
-import { BreakNode, ContinueNode, ForNode } from '../ast';
 import { CompileError } from '../compile-error';
-import { parseUnexpected } from '../parse-unexpected';
+import { createUnexpected } from '../create-unexpected';
 import type { Parser } from '../parser';
+import { BreakNode, ContinueNode, ForNode } from '../syntax-nodes';
 import type { BinaryExp, DirectiveToken, ParserMap } from '../types';
 
 function parseFor(token: DirectiveToken, parser: Parser) {
-  parser.requireExpression(token);
+  if (!token.expression) {
+    parser.emitExpErr(token);
 
-  const loop = parser.parseExp(token.expression!);
+    return;
+  }
 
   parser.advance();
 
@@ -21,11 +23,20 @@ function parseFor(token: DirectiveToken, parser: Parser) {
     );
   }
 
-  return new ForNode(loop as BinaryExp<'OF'>, body, token.loc, token.strip);
+  return new ForNode(
+    parser.parseExp(token.expression!) as BinaryExp<'OF'>,
+    body,
+    token.loc,
+    token.strip,
+  );
 }
 
 function parseBreak(token: DirectiveToken, parser: Parser) {
-  parser.requireNoExpression(token);
+  if (token.expression) {
+    parser.emitExpErr(token, false);
+
+    return;
+  }
 
   parser.advance();
 
@@ -33,7 +44,11 @@ function parseBreak(token: DirectiveToken, parser: Parser) {
 }
 
 function parseContinue(token: DirectiveToken, parser: Parser) {
-  parser.requireNoExpression(token);
+  if (token.expression) {
+    parser.emitExpErr(token, false);
+
+    return;
+  }
 
   parser.advance();
 
@@ -44,5 +59,5 @@ export const parsers: ParserMap = {
   for: parseFor,
   break: parseBreak,
   continue: parseContinue,
-  endfor: parseUnexpected,
+  endfor: createUnexpected,
 };

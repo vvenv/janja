@@ -1,15 +1,21 @@
-import { SetNode } from '../ast';
 import type { Parser } from '../parser';
+import { SetNode } from '../syntax-nodes';
 import type { BinaryExp, DirectiveToken, ParserMap } from '../types';
 
 function parseSet(token: DirectiveToken, parser: Parser) {
-  parser.requireExpression(token);
+  if (!token.expression) {
+    parser.emitExpErr(token);
 
-  const val = parser.parseExp(token.expression!);
+    return;
+  }
 
   parser.advance();
 
-  return new SetNode(val as BinaryExp<'SET'>, token.loc, token.strip);
+  return new SetNode(
+    parser.parseExp(token.expression!) as BinaryExp<'SET'>,
+    token.loc,
+    token.strip,
+  );
 }
 
 export const parsers: ParserMap = {

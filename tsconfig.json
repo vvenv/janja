@@ -16,5 +16,5 @@
     "skipLibCheck": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["**/*.ts", "**/*.js"]
+  "include": ["**/*.ts"]
 }

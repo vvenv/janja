@@ -1,6 +1,6 @@
-import { type CallerNode, type MacroNode, NodeType } from '../ast';
 import type { Compiler } from '../compiler';
-import { ExpCompiler } from '../exp-compiler';
+import { ExpCompiler } from '../exp/exp-compiler';
+import { type CallerNode, type MacroNode, NodeType } from '../syntax-nodes';
 import type { CompilerMap, IdExp, SeqExp } from '../types';
 
 async function compileMacro(

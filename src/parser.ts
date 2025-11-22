@@ -1,14 +1,14 @@
+import { CompileError } from './compile-error';
+import { ExpParser } from './exp/exp-parser';
 import {
-  ASTNode,
   CommentNode,
   OutputNode,
   RootNode,
+  SyntaxNode,
   TextNode,
   UnexpectedDirectiveNode,
   UnknownDirectiveNode,
-} from './ast';
-import { CompileError } from './compile-error';
-import { ExpParser } from './exp-parser';
+} from './syntax-nodes';
 import { Tokenizer } from './tokenizer';
 import {
   type CommentToken,
@@ -39,7 +39,7 @@ export class Parser extends Tokenizer {
   }
 
   parseUntil(names?: string[]) {
-    const nodes: ASTNode[] = [];
+    const nodes: SyntaxNode[] = [];
 
     let prevToken: Token | null = null;
 
@@ -168,23 +168,15 @@ export class Parser extends Tokenizer {
     return names.includes((token as DirectiveToken)?.name);
   }
 
-  requireExpression({ expression, name, loc }: DirectiveToken) {
-    if (!expression) {
-      throw this.options.debug?.(
-        new CompileError(`"${name}" requires expression`, this.template, loc),
-      );
-    }
-  }
-
-  requireNoExpression({ expression, name, loc }: DirectiveToken) {
-    if (expression) {
-      throw this.options.debug?.(
-        new CompileError(
-          `"${name}" should not have expression`,
-          this.template,
-          loc,
-        ),
-      );
-    }
+  emitExpErr({ name, loc }: DirectiveToken, required = true) {
+    this.options.debug?.(
+      new CompileError(
+        required
+          ? `"${name}" requires expression`
+          : `"${name}" should not have expression`,
+        this.template,
+        loc,
+      ),
+    );
   }
 }
