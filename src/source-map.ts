@@ -1,4 +1,4 @@
-import type { Loc, Mapping, Pos } from './types'
+import type { Loc, Mapping, Pos } from './types';
 
 /**
  * Contains the source map information.
@@ -34,23 +34,24 @@ import type { Loc, Mapping, Pos } from './types'
  *   }
  */
 export class SourceMap {
-  public mappings: Mapping[] = []
+  public mappings: Mapping[] = [];
 
   addMapping(source: Loc, target: Loc) {
     this.mappings.push({
       source,
       target,
-    })
+    });
   }
 
   getSourceLoc({ line, column }: Pos) {
     return this.mappings
-      .filter(({ target: { start, end } }) =>
-        start.line <= line
-        && end.line >= line
-        && (start.line < line || start.column <= column)
-        && (end.line > line || end.column >= column),
+      .filter(
+        ({ target: { start, end } }) =>
+          start.line <= line &&
+          end.line >= line &&
+          (start.line < line || start.column <= column) &&
+          (end.line > line || end.column >= column),
       )
-      .map(({ source }) => source)
+      .map(({ source }) => source);
   }
 }

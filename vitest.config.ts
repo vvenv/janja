@@ -1,6 +1,6 @@
-import { cwd, env } from 'node:process'
-import { loadEnv } from 'vite'
-import { defineConfig } from 'vitest/config'
+import { cwd, env } from 'node:process';
+import { loadEnv } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig(({ mode }) => ({
   test: {
@@ -14,4 +14,4 @@ export default defineConfig(({ mode }) => ({
       reporter: env.GITHUB_ACTIONS ? ['text'] : ['html'],
     },
   },
-}))
+}));

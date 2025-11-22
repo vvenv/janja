@@ -1,15 +1,12 @@
-import { expect, it } from 'vitest'
-import { parse } from '../test/__helper'
+import { expect, it } from 'vitest';
+import { parse } from '../test/__helper';
 
 it('error', async () => {
   try {
-    await parse('{{}}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unknown "" directive]`,
-    )
+    await parse('{{}}');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "" directive]`);
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unknown "" directive
@@ -18,16 +15,14 @@ it('error', async () => {
        ｜ ^  ^
       "
     `,
-    )
+    );
   }
+
   try {
-    await parse('{{ else')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unclosed "{{"]`,
-    )
+    await parse('{{ else');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unclosed "{{"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unclosed "{{"
@@ -36,16 +31,16 @@ it('error', async () => {
        ｜ ^^
       "
     `,
-    )
+    );
   }
+
   try {
-    await parse('{{ else }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
+    await parse('{{ else }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
       `[CompileError: Unknown "else" directive]`,
-    )
+    );
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unknown "else" directive
@@ -54,16 +49,16 @@ it('error', async () => {
        ｜ ^        ^
       "
     `,
-    )
+    );
   }
+
   try {
-    await parse('{{ elseif }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
+    await parse('{{ elseif }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
       `[CompileError: Unexpected "elseif" directive]`,
-    )
+    );
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unexpected "elseif" directive
@@ -72,16 +67,16 @@ it('error', async () => {
        ｜ ^          ^
       "
     `,
-    )
+    );
   }
+
   try {
-    await parse('{{ if }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
+    await parse('{{ if }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
       `[CompileError: "if" requires expression]`,
-    )
+    );
     expect(error.details).toMatchInlineSnapshot(
       `
       ""if" requires expression
@@ -90,16 +85,14 @@ it('error', async () => {
        ｜ ^      ^
       "
     `,
-    )
+    );
   }
+
   try {
-    await parse('{{ if x }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unclosed "if"]`,
-    )
+    await parse('{{ if x }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unclosed "if"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unclosed "if"
@@ -108,16 +101,16 @@ it('error', async () => {
        ｜ ^        ^
       "
     `,
-    )
+    );
   }
+
   try {
-    await parse('{{ if x }}{{ else y }}{{ endif }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
+    await parse('{{ if x }}{{ else y }}{{ endif }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
       `[CompileError: "else" should not have expression]`,
-    )
+    );
     expect(error.details).toMatchInlineSnapshot(
       `
       ""else" should not have expression
@@ -126,16 +119,16 @@ it('error', async () => {
        ｜           ^          ^
       "
     `,
-    )
+    );
   }
+
   try {
-    await parse('{{ for }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
+    await parse('{{ for }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
       `[CompileError: "for" requires expression]`,
-    )
+    );
     expect(error.details).toMatchInlineSnapshot(
       `
       ""for" requires expression
@@ -144,14 +137,12 @@ it('error', async () => {
        ｜ ^       ^
       "
     `,
-    )
+    );
   }
-})
+});
 
 it('escape tag', async () => {
-  expect(
-    await parse('{{= "{{ escape }}" }}'),
-  ).toMatchInlineSnapshot(
+  expect(await parse('{{= "{{ escape }}" }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -219,10 +210,8 @@ it('escape tag', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-  expect(
-    await parse('{{= "\\{\\{ escape \\}\\}" }}'),
-  ).toMatchInlineSnapshot(
+  );
+  expect(await parse('{{= "\\{\\{ escape \\}\\}" }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -274,13 +263,11 @@ it('escape tag', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-})
+  );
+});
 
 it('empty', async () => {
-  expect(
-    await parse(''),
-  ).toMatchInlineSnapshot(
+  expect(await parse('')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [],
@@ -297,10 +284,8 @@ it('empty', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-  expect(
-    await parse(' '),
-  ).toMatchInlineSnapshot(
+  );
+  expect(await parse(' ')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -334,13 +319,11 @@ it('empty', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-})
+  );
+});
 
 it('comment', async () => {
-  expect(
-    await parse('{{# if x -#}}'),
-  ).toMatchInlineSnapshot(
+  expect(await parse('{{# if x -#}}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -377,13 +360,11 @@ it('comment', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-})
+  );
+});
 
 it('directive', async () => {
-  expect(
-    await parse('{{if x -}}{{endif}}'),
-  ).toMatchInlineSnapshot(
+  expect(await parse('{{if x -}}{{endif}}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -435,13 +416,11 @@ it('directive', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-})
+  );
+});
 
 it('output', async () => {
-  expect(
-    await parse('{{=- x }}'),
-  ).toMatchInlineSnapshot(
+  expect(await parse('{{=- x }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -493,10 +472,8 @@ it('output', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-  expect(
-    await parse('{{= null }}'),
-  ).toMatchInlineSnapshot(
+  );
+  expect(await parse('{{= null }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -548,10 +525,8 @@ it('output', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-  expect(
-    await parse('{{= x + 1 }}'),
-  ).toMatchInlineSnapshot(
+  );
+  expect(await parse('{{= x + 1 }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -633,8 +608,8 @@ it('output', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-})
+  );
+});
 
 it('text', async () => {
   expect(
@@ -675,8 +650,8 @@ it('text', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-})
+  );
+});
 
 it('custom open/close markers', async () => {
   expect(
@@ -773,5 +748,5 @@ it('custom open/close markers', async () => {
       "type": "TEMPLATE",
     }
   `,
-  )
-})
+  );
+});

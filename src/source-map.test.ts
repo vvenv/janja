@@ -1,8 +1,8 @@
-import { expect, it } from 'vitest'
-import { SourceMap } from './source-map'
+import { expect, it } from 'vitest';
+import { SourceMap } from './source-map';
 
 it('mapping', () => {
-  const sourcemap = new SourceMap()
+  const sourcemap = new SourceMap();
 
   sourcemap.addMapping(
     {
@@ -13,11 +13,19 @@ it('mapping', () => {
       start: { line: 2, column: 3 },
       end: { line: 2, column: 4 },
     },
-  )
-  expect(sourcemap.getSourceLoc({ line: 1, column: 1 })).toMatchInlineSnapshot('[]')
-  expect(sourcemap.getSourceLoc({ line: 1, column: 2 })).toMatchInlineSnapshot('[]')
-  expect(sourcemap.getSourceLoc({ line: 2, column: 1 })).toMatchInlineSnapshot('[]')
-  expect(sourcemap.getSourceLoc({ line: 2, column: 2 })).toMatchInlineSnapshot('[]')
+  );
+  expect(sourcemap.getSourceLoc({ line: 1, column: 1 })).toMatchInlineSnapshot(
+    '[]',
+  );
+  expect(sourcemap.getSourceLoc({ line: 1, column: 2 })).toMatchInlineSnapshot(
+    '[]',
+  );
+  expect(sourcemap.getSourceLoc({ line: 2, column: 1 })).toMatchInlineSnapshot(
+    '[]',
+  );
+  expect(sourcemap.getSourceLoc({ line: 2, column: 2 })).toMatchInlineSnapshot(
+    '[]',
+  );
   expect(sourcemap.getSourceLoc({ line: 2, column: 3 })).toMatchInlineSnapshot(
     `
     [
@@ -33,7 +41,7 @@ it('mapping', () => {
       },
     ]
   `,
-  )
+  );
   expect(sourcemap.getSourceLoc({ line: 2, column: 4 })).toMatchInlineSnapshot(
     `
     [
@@ -49,7 +57,11 @@ it('mapping', () => {
       },
     ]
   `,
-  )
-  expect(sourcemap.getSourceLoc({ line: 2, column: 5 })).toMatchInlineSnapshot('[]')
-  expect(sourcemap.getSourceLoc({ line: 3, column: 1 })).toMatchInlineSnapshot('[]')
-})
+  );
+  expect(sourcemap.getSourceLoc({ line: 2, column: 5 })).toMatchInlineSnapshot(
+    '[]',
+  );
+  expect(sourcemap.getSourceLoc({ line: 3, column: 1 })).toMatchInlineSnapshot(
+    '[]',
+  );
+});

@@ -36,5 +36,7 @@ jobs:
           key: yarn-cache-${{ hashFiles('yarn.lock') }}
       - name: Install Dependencies
         run: yarn install --immutable
+      - name: Build
+        run: yarn build
       - name: Run lint
         run: yarn lint

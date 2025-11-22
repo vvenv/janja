@@ -1,13 +1,21 @@
-import type { ObjectType, RendererOptions } from './types'
-import { Renderer } from './renderer'
+import { Renderer } from './renderer';
+import type { ObjectType, RendererOptions } from './types';
 
-export * from './renderer'
-export type * from './types'
+export * from './renderer';
+export type * from './types';
 
-export async function render(template: string, data: ObjectType, options?: RendererOptions) {
-  return new Renderer(options).render(template, data)
+export async function render(
+  template: string,
+  data: ObjectType,
+  options?: RendererOptions,
+) {
+  return new Renderer(options).render(template, data);
 }
 
-export async function renderFile(filepath: string, data: ObjectType, options?: RendererOptions) {
-  return new Renderer(options).renderFile(filepath, data)
+export async function renderFile(
+  filepath: string,
+  data: ObjectType,
+  options?: RendererOptions,
+) {
+  return new Renderer(options).renderFile(filepath, data);
 }

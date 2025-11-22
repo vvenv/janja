@@ -1,50 +1,45 @@
-import type { CallerNode, MacroNode } from '../ast'
-import type { Compiler } from '../compiler'
-import type { CompilerMap, IdExp, SeqExp } from '../types'
-import { NodeType } from '../ast'
-import { ExpCompiler } from '../exp-compiler'
+import { type CallerNode, type MacroNode, NodeType } from '../ast';
+import type { Compiler } from '../compiler';
+import { ExpCompiler } from '../exp-compiler';
+import type { CompilerMap, IdExp, SeqExp } from '../types';
 
 async function compileMacro(
   { val: { left, right }, loc, body }: MacroNode,
   compiler: Compiler,
 ) {
-  const { context } = compiler
-  const { elements } = right as SeqExp
+  const { context } = compiler;
+  const { elements } = right as SeqExp;
 
-  const expCompiler = new ExpCompiler()
+  const expCompiler = new ExpCompiler();
 
   compiler.pushRaw(
     loc,
-    `${expCompiler.compile(left)}=(${(elements).map(
-      el => el.type === 'SET'
-        ? `${(el.left as IdExp).value}=${expCompiler.compile((el.right))}`
-        : (el as IdExp).value,
-    ).join(',')})=>async(_c)=>{`,
+    `${expCompiler.compile(left)}=(${elements
+      .map((el) =>
+        el.type === 'SET'
+          ? `${(el.left as IdExp).value}=${expCompiler.compile(el.right)}`
+          : (el as IdExp).value,
+      )
+      .join(',')})=>async(_c)=>{`,
     `const ${compiler.in()}={`,
     `...${context},`,
-    elements.map(
-      el => el.type === 'SET'
-        ? (el.left as IdExp).value
-        : (el as IdExp).value,
-    ).join(','),
-    `};`,
-  )
-  await compiler.compileNodes(body)
-  compiler.out()
-  compiler.pushRaw(null, '};')
+    elements
+      .map((el) =>
+        el.type === 'SET' ? (el.left as IdExp).value : (el as IdExp).value,
+      )
+      .join(','),
+    '};',
+  );
+  await compiler.compileNodes(body);
+  compiler.out();
+  compiler.pushRaw(null, '};');
 }
 
-function compileCaller(
-  { loc }: CallerNode,
-  compiler: Compiler,
-) {
-  compiler.pushRaw(
-    loc,
-    `await _c?.();`,
-  )
+function compileCaller({ loc }: CallerNode, compiler: Compiler) {
+  compiler.pushRaw(loc, 'await _c?.();');
 }
 
 export const compilers: CompilerMap = {
   [NodeType.MACRO]: compileMacro,
   [NodeType.CALLER]: compileCaller,
-} as CompilerMap
+} as CompilerMap;

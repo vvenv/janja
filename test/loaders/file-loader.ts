@@ -1,14 +1,15 @@
-import { access, readFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { cwd } from 'node:process'
+import { access, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { cwd } from 'node:process';
 
 export async function fileLoader(path: string) {
-  const absolutePath = join(cwd(), path)
+  const absolutePath = join(cwd(), path);
+
   try {
-    await access(absolutePath)
+    await access(absolutePath);
+  } catch {
+    throw new Error(`file not found: ${path}`);
   }
-  catch {
-    throw new Error(`file not found: ${path}`)
-  }
-  return readFile(absolutePath, 'utf-8')
+
+  return readFile(absolutePath, 'utf-8');
 }

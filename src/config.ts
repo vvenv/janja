@@ -1,7 +1,7 @@
-import type { CompilerOptions, ParserOptions, RendererOptions } from './types'
-import { parsers } from './directive-parsers'
-import * as filters from './filters'
-import { compilers } from './node-compilers'
+import { parsers } from './directive-parsers';
+import * as filters from './filters';
+import { compilers } from './node-compilers';
+import type { CompilerOptions, ParserOptions, RendererOptions } from './types';
 
 export const parserOptions: Required<ParserOptions> = {
   commentOpen: '{{#',
@@ -12,7 +12,7 @@ export const parserOptions: Required<ParserOptions> = {
   outputClose: '}}',
   parsers,
   debug: () => {},
-}
+};
 
 export const compilerOptions: Required<CompilerOptions> = {
   ...parserOptions,
@@ -20,7 +20,7 @@ export const compilerOptions: Required<CompilerOptions> = {
   stripComments: false,
   compilers,
   loader: async () => '',
-}
+};
 
 export const renderOptions: Required<RendererOptions> = {
   ...compilerOptions,
@@ -28,4 +28,4 @@ export const renderOptions: Required<RendererOptions> = {
   filters,
   autoEscape: true,
   plugins: [],
-}
+};

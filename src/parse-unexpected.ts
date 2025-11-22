@@ -1,3 +1,4 @@
-import type { ParserMap } from './types'
+import type { ParserMap } from './types';
 
-export const parseUnexpected: ParserMap[keyof ParserMap] = (token, parser) => parser.createUnexpectedDirective(token)
+export const parseUnexpected: ParserMap[keyof ParserMap] = (token, parser) =>
+  parser.createUnexpectedDirective(token);

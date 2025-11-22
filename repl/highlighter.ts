@@ -1,6 +1,6 @@
 export async function codeToHtml(code: string, lang: string) {
-  const { createHighlighterCore } = await import('shiki/core')
-  const { createOnigurumaEngine } = await import('shiki/engine/oniguruma')
+  const { createHighlighterCore } = await import('shiki/core');
+  const { createOnigurumaEngine } = await import('shiki/engine/oniguruma');
 
   const highlighter = await createHighlighterCore({
     themes: [import('shiki/themes/one-dark-pro.mjs')],
@@ -10,10 +10,10 @@ export async function codeToHtml(code: string, lang: string) {
     ],
     // `shiki/wasm` contains the wasm binary inlined as base64 string.
     engine: createOnigurumaEngine(import('shiki/wasm')),
-  })
+  });
 
   return highlighter.codeToHtml(code, {
     lang,
     theme: 'one-dark-pro',
-  })
+  });
 }

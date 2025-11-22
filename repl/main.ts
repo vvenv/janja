@@ -1,19 +1,19 @@
-import { codeToHtml } from './highlighter'
-import { loader } from './loaders/url-loader'
+import { codeToHtml } from './highlighter';
+import { loader } from './loaders/url-loader';
 
 declare global {
   interface Window {
-    prettier: any
-    prettierPlugins: any
+    prettier: any;
+    prettierPlugins: any;
   }
 }
 
 function loadScript(url: string) {
-  const script = document.createElement('script')
+  const script = document.createElement('script');
 
-  script.async = true
-  script.src = url
-  document.querySelector('head')!.prepend(script)
+  script.async = true;
+  script.src = url;
+  document.querySelector('head')!.prepend(script);
 }
 
 function formatCode(code = '', language: string) {
@@ -21,10 +21,9 @@ function formatCode(code = '', language: string) {
     return window.prettier.format(code, {
       parser: language === 'javascript' ? 'babel' : 'html',
       plugins: window.prettierPlugins,
-    })
-  }
-  catch {
-    return code
+    });
+  } catch {
+    return code;
   }
 }
 
@@ -34,14 +33,14 @@ function formatCode(code = '', language: string) {
   'plugins/babel.js',
   'plugins/estree.js',
   'plugins/html.js',
-].forEach(url => loadScript(`https://unpkg.com/prettier@3.4.2/${url}`))
+].forEach((url) => loadScript(`https://unpkg.com/prettier@3.4.2/${url}`));
 
-const sp = new URLSearchParams(location.search)
-const reset = sp.has('reset')
+const sp = new URLSearchParams(location.search);
+const reset = sp.has('reset');
 
-const defaultTemplate
-  = (!reset && localStorage.getItem('template'))
-    || `{{# This is a comment }}
+const defaultTemplate =
+  (!reset && localStorage.getItem('template')) ||
+  `{{# This is a comment }}
 {{# This is a
 comment }}
 {{ include "default" }}
@@ -72,11 +71,11 @@ comment }}
       {{ endfor }}
     </ul>
   </div>
-{{ endblock }}`
+{{ endblock }}`;
 
-const defaultData
-  = (!reset && localStorage.getItem('data'))
-    || `{
+const defaultData =
+  (!reset && localStorage.getItem('data')) ||
+  `{
   "name": "engine",
   "url": "https://github.com/vvenv/janja",
   "array": [
@@ -97,55 +96,54 @@ const defaultData
     }
   ]
 }
-`
+`;
 
-const templateEl = document.querySelector<HTMLTextAreaElement>('#template')!
-const dataEl = document.querySelector<HTMLTextAreaElement>('#data')!
-const resultEl = document.querySelector<HTMLDivElement>('#result')!
-const previewEl = document.querySelector<HTMLDivElement>('#preview')!
+const templateEl = document.querySelector<HTMLTextAreaElement>('#template')!;
+const dataEl = document.querySelector<HTMLTextAreaElement>('#data')!;
+const resultEl = document.querySelector<HTMLDivElement>('#result')!;
+const previewEl = document.querySelector<HTMLDivElement>('#preview')!;
 
 async function update() {
   try {
     if (!templateEl.value.trim()) {
-      templateEl.value = defaultTemplate
+      templateEl.value = defaultTemplate;
     }
 
-    const template = templateEl.value.trim()
+    const template = templateEl.value.trim();
 
-    localStorage.setItem('template', template)
+    localStorage.setItem('template', template);
 
     if (!dataEl.value.trim()) {
-      dataEl.value = defaultData
+      dataEl.value = defaultData;
     }
 
-    const data = dataEl.value.trim()
+    const data = dataEl.value.trim();
 
-    localStorage.setItem('data', data)
+    localStorage.setItem('data', data);
 
-    const parsedData = JSON.parse(data)
+    const parsedData = JSON.parse(data);
 
-    const { render } = await import('janja')
+    const { render } = await import('janja');
 
     const output = await render(template, parsedData, {
       trimWhitespace: true,
       loader,
-    })
+    });
 
     resultEl.innerHTML = await codeToHtml(
       await formatCode(output, 'html'),
       'html',
-    )
-    previewEl.innerHTML = output
-  }
-  catch (error: any) {
+    );
+    previewEl.innerHTML = output;
+  } catch (error: any) {
     resultEl.innerHTML = `<pre class="error">${
       error.details || error.message
-    }</pre>`
-    previewEl.innerHTML = ''
+    }</pre>`;
+    previewEl.innerHTML = '';
   }
 }
 
-update()
+update();
 
-templateEl.addEventListener('change', update)
-dataEl.addEventListener('change', update)
+templateEl.addEventListener('change', update);
+dataEl.addEventListener('change', update);

@@ -1,103 +1,117 @@
-import type { ASTNode } from './ast'
-import type {
-  CommentToken,
-  DirectiveExpression,
-  DirectiveToken,
-  OutputToken,
-  TextToken,
-  Token,
-} from './types'
 import {
+  ASTNode,
   CommentNode,
   OutputNode,
   RootNode,
   TextNode,
   UnexpectedDirectiveNode,
   UnknownDirectiveNode,
-} from './ast'
-import { CompileError } from './compile-error'
-import { ExpParser } from './exp-parser'
-import { Tokenizer } from './tokenizer'
-import { TokenType } from './types'
+} from './ast';
+import { CompileError } from './compile-error';
+import { ExpParser } from './exp-parser';
+import { Tokenizer } from './tokenizer';
+import {
+  type CommentToken,
+  type DirectiveExpression,
+  type DirectiveToken,
+  type OutputToken,
+  type TextToken,
+  type Token,
+  TokenType,
+} from './types';
 
 export class Parser extends Tokenizer {
-  private expParser!: ExpParser
-  protected cursor!: number
+  private expParser!: ExpParser;
+
+  protected cursor!: number;
 
   parse(template: string) {
-    this.tokenize(template)
-    const start = this.tokens[0]?.loc.start ?? { line: 1, column: 1 }
-    const end = this.tokens.at(-1)?.loc.end ?? { line: 1, column: 1 }
+    this.tokenize(template);
 
-    this.expParser = new ExpParser(template)
+    const start = this.tokens[0]?.loc.start ?? { line: 1, column: 1 };
+    const end = this.tokens.at(-1)?.loc.end ?? { line: 1, column: 1 };
 
-    this.cursor = 0
-    return new RootNode(this.parseUntil(), { start, end })
+    this.expParser = new ExpParser(template);
+
+    this.cursor = 0;
+
+    return new RootNode(this.parseUntil(), { start, end });
   }
 
   parseUntil(names?: string[]) {
-    const nodes: ASTNode[] = []
-    let prevToken: Token | null = null
+    const nodes: ASTNode[] = [];
+
+    let prevToken: Token | null = null;
 
     while (true) {
-      const token = this.peek()
+      const token = this.peek();
 
-      if (!token
-        || (
-          token.type === TokenType.DIRECTIVE
-          && names
-          && this.match(names, token))
+      if (
+        !token ||
+        (token.type === TokenType.DIRECTIVE &&
+          names &&
+          this.match(names, token))
       ) {
-        break
+        break;
       }
 
       if (prevToken?.strip?.after && token.type === TokenType.TEXT) {
-        token.strip.start = true
+        token.strip.start = true;
       }
 
       if (token.strip?.before && prevToken?.type === TokenType.TEXT) {
-        prevToken.strip.end = true
+        prevToken.strip.end = true;
       }
 
       switch (token.type) {
         case TokenType.COMMENT:
-          nodes.push(this.createComment(token as CommentToken))
-          break
+          nodes.push(this.createComment(token as CommentToken));
+
+          break;
         case TokenType.DIRECTIVE:
-          nodes.push(this.createDirective(token as DirectiveToken))
-          break
+          nodes.push(this.createDirective(token as DirectiveToken));
+
+          break;
         case TokenType.OUTPUT:
-          nodes.push(this.createOutput(token as OutputToken))
-          break
+          nodes.push(this.createOutput(token as OutputToken));
+
+          break;
         case TokenType.TEXT:
-          nodes.push(this.createText(token as TextToken))
-          break
+          nodes.push(this.createText(token as TextToken));
+
+          break;
+        default:
       }
 
-      prevToken = token
+      prevToken = token;
     }
 
-    return nodes
+    return nodes;
   }
 
   private createComment({ val, loc, strip }: CommentToken) {
-    this.advance()
-    return new CommentNode(val, loc, strip)
+    this.advance();
+
+    return new CommentNode(val, loc, strip);
   }
 
   private createOutput({ val, loc, strip }: OutputToken) {
-    this.advance()
-    return new OutputNode(val, loc, strip, this.parseExp({ val, loc })!)
+    this.advance();
+
+    return new OutputNode(val, loc, strip, this.parseExp({ val, loc })!);
   }
 
   private createText({ val, loc, strip }: TextToken) {
-    this.advance()
-    return new TextNode(val, loc, strip)
+    this.advance();
+
+    return new TextNode(val, loc, strip);
   }
 
   private createDirective(token: DirectiveToken) {
-    return this.options.parsers[token.name.toLowerCase()]?.(token, this)
-      ?? this.createUnknownDirective(token)
+    return (
+      this.options.parsers[token.name.toLowerCase()]?.(token, this) ??
+      this.createUnknownDirective(token)
+    );
   }
 
   createUnexpectedDirective(token: DirectiveToken) {
@@ -107,15 +121,16 @@ export class Parser extends Tokenizer {
         this.template,
         token.loc,
       ),
-    )
+    );
 
-    this.advance()
+    this.advance();
+
     return new UnexpectedDirectiveNode(
       token.name,
       token.val,
       token.loc,
       token.strip,
-    )
+    );
   }
 
   private createUnknownDirective(token: DirectiveToken) {
@@ -125,42 +140,39 @@ export class Parser extends Tokenizer {
         this.template,
         token.loc,
       ),
-    )
+    );
 
-    this.advance()
+    this.advance();
+
     return new UnknownDirectiveNode(
       token.name,
       token.val,
       token.loc,
       token.strip,
-    )
+    );
   }
 
   parseExp({ val, loc }: DirectiveExpression) {
-    return this.expParser.parse(val, loc)!
+    return this.expParser.parse(val, loc)!;
   }
 
   peek() {
-    return this.tokens.at(this.cursor) ?? null
+    return this.tokens.at(this.cursor) ?? null;
   }
 
   advance() {
-    this.cursor++
+    this.cursor++;
   }
 
   match(names: string[], token = this.peek()) {
-    return names.includes((token as DirectiveToken)?.name)
+    return names.includes((token as DirectiveToken)?.name);
   }
 
   requireExpression({ expression, name, loc }: DirectiveToken) {
     if (!expression) {
       throw this.options.debug?.(
-        new CompileError(
-          `"${name}" requires expression`,
-          this.template,
-          loc,
-        ),
-      )
+        new CompileError(`"${name}" requires expression`, this.template, loc),
+      );
     }
   }
 
@@ -172,7 +184,7 @@ export class Parser extends Tokenizer {
           this.template,
           loc,
         ),
-      )
+      );
     }
   }
 }

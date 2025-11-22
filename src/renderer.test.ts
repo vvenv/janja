@@ -1,61 +1,53 @@
-/* eslint-disable style/no-tabs */
-import type { Compiler } from './compiler'
-import type { Loc, Strip } from './types'
-import { expect, it } from 'vitest'
-import { render, renderFile } from '../test/__helper'
-import { Traversal } from './ast'
+import { expect, it } from 'vitest';
+import { render, renderFile } from '../test/__helper';
+import { Traversal } from './ast';
+import type { Compiler } from './compiler';
+import type { Loc, Strip } from './types';
 
 it('error', async () => {
   try {
-    await render('{{ for name of names }}{{ endif }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
-    expect(error)
-      .toMatchInlineSnapshot(
-        `[CompileError: Unexpected "endif" directive]`,
-      )
-    expect(error.details)
-      .toMatchInlineSnapshot(
-        `
+    await render('{{ for name of names }}{{ endif }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: Unexpected "endif" directive]`,
+    );
+    expect(error.details).toMatchInlineSnapshot(
+      `
         "Unexpected "endif" directive
 
         1｜ {{ for name of names }}{{ endif }}
          ｜                        ^         ^
         "
       `,
-      )
+    );
   }
+
   try {
-    await render('{{ for name of names }}{{ endfor }}')
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
-    expect(error)
-      .toMatchInlineSnapshot(
-        `[CompileError: c.names is not iterable]`,
-      )
-    expect(error.details)
-      .toMatchInlineSnapshot(
-        `
+    await render('{{ for name of names }}{{ endfor }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: c.names is not iterable]`,
+    );
+    expect(error.details).toMatchInlineSnapshot(
+      `
         "c.names is not iterable
 
         1｜ {{ for name of names }}{{ endfor }}
          ｜             ^^
         "
       `,
-      )
+    );
   }
+
   try {
-    await render(
-      '{{ include "not-found" }}',
-    )
-    expect(true).toBe(false)
-  }
-  catch (error: any) {
+    await render('{{ include "not-found" }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
       `[CompileError: Failed to load template from "not-found"]`,
-    )
+    );
     expect(error.details).toMatchInlineSnapshot(
       `
       "Failed to load template from "not-found"
@@ -64,38 +56,30 @@ it('error', async () => {
        ｜ ^                       ^
       "
     `,
-    )
+    );
   }
-})
+});
 
 it('render', async () => {
-  expect(
-    await render('{{= name }}', { name: 'foo' }),
-  ).toMatchInlineSnapshot(
+  expect(await render('{{= name }}', { name: 'foo' })).toMatchInlineSnapshot(
     `"foo"`,
-  )
-})
+  );
+});
 
 it('renderFile', async () => {
-  expect(
-    await renderFile('test', { name: 'foo' }),
-  ).toMatchInlineSnapshot(
+  expect(await renderFile('test', { name: 'foo' })).toMatchInlineSnapshot(
     `"foo"`,
-  )
-})
+  );
+});
 
 it('escape tag', async () => {
-  expect(
-    await render('{{= "{\\{= escape }\\}" }}'),
-  ).toMatchInlineSnapshot(
+  expect(await render('{{= "{\\{= escape }\\}" }}')).toMatchInlineSnapshot(
     `"{{= escape }}"`,
-  )
-  expect(
-    await render('{{= "\\{\\{= escape \\}\\}" }}'),
-  ).toMatchInlineSnapshot(
+  );
+  expect(await render('{{= "\\{\\{= escape \\}\\}" }}')).toMatchInlineSnapshot(
     `"{{= escape }}"`,
-  )
-})
+  );
+});
 
 it('auto escape', async () => {
   expect(
@@ -111,8 +95,8 @@ it('auto escape', async () => {
     &lt;foo&gt;	&lt;/foo&gt;
     <foo>	</foo>"
   `,
-  )
-})
+  );
+});
 
 it('no auto escape', async () => {
   expect(
@@ -131,35 +115,25 @@ it('no auto escape', async () => {
     <foo>	</foo>
     <foo>	</foo>"
   `,
-  )
-})
+  );
+});
 
 it('expression', async () => {
-  expect(
-    await render('{{= name }}', { name: 'foo' }),
-  ).toMatchInlineSnapshot(
+  expect(await render('{{= name }}', { name: 'foo' })).toMatchInlineSnapshot(
     `"foo"`,
-  )
+  );
   expect(
     await render('{{= name }} and {{= name }}', { name: 'foo' }),
-  ).toMatchInlineSnapshot(
-    `"foo and foo"`,
-  )
-  expect(
-    await render('{{= "*" }}'),
-  ).toMatchInlineSnapshot(
-    `"*"`,
-  )
-})
+  ).toMatchInlineSnapshot(`"foo and foo"`);
+  expect(await render('{{= "*" }}')).toMatchInlineSnapshot(`"*"`);
+});
 
 it('for loop', async () => {
   expect(
     await render('{{ for name of names }}{{= name }}{{ endfor }}', {
       names: ['foo', 'bar'],
     }),
-  ).toMatchInlineSnapshot(
-    `"foobar"`,
-  )
+  ).toMatchInlineSnapshot(`"foobar"`);
   expect(
     await render(
       `{{ for name of names -}}
@@ -177,8 +151,8 @@ it('for loop', async () => {
       bar
     "
   `,
-  )
-})
+  );
+});
 
 it('for loop - nested', async () => {
   expect(
@@ -190,30 +164,27 @@ it('for loop - nested', async () => {
     ),
   ).toMatchInlineSnapshot(
     `"|f in foo in foo,bar||o in foo in foo,bar||o in foo in foo,bar||b in bar in foo,bar||a in bar in foo,bar||r in bar in foo,bar|"`,
-  )
-})
+  );
+});
 
 it('if - else - elif', async () => {
   expect(
     await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}', {
       name: 'foo',
     }),
-  ).toMatchInlineSnapshot(
-    `"foo"`,
-  )
+  ).toMatchInlineSnapshot(`"foo"`);
   expect(
     await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}'),
-  ).toMatchInlineSnapshot(
-    `"*"`,
-  )
+  ).toMatchInlineSnapshot(`"*"`);
   expect(
-    await render('{{ if name eq "foo" }}1{{ elif name eq "bar" }}2{{ else }}3{{ endif }}', {
-      name: 'bar',
-    }),
-  ).toMatchInlineSnapshot(
-    `"2"`,
-  )
-})
+    await render(
+      '{{ if name eq "foo" }}1{{ elif name eq "bar" }}2{{ else }}3{{ endif }}',
+      {
+        name: 'bar',
+      },
+    ),
+  ).toMatchInlineSnapshot(`"2"`);
+});
 
 it('for - if', async () => {
   expect(
@@ -223,10 +194,8 @@ it('for - if', async () => {
         names: ['foo', '', 'bar'],
       },
     ),
-  ).toMatchInlineSnapshot(
-    `"foo*bar"`,
-  )
-})
+  ).toMatchInlineSnapshot(`"foo*bar"`);
+});
 
 it('for - destructing', async () => {
   expect(
@@ -239,60 +208,43 @@ it('for - destructing', async () => {
         ],
       },
     ),
-  ).toMatchInlineSnapshot(
-    `"x1y3y2x4"`,
-  )
+  ).toMatchInlineSnapshot(`"x1y3y2x4"`);
   expect(
-    await render(
-      '{{ for (y, x) of names }}{{=x}}{{=y}}{{ endfor }}',
-      {
-        names: [
-          { x: 1, y: 3 },
-          { y: 2, x: 4 },
-        ],
-      },
-    ),
-  ).toMatchInlineSnapshot(
-    `"1342"`,
-  )
-})
+    await render('{{ for (y, x) of names }}{{=x}}{{=y}}{{ endfor }}', {
+      names: [
+        { x: 1, y: 3 },
+        { y: 2, x: 4 },
+      ],
+    }),
+  ).toMatchInlineSnapshot(`"1342"`);
+});
 
 it('set', async () => {
   expect(
     await render('{{= name }}{{ set name = "bar" }}{{= name }}', {
       name: 'foo',
     }),
-  ).toMatchInlineSnapshot(
-    `"foobar"`,
-  )
-})
+  ).toMatchInlineSnapshot(`"foobar"`);
+});
 
 it('macro - call', async () => {
   expect(
     await render(
       `{{ macro foo = (name = "foo") }}{{= name }}{{caller}}{{ endmacro }}{{ call foo() }}1{{ endcall }}{{ call foo("bar") }}{{ endcall }}`,
     ),
-  ).toMatchInlineSnapshot(
-    `"foo1bar"`,
-  )
-})
+  ).toMatchInlineSnapshot(`"foo1bar"`);
+});
 
 it('block', async () => {
   expect(
     await render(
       `{{ block title }}0{{ endblock }}{{ block title }}1{{ endblock }}{{ block title }}{{super}}2{{ endblock }}{{ block title }}3{{super}}{{ endblock }}`,
     ),
-  ).toMatchInlineSnapshot(
-    `"312"`,
-  )
-})
+  ).toMatchInlineSnapshot(`"312"`);
+});
 
 it('include', async () => {
-  expect(
-    await render(
-      '{{ include "default" }}',
-    ),
-  ).toMatchInlineSnapshot(
+  expect(await render('{{ include "default" }}')).toMatchInlineSnapshot(
     `
     "<html>
       <head>
@@ -310,45 +262,44 @@ it('include', async () => {
     </html>
     "
   `,
-  )
-})
+  );
+});
 
 it('null', async () => {
-  expect(
-    await render(
-      '{{= null }}',
-    ),
-  ).toMatchInlineSnapshot(
-    `"null"`,
-  )
-})
+  expect(await render('{{= null }}')).toMatchInlineSnapshot(`"null"`);
+});
 
 it('custom directive', async () => {
   class CustomNode extends Traversal {
-    readonly type = 'CUSTOM' as any
+    readonly type = 'CUSTOM' as any;
+
     constructor(
       public readonly val: string,
       public readonly loc: Loc,
       public readonly strip: Strip,
     ) {
-      super()
+      super();
     }
   }
+
   expect(
-    await render('{{ custom }}', {}, {
-      parsers: {
-        custom: (token, parser) => {
-          parser.advance()
-          return new CustomNode(token.val, token.loc, token.strip)
+    await render(
+      '{{ custom }}',
+      {},
+      {
+        parsers: {
+          custom: (token, parser) => {
+            parser.advance();
+
+            return new CustomNode(token.val, token.loc, token.strip);
+          },
+        },
+        compilers: {
+          ['CUSTOM' as any]: async (node: CustomNode, compiler: Compiler) => {
+            compiler.pushStr(node.loc, '<CUSTOM/>');
+          },
         },
       },
-      compilers: {
-        ['CUSTOM' as any]: async (node: CustomNode, compiler: Compiler) => {
-          compiler.pushStr(node.loc, '<CUSTOM/>')
-        },
-      },
-    }),
-  ).toMatchInlineSnapshot(
-    `"<CUSTOM/>"`,
-  )
-})
+    ),
+  ).toMatchInlineSnapshot(`"<CUSTOM/>"`);
+});

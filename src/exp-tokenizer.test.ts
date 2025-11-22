@@ -1,43 +1,43 @@
-import { expect, it } from 'vitest'
-import { expTokenTypes } from './exp-token-types'
-import { ExpTokenizer } from './exp-tokenizer'
+import { expect, it } from 'vitest';
+import { expTokenTypes } from './exp-token-types';
+import { ExpTokenizer } from './exp-tokenizer';
 
 function tokenize(template: string) {
   return new ExpTokenizer(template).tokenize(template, {
     start: { line: 1, column: 1 },
     end: { line: 1, column: template.length },
-  })
+  });
 }
 
 it('error', () => {
   expect(() => tokenize('{')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: Unexpect "{"]`,
-  )
+  );
   expect(() => tokenize('}')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: Unexpect "}"]`,
-  )
+  );
   expect(() => tokenize('[')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: Unexpect "["]`,
-  )
+  );
   expect(() => tokenize(']')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: Unexpect "]"]`,
-  )
+  );
   expect(() => tokenize('&')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: Unexpect "&"]`,
-  )
+  );
   expect(() => tokenize('@')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: Unexpect "@"]`,
-  )
+  );
   expect(() => tokenize('#')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: Unexpect "#"]`,
-  )
+  );
   expect(() => tokenize(':')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: Unexpect ":"]`,
-  )
+  );
   expect(() => tokenize(';')).toThrowErrorMatchingInlineSnapshot(
     `[CompileError: Unexpect ";"]`,
-  )
-})
+  );
+});
 
 it('string', () => {
   expect(tokenize(`'foo' "bar" \`baz\` "\\"escape"`)).toMatchInlineSnapshot(
@@ -105,8 +105,8 @@ it('string', () => {
       },
     ]
   `,
-  )
-})
+  );
+});
 
 it('number', () => {
   expect(tokenize('123 12.34 -1')).toMatchInlineSnapshot(
@@ -159,8 +159,8 @@ it('number', () => {
       },
     ]
   `,
-  )
-})
+  );
+});
 
 it('bool', () => {
   expect(tokenize('true')).toMatchInlineSnapshot(
@@ -183,7 +183,7 @@ it('bool', () => {
       },
     ]
   `,
-  )
+  );
   expect(tokenize('false')).toMatchInlineSnapshot(
     `
     [
@@ -204,8 +204,8 @@ it('bool', () => {
       },
     ]
   `,
-  )
-})
+  );
+});
 
 it('null and undefined', () => {
   expect(tokenize('null')).toMatchInlineSnapshot(
@@ -228,7 +228,7 @@ it('null and undefined', () => {
       },
     ]
   `,
-  )
+  );
   expect(tokenize('undefined')).toMatchInlineSnapshot(
     `
     [
@@ -249,8 +249,8 @@ it('null and undefined', () => {
       },
     ]
   `,
-  )
-})
+  );
+});
 
 it('symbols', () => {
   expect(tokenize(Object.keys(expTokenTypes).join(' '))).toMatchInlineSnapshot(
@@ -708,8 +708,8 @@ it('symbols', () => {
       },
     ]
   `,
-  )
-})
+  );
+});
 
 it('id', () => {
   expect(tokenize('a b c')).toMatchInlineSnapshot(
@@ -762,8 +762,8 @@ it('id', () => {
       },
     ]
   `,
-  )
-})
+  );
+});
 
 it('pipe', () => {
   expect(tokenize('x | f')).toMatchInlineSnapshot(
@@ -816,7 +816,7 @@ it('pipe', () => {
       },
     ]
   `,
-  )
+  );
   expect(tokenize('x | f | f2')).toMatchInlineSnapshot(
     `
     [
@@ -897,7 +897,7 @@ it('pipe', () => {
       },
     ]
   `,
-  )
+  );
   expect(tokenize('x | f(a, "b") | f2(not c, 1) | f3')).toMatchInlineSnapshot(
     `
     [
@@ -1173,8 +1173,8 @@ it('pipe', () => {
       },
     ]
   `,
-  )
-})
+  );
+});
 
 it('conditional', () => {
   expect(tokenize('"a" if x')).toMatchInlineSnapshot(
@@ -1227,7 +1227,7 @@ it('conditional', () => {
       },
     ]
   `,
-  )
+  );
   expect(tokenize('"a" if x else "y"')).toMatchInlineSnapshot(
     `
     [
@@ -1308,11 +1308,13 @@ it('conditional', () => {
       },
     ]
   `,
-  )
-})
+  );
+});
 
 it('complex', () => {
-  expect(tokenize('user | get("age") gt 18 and user | get("name") eq "John"')).toMatchInlineSnapshot(
+  expect(
+    tokenize('user | get("age") gt 18 and user | get("name") eq "John"'),
+  ).toMatchInlineSnapshot(
     `
     [
       {
@@ -1572,12 +1574,14 @@ it('complex', () => {
       },
     ]
   `,
-  )
-})
+  );
+});
 
 it('whitespace', () => {
-  expect(tokenize(`  x
-    +\ty  `)).toMatchInlineSnapshot(
+  expect(
+    tokenize(`  x
+    +\ty  `),
+  ).toMatchInlineSnapshot(
     `
       [
         {
@@ -1627,5 +1631,5 @@ it('whitespace', () => {
         },
       ]
     `,
-  )
-})
+  );
+});
