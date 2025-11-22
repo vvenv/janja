@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/vvenv/janja/compare/janja-v2.0.1...janja-v2.1.0) (2025-11-22)
+
+
+### Features
+
+* add plugins option to renderer ([9d1bc97](https://github.com/vvenv/janja/commit/9d1bc97d8eeaa7e769794ed2764c398c16059db5))
+
 ## [2.0.1](https://github.com/vvenv/janja/compare/janja-v2.0.0...janja-v2.0.1) (2025-11-18)
 
 
