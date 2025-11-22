@@ -1,6 +1,4 @@
-import { CompileError } from './compile-error';
-import { expTokenPrecedences } from './exp-token-precedences';
-import { ExpTokenizer } from './exp-tokenizer';
+import { CompileError } from '../compile-error';
 import type {
   BinaryExp,
   Checker,
@@ -15,7 +13,9 @@ import type {
   PipeExp,
   Pos,
   SeqExp,
-} from './types';
+} from '../types';
+import { expTokenPrecedences } from './exp-token-precedences';
+import { ExpTokenizer } from './exp-tokenizer';
 
 export class ExpParser implements Pos {
   val = '';

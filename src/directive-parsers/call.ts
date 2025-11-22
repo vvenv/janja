@@ -1,13 +1,15 @@
-import { CallNode } from '../ast';
 import { CompileError } from '../compile-error';
-import { parseUnexpected } from '../parse-unexpected';
+import { createUnexpected } from '../create-unexpected';
 import type { Parser } from '../parser';
+import { CallNode } from '../syntax-nodes';
 import type { DirectiveToken, IdExp, ParserMap } from '../types';
 
 function parseCall(token: DirectiveToken, parser: Parser) {
-  parser.requireExpression(token);
+  if (!token.expression) {
+    parser.emitExpErr(token);
 
-  const val = parser.parseExp(token.expression!);
+    return;
+  }
 
   parser.advance();
 
@@ -21,10 +23,15 @@ function parseCall(token: DirectiveToken, parser: Parser) {
     );
   }
 
-  return new CallNode(val as IdExp, body, token.loc, token.strip);
+  return new CallNode(
+    parser.parseExp(token.expression) as IdExp,
+    body,
+    token.loc,
+    token.strip,
+  );
 }
 
 export const parsers: ParserMap = {
   call: parseCall,
-  endcall: parseUnexpected,
+  endcall: createUnexpected,
 };

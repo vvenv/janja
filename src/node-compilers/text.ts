@@ -1,5 +1,5 @@
-import { NodeType, type TextNode } from '../ast';
 import type { Compiler } from '../compiler';
+import { NodeType, type TextNode } from '../syntax-nodes';
 import type { CompilerMap } from '../types';
 
 async function compileText(

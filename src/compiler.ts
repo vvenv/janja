@@ -1,15 +1,15 @@
-import {
-  ASTNode,
-  BlockNode,
-  IncludeNode,
-  NodeType,
-  RootNode,
-  UnknownDirectiveNode,
-} from './ast';
 import { CompileError } from './compile-error';
 import { compilerOptions } from './config';
 import { Context } from './context';
 import { Parser } from './parser';
+import {
+  BlockNode,
+  IncludeNode,
+  NodeType,
+  RootNode,
+  SyntaxNode,
+  UnknownDirectiveNode,
+} from './syntax-nodes';
 import type { CompilerOptions } from './types';
 
 export class Compiler extends Context {
@@ -137,7 +137,7 @@ export class Compiler extends Context {
     const partials = new Map<string, IncludeNode>();
     const blocks: BlockNode[] = [];
 
-    const traverse = (node: ASTNode) => {
+    const traverse = (node: SyntaxNode) => {
       if (node.type === NodeType.INCLUDE) {
         if (!partials.has((node as IncludeNode).val.value)) {
           partials.set((node as IncludeNode).val.value, node as IncludeNode);
@@ -159,7 +159,7 @@ export class Compiler extends Context {
     };
   }
 
-  private async compileNode(node: ASTNode) {
+  private async compileNode(node: SyntaxNode) {
     if (node.type === NodeType.TEMPLATE) {
       await this.compileNodes((node as RootNode).body);
 
@@ -181,7 +181,7 @@ export class Compiler extends Context {
     );
   }
 
-  async compileNodes(nodes: ASTNode[]) {
+  async compileNodes(nodes: SyntaxNode[]) {
     for (const child of nodes) {
       await this.compileNode(child);
     }

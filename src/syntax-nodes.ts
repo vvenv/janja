@@ -24,21 +24,21 @@ export enum NodeType {
   UNEXPECTED = 'UNEXPECTED',
 }
 
-export interface ASTNode {
+export interface SyntaxNode {
   type: NodeType;
   loc: Loc;
-  body?: ASTNode[];
-  traverse: (cb: (node: ASTNode) => void) => void;
+  body?: SyntaxNode[];
+  traverse: (cb: (node: SyntaxNode) => void) => void;
 }
 
-export class Traversal implements ASTNode {
+export class Traversal implements SyntaxNode {
   readonly type = null as unknown as NodeType;
 
   readonly loc = null as unknown as Loc;
 
-  body?: ASTNode[];
+  body?: SyntaxNode[];
 
-  traverse(cb: (node: ASTNode) => void) {
+  traverse(cb: (node: SyntaxNode) => void) {
     this.body?.forEach(cb);
   }
 }
@@ -47,7 +47,7 @@ export class RootNode extends Traversal {
   readonly type = NodeType.TEMPLATE;
 
   constructor(
-    public readonly body: ASTNode[],
+    public readonly body: SyntaxNode[],
     public readonly loc: Loc,
   ) {
     super();
@@ -84,7 +84,7 @@ export class IfNode extends Traversal {
 
   constructor(
     public readonly test: Exp,
-    public readonly body: ASTNode[],
+    public readonly body: SyntaxNode[],
     public readonly alternatives: (ElseIfNode | ElseNode)[],
     public readonly loc: Loc,
     public readonly strip: Strip,
@@ -92,7 +92,7 @@ export class IfNode extends Traversal {
     super();
   }
 
-  traverse(cb: (node: ASTNode) => void) {
+  traverse(cb: (node: SyntaxNode) => void) {
     this.body?.forEach(cb);
     this.alternatives?.forEach((node) => node.body?.forEach(cb));
   }
@@ -103,7 +103,7 @@ export class ElseIfNode extends Traversal {
 
   constructor(
     public readonly test: Exp,
-    public readonly body: ASTNode[],
+    public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
   ) {
@@ -115,7 +115,7 @@ export class ElseNode extends Traversal {
   readonly type = NodeType.ELSE;
 
   constructor(
-    public readonly body: ASTNode[],
+    public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
   ) {
@@ -128,7 +128,7 @@ export class ForNode extends Traversal {
 
   constructor(
     public readonly loop: BinaryExp<'OF'>,
-    public readonly body: ASTNode[],
+    public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
   ) {
@@ -215,7 +215,7 @@ export class BlockNode extends Traversal {
 
   constructor(
     public readonly val: IdExp,
-    public readonly body: ASTNode[],
+    public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
   ) {
@@ -240,7 +240,7 @@ export class MacroNode extends Traversal {
 
   constructor(
     public readonly val: BinaryExp<'SET'>,
-    public readonly body: ASTNode[],
+    public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
   ) {
@@ -265,7 +265,7 @@ export class CallNode extends Traversal {
 
   constructor(
     public readonly val: IdExp,
-    public readonly body: ASTNode[],
+    public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
   ) {
@@ -290,7 +290,7 @@ export class CaptureNode extends Traversal {
 
   constructor(
     public readonly val: IdExp,
-    public readonly body: ASTNode[],
+    public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
   ) {

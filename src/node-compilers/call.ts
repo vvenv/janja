@@ -1,6 +1,6 @@
-import { type CallNode, NodeType } from '../ast';
 import type { Compiler } from '../compiler';
-import { ExpCompiler } from '../exp-compiler';
+import { ExpCompiler } from '../exp/exp-compiler';
+import { type CallNode, NodeType } from '../syntax-nodes';
 import type { CompilerMap } from '../types';
 
 async function compileCall({ val, body, loc }: CallNode, compiler: Compiler) {

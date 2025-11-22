@@ -1,13 +1,15 @@
-import { BlockNode, SuperNode } from '../ast';
 import { CompileError } from '../compile-error';
-import { parseUnexpected } from '../parse-unexpected';
+import { createUnexpected } from '../create-unexpected';
 import type { Parser } from '../parser';
+import { BlockNode, SuperNode } from '../syntax-nodes';
 import type { DirectiveToken, IdExp, ParserMap } from '../types';
 
 function parseBlock(token: DirectiveToken, parser: Parser) {
-  parser.requireExpression(token);
+  if (!token.expression) {
+    parser.emitExpErr(token);
 
-  const val = parser.parseExp(token.expression!);
+    return;
+  }
 
   parser.advance();
 
@@ -21,11 +23,20 @@ function parseBlock(token: DirectiveToken, parser: Parser) {
     );
   }
 
-  return new BlockNode(val as IdExp, body, token.loc, token.strip);
+  return new BlockNode(
+    parser.parseExp(token.expression!) as IdExp,
+    body,
+    token.loc,
+    token.strip,
+  );
 }
 
 function parseSuper(token: DirectiveToken, parser: Parser) {
-  parser.requireNoExpression(token);
+  if (token.expression) {
+    parser.emitExpErr(token, false);
+
+    return;
+  }
 
   parser.advance();
 
@@ -35,5 +46,5 @@ function parseSuper(token: DirectiveToken, parser: Parser) {
 export const parsers: ParserMap = {
   block: parseBlock,
   super: parseSuper,
-  endblock: parseUnexpected,
+  endblock: createUnexpected,
 };

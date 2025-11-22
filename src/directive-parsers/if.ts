@@ -1,11 +1,15 @@
-import { ElseIfNode, ElseNode, IfNode } from '../ast';
 import { CompileError } from '../compile-error';
-import { parseUnexpected } from '../parse-unexpected';
+import { createUnexpected } from '../create-unexpected';
 import type { Parser } from '../parser';
+import { ElseIfNode, ElseNode, IfNode } from '../syntax-nodes';
 import type { DirectiveToken, ParserMap } from '../types';
 
 function parseIf(token: DirectiveToken, parser: Parser) {
-  parser.requireExpression(token);
+  if (!token.expression) {
+    parser.emitExpErr(token);
+
+    return;
+  }
 
   parser.advance();
 
@@ -15,11 +19,19 @@ function parseIf(token: DirectiveToken, parser: Parser) {
   while (parser.match(['else', 'elseif', 'elsif', 'elif'])) {
     const branchToken = parser.peek() as DirectiveToken;
 
-    alternatives.push(
-      branchToken.name.toLowerCase() === 'else'
-        ? parseElse(branchToken, parser)
-        : parseElseIf(branchToken, parser),
-    );
+    if (branchToken.name.toLowerCase() === 'else') {
+      const elseNode = parseElse(branchToken, parser);
+
+      if (elseNode) {
+        alternatives.push(elseNode);
+      }
+    } else {
+      const elseIfNode = parseElseIf(branchToken, parser);
+
+      if (elseIfNode) {
+        alternatives.push(elseIfNode);
+      }
+    }
   }
 
   if (parser.match(['endif'])) {
@@ -40,34 +52,38 @@ function parseIf(token: DirectiveToken, parser: Parser) {
 }
 
 function parseElseIf(token: DirectiveToken, parser: Parser) {
-  parser.requireExpression(token);
+  if (!token.expression) {
+    parser.emitExpErr(token);
+
+    return;
+  }
 
   parser.advance();
 
-  const body = parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']);
-
   return new ElseIfNode(
     parser.parseExp(token.expression!),
-    body,
+    parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']),
     token.loc,
     token.strip,
   );
 }
 
 function parseElse(token: DirectiveToken, parser: Parser) {
-  parser.requireNoExpression(token);
+  if (token.expression) {
+    parser.emitExpErr(token, false);
+
+    return;
+  }
 
   parser.advance();
 
-  const body = parser.parseUntil(['endif']);
-
-  return new ElseNode(body, token.loc, token.strip);
+  return new ElseNode(parser.parseUntil(['endif']), token.loc, token.strip);
 }
 
 export const parsers: ParserMap = {
   if: parseIf,
-  elseif: parseUnexpected,
-  elsif: parseUnexpected,
-  elif: parseUnexpected,
-  endif: parseUnexpected,
+  elseif: createUnexpected,
+  elsif: createUnexpected,
+  elif: createUnexpected,
+  endif: createUnexpected,
 };

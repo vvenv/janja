@@ -1,5 +1,5 @@
-import { type CaptureNode, NodeType } from '../ast';
 import type { Compiler } from '../compiler';
+import { type CaptureNode, NodeType } from '../syntax-nodes';
 import type { CompilerMap } from '../types';
 
 async function compileCapture(

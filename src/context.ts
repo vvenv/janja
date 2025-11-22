@@ -1,5 +1,5 @@
-import { CONTEXT } from './identifiers';
 import { OutScript } from './out-script';
+import { CONTEXT } from './param-names';
 
 export class Context extends OutScript {
   context = CONTEXT;

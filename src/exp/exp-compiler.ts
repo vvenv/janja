@@ -1,5 +1,4 @@
-import { expTokenOperators } from './exp-token-operators';
-import { CONTEXT, FILTERS } from './identifiers';
+import { CONTEXT, FILTERS } from '../param-names';
 import type {
   BinaryExp,
   Exp,
@@ -9,7 +8,8 @@ import type {
   NotExp,
   PipeExp,
   SeqExp,
-} from './types';
+} from '../types';
+import { expTokenOperators } from './exp-token-operators';
 
 export class ExpCompiler {
   private context!: string;

@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import { Context } from './context';
-import { CONTEXT } from './identifiers';
+import { CONTEXT } from './param-names';
 
 it('context', () => {
   const ctx = new Context();

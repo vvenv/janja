@@ -1,5 +1,5 @@
-import { type CommentNode, NodeType } from '../ast';
 import type { Compiler } from '../compiler';
+import { type CommentNode, NodeType } from '../syntax-nodes';
 import type { CompilerMap } from '../types';
 
 async function compileComment({ val, loc }: CommentNode, compiler: Compiler) {

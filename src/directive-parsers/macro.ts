@@ -1,13 +1,15 @@
-import { CallerNode, MacroNode } from '../ast';
 import { CompileError } from '../compile-error';
-import { parseUnexpected } from '../parse-unexpected';
+import { createUnexpected } from '../create-unexpected';
 import type { Parser } from '../parser';
+import { CallerNode, MacroNode } from '../syntax-nodes';
 import type { BinaryExp, DirectiveToken, ParserMap } from '../types';
 
 function parseMacro(token: DirectiveToken, parser: Parser) {
-  parser.requireExpression(token);
+  if (!token.expression) {
+    parser.emitExpErr(token);
 
-  const name = parser.parseExp(token.expression!);
+    return;
+  }
 
   parser.advance();
 
@@ -21,11 +23,20 @@ function parseMacro(token: DirectiveToken, parser: Parser) {
     );
   }
 
-  return new MacroNode(name as BinaryExp<'SET'>, body, token.loc, token.strip);
+  return new MacroNode(
+    parser.parseExp(token.expression!) as BinaryExp<'SET'>,
+    body,
+    token.loc,
+    token.strip,
+  );
 }
 
 function parseCaller(token: DirectiveToken, parser: Parser) {
-  parser.requireNoExpression(token);
+  if (token.expression) {
+    parser.emitExpErr(token, false);
+
+    return;
+  }
 
   parser.advance();
 
@@ -35,5 +46,5 @@ function parseCaller(token: DirectiveToken, parser: Parser) {
 export const parsers: ParserMap = {
   macro: parseMacro,
   caller: parseCaller,
-  endmacro: parseUnexpected,
+  endmacro: createUnexpected,
 };

@@ -1,8 +1,8 @@
-import type { ASTNode, NodeType } from './ast';
 import type { Compiler } from './compiler';
 import type { Context } from './context';
 import type { OutScript } from './out-script';
 import type { Parser } from './parser';
+import type { NodeType, SyntaxNode } from './syntax-nodes';
 
 export type MaybePromise<T> = T | Promise<T>;
 
@@ -248,13 +248,13 @@ export interface Plugin {
   compilers?: CompilerMap;
 }
 
-export type ParserFn<T = ASTNode> = (
+export type ParserFn<T = SyntaxNode> = (
   token: DirectiveToken,
   parser: Parser,
 ) => T | void;
 export type ParserMap = Record<string, ParserFn>;
 
-export type CompilerFn<T = ASTNode> = (
+export type CompilerFn<T = SyntaxNode> = (
   node: T,
   compiler: Compiler,
 ) => MaybePromise<void>;

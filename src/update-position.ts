@@ -1,9 +1,5 @@
 import type { Pos } from './types';
 
-/**
- * Update position by a given string, and return a new position with the
- * updated values.
- */
 export function updatePosition(str: string, pos: Pos): Pos {
   const newlines = (str.match(/\n/g) || []).length;
 

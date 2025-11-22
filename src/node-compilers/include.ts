@@ -1,5 +1,5 @@
-import { type IncludeNode, NodeType } from '../ast';
 import type { Compiler } from '../compiler';
+import { type IncludeNode, NodeType } from '../syntax-nodes';
 import type { CompilerMap } from '../types';
 
 async function compileInclude(

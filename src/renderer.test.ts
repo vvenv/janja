@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { render, renderFile } from '../test/__helper';
-import { Traversal } from './ast';
 import type { Compiler } from './compiler';
+import { Traversal } from './syntax-nodes';
 import type { Loc, Strip } from './types';
 
 it('error', async () => {
