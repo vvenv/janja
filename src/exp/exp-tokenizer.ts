@@ -1,7 +1,45 @@
 import { CompileError } from '../compile-error';
-import type { ExpToken, Loc, Pos } from '../types';
+import type { ExpToken, ExpTokenType, Loc, Pos } from '../types';
 import { updatePosition } from '../update-position';
-import { expTokenTypes } from './exp-token-types';
+
+export const expTokenTypes: Record<string, ExpTokenType> = {
+  and: 'AND',
+  or: 'OR',
+  not: 'NOT',
+
+  is: 'IS',
+  eq: 'EQ',
+  ne: 'NE',
+  gt: 'GT',
+  lt: 'LT',
+  ge: 'GE',
+  le: 'LE',
+  in: 'IN',
+  ni: 'NI',
+  of: 'OF',
+
+  '+': 'ADD',
+  '-': 'SUB',
+  '*': 'MUL',
+  '/': 'DIV',
+  '%': 'MOD',
+
+  if: 'IF',
+  else: 'ELSE',
+
+  true: 'LIT',
+  false: 'LIT',
+  null: 'LIT',
+  undefined: 'LIT',
+
+  '|': 'PIPE',
+
+  '=': 'ASSIGN',
+  '(': 'LP',
+  ')': 'RP',
+  ',': 'COMMA',
+  '.': 'DOT',
+};
 
 export class ExpTokenizer implements Pos {
   val = '';

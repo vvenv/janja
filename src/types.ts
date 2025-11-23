@@ -69,11 +69,11 @@ export interface Mapping {
   target: Loc;
 }
 
-export type ExpTokenType =
+export type UnaryExpTokenType = 'NOT';
+export type BinaryExpTokenType =
   | 'AND'
   | 'OR'
   | 'IS'
-  | 'NOT'
   | 'EQ'
   | 'NE'
   | 'GT'
@@ -89,9 +89,12 @@ export type ExpTokenType =
   | 'DIV'
   | 'MOD'
   | 'PIPE'
-  | 'IF'
-  | 'ELSE'
-  | 'SET'
+  | 'ASSIGN';
+export type TernaryExpTokenType = 'IF' | 'ELSE';
+export type ExpTokenType =
+  | UnaryExpTokenType
+  | BinaryExpTokenType
+  | TernaryExpTokenType
   | 'LP'
   | 'RP'
   | 'COMMA'
@@ -108,28 +111,13 @@ export interface ExpToken<T = ExpTokenType> {
 
 export type Checker = (token: ExpToken) => 'BACK' | 'BREAK' | undefined;
 
+export type UnaryExpType = UnaryExpTokenType;
+export type BinaryExpType = BinaryExpTokenType;
+export type TernaryExpType = TernaryExpTokenType;
 export type ExpType =
-  | 'AND'
-  | 'OR'
-  | 'IS'
-  | 'NOT'
-  | 'EQ'
-  | 'NE'
-  | 'GT'
-  | 'LT'
-  | 'GE'
-  | 'LE'
-  | 'IN'
-  | 'NI'
-  | 'OF'
-  | 'ADD'
-  | 'SUB'
-  | 'MUL'
-  | 'DIV'
-  | 'MOD'
-  | 'PIPE'
-  | 'IF'
-  | 'SET'
+  | UnaryExpType
+  | BinaryExpType
+  | TernaryExpType
   | 'SEQ'
   | 'ID'
   | 'LIT';
@@ -139,75 +127,38 @@ export interface ExpBase<T = ExpType> {
   loc: Loc;
 }
 
-export interface IdExp extends ExpBase {
-  type: 'ID';
+export interface NotExp extends ExpBase<'NOT'> {
+  argument: Exp;
+}
+
+export interface BinaryExp<T extends BinaryExpType = BinaryExpType>
+  extends ExpBase<T> {
+  left: Exp;
+  right: Exp;
+}
+
+export interface IfExp extends ExpBase<'IF'> {
+  test: Exp;
+  consequent: Exp;
+  alternative?: Exp;
+}
+
+export interface IdExp extends ExpBase<'ID'> {
   value: string;
   path?: IdExp[];
   args?: Exp[];
 }
 
 export interface LitExp<T = string | number | boolean | null | undefined>
-  extends ExpBase {
-  type: 'LIT';
+  extends ExpBase<'LIT'> {
   value: T;
 }
 
-export interface NotExp extends ExpBase {
-  type: 'NOT';
-  argument: Exp;
-}
-
-export interface BinaryExp<
-  T =
-    | 'AND'
-    | 'OR'
-    | 'IS'
-    | 'EQ'
-    | 'NE'
-    | 'GT'
-    | 'LT'
-    | 'GE'
-    | 'LE'
-    | 'IN'
-    | 'NI'
-    | 'OF'
-    | 'ADD'
-    | 'SUB'
-    | 'MUL'
-    | 'DIV'
-    | 'MOD'
-    | 'SET',
-> extends ExpBase<T> {
-  left: Exp;
-  right: Exp;
-}
-
-export interface IfExp extends ExpBase {
-  type: 'IF';
-  test: Exp;
-  consequent: Exp;
-  alternative?: Exp;
-}
-
-export interface PipeExp extends ExpBase {
-  type: 'PIPE';
-  left: Exp;
-  right: Exp;
-}
-
-export interface SeqExp extends ExpBase {
-  type: 'SEQ';
+export interface SeqExp extends ExpBase<'SEQ'> {
   elements: Exp[];
 }
 
-export type Exp =
-  | IdExp
-  | LitExp
-  | NotExp
-  | BinaryExp
-  | IfExp
-  | PipeExp
-  | SeqExp;
+export type Exp = NotExp | BinaryExp | IfExp | IdExp | LitExp | SeqExp;
 
 export type Filters = Record<string, (value: any, ...args: any[]) => any>;
 

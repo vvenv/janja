@@ -1,6 +1,5 @@
 import { expect, it } from 'vitest';
-import { expTokenTypes } from './exp-token-types';
-import { ExpTokenizer } from './exp-tokenizer';
+import { ExpTokenizer, expTokenTypes } from './exp-tokenizer';
 
 function tokenize(template: string) {
   return new ExpTokenizer(template).tokenize(template, {
@@ -643,7 +642,7 @@ it('symbols', () => {
           },
         },
         "raw": "=",
-        "type": "SET",
+        "type": "ASSIGN",
         "value": "=",
       },
       {

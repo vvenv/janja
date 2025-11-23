@@ -12,7 +12,7 @@ function parseSet(token: DirectiveToken, parser: Parser) {
   parser.advance();
 
   return new SetNode(
-    parser.parseExp(token.expression!) as BinaryExp<'SET'>,
+    parser.parseExp(token.expression!) as BinaryExp<'ASSIGN'>,
     token.loc,
     token.strip,
   );

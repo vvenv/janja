@@ -10,12 +10,52 @@ import type {
   LitExp,
   Loc,
   NotExp,
-  PipeExp,
   Pos,
   SeqExp,
 } from '../types';
-import { expTokenPrecedences } from './exp-token-precedences';
 import { ExpTokenizer } from './exp-tokenizer';
+
+const expTokenPrecedences: Record<ExpTokenType, number> = {
+  COMMA: 5,
+
+  IF: 10,
+  ELSE: 10,
+
+  ASSIGN: 15,
+
+  LP: 20,
+  RP: 20,
+
+  OR: 25,
+
+  AND: 30,
+
+  IS: 40,
+  EQ: 40,
+  NE: 40,
+  GT: 40,
+  LT: 40,
+  GE: 40,
+  LE: 40,
+  IN: 40,
+  NI: 40,
+  OF: 40,
+
+  ADD: 50,
+  SUB: 50,
+
+  MUL: 60,
+  DIV: 60,
+  MOD: 60,
+
+  NOT: 70,
+
+  PIPE: 80,
+
+  DOT: 90,
+  ID: 90,
+  LIT: 90,
+};
 
 export class ExpParser implements Pos {
   val = '';
@@ -123,7 +163,7 @@ export class ExpParser implements Pos {
           value: token.value as string,
         } satisfies IdExp;
 
-        if (this.check('DOT')) {
+        if (this.match('DOT')) {
           left.path = this.parsePath();
         }
 
@@ -212,7 +252,7 @@ export class ExpParser implements Pos {
         token.type === 'MUL' ||
         token.type === 'DIV' ||
         token.type === 'MOD' ||
-        token.type === 'SET'
+        token.type === 'ASSIGN'
       ) {
         if (!left) {
           throw new CompileError(
@@ -253,7 +293,7 @@ export class ExpParser implements Pos {
           );
         }
 
-        if (!this.check('ID')) {
+        if (!this.match('ID')) {
           throw new CompileError(
             'expected "ID" after "PIPE"',
             this.template,
@@ -266,7 +306,7 @@ export class ExpParser implements Pos {
           type: 'PIPE',
           left,
           right: this.parsePipe(),
-        } satisfies PipeExp;
+        } satisfies BinaryExp<'PIPE'>;
 
         continue;
       }
@@ -320,7 +360,7 @@ export class ExpParser implements Pos {
   private parseSequence() {
     const elements: Exp[] = [];
 
-    while (!this.check('RP')) {
+    while (!this.match('RP')) {
       const element = this.parseExp((t) =>
         t.type === 'COMMA' ? 'BREAK' : undefined,
       )!;
@@ -377,12 +417,12 @@ export class ExpParser implements Pos {
     return this.tokens.at(this.index) ?? null;
   }
 
-  private check(type: ExpTokenType) {
+  private match(type: ExpTokenType) {
     return this.peek()?.type === type;
   }
 
   private consume(type: ExpTokenType) {
-    if (this.check(type)) {
+    if (this.match(type)) {
       return this.next();
     }
   }

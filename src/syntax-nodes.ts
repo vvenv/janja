@@ -239,7 +239,7 @@ export class MacroNode extends Traversal {
   readonly type = NodeType.MACRO;
 
   constructor(
-    public readonly val: BinaryExp<'SET'>,
+    public readonly val: BinaryExp<'ASSIGN'>,
     public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
@@ -277,7 +277,7 @@ export class SetNode extends Traversal {
   readonly type = NodeType.SET;
 
   constructor(
-    public readonly val: BinaryExp<'SET'>,
+    public readonly val: BinaryExp<'ASSIGN'>,
     public readonly loc: Loc,
     public readonly strip: Strip,
   ) {

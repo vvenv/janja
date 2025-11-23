@@ -53,9 +53,31 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[AssertionError: expected true to be false // Object.is equality]`,
+      `[CompileError: "break" directive used outside of a loop]`,
     );
-    expect(error.details).toMatchInlineSnapshot(`undefined`);
+    expect(error.details).toMatchInlineSnapshot(`
+      ""break" directive used outside of a loop
+
+      1｜ {{ break }}
+       ｜ ^         ^
+      "
+    `);
+  }
+
+  try {
+    await compile('{{ break x }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: "break" should not have expression]`,
+    );
+    expect(error.details).toMatchInlineSnapshot(`
+      ""break" should not have expression
+
+      1｜ {{ break x }}
+       ｜ ^           ^
+      "
+    `);
   }
 
   try {
@@ -63,9 +85,31 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[AssertionError: expected true to be false // Object.is equality]`,
+      `[CompileError: "continue" directive used outside of a loop]`,
     );
-    expect(error.details).toMatchInlineSnapshot(`undefined`);
+    expect(error.details).toMatchInlineSnapshot(`
+      ""continue" directive used outside of a loop
+
+      1｜ {{ continue }}
+       ｜ ^            ^
+      "
+    `);
+  }
+
+  try {
+    await compile('{{ continue x }}');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[CompileError: "continue" should not have expression]`,
+    );
+    expect(error.details).toMatchInlineSnapshot(`
+      ""continue" should not have expression
+
+      1｜ {{ continue x }}
+       ｜ ^              ^
+      "
+    `);
   }
 });
 

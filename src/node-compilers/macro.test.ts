@@ -63,9 +63,15 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[AssertionError: expected true to be false // Object.is equality]`,
+      `[CompileError: "caller" directive used outside of a macro]`,
     );
-    expect(error.details).toMatchInlineSnapshot(`undefined`);
+    expect(error.details).toMatchInlineSnapshot(`
+      ""caller" directive used outside of a macro
+
+      1｜ {{ caller }}
+       ｜ ^          ^
+      "
+    `);
   }
 });
 
