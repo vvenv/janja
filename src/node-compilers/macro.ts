@@ -16,7 +16,7 @@ async function compileMacro(
     loc,
     `${expCompiler.compile(left)}=(${elements
       .map((el) =>
-        el.type === 'SET'
+        el.type === 'ASSIGN'
           ? `${(el.left as IdExp).value}=${expCompiler.compile(el.right)}`
           : (el as IdExp).value,
       )
@@ -25,7 +25,7 @@ async function compileMacro(
     `...${context},`,
     elements
       .map((el) =>
-        el.type === 'SET' ? (el.left as IdExp).value : (el as IdExp).value,
+        el.type === 'ASSIGN' ? (el.left as IdExp).value : (el as IdExp).value,
       )
       .join(','),
     '};',

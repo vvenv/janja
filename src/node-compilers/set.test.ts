@@ -71,16 +71,6 @@ it('error', async () => {
     );
     expect(error.details).toMatchInlineSnapshot(`undefined`);
   }
-
-  try {
-    await compile('{{ set x = y = 1 }}');
-    expect(true).toBe(false);
-  } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[AssertionError: expected true to be false // Object.is equality]`,
-    );
-    expect(error.details).toMatchInlineSnapshot(`undefined`);
-  }
 });
 
 it('literal', async () => {

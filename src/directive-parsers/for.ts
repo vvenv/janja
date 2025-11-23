@@ -4,6 +4,8 @@ import type { Parser } from '../parser';
 import { BreakNode, ContinueNode, ForNode } from '../syntax-nodes';
 import type { BinaryExp, DirectiveToken, ParserMap } from '../types';
 
+const wm = new WeakMap<Parser, boolean>();
+
 function parseFor(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
@@ -11,9 +13,13 @@ function parseFor(token: DirectiveToken, parser: Parser) {
     return;
   }
 
+  wm.set(parser, true);
+
   parser.advance();
 
   const body = parser.parseUntil(['endfor']);
+
+  wm.set(parser, false);
 
   if (parser.match(['endfor'])) {
     parser.advance();
@@ -38,6 +44,18 @@ function parseBreak(token: DirectiveToken, parser: Parser) {
     return;
   }
 
+  if (!wm.get(parser)) {
+    parser.options.debug?.(
+      new CompileError(
+        '"break" directive used outside of a loop',
+        parser.template,
+        token.loc,
+      ),
+    );
+
+    return;
+  }
+
   parser.advance();
 
   return new BreakNode(token.val, token.loc, token.strip);
@@ -46,6 +64,18 @@ function parseBreak(token: DirectiveToken, parser: Parser) {
 function parseContinue(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
+
+    return;
+  }
+
+  if (!wm.get(parser)) {
+    parser.options.debug?.(
+      new CompileError(
+        '"continue" directive used outside of a loop',
+        parser.template,
+        token.loc,
+      ),
+    );
 
     return;
   }

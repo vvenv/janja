@@ -4,6 +4,8 @@ import type { Parser } from '../parser';
 import { CallerNode, MacroNode } from '../syntax-nodes';
 import type { BinaryExp, DirectiveToken, ParserMap } from '../types';
 
+const wm = new WeakMap<Parser, boolean>();
+
 function parseMacro(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
@@ -11,9 +13,13 @@ function parseMacro(token: DirectiveToken, parser: Parser) {
     return;
   }
 
+  wm.set(parser, true);
+
   parser.advance();
 
   const body = parser.parseUntil(['endmacro']);
+
+  wm.set(parser, false);
 
   if (parser.match(['endmacro'])) {
     parser.advance();
@@ -24,7 +30,7 @@ function parseMacro(token: DirectiveToken, parser: Parser) {
   }
 
   return new MacroNode(
-    parser.parseExp(token.expression!) as BinaryExp<'SET'>,
+    parser.parseExp(token.expression!) as BinaryExp<'ASSIGN'>,
     body,
     token.loc,
     token.strip,
@@ -34,6 +40,18 @@ function parseMacro(token: DirectiveToken, parser: Parser) {
 function parseCaller(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
+
+    return;
+  }
+
+  if (!wm.get(parser)) {
+    parser.options.debug?.(
+      new CompileError(
+        '"caller" directive used outside of a macro',
+        parser.template,
+        token.loc,
+      ),
+    );
 
     return;
   }

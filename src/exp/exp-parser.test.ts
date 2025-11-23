@@ -1144,7 +1144,7 @@ it('=', () => {
         "type": "ID",
         "value": "b",
       },
-      "type": "SET",
+      "type": "ASSIGN",
       "value": "=",
     }
   `,
@@ -2959,7 +2959,7 @@ it('real world', () => {
         "type": "PIPE",
         "value": "|",
       },
-      "type": "SET",
+      "type": "ASSIGN",
       "value": "=",
     }
   `,

@@ -2,14 +2,44 @@ import { CONTEXT, FILTERS } from '../param-names';
 import type {
   BinaryExp,
   Exp,
+  ExpTokenType,
   IdExp,
   IfExp,
   LitExp,
   NotExp,
-  PipeExp,
   SeqExp,
 } from '../types';
-import { expTokenOperators } from './exp-token-operators';
+
+const expTokenOperators: Record<ExpTokenType, string> = {
+  AND: '&&',
+  OR: '||',
+  IS: '',
+  NOT: '!',
+  EQ: '===',
+  NE: '!==',
+  GT: '>',
+  LT: '<',
+  GE: '>=',
+  LE: '<=',
+  IN: ' in ',
+  NI: ' in ',
+  OF: ' of ',
+  ADD: '+',
+  SUB: '-',
+  MUL: '*',
+  DIV: '/',
+  MOD: '%',
+  PIPE: '',
+  ASSIGN: '=',
+  LP: '(',
+  RP: ')',
+  COMMA: ',',
+  DOT: '.',
+  ID: '',
+  LIT: '',
+  IF: '',
+  ELSE: '',
+};
 
 export class ExpCompiler {
   private context!: string;
@@ -32,13 +62,13 @@ export class ExpCompiler {
       case 'LIT':
         return this.compileLit(expression);
       case 'PIPE':
-        return this.compilePipe(expression);
+        return this.compilePipe(expression as BinaryExp<'PIPE'>);
       case 'OF':
-        return this.compileOf(expression);
-      case 'SET':
-        return this.compileSet(expression);
+        return this.compileOf(expression as BinaryExp<'OF'>);
+      case 'ASSIGN':
+        return this.compileAssign(expression as BinaryExp<'ASSIGN'>);
       case 'IS':
-        return this.compileIs(expression);
+        return this.compileIs(expression as BinaryExp<'IS'>);
       case 'AND':
       case 'OR':
       case 'EQ':
@@ -90,13 +120,13 @@ export class ExpCompiler {
     return elements.map((element) => this.compileExp(element)).toString();
   }
 
-  private compilePipe({ left, right }: PipeExp) {
+  private compilePipe({ left, right }: BinaryExp<'PIPE'>) {
     const { value: name, args = [] } = right as IdExp;
 
-    return `(await ${this.filters}.${name}.call(${[this.context, this.compileExp(left), ...args.map((arg) => (arg.type === 'SET' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExp(arg.right)}` : this.compileExp(arg)))].join(',')}))`;
+    return `(await ${this.filters}.${name}.call(${[this.context, this.compileExp(left), ...args.map((arg) => (arg.type === 'ASSIGN' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExp(arg.right)}` : this.compileExp(arg)))].join(',')}))`;
   }
 
-  private compileOf({ left, right }: BinaryExp) {
+  private compileOf({ left, right }: BinaryExp<'OF'>) {
     // destructuring
     if (left.type === 'SEQ') {
       return `const {${(left.elements as IdExp[]).map(({ value }) => value).join(',')}} of ${this.compileExp(right)}`;
@@ -105,7 +135,7 @@ export class ExpCompiler {
     return `const ${(left as IdExp).value} of ${this.compileExp(right)}`;
   }
 
-  private compileSet({ left, right }: BinaryExp) {
+  private compileAssign({ left, right }: BinaryExp<'ASSIGN'>) {
     if (left.type === 'ID') {
       return `Object.assign(${this.context},{${(left as IdExp).value}:${this.compileExp(right)}});`;
     }
@@ -114,7 +144,7 @@ export class ExpCompiler {
     return `Object.assign(${this.context},${this.filters}.pick.call(${this.context},${this.compileExp(right)},[${((left as SeqExp).elements as IdExp[]).map(({ value }) => `"${value}"`).join(',')}]));`;
   }
 
-  private compileIs({ left, right }: BinaryExp) {
+  private compileIs({ left, right }: BinaryExp<'IS'>) {
     return `(typeof ${this.compileExp(left)}===${this.compileExp(right)})`;
   }
 
