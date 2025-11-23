@@ -135,4 +135,4 @@ const engine = new Engine({
 
 ---
 
-如需更多细节，可参考源码 `{src,test}/filters.ts` 和 `src/tag-compilers/` 目录实现。
+如需更多细节，可参考源码 `src/filters.ts`、`src/directive-parsers/` 和 `src/node-compilers/`。

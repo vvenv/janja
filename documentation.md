@@ -135,4 +135,4 @@ Usage in template:
 
 ---
 
-For more details, refer to the source code in `{src,test}/filters.ts` and the `src/tag-compilers/` directory.
+For more details, refer to the source code in `src/filters.ts`, `src/directive-parsers/`, and `src/node-compilers/`.
