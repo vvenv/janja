@@ -12,14 +12,16 @@
 
 ## Key Features
 
-- 📝 **Intuitive Template Syntax**: Simple syntax for variables, conditionals, and loops.
-- 🔗 **Custom global variables**: Supports definition of global variables.
-- 🛠️ **Built-in Tags and Filters**: A collection of built-in tags and filters.
-- 🎨 **Custom Tags and Filters**: Ability to define custom tags and filters.
+- 📝 **Intuitive template syntax**: Simple syntax for variables, conditionals, and loops.
+- 🔄 **Layout and partials**: Supports template inheritance and reusable components.
+- 🛠️ **Built-in directives and filters**: A collection of built-in directives and filters.
+- 🎨 **Custom directives and filters**: Ability to define custom directives and filters.
 - 🚀 **Pre-compilation**: Enhance rendering performance by precompiling.
-- 🐛 **Error Handling and Debugging**: Provides detailed error reporting and debugging support.
+- 🐛 **Error handling and debugging**: Provides detailed error reporting and debugging support.
 - 🛡️ **Security**: Sandbox mode, and automatic escaping.
-- 🛫 **Asynchronous Data Loading**: Supports fetching and displaying remote data asynchronously.
+- 🛫 **Asynchronous data loading**: Supports fetching and displaying remote data asynchronously.
+- 🌐 **Universal compatibility**: Works in both Node.js and browser environments.
+- 📦 **Zero dependencies**: Lightweight with no external dependencies.
 
 ## Play Online
 
