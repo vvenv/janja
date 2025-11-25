@@ -389,14 +389,6 @@ export default defineConfig([
             'index',
           ],
 
-          pathGroups: [
-            {
-              pattern: '@boutir/**/*',
-              group: 'internal',
-              position: 'before',
-            },
-          ],
-
           alphabetize: {
             caseInsensitive: true,
             order: 'asc',
