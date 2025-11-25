@@ -89,8 +89,7 @@ export class ExpCompiler {
         return this.compileTernary(expression);
       case 'SEQ':
         return this.compileSeq(expression);
-      default:
-        return '';
+      // no default
     }
   }
 
