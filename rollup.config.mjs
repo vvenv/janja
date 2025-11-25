@@ -3,11 +3,11 @@ import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 import { defineConfig } from 'rollup'
 import dts from 'rollup-plugin-dts'
-import pkg from './package.json' with { type: 'json' }
+import pkg from './src/package.json' with { type: 'json' }
 
 export default defineConfig([
   {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: {
       name: 'janja',
       file: pkg.browser,
@@ -21,7 +21,7 @@ export default defineConfig([
     ],
   },
   {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
@@ -33,7 +33,7 @@ export default defineConfig([
     ],
   },
   {
-    input: 'index.ts',
+    input: 'src/index.ts',
     output: {
       format: 'esm',
       file: pkg.types,
