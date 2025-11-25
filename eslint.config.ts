@@ -7,7 +7,7 @@ import { parser as tsParser, plugin as tsPlugin } from 'typescript-eslint';
 
 export default defineConfig([
   {
-    ignores: ['**/coverage/**', '**/dist/**', '**/perf/**', '**/*.yml'],
+    ignores: ['**/coverage/**', '**/dist/**', '**/*.yml'],
   },
   {
     files: ['**/*.ts'],
