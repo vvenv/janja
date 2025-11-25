@@ -80,7 +80,7 @@ export class Parser extends Tokenizer {
           nodes.push(this.createText(token as TextToken));
 
           break;
-        default:
+        // no default
       }
 
       prevToken = token;
