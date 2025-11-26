@@ -1,7 +1,7 @@
 import { Compiler } from './compiler';
-import { renderOptions } from './config';
 import { escape } from './escape';
 import * as _filters from './filters';
+import { mergeOptions, renderOptions } from './options';
 import { RenderError } from './render-error';
 import { Safe } from './safe';
 import type { ObjectType, RendererOptions } from './types';
@@ -9,24 +9,8 @@ import type { ObjectType, RendererOptions } from './types';
 export class Renderer {
   protected options: Required<RendererOptions>;
 
-  constructor({
-    globals,
-    filters,
-    parsers,
-    compilers,
-    plugins,
-    ...options
-  }: RendererOptions = {}) {
-    this.options = { ...renderOptions, ...options };
-    Object.assign(this.options.globals, globals);
-    Object.assign(this.options.filters, filters);
-    Object.assign(this.options.parsers, parsers);
-    Object.assign(this.options.compilers, compilers);
-    plugins?.forEach((plugin) => {
-      Object.assign(this.options.filters, plugin.filters);
-      Object.assign(this.options.parsers, plugin.parsers);
-      Object.assign(this.options.compilers, plugin.compilers);
-    });
+  constructor(options: RendererOptions) {
+    this.options = mergeOptions(renderOptions, options);
   }
 
   async render(template: string, globals: ObjectType) {

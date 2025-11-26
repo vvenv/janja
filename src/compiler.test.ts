@@ -42,12 +42,10 @@ it('error', async () => {
     await compile('{{ x }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unknown "x" directive]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "x" node]`);
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unknown "x" directive
+      "Unknown "x" node
 
       1｜ {{ x }}
        ｜ ^     ^

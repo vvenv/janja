@@ -6,10 +6,10 @@ it('error', async () => {
     await parse('{{}}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "" directive]`);
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "" node]`);
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unknown "" directive
+      "Unknown "" node
 
       1｜ {{}}
        ｜ ^  ^
@@ -38,12 +38,10 @@ it('error', async () => {
     await parse('{{ else }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unknown "else" directive]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "else" node]`);
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unknown "else" directive
+      "Unknown "else" node
 
       1｜ {{ else }}
        ｜ ^        ^

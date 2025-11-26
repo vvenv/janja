@@ -2,7 +2,7 @@ import type { Compiler } from './compiler';
 import type { Context } from './context';
 import type { OutScript } from './out-script';
 import type { Parser } from './parser';
-import type { NodeType, SyntaxNode } from './syntax-nodes';
+import type { SyntaxNode } from './syntax-nodes';
 
 export type MaybePromise<T> = T | Promise<T>;
 
@@ -199,20 +199,24 @@ export interface Plugin {
   compilers?: CompilerMap;
 }
 
-export type ParserFn<T = SyntaxNode> = (
-  token: DirectiveToken,
+export type ParserFn<T extends SyntaxNode = SyntaxNode> = (
+  token: Token,
   parser: Parser,
 ) => T | void;
 export type ParserMap = Record<string, ParserFn>;
 
-export type CompilerFn<T = SyntaxNode> = (
+export type CompilerFn<T extends SyntaxNode = SyntaxNode> = (
   node: T,
   compiler: Compiler,
 ) => MaybePromise<void>;
-export type CompilerMap = Partial<Record<NodeType, CompilerFn>>;
+export type CompilerMap = Partial<Record<string, CompilerFn>>;
 
 export interface BaseOptions {
   debug?: (error: Error) => any;
+  filters?: Filters;
+  parsers?: ParserMap;
+  compilers?: CompilerMap;
+  plugins?: Plugin[];
 }
 
 export interface ParserOptions extends BaseOptions {
@@ -222,19 +226,15 @@ export interface ParserOptions extends BaseOptions {
   directiveClose?: string;
   outputOpen?: string;
   outputClose?: string;
-  parsers?: ParserMap;
 }
 
 export interface CompilerOptions extends ParserOptions {
   trimWhitespace?: boolean;
   stripComments?: boolean;
-  compilers?: CompilerMap;
   loader?: (path: string) => Promise<string>;
 }
 
 export interface RendererOptions extends CompilerOptions {
   globals?: ObjectType;
-  filters?: Filters;
   autoEscape?: boolean;
-  plugins?: Plugin[];
 }
