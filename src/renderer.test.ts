@@ -2,7 +2,7 @@ import { expect, it } from 'vitest';
 import { render, renderFile } from '../test/__helper';
 import type { Compiler } from './compiler';
 import { Traversal } from './syntax-nodes';
-import type { Loc, Strip } from './types';
+import type { Loc } from './types';
 
 it('error', async () => {
   try {
@@ -14,12 +14,12 @@ it('error', async () => {
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-        "Unexpected "endif" directive
+      "Unexpected "endif" directive
 
-        1｜ {{ for name of names }}{{ endif }}
-         ｜                        ^         ^
-        "
-      `,
+      1｜ {{ for name of names }}{{ endif }}
+       ｜                        ^         ^
+      "
+    `,
     );
   }
 
@@ -32,12 +32,12 @@ it('error', async () => {
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-        "c.names is not iterable
+      "c.names is not iterable
 
-        1｜ {{ for name of names }}{{ endfor }}
-         ｜             ^^
-        "
-      `,
+      1｜ {{ for name of names }}{{ endfor }}
+       ｜             ^^
+      "
+    `,
     );
   }
 
@@ -271,13 +271,9 @@ it('null', async () => {
 
 it('custom directive', async () => {
   class CustomNode extends Traversal {
-    readonly type = 'CUSTOM' as any;
+    readonly type: string = 'CUSTOM';
 
-    constructor(
-      public readonly val: string,
-      public readonly loc: Loc,
-      public readonly strip: Strip,
-    ) {
+    constructor(public readonly loc: Loc) {
       super();
     }
   }
@@ -287,18 +283,22 @@ it('custom directive', async () => {
       '{{ custom }}',
       {},
       {
-        parsers: {
-          custom: (token, parser) => {
-            parser.advance();
+        plugins: [
+          {
+            parsers: {
+              custom: (token, parser) => {
+                parser.advance();
 
-            return new CustomNode(token.val, token.loc, token.strip);
+                return new CustomNode(token.loc);
+              },
+            },
+            compilers: {
+              CUSTOM: async (node: CustomNode, compiler: Compiler) => {
+                compiler.pushStr(node.loc, '<CUSTOM/>');
+              },
+            },
           },
-        },
-        compilers: {
-          ['CUSTOM' as any]: async (node: CustomNode, compiler: Compiler) => {
-            compiler.pushStr(node.loc, '<CUSTOM/>');
-          },
-        },
+        ],
       },
     ),
   ).toMatchInlineSnapshot(`"<CUSTOM/>"`);

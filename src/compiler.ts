@@ -1,15 +1,10 @@
 import { CompileError } from './compile-error';
-import { compilerOptions } from './config';
 import { Context } from './context';
+import { compilerOptions, mergeOptions } from './options';
 import { Parser } from './parser';
-import {
-  BlockNode,
-  IncludeNode,
-  NodeType,
-  RootNode,
-  SyntaxNode,
-  UnknownDirectiveNode,
-} from './syntax-nodes';
+import { BlockNode } from './plugins/block/syntax';
+import { IncludeNode } from './plugins/include/syntax';
+import { RootNode, SyntaxNode, UnknownNode } from './syntax-nodes';
 import type { CompilerOptions } from './types';
 
 export class Compiler extends Context {
@@ -29,10 +24,7 @@ export class Compiler extends Context {
 
   constructor(options?: CompilerOptions) {
     super();
-    this.options = {
-      ...compilerOptions,
-      ...options,
-    };
+    this.options = mergeOptions(compilerOptions, options);
   }
 
   async compile(
@@ -138,13 +130,13 @@ export class Compiler extends Context {
     const blocks: BlockNode[] = [];
 
     const traverse = (node: SyntaxNode) => {
-      if (node.type === NodeType.INCLUDE) {
+      if (node.type === 'INCLUDE') {
         if (!partials.has((node as IncludeNode).val.value)) {
           partials.set((node as IncludeNode).val.value, node as IncludeNode);
         }
       }
 
-      if (node.type === NodeType.BLOCK) {
+      if (node.type === 'BLOCK') {
         blocks.push(node as BlockNode);
       }
 
@@ -160,7 +152,7 @@ export class Compiler extends Context {
   }
 
   private async compileNode(node: SyntaxNode) {
-    if (node.type === NodeType.TEMPLATE) {
+    if (node.type === 'TEMPLATE') {
       await this.compileNodes((node as RootNode).body);
 
       return;
@@ -174,7 +166,7 @@ export class Compiler extends Context {
 
     this.options.debug?.(
       new CompileError(
-        `Unknown "${(node as UnknownDirectiveNode).name}" directive`,
+        `Unknown "${(node as UnknownNode).name}" node`,
         this.template,
         node.loc,
       ),

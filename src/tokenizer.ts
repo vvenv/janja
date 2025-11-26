@@ -1,5 +1,5 @@
 import { CompileError } from './compile-error';
-import { parserOptions } from './config';
+import { mergeOptions, parserOptions } from './options';
 import { DirectiveToken, ParserOptions, Pos, Token, TokenType } from './types';
 import { unescapeTag } from './unescape-tag';
 import { updatePosition } from './update-position';
@@ -22,10 +22,7 @@ export class Tokenizer implements Pos {
   column = 1;
 
   constructor(options?: ParserOptions) {
-    this.options = {
-      ...parserOptions,
-      ...options,
-    };
+    this.options = mergeOptions(parserOptions, options);
 
     const {
       commentOpen,
