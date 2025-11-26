@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/vvenv/janja/compare/janja-v2.1.0...janja-v2.1.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* rollup config ([7903e62](https://github.com/vvenv/janja/commit/7903e6208760b9c84fd1c06c73a43791ef802ac0))
+
 ## [2.1.0](https://github.com/vvenv/janja/compare/janja-v2.0.1...janja-v2.1.0) (2025-11-22)
 
 
