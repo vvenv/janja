@@ -37,7 +37,7 @@ export class Compiler extends Context {
     this.isRoot = root;
     this.partials = partials;
     this.blocks = blocks;
-    this.rootNode = new Parser(this.options).parse(template);
+    this.rootNode = await new Parser(this.options).parse(template);
     this.state = {};
 
     this.start();

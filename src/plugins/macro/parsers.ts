@@ -6,7 +6,7 @@ import { CallerNode, MacroNode } from './syntax';
 
 const wm = new WeakMap<Parser, boolean>();
 
-function parseMacro(token: DirectiveToken, parser: Parser) {
+async function* parseMacro(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
@@ -15,21 +15,21 @@ function parseMacro(token: DirectiveToken, parser: Parser) {
 
   wm.set(parser, true);
 
-  parser.advance();
+  yield 'NEXT';
 
-  const body = parser.parseUntil(['endmacro']);
+  const body = await parser.parseUntil(['endmacro']);
 
   wm.set(parser, false);
 
   if (parser.match(['endmacro'])) {
-    parser.advance();
+    yield 'NEXT';
   } else {
     throw parser.options.debug?.(
       new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
     );
   }
 
-  return new MacroNode(
+  yield new MacroNode(
     parser.parseExp(token.expression!) as BinaryExp<'ASSIGN'>,
     body,
     token.loc,
@@ -37,7 +37,7 @@ function parseMacro(token: DirectiveToken, parser: Parser) {
   );
 }
 
-function parseCaller(token: DirectiveToken, parser: Parser) {
+async function* parseCaller(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 
@@ -56,9 +56,8 @@ function parseCaller(token: DirectiveToken, parser: Parser) {
     return;
   }
 
-  parser.advance();
-
-  return new CallerNode(token.val, token.loc, token.strip);
+  yield 'NEXT';
+  yield new CallerNode(token.val, token.loc, token.strip);
 }
 
 export const parsers = {

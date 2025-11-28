@@ -4,45 +4,79 @@ import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
 import { ElseIfNode, ElseNode, IfNode } from './syntax';
 
-function parseIf(token: DirectiveToken, parser: Parser) {
+async function* parseIf(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
     return;
   }
 
-  parser.advance();
+  yield 'NEXT';
 
-  const body = parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']);
+  const body = await parser.parseUntil([
+    'else',
+    'elseif',
+    'elsif',
+    'elif',
+    'endif',
+  ]);
   const alternatives: (ElseIfNode | ElseNode)[] = [];
 
   while (parser.match(['else', 'elseif', 'elsif', 'elif'])) {
     const branchToken = parser.peek() as DirectiveToken;
 
     if (branchToken.name.toLowerCase() === 'else') {
-      const elseNode = parseElse(branchToken, parser);
+      const g = parseElse(branchToken, parser);
 
-      if (elseNode) {
-        alternatives.push(elseNode);
+      while (true) {
+        const { value, done } = await g.next();
+
+        if (done) {
+          break;
+        }
+
+        if (value) {
+          if (value === 'NEXT') {
+            yield 'NEXT';
+
+            continue;
+          }
+
+          alternatives.push(value);
+        }
       }
     } else {
-      const elseIfNode = parseElseIf(branchToken, parser);
+      const g = parseElseIf(branchToken, parser);
 
-      if (elseIfNode) {
-        alternatives.push(elseIfNode);
+      while (true) {
+        const { value, done } = await g.next();
+
+        if (done) {
+          break;
+        }
+
+        if (value) {
+          if (value === 'NEXT') {
+            yield 'NEXT';
+
+            continue;
+          }
+
+          alternatives.push(value);
+        }
       }
     }
   }
 
   if (parser.match(['endif'])) {
-    parser.advance();
+    yield 'NEXT';
   } else {
     throw parser.options.debug?.(
       new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
     );
   }
 
-  return new IfNode(
+  yield new IfNode(
     parser.parseExp(token.expression!),
     body,
     alternatives,
@@ -51,33 +85,35 @@ function parseIf(token: DirectiveToken, parser: Parser) {
   );
 }
 
-function parseElseIf(token: DirectiveToken, parser: Parser) {
+async function* parseElseIf(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
     return;
   }
 
-  parser.advance();
-
-  return new ElseIfNode(
+  yield 'NEXT';
+  yield new ElseIfNode(
     parser.parseExp(token.expression!),
-    parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']),
+    await parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']),
     token.loc,
     token.strip,
   );
 }
 
-function parseElse(token: DirectiveToken, parser: Parser) {
+async function* parseElse(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 
     return;
   }
 
-  parser.advance();
-
-  return new ElseNode(parser.parseUntil(['endif']), token.loc, token.strip);
+  yield 'NEXT';
+  yield new ElseNode(
+    await parser.parseUntil(['endif']),
+    token.loc,
+    token.strip,
+  );
 }
 
 export const parsers = {

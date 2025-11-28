@@ -202,7 +202,7 @@ export interface Plugin {
 export type ParserFn<T extends SyntaxNode = SyntaxNode> = (
   token: Token,
   parser: Parser,
-) => T | void;
+) => AsyncGenerator<T | 'NEXT' | void>;
 export type ParserMap = Record<string, ParserFn>;
 
 export type CompilerFn<T extends SyntaxNode = SyntaxNode> = (
