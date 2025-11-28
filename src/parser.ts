@@ -19,7 +19,7 @@ export class Parser extends Tokenizer {
 
   protected cursor!: number;
 
-  parse(template: string) {
+  async parse(template: string) {
     this.tokenize(template);
 
     const start = this.tokens[0]?.loc.start ?? { line: 1, column: 1 };
@@ -29,10 +29,10 @@ export class Parser extends Tokenizer {
 
     this.cursor = 0;
 
-    return new RootNode(this.parseUntil(), { start, end });
+    return new RootNode(await this.parseUntil(), { start, end });
   }
 
-  parseUntil(names?: string[]) {
+  async parseUntil(names?: string[]) {
     const nodes: SyntaxNode[] = [];
 
     let prevToken: Token | null = null;
@@ -57,12 +57,28 @@ export class Parser extends Tokenizer {
         prevToken.strip.end = true;
       }
 
-      nodes.push(
-        this.options.parsers[
-          (token as DirectiveToken).name?.toLowerCase() ??
-            token.type?.toLowerCase()
-        ]?.(token, this) ?? this.createUnknownNode(token),
-      );
+      const g = this.options.parsers[
+        (token as DirectiveToken).name?.toLowerCase() ??
+          token.type?.toLowerCase()
+      ]?.(token, this);
+
+      if (g) {
+        while (true) {
+          const { value, done } = await g.next();
+
+          if (done) {
+            break;
+          }
+
+          if (value === 'NEXT') {
+            this.advance();
+          } else if (value) {
+            nodes.push(value);
+          }
+        }
+      } else {
+        nodes.push(this.createUnknownNode(token));
+      }
 
       prevToken = token;
     }

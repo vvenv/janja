@@ -9,15 +9,13 @@ it('error', async () => {
     expect(error).toMatchInlineSnapshot(
       `[CompileError: "include" requires expression]`,
     );
-    expect(error.details).toMatchInlineSnapshot(
-      `
+    expect(error.details).toMatchInlineSnapshot(`
       ""include" requires expression
 
       1｜ {{ include }}
        ｜ ^           ^
       "
-    `,
-    );
+    `);
   }
 });
 
@@ -26,8 +24,7 @@ it('include', async () => {
     await parse(
       '{{ include "head" }}{{ include "empty" }}{{ include "body" }}',
     ),
-  ).toMatchInlineSnapshot(
-    `
+  ).toMatchInlineSnapshot(`
     RootNode {
       "body": [
         IncludeNode {
@@ -142,6 +139,5 @@ it('include', async () => {
       },
       "type": "TEMPLATE",
     }
-  `,
-  );
+  `);
 });

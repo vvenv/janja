@@ -4,26 +4,26 @@ import type { Parser } from '../../parser';
 import type { DirectiveToken, IdExp } from '../../types';
 import { CallNode } from './syntax';
 
-function parseCall(token: DirectiveToken, parser: Parser) {
+async function* parseCall(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
     return;
   }
 
-  parser.advance();
+  yield 'NEXT';
 
-  const body = parser.parseUntil(['endcall']);
+  const body = await parser.parseUntil(['endcall']);
 
   if (parser.match(['endcall'])) {
-    parser.advance();
+    yield 'NEXT';
   } else {
     throw parser.options.debug?.(
       new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
     );
   }
 
-  return new CallNode(
+  yield new CallNode(
     parser.parseExp(token.expression) as IdExp,
     body,
     token.loc,

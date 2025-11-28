@@ -6,7 +6,7 @@ import { BreakNode, ContinueNode, ForNode } from './syntax';
 
 const wm = new WeakMap<Parser, boolean>();
 
-function parseFor(token: DirectiveToken, parser: Parser) {
+async function* parseFor(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
@@ -15,21 +15,21 @@ function parseFor(token: DirectiveToken, parser: Parser) {
 
   wm.set(parser, true);
 
-  parser.advance();
+  yield 'NEXT';
 
-  const body = parser.parseUntil(['endfor']);
+  const body = await parser.parseUntil(['endfor']);
 
   wm.set(parser, false);
 
   if (parser.match(['endfor'])) {
-    parser.advance();
+    yield 'NEXT';
   } else {
     throw parser.options.debug?.(
       new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
     );
   }
 
-  return new ForNode(
+  yield new ForNode(
     parser.parseExp(token.expression!) as BinaryExp<'OF'>,
     body,
     token.loc,
@@ -37,7 +37,7 @@ function parseFor(token: DirectiveToken, parser: Parser) {
   );
 }
 
-function parseBreak(token: DirectiveToken, parser: Parser) {
+async function* parseBreak(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 
@@ -56,12 +56,11 @@ function parseBreak(token: DirectiveToken, parser: Parser) {
     return;
   }
 
-  parser.advance();
-
-  return new BreakNode(token.val, token.loc, token.strip);
+  yield 'NEXT';
+  yield new BreakNode(token.val, token.loc, token.strip);
 }
 
-function parseContinue(token: DirectiveToken, parser: Parser) {
+async function* parseContinue(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 
@@ -80,9 +79,8 @@ function parseContinue(token: DirectiveToken, parser: Parser) {
     return;
   }
 
-  parser.advance();
-
-  return new ContinueNode(token.val, token.loc, token.strip);
+  yield 'NEXT';
+  yield new ContinueNode(token.val, token.loc, token.strip);
 }
 
 export const parsers = {

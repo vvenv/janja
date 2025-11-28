@@ -286,10 +286,9 @@ it('custom directive', async () => {
         plugins: [
           {
             parsers: {
-              custom: (token, parser) => {
-                parser.advance();
-
-                return new CustomNode(token.loc);
+              async *custom(token) {
+                yield 'NEXT';
+                yield new CustomNode(token.loc);
               },
             },
             compilers: {
