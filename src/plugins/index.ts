@@ -1,4 +1,4 @@
-import { Plugin } from '../types';
+import type { Plugin } from '../types';
 import { plugin as blockPlugin } from './block';
 import { plugin as callPlugin } from './call';
 import { plugin as capturePlugin } from './capture';

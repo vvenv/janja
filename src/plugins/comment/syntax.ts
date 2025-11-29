@@ -1,5 +1,5 @@
-import { SyntaxNode, Traversal } from '../../syntax-nodes';
-import { Loc, Strip } from '../../types';
+import { type SyntaxNode, Traversal } from '../../syntax-nodes';
+import type { Loc, Strip } from '../../types';
 
 export class CommentNode extends Traversal implements SyntaxNode {
   readonly type = 'COMMENT';

@@ -1,5 +1,5 @@
 import type { Compiler } from '../../compiler';
-import { UnknownNode } from './syntax';
+import type { UnknownNode } from './syntax';
 
 async function compileUnexpected(
   { name, val, loc }: UnknownNode,

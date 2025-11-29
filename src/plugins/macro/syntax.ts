@@ -1,6 +1,6 @@
-import { BinaryExp, Exp, IdExp, SeqExp } from '../../exp/exp-types';
-import { SyntaxNode, Traversal } from '../../syntax-nodes';
-import { Loc, Strip } from '../../types';
+import type { BinaryExp, Exp, IdExp, SeqExp } from '../../exp/exp-types';
+import { type SyntaxNode, Traversal } from '../../syntax-nodes';
+import type { Loc, Strip } from '../../types';
 
 export class MacroNode extends Traversal {
   readonly type = 'MACRO';

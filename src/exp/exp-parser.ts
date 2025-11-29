@@ -1,6 +1,6 @@
 import { CompileError } from '../compile-error';
 import type { Loc, Pos } from '../types';
-import { ExpToken, ExpTokenizer } from './exp-tokenizer';
+import { type ExpToken, ExpTokenizer } from './exp-tokenizer';
 import type {
   BinaryExp,
   Exp,

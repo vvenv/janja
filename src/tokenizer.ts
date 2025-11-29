@@ -1,6 +1,6 @@
 import { CompileError } from './compile-error';
-import { mergeOptions, ParserOptions, parserOptions } from './options';
-import { DirectiveToken, Pos, Token, TokenType } from './types';
+import { mergeOptions, type ParserOptions, parserOptions } from './options';
+import { type DirectiveToken, type Pos, type Token, TokenType } from './types';
 import { unescapeTag } from './unescape-tag';
 import { updatePosition } from './update-position';
 

@@ -399,6 +399,7 @@ export default defineConfig([
       ],
 
       '@typescript-eslint/consistent-type-assertions': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
       'no-array-constructor': 'off',
       '@typescript-eslint/no-array-constructor': 'error',
       'no-use-before-define': 'off',

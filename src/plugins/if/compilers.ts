@@ -1,6 +1,6 @@
 import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
-import { IfNode } from './syntax';
+import type { IfNode } from './syntax';
 
 async function compileIf(
   { test, body, alternatives }: IfNode,

@@ -1,6 +1,6 @@
-import { LitExp } from '../../exp/exp-types';
+import type { LitExp } from '../../exp/exp-types';
 import { Traversal } from '../../syntax-nodes';
-import { Loc, Strip } from '../../types';
+import type { Loc, Strip } from '../../types';
 
 export class IncludeNode extends Traversal {
   readonly type = 'INCLUDE';

@@ -1,6 +1,6 @@
 import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
-import { CallerNode, MacroNode } from './syntax';
+import type { CallerNode, MacroNode } from './syntax';
 
 async function compileMacro(
   { val: { left, right }, loc, body }: MacroNode,

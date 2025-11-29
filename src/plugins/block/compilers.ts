@@ -1,6 +1,6 @@
 import { CompileError } from '../../compile-error';
 import type { Compiler } from '../../compiler';
-import { BlockNode, SuperNode } from './syntax';
+import type { BlockNode, SuperNode } from './syntax';
 
 async function compileBlock(
   { val: { value }, loc }: BlockNode,

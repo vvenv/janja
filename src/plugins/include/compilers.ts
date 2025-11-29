@@ -1,5 +1,5 @@
 import type { Compiler } from '../../compiler';
-import { IncludeNode } from './syntax';
+import type { IncludeNode } from './syntax';
 
 async function compileInclude(
   { val: { value }, loc }: IncludeNode,

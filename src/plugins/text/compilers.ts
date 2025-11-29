@@ -1,5 +1,5 @@
 import type { Compiler } from '../../compiler';
-import { TextNode } from './syntax';
+import type { TextNode } from './syntax';
 
 async function compileText(
   { val, loc, strip: { start, end } }: TextNode,
