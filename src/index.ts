@@ -1,8 +1,10 @@
+import { RendererOptions } from './options';
 import { Renderer } from './renderer';
-import type { ObjectType, RendererOptions } from './types';
+import type { ObjectType } from './types';
 
 export * from './renderer';
 export type * from './types';
+export type * from './exp/exp-types';
 
 export async function render(
   template: string,

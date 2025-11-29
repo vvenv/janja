@@ -1,11 +1,10 @@
 import { CompileError } from './compile-error';
 import { Context } from './context';
-import { compilerOptions, mergeOptions } from './options';
+import { CompilerOptions, compilerOptions, mergeOptions } from './options';
 import { Parser } from './parser';
 import { BlockNode } from './plugins/block/syntax';
 import { IncludeNode } from './plugins/include/syntax';
-import { RootNode, SyntaxNode, UnknownNode } from './syntax-nodes';
-import type { CompilerOptions } from './types';
+import { RootNode, SyntaxNode } from './syntax-nodes';
 
 export class Compiler extends Context {
   public options: Required<CompilerOptions>;
@@ -158,21 +157,10 @@ export class Compiler extends Context {
       return;
     }
 
-    const compiler = this.options.compilers[node.type];
+    const compiler =
+      this.options.compilers[node.type] || this.options.compilers['UNKNOWN'];
 
-    if (compiler) {
-      await compiler(node, this);
-
-      return;
-    }
-
-    this.options.debug?.(
-      new CompileError(
-        `Unknown "${(node as UnknownNode).name}" node`,
-        this.template,
-        node.loc,
-      ),
-    );
+    await compiler?.(node, this);
   }
 
   async compileNodes(nodes: SyntaxNode[]) {

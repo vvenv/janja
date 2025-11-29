@@ -1,9 +1,7 @@
 import { CompileError } from '../compile-error';
 import type {
   BinaryExp,
-  Checker,
   Exp,
-  ExpToken,
   ExpTokenType,
   IdExp,
   IfExp,
@@ -13,7 +11,9 @@ import type {
   Pos,
   SeqExp,
 } from '../types';
-import { ExpTokenizer } from './exp-tokenizer';
+import { ExpToken, ExpTokenizer } from './exp-tokenizer';
+
+export type Checker = (token: ExpToken) => 'BACK' | 'BREAK' | undefined;
 
 const expTokenPrecedences: Record<ExpTokenType, number> = {
   COMMA: 5,
