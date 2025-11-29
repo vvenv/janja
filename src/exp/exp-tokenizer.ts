@@ -1,6 +1,13 @@
 import { CompileError } from '../compile-error';
-import type { ExpToken, ExpTokenType, Loc, Pos } from '../types';
+import type { ExpTokenType, Loc, Pos, Primitive } from '../types';
 import { updatePosition } from '../update-position';
+
+export interface ExpToken<T = ExpTokenType> {
+  type: T;
+  value: Primitive;
+  loc: Loc;
+  raw?: string;
+}
 
 export const expTokenTypes: Record<string, ExpTokenType> = {
   and: 'AND',

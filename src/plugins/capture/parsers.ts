@@ -1,6 +1,7 @@
 import { CompileError } from '../../compile-error';
+import { IdExp } from '../../exp/exp-types';
 import type { Parser } from '../../parser';
-import type { DirectiveToken, IdExp } from '../../types';
+import type { DirectiveToken } from '../../types';
 import { CaptureNode } from './syntax';
 
 async function* parseCapture(token: DirectiveToken, parser: Parser) {

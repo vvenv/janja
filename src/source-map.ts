@@ -1,4 +1,9 @@
-import type { Loc, Mapping, Pos } from './types';
+import type { Loc, Pos } from './types';
+
+export interface Mapping {
+  source: Loc;
+  target: Loc;
+}
 
 /**
  * Contains the source map information.

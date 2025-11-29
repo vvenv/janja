@@ -1,5 +1,4 @@
 import type { Compiler } from '../../compiler';
-import { CompilerMap } from '../../types';
 import { CommentNode } from './syntax';
 
 async function compileComment({ val, loc }: CommentNode, compiler: Compiler) {
@@ -8,6 +7,6 @@ async function compileComment({ val, loc }: CommentNode, compiler: Compiler) {
   }
 }
 
-export const compilers: CompilerMap = {
+export const compilers = {
   COMMENT: compileComment,
 };

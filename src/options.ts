@@ -1,11 +1,40 @@
 import * as filters from './filters';
 import { plugins } from './plugins';
 import type {
-  BaseOptions,
-  CompilerOptions,
-  ParserOptions,
-  RendererOptions,
+  CompilerMap,
+  Filters,
+  ObjectType,
+  ParserMap,
+  Plugin,
 } from './types';
+
+export interface BaseOptions {
+  debug?: (error: Error) => any;
+  filters?: Filters;
+  parsers?: ParserMap;
+  compilers?: CompilerMap;
+  plugins?: Plugin[];
+}
+
+export interface ParserOptions extends BaseOptions {
+  commentOpen?: string;
+  commentClose?: string;
+  directiveOpen?: string;
+  directiveClose?: string;
+  outputOpen?: string;
+  outputClose?: string;
+}
+
+export interface CompilerOptions extends ParserOptions {
+  trimWhitespace?: boolean;
+  stripComments?: boolean;
+  loader?: (path: string) => Promise<string>;
+}
+
+export interface RendererOptions extends CompilerOptions {
+  globals?: ObjectType;
+  autoEscape?: boolean;
+}
 
 export const baseOptions: Required<BaseOptions> = {
   filters,
