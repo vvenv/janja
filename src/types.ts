@@ -102,9 +102,11 @@ export type ExpTokenType =
   | 'ID'
   | 'LIT';
 
+export type Primitive = string | number | boolean | null | undefined;
+
 export interface ExpToken<T = ExpTokenType> {
   type: T;
-  value: string | number | boolean | null | undefined;
+  value: Primitive;
   loc: Loc;
   raw?: string;
 }
@@ -131,8 +133,7 @@ export interface NotExp extends ExpBase<'NOT'> {
   argument: Exp;
 }
 
-export interface BinaryExp<T extends BinaryExpType = BinaryExpType>
-  extends ExpBase<T> {
+export interface BinaryExp<T extends BinaryExpType = any> extends ExpBase<T> {
   left: Exp;
   right: Exp;
 }
@@ -149,8 +150,7 @@ export interface IdExp extends ExpBase<'ID'> {
   args?: Exp[];
 }
 
-export interface LitExp<T = string | number | boolean | null | undefined>
-  extends ExpBase<'LIT'> {
+export interface LitExp<T = Primitive> extends ExpBase<'LIT'> {
   value: T;
 }
 
