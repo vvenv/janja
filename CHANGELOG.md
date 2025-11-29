@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/vvenv/janja/compare/janja-v2.1.3...janja-v2.2.0) (2025-11-29)
+
+
+### Features
+
+* support parser and compiler alias ([9d5e08b](https://github.com/vvenv/janja/commit/9d5e08b9bd7da63a4201edb5212e9a3723f7dd63))
+
 ## [2.1.3](https://github.com/vvenv/janja/compare/janja-v2.1.2...janja-v2.1.3) (2025-11-29)
 
 
