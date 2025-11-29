@@ -1,15 +1,11 @@
 import { CompileError } from './compile-error';
 import { ExpParser } from './exp/exp-parser';
-import {
-  RootNode,
-  SyntaxNode,
-  UnexpectedNode,
-  UnknownNode,
-} from './syntax-nodes';
+import { RootNode, SyntaxNode } from './syntax-nodes';
 import { Tokenizer } from './tokenizer';
 import {
   type DirectiveExpression,
   type DirectiveToken,
+  ParserFn,
   type Token,
   TokenType,
 } from './types';
@@ -57,14 +53,25 @@ export class Parser extends Tokenizer {
         prevToken.strip.end = true;
       }
 
-      const g = this.options.parsers[
-        (token as DirectiveToken).name?.toLowerCase() ??
-          token.type?.toLowerCase()
-      ]?.(token, this);
+      let parser =
+        this.options.parsers[
+          (token as DirectiveToken).name?.toLowerCase() ??
+            token.type?.toLowerCase()
+        ];
 
-      if (g) {
+      if (parser === 'unexpected') {
+        parser = this.options.parsers['unexpected'];
+      }
+
+      if (!parser) {
+        parser = this.options.parsers['unknown'];
+      }
+
+      const ag = (parser as ParserFn)?.(token, this);
+
+      if (ag) {
         while (true) {
-          const { value, done } = await g.next();
+          const { value, done } = await ag.next();
 
           if (done) {
             break;
@@ -76,42 +83,12 @@ export class Parser extends Tokenizer {
             nodes.push(value);
           }
         }
-      } else {
-        nodes.push(this.createUnknownNode(token));
       }
 
       prevToken = token;
     }
 
     return nodes;
-  }
-
-  createUnexpectedNode(token: Token) {
-    const name = (token as DirectiveToken).name ?? token.type;
-
-    this.options.debug?.(
-      new CompileError(
-        `Unexpected "${name}" directive`,
-        this.template,
-        token.loc,
-      ),
-    );
-
-    this.advance();
-
-    return new UnexpectedNode(name, token.val, token.loc, token.strip);
-  }
-
-  private createUnknownNode(token: Token) {
-    const name = (token as DirectiveToken).name ?? token.type;
-
-    this.options.debug?.(
-      new CompileError(`Unknown "${name}" node`, this.template, token.loc),
-    );
-
-    this.advance();
-
-    return new UnknownNode(name, token.val, token.loc, token.strip);
   }
 
   parseExp({ val, loc }: DirectiveExpression) {
@@ -122,7 +99,7 @@ export class Parser extends Tokenizer {
     return this.tokens.at(this.cursor) ?? null;
   }
 
-  advance() {
+  private advance() {
     this.cursor++;
   }
 

@@ -1,4 +1,4 @@
-import type { CommentToken } from '../../types';
+import type { CommentToken, ParserMap } from '../../types';
 import { CommentNode } from './syntax';
 
 async function* parseComment({ val, loc, strip }: CommentToken) {
@@ -6,6 +6,6 @@ async function* parseComment({ val, loc, strip }: CommentToken) {
   yield new CommentNode(val, loc, strip);
 }
 
-export const parsers = {
+export const parsers: ParserMap = {
   comment: parseComment,
 };

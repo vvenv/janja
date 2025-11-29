@@ -25,11 +25,11 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endif" directive]`,
+      `[CompileError: Unexpected "endif" node]`,
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unexpected "endif" directive
+      "Unexpected "endif" node
 
       1｜ {{ endif }}
        ｜ ^         ^

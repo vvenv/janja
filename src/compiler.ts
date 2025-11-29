@@ -158,8 +158,10 @@ export class Compiler extends Context {
       return;
     }
 
-    if (this.options.compilers[node.type]) {
-      await this.options.compilers[node.type]!(node, this);
+    const compiler = this.options.compilers[node.type];
+
+    if (compiler) {
+      await compiler(node, this);
 
       return;
     }

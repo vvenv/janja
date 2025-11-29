@@ -1,5 +1,4 @@
 import { CompileError } from '../../compile-error';
-import { createUnexpected } from '../../create-unexpected';
 import type { Parser } from '../../parser';
 import type { DirectiveToken, IdExp } from '../../types';
 import { BlockNode, SuperNode } from './syntax';
@@ -45,5 +44,5 @@ async function* parseSuper(token: DirectiveToken, parser: Parser) {
 export const parsers = {
   block: parseBlock,
   super: parseSuper,
-  endblock: createUnexpected,
+  endblock: 'unexpected' as const,
 };

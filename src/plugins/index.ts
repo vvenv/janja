@@ -10,6 +10,8 @@ import { plugin as macroPlugin } from './macro';
 import { plugin as outputPlugin } from './output';
 import { plugin as setPlugin } from './set';
 import { plugin as textPlugin } from './text';
+import { plugin as unexpectedPlugin } from './unexpected';
+import { plugin as unknownPlugin } from './unknown';
 
 export const plugins: Plugin[] = [
   blockPlugin,
@@ -23,4 +25,6 @@ export const plugins: Plugin[] = [
   setPlugin,
   textPlugin,
   outputPlugin,
+  unexpectedPlugin,
+  unknownPlugin,
 ];
