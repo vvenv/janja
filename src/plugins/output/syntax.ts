@@ -1,5 +1,6 @@
+import { Exp } from '../../exp/exp-types';
 import { Traversal } from '../../syntax-nodes';
-import { Exp, Loc, Strip } from '../../types';
+import { Loc, Strip } from '../../types';
 
 export class OutputNode extends Traversal {
   readonly type = 'OUTPUT';

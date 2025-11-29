@@ -53,9 +53,13 @@ export interface NotExp extends ExpBase<'NOT'> {
   argument: Exp;
 }
 
-export interface BinaryExp<T extends BinaryExpType = any> extends ExpBase<T> {
-  left: Exp;
-  right: Exp;
+export interface BinaryExp<
+  T extends BinaryExpType = BinaryExpType,
+  U extends Exp = Exp,
+  V extends Exp = Exp,
+> extends ExpBase<T> {
+  left: U;
+  right: V;
 }
 
 export interface IfExp extends ExpBase<'IF'> {
@@ -74,8 +78,8 @@ export interface LitExp<T = Primitive> extends ExpBase<'LIT'> {
   value: T;
 }
 
-export interface SeqExp extends ExpBase<'SEQ'> {
-  elements: Exp[];
+export interface SeqExp<T extends Exp = Exp> extends ExpBase<'SEQ'> {
+  elements: T[];
 }
 
 export type Exp = NotExp | BinaryExp | IfExp | IdExp | LitExp | SeqExp;

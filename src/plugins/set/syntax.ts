@@ -1,5 +1,6 @@
+import { BinaryExp } from '../../exp/exp-types';
 import { Traversal } from '../../syntax-nodes';
-import { BinaryExp, Loc, Strip } from '../../types';
+import { Loc, Strip } from '../../types';
 
 export class SetNode extends Traversal {
   readonly type = 'SET';

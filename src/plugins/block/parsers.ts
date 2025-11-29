@@ -1,6 +1,6 @@
 import { CompileError } from '../../compile-error';
 import type { Parser } from '../../parser';
-import type { DirectiveToken, IdExp } from '../../types';
+import type { DirectiveToken } from '../../types';
 import { BlockNode, SuperNode } from './syntax';
 
 async function* parseBlock(token: DirectiveToken, parser: Parser) {
@@ -23,7 +23,7 @@ async function* parseBlock(token: DirectiveToken, parser: Parser) {
   }
 
   yield new BlockNode(
-    parser.parseExp(token.expression!) as IdExp,
+    parser.parseExp(token.expression),
     body,
     token.loc,
     token.strip,

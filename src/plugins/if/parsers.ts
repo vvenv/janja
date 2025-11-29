@@ -76,7 +76,7 @@ async function* parseIf(token: DirectiveToken, parser: Parser) {
   }
 
   yield new IfNode(
-    parser.parseExp(token.expression!),
+    parser.parseExp(token.expression),
     body,
     alternatives,
     token.loc,
@@ -93,7 +93,7 @@ async function* parseElseIf(token: DirectiveToken, parser: Parser) {
 
   yield 'NEXT';
   yield new ElseIfNode(
-    parser.parseExp(token.expression!),
+    parser.parseExp(token.expression),
     await parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']),
     token.loc,
     token.strip,

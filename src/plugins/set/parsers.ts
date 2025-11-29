@@ -1,5 +1,5 @@
 import type { Parser } from '../../parser';
-import type { BinaryExp, DirectiveToken } from '../../types';
+import type { DirectiveToken } from '../../types';
 import { SetNode } from './syntax';
 
 async function* parseSet(token: DirectiveToken, parser: Parser) {
@@ -10,11 +10,7 @@ async function* parseSet(token: DirectiveToken, parser: Parser) {
   }
 
   yield 'NEXT';
-  yield new SetNode(
-    parser.parseExp(token.expression!) as BinaryExp<'ASSIGN'>,
-    token.loc,
-    token.strip,
-  );
+  yield new SetNode(parser.parseExp(token.expression), token.loc, token.strip);
 }
 
 export const parsers = {

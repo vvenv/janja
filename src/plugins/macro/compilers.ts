@@ -1,6 +1,5 @@
 import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
-import { IdExp, SeqExp } from '../../types';
 import { CallerNode, MacroNode } from './syntax';
 
 async function compileMacro(
@@ -8,7 +7,7 @@ async function compileMacro(
   compiler: Compiler,
 ) {
   const { context } = compiler;
-  const { elements } = right as SeqExp;
+  const { elements } = right;
 
   const expCompiler = new ExpCompiler();
 
@@ -17,16 +16,14 @@ async function compileMacro(
     `${expCompiler.compile(left)}=(${elements
       .map((el) =>
         el.type === 'ASSIGN'
-          ? `${(el.left as IdExp).value}=${expCompiler.compile(el.right)}`
-          : (el as IdExp).value,
+          ? `${el.left.value}=${expCompiler.compile(el.right)}`
+          : el.value,
       )
       .join(',')})=>async(_c)=>{`,
     `const ${compiler.in()}={`,
     `...${context},`,
     elements
-      .map((el) =>
-        el.type === 'ASSIGN' ? (el.left as IdExp).value : (el as IdExp).value,
-      )
+      .map((el) => (el.type === 'ASSIGN' ? el.left.value : el.value))
       .join(','),
     '};',
   );

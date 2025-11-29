@@ -1,5 +1,6 @@
+import { BinaryExp } from '../../exp/exp-types';
 import { SyntaxNode, Traversal } from '../../syntax-nodes';
-import { BinaryExp, Loc, Strip } from '../../types';
+import { Loc, Strip } from '../../types';
 
 export class ForNode extends Traversal {
   readonly type = 'FOR';

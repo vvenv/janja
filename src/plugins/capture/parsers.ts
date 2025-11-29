@@ -1,5 +1,4 @@
 import { CompileError } from '../../compile-error';
-import { IdExp } from '../../exp/exp-types';
 import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
 import { CaptureNode } from './syntax';
@@ -24,7 +23,7 @@ async function* parseCapture(token: DirectiveToken, parser: Parser) {
   }
 
   yield new CaptureNode(
-    parser.parseExp(token.expression!) as IdExp,
+    parser.parseExp(token.expression),
     body,
     token.loc,
     token.strip,

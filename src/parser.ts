@@ -1,5 +1,6 @@
 import { CompileError } from './compile-error';
 import { ExpParser } from './exp/exp-parser';
+import { Exp } from './exp/exp-types';
 import { RootNode, SyntaxNode } from './syntax-nodes';
 import { Tokenizer } from './tokenizer';
 import {
@@ -91,8 +92,8 @@ export class Parser extends Tokenizer {
     return nodes;
   }
 
-  parseExp({ val, loc }: DirectiveExpression) {
-    return this.expParser.parse(val, loc)!;
+  parseExp<T extends Exp = Exp>({ val, loc }: DirectiveExpression) {
+    return this.expParser.parse(val, loc) as T;
   }
 
   peek() {
