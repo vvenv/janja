@@ -82,10 +82,10 @@ export type ParserFn<T extends Token = any, U extends SyntaxNode = any> = (
   token: T,
   parser: Parser,
 ) => AsyncGenerator<U | 'NEXT' | void>;
-export type ParserMap = Record<string, 'unexpected' | ParserFn>;
+export type ParserMap = Record<string, string | ParserFn>;
 
 export type CompilerFn<T extends SyntaxNode = any> = (
   node: T,
   compiler: Compiler,
 ) => MaybePromise<void>;
-export type CompilerMap = Record<string, CompilerFn>;
+export type CompilerMap = Record<string, string | CompilerFn>;

@@ -60,8 +60,8 @@ export class Parser extends Tokenizer {
             token.type?.toLowerCase()
         ];
 
-      if (parser === 'unexpected') {
-        parser = this.options.parsers['unexpected'];
+      if (typeof parser === 'string') {
+        parser = this.options.parsers[parser];
       }
 
       if (!parser) {

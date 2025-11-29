@@ -86,5 +86,5 @@ export const parsers = {
   for: parseFor,
   break: parseBreak,
   continue: parseContinue,
-  endfor: 'unexpected' as const,
+  endfor: 'unexpected',
 };
