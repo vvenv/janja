@@ -199,17 +199,17 @@ export interface Plugin {
   compilers?: CompilerMap;
 }
 
-export type ParserFn<T extends SyntaxNode = SyntaxNode> = (
-  token: Token,
+export type ParserFn<T extends Token = any, U extends SyntaxNode = any> = (
+  token: T,
   parser: Parser,
-) => AsyncGenerator<T | 'NEXT' | void>;
-export type ParserMap = Record<string, ParserFn>;
+) => AsyncGenerator<U | 'NEXT' | void>;
+export type ParserMap = Record<string, 'unexpected' | ParserFn>;
 
-export type CompilerFn<T extends SyntaxNode = SyntaxNode> = (
+export type CompilerFn<T extends SyntaxNode = any> = (
   node: T,
   compiler: Compiler,
 ) => MaybePromise<void>;
-export type CompilerMap = Partial<Record<string, CompilerFn>>;
+export type CompilerMap = Record<string, CompilerFn>;
 
 export interface BaseOptions {
   debug?: (error: Error) => any;

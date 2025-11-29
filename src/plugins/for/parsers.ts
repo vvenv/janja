@@ -1,5 +1,4 @@
 import { CompileError } from '../../compile-error';
-import { createUnexpected } from '../../create-unexpected';
 import type { Parser } from '../../parser';
 import type { BinaryExp, DirectiveToken } from '../../types';
 import { BreakNode, ContinueNode, ForNode } from './syntax';
@@ -87,5 +86,5 @@ export const parsers = {
   for: parseFor,
   break: parseBreak,
   continue: parseContinue,
-  endfor: createUnexpected,
+  endfor: 'unexpected' as const,
 };

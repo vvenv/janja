@@ -1,5 +1,4 @@
 import { CompileError } from '../../compile-error';
-import { createUnexpected } from '../../create-unexpected';
 import type { Parser } from '../../parser';
 import { BinaryExp, DirectiveToken } from '../../types';
 import { CallerNode, MacroNode } from './syntax';
@@ -63,5 +62,5 @@ async function* parseCaller(token: DirectiveToken, parser: Parser) {
 export const parsers = {
   macro: parseMacro,
   caller: parseCaller,
-  endmacro: createUnexpected,
+  endmacro: 'unexpected' as const,
 };

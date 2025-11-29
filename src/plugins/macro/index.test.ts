@@ -37,10 +37,10 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endmacro" directive]`,
+      `[CompileError: Unexpected "endmacro" node]`,
     );
     expect(error.details).toMatchInlineSnapshot(`
-      "Unexpected "endmacro" directive
+      "Unexpected "endmacro" node
 
       1｜ {{ endmacro }}
        ｜ ^            ^

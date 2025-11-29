@@ -1,5 +1,4 @@
 import { CompileError } from '../../compile-error';
-import { createUnexpected } from '../../create-unexpected';
 import type { Parser } from '../../parser';
 import type { DirectiveToken, IdExp } from '../../types';
 import { CaptureNode } from './syntax';
@@ -33,5 +32,5 @@ async function* parseCapture(token: DirectiveToken, parser: Parser) {
 
 export const parsers = {
   capture: parseCapture,
-  endcapture: createUnexpected,
+  endcapture: 'unexpected' as const,
 };

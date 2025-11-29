@@ -55,11 +55,11 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "elseif" directive]`,
+      `[CompileError: Unexpected "elseif" node]`,
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unexpected "elseif" directive
+      "Unexpected "elseif" node
 
       1｜ {{ elseif }}
        ｜ ^          ^

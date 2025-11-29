@@ -1,4 +1,4 @@
-import type { Loc, Strip } from './types';
+import type { Loc } from './types';
 
 export interface SyntaxNode {
   type: string;
@@ -25,32 +25,6 @@ export class RootNode extends Traversal {
   constructor(
     public readonly body: SyntaxNode[],
     public readonly loc: Loc,
-  ) {
-    super();
-  }
-}
-
-export class UnknownNode extends Traversal {
-  readonly type = 'UNKNOWN';
-
-  constructor(
-    public readonly name: string,
-    public readonly val: string,
-    public readonly loc: Loc,
-    public readonly strip: Strip,
-  ) {
-    super();
-  }
-}
-
-export class UnexpectedNode extends Traversal {
-  readonly type = 'UNEXPECTED';
-
-  constructor(
-    public readonly name: string,
-    public readonly val: string,
-    public readonly loc: Loc,
-    public readonly strip: Strip,
   ) {
     super();
   }

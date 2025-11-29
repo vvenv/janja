@@ -469,6 +469,7 @@ export default defineConfig([
           allowTemplateLiterals: true,
         },
       ],
+      'prettier/prettier': 'off',
     },
   },
   {

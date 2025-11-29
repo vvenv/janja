@@ -1,5 +1,4 @@
 import { CompileError } from '../../compile-error';
-import { createUnexpected } from '../../create-unexpected';
 import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
 import { ElseIfNode, ElseNode, IfNode } from './syntax';
@@ -118,8 +117,8 @@ async function* parseElse(token: DirectiveToken, parser: Parser) {
 
 export const parsers = {
   if: parseIf,
-  elseif: createUnexpected,
-  elsif: createUnexpected,
-  elif: createUnexpected,
-  endif: createUnexpected,
+  elseif: 'unexpected' as const,
+  elsif: 'unexpected' as const,
+  elif: 'unexpected' as const,
+  endif: 'unexpected' as const,
 };
