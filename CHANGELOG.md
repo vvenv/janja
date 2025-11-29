@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.3](https://github.com/vvenv/janja/compare/janja-v2.1.2...janja-v2.1.3) (2025-11-29)
+
+
+### Bug Fixes
+
+* types ([c00049c](https://github.com/vvenv/janja/commit/c00049cc36427fc0999503903e0e9776c8f3b4dd))
+* unknown node ([2c875a9](https://github.com/vvenv/janja/commit/2c875a9c143e97a8477462c707278fe96dc54e91))
+
 ## [2.1.2](https://github.com/vvenv/janja/compare/janja-v2.1.1...janja-v2.1.2) (2025-11-29)
 
 
