@@ -32,5 +32,5 @@ async function* parseCall(token: DirectiveToken, parser: Parser) {
 
 export const parsers = {
   call: parseCall,
-  endcall: 'unexpected' as const,
+  endcall: 'unexpected',
 };

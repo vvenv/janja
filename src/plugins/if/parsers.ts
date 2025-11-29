@@ -117,8 +117,8 @@ async function* parseElse(token: DirectiveToken, parser: Parser) {
 
 export const parsers = {
   if: parseIf,
-  elseif: 'unexpected' as const,
-  elsif: 'unexpected' as const,
-  elif: 'unexpected' as const,
-  endif: 'unexpected' as const,
+  elseif: 'unexpected',
+  elsif: 'unexpected',
+  elif: 'unexpected',
+  endif: 'unexpected',
 };

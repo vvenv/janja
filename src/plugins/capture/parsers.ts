@@ -32,5 +32,5 @@ async function* parseCapture(token: DirectiveToken, parser: Parser) {
 
 export const parsers = {
   capture: parseCapture,
-  endcapture: 'unexpected' as const,
+  endcapture: 'unexpected',
 };

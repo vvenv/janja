@@ -62,5 +62,5 @@ async function* parseCaller(token: DirectiveToken, parser: Parser) {
 export const parsers = {
   macro: parseMacro,
   caller: parseCaller,
-  endmacro: 'unexpected' as const,
+  endmacro: 'unexpected',
 };

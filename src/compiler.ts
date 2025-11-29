@@ -5,6 +5,7 @@ import { Parser } from './parser';
 import { BlockNode } from './plugins/block/syntax';
 import { IncludeNode } from './plugins/include/syntax';
 import { RootNode, SyntaxNode } from './syntax-nodes';
+import { CompilerFn } from './types';
 
 export class Compiler extends Context {
   public options: Required<CompilerOptions>;
@@ -157,10 +158,17 @@ export class Compiler extends Context {
       return;
     }
 
-    const compiler =
-      this.options.compilers[node.type] || this.options.compilers['UNKNOWN'];
+    let compiler = this.options.compilers[node.type];
 
-    await compiler?.(node, this);
+    if (typeof compiler === 'string') {
+      compiler = this.options.compilers[compiler];
+    }
+
+    if (!compiler) {
+      compiler = this.options.compilers['UNKNOWN'];
+    }
+
+    await (compiler as CompilerFn)?.(node, this);
   }
 
   async compileNodes(nodes: SyntaxNode[]) {

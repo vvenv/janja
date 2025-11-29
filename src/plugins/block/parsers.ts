@@ -44,5 +44,5 @@ async function* parseSuper(token: DirectiveToken, parser: Parser) {
 export const parsers = {
   block: parseBlock,
   super: parseSuper,
-  endblock: 'unexpected' as const,
+  endblock: 'unexpected',
 };
