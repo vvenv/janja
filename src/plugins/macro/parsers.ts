@@ -1,6 +1,6 @@
 import { CompileError } from '../../compile-error';
 import type { Parser } from '../../parser';
-import { BinaryExp, DirectiveToken } from '../../types';
+import { DirectiveToken } from '../../types';
 import { CallerNode, MacroNode } from './syntax';
 
 const wm = new WeakMap<Parser, boolean>();
@@ -29,7 +29,7 @@ async function* parseMacro(token: DirectiveToken, parser: Parser) {
   }
 
   yield new MacroNode(
-    parser.parseExp(token.expression!) as BinaryExp<'ASSIGN'>,
+    parser.parseExp(token.expression),
     body,
     token.loc,
     token.strip,

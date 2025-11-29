@@ -1,5 +1,6 @@
+import { Exp } from '../../exp/exp-types';
 import { SyntaxNode, Traversal } from '../../syntax-nodes';
-import { Exp, Loc, Strip } from '../../types';
+import { Loc, Strip } from '../../types';
 
 export class IfNode extends Traversal {
   readonly type = 'IF';

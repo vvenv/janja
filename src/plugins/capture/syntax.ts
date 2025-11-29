@@ -1,5 +1,6 @@
+import { IdExp } from '../../exp/exp-types';
 import { SyntaxNode, Traversal } from '../../syntax-nodes';
-import { IdExp, Loc, Strip } from '../../types';
+import { Loc, Strip } from '../../types';
 
 export class CaptureNode extends Traversal {
   readonly type = 'CAPTURE';

@@ -1,4 +1,4 @@
-import { RendererOptions } from './options';
+import type { RendererOptions } from './options';
 import { Renderer } from './renderer';
 import type { ObjectType } from './types';
 

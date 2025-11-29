@@ -1,6 +1,6 @@
 import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
-import type { IdExp, SeqExp } from '../../types';
+import { IdExp, SeqExp } from '../../exp/exp-types';
 import { type BreakNode, type ContinueNode, type ForNode } from './syntax';
 
 async function compileFor({ loop, body }: ForNode, compiler: Compiler) {

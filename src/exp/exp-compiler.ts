@@ -8,7 +8,7 @@ import type {
   LitExp,
   NotExp,
   SeqExp,
-} from '../types';
+} from './exp-types';
 
 const expTokenOperators: Record<ExpTokenType, string> = {
   AND: '&&',
@@ -56,11 +56,11 @@ export class ExpCompiler {
   private compileExp(expression: Exp): string {
     switch (expression.type) {
       case 'NOT':
-        return this.compileNot(expression);
+        return this.compileNot(expression as NotExp);
       case 'ID':
-        return this.compileId(expression);
+        return this.compileId(expression as IdExp);
       case 'LIT':
-        return this.compileLit(expression);
+        return this.compileLit(expression as LitExp);
       case 'PIPE':
         return this.compilePipe(expression as BinaryExp<'PIPE'>);
       case 'OF':
@@ -84,12 +84,13 @@ export class ExpCompiler {
       case 'MUL':
       case 'DIV':
       case 'MOD':
-        return this.compileBinary(expression);
+        return this.compileBinary(expression as BinaryExp);
       case 'IF':
-        return this.compileTernary(expression);
+        return this.compileTernary(expression as IfExp);
       case 'SEQ':
-        return this.compileSeq(expression);
-      // no default
+        return this.compileSeq(expression as SeqExp);
+      default:
+        return '';
     }
   }
 

@@ -1,4 +1,6 @@
 import { CompileError } from '../compile-error';
+import type { Loc, Pos } from '../types';
+import { ExpToken, ExpTokenizer } from './exp-tokenizer';
 import type {
   BinaryExp,
   Exp,
@@ -6,12 +8,9 @@ import type {
   IdExp,
   IfExp,
   LitExp,
-  Loc,
   NotExp,
-  Pos,
   SeqExp,
-} from '../types';
-import { ExpToken, ExpTokenizer } from './exp-tokenizer';
+} from './exp-types';
 
 export type Checker = (token: ExpToken) => 'BACK' | 'BREAK' | undefined;
 

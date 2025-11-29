@@ -1,8 +1,9 @@
 import { Compiler } from '../src/compiler';
+import type { RendererOptions } from '../src/options';
 import { Parser } from '../src/parser';
 import { Renderer } from '../src/renderer';
 import { Tokenizer } from '../src/tokenizer';
-import type { ObjectType, RendererOptions } from '../src/types';
+import type { ObjectType } from '../src/types';
 import { fileLoader } from './loaders/file-loader';
 
 const loader = async (_path: string) =>

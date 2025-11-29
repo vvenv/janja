@@ -1,6 +1,6 @@
 import { CompileError } from '../../compile-error';
 import type { Parser } from '../../parser';
-import type { BinaryExp, DirectiveToken } from '../../types';
+import type { DirectiveToken } from '../../types';
 import { BreakNode, ContinueNode, ForNode } from './syntax';
 
 const wm = new WeakMap<Parser, boolean>();
@@ -29,7 +29,7 @@ async function* parseFor(token: DirectiveToken, parser: Parser) {
   }
 
   yield new ForNode(
-    parser.parseExp(token.expression!) as BinaryExp<'OF'>,
+    parser.parseExp(token.expression),
     body,
     token.loc,
     token.strip,

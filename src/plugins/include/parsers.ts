@@ -1,5 +1,5 @@
 import type { Parser } from '../../parser';
-import type { DirectiveToken, LitExp } from '../../types';
+import type { DirectiveToken } from '../../types';
 import { IncludeNode } from './syntax';
 
 async function* parseInclude(token: DirectiveToken, parser: Parser) {
@@ -11,7 +11,7 @@ async function* parseInclude(token: DirectiveToken, parser: Parser) {
 
   yield 'NEXT';
   yield new IncludeNode(
-    parser.parseExp(token.expression!) as LitExp<string>,
+    parser.parseExp(token.expression),
     token.loc,
     token.strip,
   );
