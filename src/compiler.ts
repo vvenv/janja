@@ -1,11 +1,11 @@
 import { CompileError } from './compile-error';
 import { Context } from './context';
-import { CompilerOptions, compilerOptions, mergeOptions } from './options';
+import { type CompilerOptions, compilerOptions, mergeOptions } from './options';
 import { Parser } from './parser';
-import { BlockNode } from './plugins/block/syntax';
-import { IncludeNode } from './plugins/include/syntax';
-import { RootNode, SyntaxNode } from './syntax-nodes';
-import { CompilerFn } from './types';
+import type { BlockNode } from './plugins/block/syntax';
+import type { IncludeNode } from './plugins/include/syntax';
+import type { RootNode, SyntaxNode } from './syntax-nodes';
+import type { CompilerFn } from './types';
 
 export class Compiler extends Context {
   public options: Required<CompilerOptions>;

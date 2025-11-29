@@ -1,4 +1,4 @@
-import { Loc, Primitive } from '../types';
+import type { Loc, Primitive } from '../types';
 
 export type UnaryExpTokenType = 'NOT';
 export type BinaryExpTokenType =

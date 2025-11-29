@@ -1,6 +1,6 @@
 import { CompileError } from '../../compile-error';
 import type { Parser } from '../../parser';
-import { DirectiveToken } from '../../types';
+import type { DirectiveToken } from '../../types';
 import { CallerNode, MacroNode } from './syntax';
 
 const wm = new WeakMap<Parser, boolean>();

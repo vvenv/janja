@@ -1,5 +1,5 @@
 import type { Compiler } from '../../compiler';
-import { CommentNode } from './syntax';
+import type { CommentNode } from './syntax';
 
 async function compileComment({ val, loc }: CommentNode, compiler: Compiler) {
   if (!compiler.options.stripComments) {

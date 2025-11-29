@@ -1,5 +1,5 @@
 import { Traversal } from '../../syntax-nodes';
-import { Loc, Strip } from '../../types';
+import type { Loc, Strip } from '../../types';
 
 export class UnknownNode extends Traversal {
   readonly type = 'UNKNOWN';

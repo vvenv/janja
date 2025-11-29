@@ -1,12 +1,12 @@
 import { CompileError } from './compile-error';
 import { ExpParser } from './exp/exp-parser';
-import { Exp } from './exp/exp-types';
-import { RootNode, SyntaxNode } from './syntax-nodes';
+import type { Exp } from './exp/exp-types';
+import { RootNode, type SyntaxNode } from './syntax-nodes';
 import { Tokenizer } from './tokenizer';
 import {
   type DirectiveExpression,
   type DirectiveToken,
-  ParserFn,
+  type ParserFn,
   type Token,
   TokenType,
 } from './types';

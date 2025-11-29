@@ -1,5 +1,5 @@
 import type { Compiler } from '../../compiler';
-import { CaptureNode } from './syntax';
+import type { CaptureNode } from './syntax';
 
 async function compileCapture(
   { val, body, loc }: CaptureNode,

@@ -1,7 +1,7 @@
 import { Compiler } from './compiler';
 import { escape } from './escape';
 import * as filters from './filters';
-import { mergeOptions, RendererOptions, renderOptions } from './options';
+import { mergeOptions, type RendererOptions, renderOptions } from './options';
 import { RenderError } from './render-error';
 import { Safe } from './safe';
 import type { ObjectType } from './types';

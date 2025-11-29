@@ -1,7 +1,7 @@
 import { CompileError } from '../compile-error';
 import type { Loc, Pos, Primitive } from '../types';
 import { updatePosition } from '../update-position';
-import { ExpTokenType } from './exp-types';
+import type { ExpTokenType } from './exp-types';
 
 export interface ExpToken<T = ExpTokenType> {
   type: T;
