@@ -338,11 +338,11 @@ it('comment', async () => {
             },
           },
           "strip": {
-            "after": false,
+            "after": true,
             "before": false,
           },
           "type": "COMMENT",
-          "val": " if x -#",
+          "val": " if x ",
         },
       ],
       "loc": {
