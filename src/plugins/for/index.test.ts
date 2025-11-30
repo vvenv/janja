@@ -113,7 +113,7 @@ it('error', async () => {
   }
 });
 
-it('basic', async () => {
+it('for', async () => {
   expect(
     await compile('{{ for x of y }}{{= x }}{{= y }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
@@ -138,6 +138,11 @@ it('destructuring', async () => {
     await compile('{{ for (x, y) of z }}{{= x }}{{= y }}{{= z }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
     `"return(async()=>{let s="";for(const {x,y} of c.z){const c_0={...c,x,y,};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);}return s;})();"`,
+  );
+  expect(
+    await compile('{{ for (x=1, y="2") of z }}{{= x }}{{= y }}{{ endfor }}'),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";for(const {x=1,y="2"} of c.z){const c_0={...c,x,y,};s+=e(c_0.x);s+=e(c_0.y);}return s;})();"`,
   );
   expect(
     await compile(

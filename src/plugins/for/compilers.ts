@@ -1,27 +1,30 @@
 import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
-import type { IdExp, SeqExp } from '../../exp/exp-types';
 import { type BreakNode, type ContinueNode, type ForNode } from './syntax';
 
 async function compileFor({ loop, body }: ForNode, compiler: Compiler) {
   const { context } = compiler;
 
+  const expCompiler = new ExpCompiler();
+
   if (loop.left.type === 'SEQ') {
     compiler.pushRaw(
       loop.loc,
-      `for(${new ExpCompiler().compile(loop, context)}){`,
+      `for(${expCompiler.compile(loop, context)}){`,
       `const ${compiler.in()}={`,
       `...${context},`,
-      `${((loop.left as SeqExp).elements as IdExp[]).map(({ value }) => value).join(',')},`,
+      `${loop.left.elements
+        .map((el) => (el.type === 'ASSIGN' ? el.left.value : el.value))
+        .join(',')},`,
       '};',
     );
   } else {
     compiler.pushRaw(
       loop.loc,
-      `for(${new ExpCompiler().compile(loop, context)}){`,
+      `for(${expCompiler.compile(loop, context)}){`,
       `const ${compiler.in()}={`,
       `...${context},`,
-      `${(loop.left as IdExp).value},`,
+      `${loop.left.value},`,
       '};',
     );
   }

@@ -64,7 +64,13 @@ export class ExpCompiler {
       case 'PIPE':
         return this.compilePipe(expression as BinaryExp<'PIPE'>);
       case 'OF':
-        return this.compileOf(expression as BinaryExp<'OF'>);
+        return this.compileOf(
+          expression as BinaryExp<
+            'OF',
+            IdExp | SeqExp<IdExp | BinaryExp<'ASSIGN', IdExp, Exp>>,
+            Exp
+          >,
+        );
       case 'ASSIGN':
         return this.compileAssign(expression as BinaryExp<'ASSIGN'>);
       case 'IS':
@@ -126,13 +132,26 @@ export class ExpCompiler {
     return `(await ${this.filters}.${name}.call(${[this.context, this.compileExp(left), ...args.map((arg) => (arg.type === 'ASSIGN' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExp(arg.right)}` : this.compileExp(arg)))].join(',')}))`;
   }
 
-  private compileOf({ left, right }: BinaryExp<'OF'>) {
+  private compileOf({
+    left,
+    right,
+  }: BinaryExp<
+    'OF',
+    IdExp | SeqExp<IdExp | BinaryExp<'ASSIGN', IdExp, Exp>>,
+    Exp
+  >) {
     // destructuring
     if (left.type === 'SEQ') {
-      return `const {${(left.elements as IdExp[]).map(({ value }) => value).join(',')}} of ${this.compileExp(right)}`;
+      return `const {${left.elements
+        .map((el) =>
+          el.type === 'ASSIGN'
+            ? `${el.left.value}=${this.compileExp(el.right)}`
+            : el.value,
+        )
+        .join(',')}} of ${this.compileExp(right)}`;
     }
 
-    return `const ${(left as IdExp).value} of ${this.compileExp(right)}`;
+    return `const ${left.value} of ${this.compileExp(right)}`;
   }
 
   private compileAssign({ left, right }: BinaryExp<'ASSIGN'>) {
