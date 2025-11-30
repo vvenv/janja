@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.3.0](https://github.com/vvenv/janja/compare/janja-v2.2.0...janja-v2.3.0) (2025-11-30)
+
+
+### Features
+
+* add loop object to for loop ([babec25](https://github.com/vvenv/janja/commit/babec255baf5b78833fded71407db952fcc625ca))
+* support default value in for loop ([3a0bc17](https://github.com/vvenv/janja/commit/3a0bc17e80cf51a9cdf7749f2bbb5a052e727396))
+
+
+### Bug Fixes
+
+* enforce consistent type imports across the codebase ([d552207](https://github.com/vvenv/janja/commit/d5522070d1af8de2c1e0309e5c165df412a5f547))
+
 ## [2.2.0](https://github.com/vvenv/janja/compare/janja-v2.1.3...janja-v2.2.0) (2025-11-29)
 
 
