@@ -4,13 +4,13 @@ import { CONTEXT } from './param-names';
 export class Context extends OutScript {
   context = CONTEXT;
 
-  private contexts: string[] = [CONTEXT];
+  private stack: string[] = [CONTEXT];
 
   private index = 0;
 
   in() {
     this.context = `${this.context}_${this.index++}`;
-    this.contexts.push(this.context);
+    this.stack.push(this.context);
 
     return this.context;
   }
@@ -20,7 +20,7 @@ export class Context extends OutScript {
       return;
     }
 
-    this.contexts.pop();
-    this.context = this.contexts.at(-1)!;
+    this.stack.pop();
+    this.context = this.stack.at(-1)!;
   }
 }
