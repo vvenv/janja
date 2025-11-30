@@ -1,4 +1,4 @@
-import type { BinaryExp } from '../../exp/exp-types';
+import type { BinaryExp, Exp, IdExp, SeqExp } from '../../exp/exp-types';
 import { type SyntaxNode, Traversal } from '../../syntax-nodes';
 import type { Loc, Strip } from '../../types';
 
@@ -6,7 +6,11 @@ export class ForNode extends Traversal {
   readonly type = 'FOR';
 
   constructor(
-    public readonly loop: BinaryExp<'OF'>,
+    public readonly loop: BinaryExp<
+      'OF',
+      IdExp | SeqExp<IdExp | BinaryExp<'ASSIGN', IdExp, Exp>>,
+      Exp
+    >,
     public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
