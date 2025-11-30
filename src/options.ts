@@ -47,7 +47,7 @@ export const baseOptions: Required<BaseOptions> = {
 export const parserOptions: Required<ParserOptions> = {
   ...baseOptions,
   commentOpen: '{{#',
-  commentClose: '}}',
+  commentClose: '#}}',
   directiveOpen: '{{',
   directiveClose: '}}',
   outputOpen: '{{=',

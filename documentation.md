@@ -62,7 +62,7 @@ Blocks with the same name will automatically overwrite or inherit, and blocks ar
 ### **comment**: Comments
 
 ```janja
-{{# This is a comment }}
+{{# This is a comment #}}
 ```
 
 ### **expression (=)**: Expression Output

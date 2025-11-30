@@ -39,7 +39,7 @@ export class Tokenizer implements Pos {
       [TokenType.OUTPUT, outputOpen, outputClose],
     ].sort(([, open1], [, open2]) =>
       open1.length > open2.length ? -1 : 1,
-    ) as [TokenType.COMMENT, string, string][];
+    ) as [TokenType, string, string][];
   }
 
   tokenize(template: string) {
