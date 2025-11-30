@@ -2,7 +2,7 @@ import { expect, it } from 'vitest';
 import { ExpTokenizer, expTokenTypes } from './exp-tokenizer';
 
 function tokenize(template: string) {
-  return new ExpTokenizer(template).tokenize(template, {
+  return new ExpTokenizer().tokenize(template, {
     start: { line: 1, column: 1 },
     end: { line: 1, column: template.length },
   });
@@ -10,31 +10,31 @@ function tokenize(template: string) {
 
 it('error', () => {
   expect(() => tokenize('{')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: Unexpect "{"]`,
+    `[ExpError: Unexpect "{"]`,
   );
   expect(() => tokenize('}')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: Unexpect "}"]`,
+    `[ExpError: Unexpect "}"]`,
   );
   expect(() => tokenize('[')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: Unexpect "["]`,
+    `[ExpError: Unexpect "["]`,
   );
   expect(() => tokenize(']')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: Unexpect "]"]`,
+    `[ExpError: Unexpect "]"]`,
   );
   expect(() => tokenize('&')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: Unexpect "&"]`,
+    `[ExpError: Unexpect "&"]`,
   );
   expect(() => tokenize('@')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: Unexpect "@"]`,
+    `[ExpError: Unexpect "@"]`,
   );
   expect(() => tokenize('#')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: Unexpect "#"]`,
+    `[ExpError: Unexpect "#"]`,
   );
   expect(() => tokenize(':')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: Unexpect ":"]`,
+    `[ExpError: Unexpect ":"]`,
   );
   expect(() => tokenize(';')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: Unexpect ";"]`,
+    `[ExpError: Unexpect ";"]`,
   );
 });
 

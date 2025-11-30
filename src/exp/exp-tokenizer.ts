@@ -1,6 +1,6 @@
-import { CompileError } from '../compile-error';
 import type { Loc, Pos, Primitive } from '../types';
 import { updatePosition } from '../update-position';
+import { ExpError } from './exp-error';
 import type { ExpTokenType } from './exp-types';
 
 export interface ExpToken<T = ExpTokenType> {
@@ -60,8 +60,6 @@ export class ExpTokenizer implements Pos {
 
   column = 1;
 
-  constructor(private readonly template: string) {}
-
   tokenize(val: string, loc: Loc) {
     this.val = val;
     this.index = 0;
@@ -109,7 +107,7 @@ export class ExpTokenizer implements Pos {
         continue;
       }
 
-      throw new CompileError(`Unexpect "${char}"`, this.template, {
+      throw new ExpError(`Unexpect "${char}"`, {
         start: { line: this.line, column: this.column },
         end: { line: this.line, column: this.column + 1 },
       });
