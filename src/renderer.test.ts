@@ -271,7 +271,7 @@ it('null', async () => {
 
 it('custom directive', async () => {
   class CustomNode extends Traversal {
-    readonly type: string = 'CUSTOM';
+    readonly type = 'CUSTOM';
 
     constructor(public readonly loc: Loc) {
       super();
