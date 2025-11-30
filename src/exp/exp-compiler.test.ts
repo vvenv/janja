@@ -15,10 +15,10 @@ function compile(template: string) {
 
 it('error', () => {
   expect(() => compile('and')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: no left operand for "AND"]`,
+    `[ExpError: No left operand for "AND"]`,
   );
   expect(() => compile('|')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: no left operand for "PIPE"]`,
+    `[ExpError: No left operand for "PIPE"]`,
   );
 });
 

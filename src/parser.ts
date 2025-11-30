@@ -22,7 +22,7 @@ export class Parser extends Tokenizer {
     const start = this.tokens[0]?.loc.start ?? { line: 1, column: 1 };
     const end = this.tokens.at(-1)?.loc.end ?? { line: 1, column: 1 };
 
-    this.expParser = new ExpParser(template);
+    this.expParser = new ExpParser();
 
     this.cursor = 0;
 
@@ -93,7 +93,15 @@ export class Parser extends Tokenizer {
   }
 
   parseExp<T extends Exp = Exp>({ val, loc }: DirectiveExpression) {
-    return this.expParser.parse(val, loc) as T;
+    try {
+      return this.expParser.parse(val, loc) as T;
+    } catch (error: any) {
+      this.options.debug(
+        error.loc
+          ? new CompileError(error.message, this.template, error.loc)
+          : error,
+      );
+    }
   }
 
   peek() {
@@ -109,7 +117,7 @@ export class Parser extends Tokenizer {
   }
 
   emitExpErr({ name, loc }: DirectiveToken, required = true) {
-    this.options.debug?.(
+    this.options.debug(
       new CompileError(
         required
           ? `"${name}" requires expression`

@@ -2,7 +2,7 @@ import { expect, it } from 'vitest';
 import { ExpParser } from './exp-parser';
 
 function parse(template: string) {
-  return new ExpParser(template).parse(template, {
+  return new ExpParser().parse(template, {
     start: { line: 1, column: 1 },
     end: { line: 1, column: template.length },
   });
@@ -10,58 +10,58 @@ function parse(template: string) {
 
 it('error', () => {
   expect(() => parse('not')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: unexpected end of expression]`,
+    `[ExpError: Unexpected end of expression]`,
   );
   expect(() => parse('and')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: no left operand for "AND"]`,
+    `[ExpError: No left operand for "AND"]`,
   );
   expect(() => parse('a and')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: no right operand for "AND"]`,
+    `[ExpError: No right operand for "AND"]`,
   );
   expect(() => parse('(')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: unexpected end of expression]`,
+    `[ExpError: Unexpected end of expression]`,
   );
   expect(() => parse('(a')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected "RP" after "LP"]`,
+    `[ExpError: Expected "RP" after "LP"]`,
   );
   expect(() => parse('a(')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected "RP" after "LP"]`,
+    `[ExpError: Expected "RP" after "LP"]`,
   );
   expect(() => parse('a.')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected "ID" after "DOT"]`,
+    `[ExpError: Expected "ID" after "DOT"]`,
   );
   expect(() => parse('a.1')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected "ID" after "DOT"]`,
+    `[ExpError: Expected "ID" after "DOT"]`,
   );
   expect(() => parse('|')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: no left operand for "PIPE"]`,
+    `[ExpError: No left operand for "PIPE"]`,
   );
   expect(() => parse('a |')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected "ID" after "PIPE"]`,
+    `[ExpError: Expected "ID" after "PIPE"]`,
   );
   expect(() => parse('a | 1')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected "ID" after "PIPE"]`,
+    `[ExpError: Expected "ID" after "PIPE"]`,
   );
   expect(() => parse('a | f(')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected "RP" after "LP"]`,
+    `[ExpError: Expected "RP" after "LP"]`,
   );
   expect(() => parse('x if')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected test expression]`,
+    `[ExpError: Expected test expression]`,
   );
   expect(() => parse('x if y else')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected alternative expression]`,
+    `[ExpError: Expected alternative expression]`,
   );
   expect(() => parse('x if y else ,')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected alternative expression]`,
+    `[ExpError: Expected alternative expression]`,
   );
   expect(() => parse('x if else')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected test expression]`,
+    `[ExpError: Expected test expression]`,
   );
   expect(() => parse('x if if')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected test expression]`,
+    `[ExpError: Expected test expression]`,
   );
   expect(() => parse('x if ,')).toThrowErrorMatchingInlineSnapshot(
-    `[CompileError: expected test expression]`,
+    `[ExpError: Expected test expression]`,
   );
 });
 

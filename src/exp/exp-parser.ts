@@ -1,5 +1,5 @@
-import { CompileError } from '../compile-error';
 import type { Loc, Pos } from '../types';
+import { ExpError } from './exp-error';
 import { type ExpToken, ExpTokenizer } from './exp-tokenizer';
 import type {
   BinaryExp,
@@ -67,14 +67,12 @@ export class ExpParser implements Pos {
 
   column = 1;
 
-  constructor(private readonly template: string) {}
-
   parse(val: string, loc: Loc) {
     this.val = val;
     this.index = 0;
     this.line = loc.start.line;
     this.column = loc.start.column;
-    this.tokens = new ExpTokenizer(this.template).tokenize(val, loc);
+    this.tokens = new ExpTokenizer().tokenize(val, loc);
 
     return this.val ? this.parseExp() : null;
   }
@@ -103,11 +101,7 @@ export class ExpParser implements Pos {
 
       if (token.type === 'LP') {
         if (!this.peek()) {
-          throw new CompileError(
-            'unexpected end of expression',
-            this.template,
-            token.loc,
-          );
+          throw new ExpError('Unexpected end of expression', token.loc);
         }
 
         const elements = this.parseSequence();
@@ -115,11 +109,7 @@ export class ExpParser implements Pos {
         const rp = this.consume('RP');
 
         if (!rp) {
-          throw new CompileError(
-            'expected "RP" after "LP"',
-            this.template,
-            token.loc,
-          );
+          throw new ExpError('Expected "RP" after "LP"', token.loc);
         }
 
         left = {
@@ -137,11 +127,7 @@ export class ExpParser implements Pos {
 
       if (token.type === 'NOT') {
         if (!this.peek()) {
-          throw new CompileError(
-            'unexpected end of expression',
-            this.template,
-            token.loc,
-          );
+          throw new ExpError('Unexpected end of expression', token.loc);
         }
 
         left = {
@@ -172,11 +158,7 @@ export class ExpParser implements Pos {
           left.args = this.parseSequence();
 
           if (!this.consume('RP')) {
-            throw new CompileError(
-              'expected "RP" after "LP"',
-              this.template,
-              lp.loc,
-            );
+            throw new ExpError('Expected "RP" after "LP"', lp.loc);
           }
 
           continue;
@@ -200,11 +182,7 @@ export class ExpParser implements Pos {
         );
 
         if (!test) {
-          throw new CompileError(
-            'expected test expression',
-            this.template,
-            token.loc,
-          );
+          throw new ExpError('Expected test expression', token.loc);
         }
 
         left = {
@@ -220,11 +198,7 @@ export class ExpParser implements Pos {
           );
 
           if (!alternative) {
-            throw new CompileError(
-              'expected alternative expression',
-              this.template,
-              token.loc,
-            );
+            throw new ExpError('Expected alternative expression', token.loc);
           }
 
           (left as IfExp).alternative = alternative;
@@ -254,11 +228,7 @@ export class ExpParser implements Pos {
         token.type === 'ASSIGN'
       ) {
         if (!left) {
-          throw new CompileError(
-            `no left operand for "${token.type}"`,
-            this.template,
-            token.loc,
-          );
+          throw new ExpError(`No left operand for "${token.type}"`, token.loc);
         }
 
         const right = this.parseExp((t) =>
@@ -266,11 +236,7 @@ export class ExpParser implements Pos {
         );
 
         if (!right) {
-          throw new CompileError(
-            `no right operand for "${token.type}"`,
-            this.template,
-            token.loc,
-          );
+          throw new ExpError(`No right operand for "${token.type}"`, token.loc);
         }
 
         left = {
@@ -285,19 +251,11 @@ export class ExpParser implements Pos {
 
       if (token.type === 'PIPE') {
         if (!left) {
-          throw new CompileError(
-            `no left operand for "${token.type}"`,
-            this.template,
-            token.loc,
-          );
+          throw new ExpError(`No left operand for "${token.type}"`, token.loc);
         }
 
         if (!this.match('ID')) {
-          throw new CompileError(
-            'expected "ID" after "PIPE"',
-            this.template,
-            token.loc,
-          );
+          throw new ExpError('Expected "ID" after "PIPE"', token.loc);
         }
 
         left = {
@@ -331,19 +289,11 @@ export class ExpParser implements Pos {
       const token = this.next();
 
       if (!token) {
-        throw new CompileError(
-          'expected "ID" after "DOT"',
-          this.template,
-          dot.loc,
-        );
+        throw new ExpError('Expected "ID" after "DOT"', dot.loc);
       }
 
       if (token.type !== 'ID') {
-        throw new CompileError(
-          'expected "ID" after "DOT"',
-          this.template,
-          dot.loc,
-        );
+        throw new ExpError('Expected "ID" after "DOT"', dot.loc);
       }
 
       ids.push({
@@ -393,11 +343,7 @@ export class ExpParser implements Pos {
       }
 
       if (!this.consume('RP')) {
-        throw new CompileError(
-          'expected "RP" after "LP"',
-          this.template,
-          lp.loc,
-        );
+        throw new ExpError('Expected "RP" after "LP"', lp.loc);
       }
     }
 

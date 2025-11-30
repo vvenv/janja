@@ -95,7 +95,7 @@ export class Compiler extends Context {
         try {
           template = await this.options.loader(path);
         } catch {
-          this.options.debug?.(
+          this.options.debug(
             new CompileError(
               `Failed to load template from "${path}"`,
               this.template,
@@ -192,7 +192,7 @@ export class Compiler extends Context {
 
       this.partials.set(path, code);
     } catch {
-      this.options.debug?.(
+      this.options.debug(
         new CompileError('Failed to compile template', this.template, node.loc),
       );
     }
