@@ -37,10 +37,10 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endcall" node]`,
+      `[CompileError: Unexpected "endcall"]`,
     );
     expect(error.details).toMatchInlineSnapshot(`
-      "Unexpected "endcall" node
+      "Unexpected "endcall"
 
       1｜ {{ endcall }}
        ｜ ^           ^

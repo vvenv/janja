@@ -25,11 +25,11 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "elif" node]`,
+      `[CompileError: Unexpected "elif"]`,
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unexpected "elif" node
+      "Unexpected "elif"
 
       1｜ {{ elif }}
        ｜ ^        ^
@@ -43,11 +43,11 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "elif" node]`,
+      `[CompileError: Unexpected "elif"]`,
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unexpected "elif" node
+      "Unexpected "elif"
 
       1｜ {{ elif x }}
        ｜ ^          ^
@@ -60,10 +60,10 @@ it('error', async () => {
     await compile('{{ else }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "else" node]`);
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "else"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unknown "else" node
+      "Unknown "else"
 
       1｜ {{ else }}
        ｜ ^        ^
@@ -77,11 +77,11 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endif" node]`,
+      `[CompileError: Unexpected "endif"]`,
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unexpected "endif" node
+      "Unexpected "endif"
 
       1｜ {{ endif }}
        ｜ ^         ^

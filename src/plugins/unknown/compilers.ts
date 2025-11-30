@@ -1,13 +1,10 @@
 import type { Compiler } from '../../compiler';
 import type { UnknownNode } from './syntax';
 
-async function compileUnexpected(
-  { name, val, loc }: UnknownNode,
-  compiler: Compiler,
-) {
-  compiler.pushRaw(loc, `<!-- unexpected "${name}" with value "${val}" -->`);
+async function compileUnknown({ name, loc }: UnknownNode, compiler: Compiler) {
+  compiler.pushRaw(loc, `<!--Unknown "${name}"-->`);
 }
 
 export const compilers = {
-  UNEXPECTED: compileUnexpected,
+  UNKNOWN: compileUnknown,
 };

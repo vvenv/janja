@@ -6,10 +6,10 @@ it('error', async () => {
     await parse('{{}}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "" node]`);
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown ""]`);
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unknown "" node
+      "Unknown ""
 
       1｜ {{}}
        ｜ ^  ^
@@ -38,10 +38,10 @@ it('error', async () => {
     await parse('{{ else }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "else" node]`);
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "else"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unknown "else" node
+      "Unknown "else"
 
       1｜ {{ else }}
        ｜ ^        ^
@@ -55,11 +55,11 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "elseif" node]`,
+      `[CompileError: Unexpected "elseif"]`,
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unexpected "elseif" node
+      "Unexpected "elseif"
 
       1｜ {{ elseif }}
        ｜ ^          ^

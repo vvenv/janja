@@ -10,11 +10,11 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endif" node]`,
+      `[CompileError: Unexpected "endif"]`,
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unexpected "endif" node
+      "Unexpected "endif"
 
       1｜ {{ for name of names }}{{ endif }}
        ｜                        ^         ^

@@ -7,7 +7,7 @@ export async function* parseUnexpected(token: Token, parser: Parser) {
   const name = (token as DirectiveToken).name ?? token.type;
 
   parser.options.debug?.(
-    new CompileError(`Unexpected "${name}" node`, parser.template, token.loc),
+    new CompileError(`Unexpected "${name}"`, parser.template, token.loc),
   );
 
   yield 'NEXT';
