@@ -1,3 +1,35 @@
+![](https://repository-images.githubusercontent.com/989161365/d61a6f29-b7e9-4fbe-8ea2-adac36ea8f44)
+
+    The Reeds
+    Tr. ZHAO Yanchun
+
+    The reeds sway, green and green;
+    The white dew becomes frost.
+    The lady fair I mean
+    Looms yonder, all but lost.
+    Upstream to her I row;
+    The course is long and high.
+    Upstream to her I go;
+    On the waves she looks shy.
+
+    The reeds sway, clean and clean;
+    The white dew has not dried.
+    The lady fair I mean
+    Looms by the riverside.
+    Upstream to her I row;
+    The course is hard and high.
+    Upstream to her I go;
+    On the strand she seems nigh.
+
+    The reeds sway, sheen and sheen;
+    The white dew as e’er gleams.
+    The lady fair I mean
+    Stands on the bank, it seems.
+    Upstream to her I row;
+    The course turns left and right.
+    Upstream to her I go;
+    On the shoal she beams bright.
+
 # Janja
 
 <p align="center">A simple, fast, lightweight, and extensible template engine for Node.js and browsers.</p>
@@ -18,7 +50,7 @@
 - 🎨 **Custom directives and filters**: Ability to define custom directives and filters.
 - 🚀 **Pre-compilation**: Enhance rendering performance by precompiling.
 - 🐛 **Error handling and debugging**: Provides detailed error reporting and debugging support.
-- 🛡️ **Security**: Sandbox mode, and automatic escaping.
+- 🛡️ **Security**: Automatic escaping.
 - 🛫 **Asynchronous data loading**: Supports fetching and displaying remote data asynchronously.
 - 🌐 **Universal compatibility**: Works in both Node.js and browser environments.
 - 📦 **Zero dependencies**: Lightweight with no external dependencies.
