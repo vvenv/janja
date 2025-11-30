@@ -25,11 +25,11 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endif" node]`,
+      `[CompileError: Unexpected "endif"]`,
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unexpected "endif" node
+      "Unexpected "endif"
 
       1｜ {{ endif }}
        ｜ ^         ^
@@ -42,10 +42,10 @@ it('error', async () => {
     await compile('{{ x }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "x" node]`);
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "x"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
-      "Unknown "x" node
+      "Unknown "x"
 
       1｜ {{ x }}
        ｜ ^     ^

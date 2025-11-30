@@ -37,10 +37,10 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endmacro" node]`,
+      `[CompileError: Unexpected "endmacro"]`,
     );
     expect(error.details).toMatchInlineSnapshot(`
-      "Unexpected "endmacro" node
+      "Unexpected "endmacro"
 
       1｜ {{ endmacro }}
        ｜ ^            ^

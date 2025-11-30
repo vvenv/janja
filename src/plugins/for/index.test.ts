@@ -37,10 +37,10 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endfor" node]`,
+      `[CompileError: Unexpected "endfor"]`,
     );
     expect(error.details).toMatchInlineSnapshot(`
-      "Unexpected "endfor" node
+      "Unexpected "endfor"
 
       1｜ {{ endfor }}
        ｜ ^          ^

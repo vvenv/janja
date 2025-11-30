@@ -7,10 +7,10 @@ it('unknown', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unknown "xxx" node]`,
+      `[CompileError: Unknown "xxx"]`,
     );
     expect(error.details).toMatchInlineSnapshot(`
-      "Unknown "xxx" node
+      "Unknown "xxx"
 
       1｜ {{ xxx }}
        ｜ ^       ^

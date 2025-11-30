@@ -7,7 +7,7 @@ export async function* parseUnknown(token: Token, parser: Parser) {
   const name = (token as DirectiveToken).name ?? token.type;
 
   parser.options.debug?.(
-    new CompileError(`Unknown "${name}" node`, parser.template, token.loc),
+    new CompileError(`Unknown "${name}"`, parser.template, token.loc),
   );
 
   yield 'NEXT';

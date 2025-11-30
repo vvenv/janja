@@ -51,10 +51,10 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unknown "endset" node]`,
+      `[CompileError: Unknown "endset"]`,
     );
     expect(error.details).toMatchInlineSnapshot(`
-      "Unknown "endset" node
+      "Unknown "endset"
 
       1｜ {{ endset }}
        ｜ ^          ^

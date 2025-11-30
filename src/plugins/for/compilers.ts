@@ -2,18 +2,21 @@ import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
 import { type BreakNode, type ContinueNode, type ForNode } from './syntax';
 
-async function compileFor({ loop, body }: ForNode, compiler: Compiler) {
+async function compileFor(
+  { loop: { left, right, loc }, body }: ForNode,
+  compiler: Compiler,
+) {
   const { context } = compiler;
 
   const expCompiler = new ExpCompiler();
 
-  if (loop.left.type === 'SEQ') {
+  if (left.type === 'SEQ') {
     compiler.pushRaw(
-      loop.loc,
+      loc,
       '{',
-      `const a_=${expCompiler.compile(loop.right, context)},n_=a_.length;`,
+      `const a_=${expCompiler.compile(right, context)},n_=a_.length;`,
       'let i_=0;',
-      `for(const {${loop.left.elements
+      `for(const {${left.elements
         .map((el) =>
           el.type === 'ASSIGN'
             ? `${el.left.value}=${expCompiler.compile(el.right, context)}`
@@ -27,18 +30,18 @@ async function compileFor({ loop, body }: ForNode, compiler: Compiler) {
       'index:i_++,',
       'last:i_===n_,',
       '},',
-      `${loop.left.elements
+      `${left.elements
         .map((el) => (el.type === 'ASSIGN' ? el.left.value : el.value))
         .join(',')},`,
       '};',
     );
   } else {
     compiler.pushRaw(
-      loop.loc,
+      loc,
       '{',
-      `const a_=${expCompiler.compile(loop.right, context)},n_=a_.length;`,
+      `const a_=${expCompiler.compile(right, context)},n_=a_.length;`,
       'let i_=0;',
-      `for(const ${loop.left.value} of a_){`,
+      `for(const ${left.value} of a_){`,
       `const ${compiler.in()}={`,
       `...${context},`,
       'loop:{',
@@ -46,7 +49,7 @@ async function compileFor({ loop, body }: ForNode, compiler: Compiler) {
       'index:i_++,',
       'last:i_===n_,',
       '},',
-      `${loop.left.value},`,
+      `${left.value},`,
       '};',
     );
   }
