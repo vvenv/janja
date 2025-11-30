@@ -81,11 +81,6 @@ it('is', () => {
   expect(compile('a is b')).toMatchInlineSnapshot(`"(typeof c.a===c.b)"`);
 });
 
-it('of', () => {
-  expect(compile('a of b')).toMatchInlineSnapshot(`"const a of c.b"`);
-  expect(compile('(a,b) of c')).toMatchInlineSnapshot(`"const {a,b} of c.c"`);
-});
-
 it('eq', () => {
   expect(compile('a eq b')).toMatchInlineSnapshot(`"c.a===c.b"`);
 });
@@ -190,8 +185,5 @@ it('real world', () => {
   );
   expect(compile('(a, b, c) = x | y')).toMatchInlineSnapshot(
     `"Object.assign(c,f.pick.call(c,(await f.y.call(c,c.x)),["a","b","c"]));"`,
-  );
-  expect(compile('(a, b) of items | f(x, "y")')).toMatchInlineSnapshot(
-    `"const {a,b} of (await f.f.call(c,c.items,c.x,"y"))"`,
   );
 });

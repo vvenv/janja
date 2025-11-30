@@ -28,11 +28,11 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[CompileError: c.names is not iterable]`,
+      `[CompileError: Cannot read properties of undefined (reading 'length')]`,
     );
     expect(error.details).toMatchInlineSnapshot(
       `
-      "c.names is not iterable
+      "Cannot read properties of undefined (reading 'length')
 
       1｜ {{ for name of names }}{{ endfor }}
        ｜             ^^
