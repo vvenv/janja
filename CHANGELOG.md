@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.4.0](https://github.com/vvenv/janja/compare/janja-v2.3.0...janja-v2.4.0) (2025-11-30)
+
+
+### Features
+
+* update comment syntax to support directives inside ([619b0f4](https://github.com/vvenv/janja/commit/619b0f4ce3e3131a9212bd2143ceeab8fd688d96))
+
+
+### Bug Fixes
+
+* compiler for unknown node ([d68a678](https://github.com/vvenv/janja/commit/d68a678a6c2d474e30d29f47d4de19d0719fde5b))
+
 ## [2.3.0](https://github.com/vvenv/janja/compare/janja-v2.2.0...janja-v2.3.0) (2025-11-30)
 
 
