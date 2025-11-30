@@ -92,19 +92,15 @@ abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, g
 ```typescript
 class CustomNode extends Traversal {
   readonly type = 'CUSTOM'
-  constructor(
-    public readonly val: string,
-    public readonly loc: Loc,
-    public readonly strip: Strip,
-  ) {
-    super()
+  constructor(public readonly loc: Loc) {
+    super();
   }
 }
 render('{{ custom }}', {}, {
   parsers: {
-    custom: (token, parser) => {
-      parser.advance()
-      return new CustomNode(token.val, token.loc, token.strip)
+    async *custom(token) {
+      yield 'NEXT';
+      yield new CustomNode(token.loc);
     },
   },
   compilers: {
