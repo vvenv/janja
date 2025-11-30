@@ -117,19 +117,19 @@ it('for', async () => {
   expect(
     await compile('{{ for x of y }}{{= x }}{{= y }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const x of c.y){const c_0={...c,x,};s+=e(c_0.x);s+=e(c_0.y);}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=c.y,n_=a_.length;let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};s+=e(c_0.x);s+=e(c_0.y);}};return s;})();"`,
   );
   expect(
     await compile('{{ for x of y | f }}{{= x }}{{= y }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const x of (await f.f.call(c,c.y))){const c_0={...c,x,};s+=e(c_0.x);s+=e(c_0.y);}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=(await f.f.call(c,c.y)),n_=a_.length;let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};s+=e(c_0.x);s+=e(c_0.y);}};return s;})();"`,
   );
   expect(
     await compile(
       '{{ for x of y | f(a) | g("b") }}{{= x }}{{= y }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const x of (await f.g.call(c,(await f.f.call(c,c.y,c.a)),"b"))){const c_0={...c,x,};s+=e(c_0.x);s+=e(c_0.y);}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=(await f.g.call(c,(await f.f.call(c,c.y,c.a)),"b")),n_=a_.length;let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};s+=e(c_0.x);s+=e(c_0.y);}};return s;})();"`,
   );
 });
 
@@ -137,19 +137,19 @@ it('destructuring', async () => {
   expect(
     await compile('{{ for (x, y) of z }}{{= x }}{{= y }}{{= z }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const {x,y} of c.z){const c_0={...c,x,y,};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=c.z,n_=a_.length;let i_=0;for(const {x,y} of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,y,};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);}};return s;})();"`,
   );
   expect(
     await compile('{{ for (x=1, y="2") of z }}{{= x }}{{= y }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const {x=1,y="2"} of c.z){const c_0={...c,x,y,};s+=e(c_0.x);s+=e(c_0.y);}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=c.z,n_=a_.length;let i_=0;for(const {x=1,y="2"} of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,y,};s+=e(c_0.x);s+=e(c_0.y);}};return s;})();"`,
   );
   expect(
     await compile(
       '{{ for (x, y) of z | f(a) }}{{= x }}{{= y }}{{= z }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const {x,y} of (await f.f.call(c,c.z,c.a))){const c_0={...c,x,y,};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=(await f.f.call(c,c.z,c.a)),n_=a_.length;let i_=0;for(const {x,y} of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,y,};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);}};return s;})();"`,
   );
 });
 
@@ -157,14 +157,14 @@ it('break', async () => {
   expect(
     await compile('{{ for name of names }}{{ break }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const name of c.names){const c_0={...c,name,};break;}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=c.names,n_=a_.length;let i_=0;for(const name of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},name,};break;}};return s;})();"`,
   );
   expect(
     await compile(
       '{{ for name of names }}{{ if name }}{{ break }}{{ endif }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const name of c.names){const c_0={...c,name,};if(c_0.name){break;}}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=c.names,n_=a_.length;let i_=0;for(const name of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},name,};if(c_0.name){break;}}};return s;})();"`,
   );
 });
 
@@ -172,14 +172,14 @@ it('continue', async () => {
   expect(
     await compile('{{ for name of names }}{{ continue }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const name of c.names){const c_0={...c,name,};continue;}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=c.names,n_=a_.length;let i_=0;for(const name of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},name,};continue;}};return s;})();"`,
   );
   expect(
     await compile(
       '{{ for name of names }}{{ if name }}{{ continue }}{{ endif }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const name of c.names){const c_0={...c,name,};if(c_0.name){continue;}}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=c.names,n_=a_.length;let i_=0;for(const name of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},name,};if(c_0.name){continue;}}};return s;})();"`,
   );
 });
 
@@ -189,6 +189,6 @@ it('nesting', async () => {
       '{{ for x of y }}{{ for z of x }}{{= z }}{{= x }}{{= y }}{{ endfor }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";for(const x of c.y){const c_0={...c,x,};for(const z of c_0.x){const c_0_1={...c_0,z,};s+=e(c_0_1.z);s+=e(c_0_1.x);s+=e(c_0_1.y);}}return s;})();"`,
+    `"return(async()=>{let s="";{const a_=c.y,n_=a_.length;let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};{const a_=c_0.x,n_=a_.length;let i_=0;for(const z of a_){const c_0_1={...c_0,loop:{first:i_===0,index:i_++,last:i_===n_,},z,};s+=e(c_0_1.z);s+=e(c_0_1.x);s+=e(c_0_1.y);}};}};return s;})();"`,
   );
 });
