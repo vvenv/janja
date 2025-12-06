@@ -54,9 +54,7 @@ it('error', async () => {
     await parse('{{ elseif }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "elseif"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "elseif"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unexpected "elseif"

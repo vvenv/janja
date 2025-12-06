@@ -24,9 +24,7 @@ it('error', async () => {
     await compile('{{ elif }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "elif"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "elif"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unexpected "elif"
@@ -42,9 +40,7 @@ it('error', async () => {
     await compile('{{ elif x }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "elif"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "elif"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unexpected "elif"
@@ -76,9 +72,7 @@ it('error', async () => {
     await compile('{{ endif }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endif"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "endif"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unexpected "endif"

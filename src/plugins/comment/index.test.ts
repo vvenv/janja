@@ -8,7 +8,9 @@ it('comment', async () => {
   expect(await compile('{{# foo\nbar #}}')).toMatchInlineSnapshot(
     `"return(async()=>{let s="";s+="<!-- foo\\nbar -->";return s;})();"`,
   );
-  expect(await compile('{{# {{ if x }}id{{ endif }} #}}')).toMatchInlineSnapshot(
+  expect(
+    await compile('{{# {{ if x }}id{{ endif }} #}}'),
+  ).toMatchInlineSnapshot(
     `"return(async()=>{let s="";s+="<!-- {{ if x }}id{{ endif }} -->";return s;})();"`,
   );
 });
@@ -20,7 +22,7 @@ it('w/ stripComments', async () => {
   expect(
     await compile('{{# foo\nbar #}}', { stripComments: true }),
   ).toMatchInlineSnapshot(`"return(async()=>{let s="";return s;})();"`);
-  expect(await compile('{{# {{ if x }}id{{ endif }} #}}', { stripComments: true })).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";return s;})();"`,
-  );
+  expect(
+    await compile('{{# {{ if x }}id{{ endif }} #}}', { stripComments: true }),
+  ).toMatchInlineSnapshot(`"return(async()=>{let s="";return s;})();"`);
 });

@@ -9,9 +9,7 @@ it('error', async () => {
     await render('{{ for name of names }}{{ endif }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endif"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "endif"]`);
     expect(error.details).toMatchInlineSnapshot(
       `
       "Unexpected "endif"
@@ -27,15 +25,18 @@ it('error', async () => {
     await render('{{ for name of names }}{{ endfor }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[RenderError: Cannot read properties of undefined (reading 'length')]`);
+    expect(error).toMatchInlineSnapshot(
+      `[RenderError: Cannot read properties of undefined (reading 'length')]`,
+    );
     expect(error.details).toMatchInlineSnapshot(
-    `
+      `
       "Cannot read properties of undefined (reading 'length')
 
       1｜ {{ for name of names }}{{ endfor }}
        ｜             ^^
       "
-    `);
+    `,
+    );
   }
 
   try {
@@ -227,7 +228,7 @@ it('set', async () => {
 it('macro - call', async () => {
   expect(
     await render(
-      `{{ macro foo = (name = "foo") }}{{= name }}{{caller}}{{ endmacro }}{{ call foo() }}1{{ endcall }}{{ call foo("bar") }}{{ endcall }}`,
+      `{{ macro foo(name="foo") }}{{= name }}{{caller}}{{ endmacro }}{{ call foo() }}1{{ endcall }}{{ call foo("bar") }}{{ endcall }}`,
     ),
   ).toMatchInlineSnapshot(`"foo1bar"`);
 });

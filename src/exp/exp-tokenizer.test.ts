@@ -12,82 +12,64 @@ it('error', () => {
   try {
     tokenize('{');
     expect(true).toBe(false);
-  } catch (error: any){
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Unexpect "{"]`,
-    );
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "{"]`);
   }
 
   try {
     tokenize('}');
     expect(true).toBe(false);
-  } catch (error: any){
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Unexpect "}"]`,
-    );
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "}"]`);
   }
 
   try {
     tokenize('[');
     expect(true).toBe(false);
-  } catch (error: any){
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Unexpect "["]`,
-    );
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "["]`);
   }
 
   try {
     tokenize(']');
     expect(true).toBe(false);
-  } catch (error: any){
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Unexpect "]"]`,
-    );
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "]"]`);
   }
 
   try {
     tokenize('&');
     expect(true).toBe(false);
-  } catch (error: any){
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Unexpect "&"]`,
-    );
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "&"]`);
   }
 
   try {
     tokenize('@');
     expect(true).toBe(false);
-  } catch (error: any){
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Unexpect "@"]`,
-    );
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "@"]`);
   }
 
   try {
     tokenize('#');
     expect(true).toBe(false);
-  } catch (error: any){
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Unexpect "#"]`,
-    );
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "#"]`);
   }
 
   try {
     tokenize(':');
     expect(true).toBe(false);
-  } catch (error: any){
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Unexpect ":"]`,
-    );
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect ":"]`);
   }
 
   try {
     tokenize(';');
     expect(true).toBe(false);
-  } catch (error: any){
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Unexpect ";"]`,
-    );
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect ";"]`);
   }
 });
 
@@ -794,7 +776,7 @@ it('symbols', () => {
 });
 
 it('id', () => {
-  expect(tokenize('a b c')).toMatchInlineSnapshot(
+  expect(tokenize('a b.c d(e)')).toMatchInlineSnapshot(
     `
     [
       {
@@ -830,6 +812,21 @@ it('id', () => {
       {
         "loc": {
           "end": {
+            "column": 5,
+            "line": 1,
+          },
+          "start": {
+            "column": 4,
+            "line": 1,
+          },
+        },
+        "raw": ".",
+        "type": "DOT",
+        "value": ".",
+      },
+      {
+        "loc": {
+          "end": {
             "column": 6,
             "line": 1,
           },
@@ -841,6 +838,66 @@ it('id', () => {
         "raw": "c",
         "type": "ID",
         "value": "c",
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 8,
+            "line": 1,
+          },
+          "start": {
+            "column": 7,
+            "line": 1,
+          },
+        },
+        "raw": "d",
+        "type": "ID",
+        "value": "d",
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 9,
+            "line": 1,
+          },
+          "start": {
+            "column": 8,
+            "line": 1,
+          },
+        },
+        "raw": "(",
+        "type": "LP",
+        "value": "(",
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 10,
+            "line": 1,
+          },
+          "start": {
+            "column": 9,
+            "line": 1,
+          },
+        },
+        "raw": "e",
+        "type": "ID",
+        "value": "e",
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 11,
+            "line": 1,
+          },
+          "start": {
+            "column": 10,
+            "line": 1,
+          },
+        },
+        "raw": ")",
+        "type": "RP",
+        "value": ")",
       },
     ]
   `,

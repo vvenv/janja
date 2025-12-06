@@ -2,42 +2,32 @@ import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
 import type { CallerNode, MacroNode } from './syntax';
 
-async function compileMacro({ val, loc, body }: MacroNode, compiler: Compiler) {
+async function compileMacro(
+  { val: { value, args }, loc, body }: MacroNode,
+  compiler: Compiler,
+) {
   const { context } = compiler;
 
   const expCompiler = new ExpCompiler();
 
-  if (val.type === 'ID') {
-    compiler.pushRaw(
-      loc,
-      `${expCompiler.compile(val)}=()=>async(_c)=>{`,
-      `const ${compiler.in()}={`,
-      `...${context},`,
-      '};',
-    );
-  } else {
-    const {
-      left,
-      right: { elements },
-    } = val;
-
-    compiler.pushRaw(
-      loc,
-      `${expCompiler.compile(left)}=(${elements
-        .map((el) =>
+  compiler.pushRaw(
+    loc,
+    `${context}.${value}=(${
+      args
+        ?.map((el) =>
           el.type === 'ASSIGN'
             ? `${el.left.value}=${expCompiler.compile(el.right)}`
             : el.value,
         )
-        .join(',')})=>async(_c)=>{`,
-      `const ${compiler.in()}={`,
-      `...${context},`,
-      elements
-        .map((el) => (el.type === 'ASSIGN' ? el.left.value : el.value))
-        .join(','),
-      '};',
-    );
-  }
+        .join(',') ?? ''
+    })=>async(_c)=>{`,
+    `const ${compiler.in()}={`,
+    `...${context},`,
+    args
+      ?.map((el) => (el.type === 'ASSIGN' ? el.left.value : el.value))
+      .join(',') ?? '',
+    '};',
+  );
 
   await compiler.compileNodes(body);
   compiler.out();
