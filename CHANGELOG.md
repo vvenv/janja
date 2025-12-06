@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.3](https://github.com/vvenv/janja/compare/janja-v2.4.2...janja-v2.4.3) (2025-12-06)
+
+
+### Bug Fixes
+
+* macro style ([36c877e](https://github.com/vvenv/janja/commit/36c877e2bc8bcdf6ad4671004a01877ac4461992))
+
 ## [2.4.2](https://github.com/vvenv/janja/compare/janja-v2.4.1...janja-v2.4.2) (2025-12-06)
 
 
