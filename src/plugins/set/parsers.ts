@@ -10,7 +10,7 @@ async function* parseSet(token: DirectiveToken, parser: Parser) {
   }
 
   yield 'NEXT';
-  yield new SetNode(parser.parseExp(token.expression), token.loc, token.strip);
+  yield new SetNode(parser.parseExp(token.expression)!, token.loc, token.strip);
 }
 
 export const parsers = {

@@ -49,6 +49,21 @@ export const expTokenTypes: Record<string, ExpTokenType> = {
   '.': 'DOT',
 };
 
+function normalizeLitValue(value: string) {
+  switch (value) {
+    case 'true':
+      return true;
+    case 'false':
+      return false;
+    case 'null':
+      return null;
+    case 'undefined':
+      return undefined;
+    default:
+      return value;
+  }
+}
+
 export class ExpTokenizer implements Pos {
   val = '';
 
@@ -89,14 +104,14 @@ export class ExpTokenizer implements Pos {
         continue;
       }
 
-      if (isDigit(char)) {
-        this.readNumber();
+      if (isDigitStart(char)) {
+        this.readNumber(char);
 
         continue;
       }
 
-      if (isIdentifierStartChar(char)) {
-        this.readIdentifier();
+      if (isIdentifierStart(char)) {
+        this.readIdentifier(char);
 
         continue;
       }
@@ -157,11 +172,13 @@ export class ExpTokenizer implements Pos {
     });
   }
 
-  private readNumber() {
-    let value = '';
+  private readNumber(startChar: string) {
+    let value = startChar;
     let hasDot = false;
 
     const start: Pos = { line: this.line, column: this.column };
+
+    this.index++;
 
     while (this.index < this.val.length) {
       const char = this.val[this.index];
@@ -189,15 +206,17 @@ export class ExpTokenizer implements Pos {
     });
   }
 
-  private readIdentifier() {
-    let value = '';
+  private readIdentifier(startChar: string) {
+    let value = startChar;
 
     const start: Pos = { line: this.line, column: this.column };
+
+    this.index++;
 
     while (this.index < this.val.length) {
       const char = this.val[this.index];
 
-      if (isIdentifierChar(char)) {
+      if (isIdentifier(char)) {
         value += char;
 
         this.index++;
@@ -215,18 +234,7 @@ export class ExpTokenizer implements Pos {
 
     this.tokens.push({
       type,
-      value:
-        type === 'LIT'
-          ? value === 'true'
-            ? true
-            : value === 'false'
-              ? false
-              : value === 'null'
-                ? null
-                : value === 'undefined'
-                  ? undefined
-                  : value
-          : value,
+      value: type === 'LIT' ? normalizeLitValue(value) : value,
       loc: {
         start,
         end: updatePosition(value, this),
@@ -260,14 +268,18 @@ function isSymbol(char: string) {
   return /[+\-*/%|=(),.]/.test(char);
 }
 
-function isDigit(char: string) {
+function isDigitStart(char: string) {
   return /[-\d]/.test(char);
 }
 
-function isIdentifierStartChar(char: string) {
+function isDigit(char: string) {
+  return /\d/.test(char);
+}
+
+function isIdentifierStart(char: string) {
   return /[a-z_$]/i.test(char);
 }
 
-function isIdentifierChar(char: string) {
+function isIdentifier(char: string) {
   return /[\w$]/.test(char);
 }

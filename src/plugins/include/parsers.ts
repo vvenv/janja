@@ -11,7 +11,7 @@ async function* parseInclude(token: DirectiveToken, parser: Parser) {
 
   yield 'NEXT';
   yield new IncludeNode(
-    parser.parseExp(token.expression),
+    parser.parseExp(token.expression)!,
     token.loc,
     token.strip,
   );

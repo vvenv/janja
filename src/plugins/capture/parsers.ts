@@ -23,7 +23,7 @@ async function* parseCapture(token: DirectiveToken, parser: Parser) {
   }
 
   yield new CaptureNode(
-    parser.parseExp(token.expression),
+    parser.parseExp(token.expression)!,
     body,
     token.loc,
     token.strip,

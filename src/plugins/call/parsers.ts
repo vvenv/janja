@@ -23,7 +23,7 @@ async function* parseCall(token: DirectiveToken, parser: Parser) {
   }
 
   yield new CallNode(
-    parser.parseExp(token.expression),
+    parser.parseExp(token.expression)!,
     body,
     token.loc,
     token.strip,
