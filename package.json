@@ -1,7 +1,7 @@
 {
   "name": "janja",
   "type": "module",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "packageManager": "yarn@4.9.2",
   "description": "A simple, fast, lightweight, and extensible template engine for Node.js and browsers.",
   "license": "MIT",
