@@ -50,9 +50,7 @@ it('error', async () => {
     await compile('{{ endset }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unknown "endset"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "endset"]`);
     expect(error.details).toMatchInlineSnapshot(`
       "Unknown "endset"
 
@@ -67,7 +65,8 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-    `[CompileError: Left operand of assignment must be an identifier or a sequence of identifiers]`);
+      `[CompileError: Left operand of assignment must be an identifier or a sequence of identifiers]`,
+    );
     expect(error.details).toMatchInlineSnapshot(`
       "Left operand of assignment must be an identifier or a sequence of identifiers
 

@@ -49,18 +49,14 @@ it('error', () => {
     parse('(a');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Expected "RP" after "LP"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[ExpError: Expected "RP" after "LP"]`);
   }
 
   try {
     parse('a(');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Expected "RP" after "LP"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[ExpError: Expected "RP" after "LP"]`);
   }
 
   try {
@@ -112,23 +108,19 @@ it('error', () => {
     parse('a | f(');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Expected "RP" after "LP"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[ExpError: Expected "RP" after "LP"]`);
   }
 
   try {
     parse('x if');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Expected test expression]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[ExpError: Expected test expression]`);
   }
 
   try {
     parse('x if y else');
-      expect(true).toBe(false);
+    expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
       `[ExpError: Expected alternative expression]`,
@@ -139,27 +131,21 @@ it('error', () => {
     parse('x if else');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Expected test expression]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[ExpError: Expected test expression]`);
   }
 
   try {
     parse('x if if');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Expected test expression]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[ExpError: Expected test expression]`);
   }
 
   try {
     parse('x if ,');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[ExpError: Expected test expression]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[ExpError: Expected test expression]`);
   }
 
   try {
@@ -167,7 +153,8 @@ it('error', () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-    `[ExpError: Left operand of assignment must be an identifier or a sequence of identifiers]`);
+      `[ExpError: Left operand of assignment must be an identifier or a sequence of identifiers]`,
+    );
   }
 
   try {
@@ -175,7 +162,8 @@ it('error', () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-    `[ExpError: Left operand of assignment must be an identifier or a sequence of identifiers]`);
+      `[ExpError: Left operand of assignment must be an identifier or a sequence of identifiers]`,
+    );
   }
 });
 
@@ -383,6 +371,62 @@ it('id', () => {
       "raw": "abc",
       "type": "ID",
       "value": "abc",
+    }
+  `,
+  );
+  expect(parse('a()')).toMatchInlineSnapshot(
+    `
+    {
+      "args": [],
+      "loc": {
+        "end": {
+          "column": 2,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
+      "raw": "a",
+      "type": "ID",
+      "value": "a",
+    }
+  `,
+  );
+  expect(parse('a(b)')).toMatchInlineSnapshot(
+    `
+    {
+      "args": [
+        {
+          "loc": {
+            "end": {
+              "column": 4,
+              "line": 1,
+            },
+            "start": {
+              "column": 3,
+              "line": 1,
+            },
+          },
+          "raw": "b",
+          "type": "ID",
+          "value": "b",
+        },
+      ],
+      "loc": {
+        "end": {
+          "column": 2,
+          "line": 1,
+        },
+        "start": {
+          "column": 1,
+          "line": 1,
+        },
+      },
+      "raw": "a",
+      "type": "ID",
+      "value": "a",
     }
   `,
   );
@@ -1264,7 +1308,7 @@ it('=', () => {
   `,
   );
   expect(parse('(a, b) = x')).toMatchInlineSnapshot(
-  `
+    `
     {
       "left": {
         "elements": [
@@ -1342,7 +1386,8 @@ it('=', () => {
       "type": "ASSIGN",
       "value": "=",
     }
-  `);
+  `,
+  );
 });
 
 it('in', () => {

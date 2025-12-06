@@ -352,11 +352,7 @@ export class ExpParser implements Pos {
     const lp = this.consume('LP');
 
     if (lp) {
-      const args = this.parseSequence();
-
-      if (args.length) {
-        right.args = args;
-      }
+      right.args = this.parseSequence();
 
       if (!this.consume('RP')) {
         throw new ExpError('Expected "RP" after "LP"', lp.loc);

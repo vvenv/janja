@@ -43,7 +43,7 @@
 ### **macro / caller**：宏定义与调用
 
 ```janja
-{{ macro my_macro = (x, y) }}内容{{ caller }}{{ endmacro }}
+{{ macro my_macro(x, y) }}内容{{ caller }}{{ endmacro }}
 ```
 
 ### **call**：调用宏

@@ -6,9 +6,7 @@ it('unexpected', async () => {
     await compile('{{ endif }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endif"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "endif"]`);
     expect(error.details).toMatchInlineSnapshot(`
       "Unexpected "endif"
 

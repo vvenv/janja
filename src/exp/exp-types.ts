@@ -68,10 +68,10 @@ export interface IfExp extends ExpBase<'IF'> {
   alternative?: Exp;
 }
 
-export interface IdExp extends ExpBase<'ID'> {
+export interface IdExp<T extends Exp = Exp> extends ExpBase<'ID'> {
   value: string;
   path?: IdExp[];
-  args?: Exp[];
+  args?: T[];
 }
 
 export interface LitExp<T = Primitive> extends ExpBase<'LIT'> {

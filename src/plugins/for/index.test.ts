@@ -36,9 +36,7 @@ it('error', async () => {
     await compile('{{ endfor }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Unexpected "endfor"]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "endfor"]`);
     expect(error.details).toMatchInlineSnapshot(`
       "Unexpected "endfor"
 

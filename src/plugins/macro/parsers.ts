@@ -30,43 +30,21 @@ async function* parseMacro(token: DirectiveToken, parser: Parser) {
 
   const val: MacroNodeVal = parser.parseExp(token.expression)!;
 
-  if (val.type === 'ASSIGN') {
-    if (val.left.type !== 'ID') {
-      parser.options.debug?.(
-        new CompileError('Invalid macro name', parser.template, token.loc),
-      );
+  if (val.type !== 'ID') {
+    parser.options.debug?.(
+      new CompileError('Invalid macro definition', parser.template, token.loc),
+    );
 
-      return;
-    }
+    return;
+  }
 
-    if (val.right.type !== 'SEQ') {
-      parser.options.debug?.(
-        new CompileError(
-          'Invalid macro parameters',
-          parser.template,
-          token.loc,
-        ),
-      );
-
-      return;
-    } else {
-      for (const element of val.right.elements) {
-        if (element.type === 'ASSIGN') {
-          if (element.left.type !== 'ID') {
-            parser.options.debug?.(
-              new CompileError(
-                'Invalid parameter name',
-                parser.template,
-                token.loc,
-              ),
-            );
-
-            return;
-          }
-        } else if (element.type !== 'ID') {
+  if (val.args?.length) {
+    for (const arg of val.args) {
+      if (arg.type === 'ASSIGN') {
+        if (arg.left.type !== 'ID') {
           parser.options.debug?.(
             new CompileError(
-              'Invalid macro parameter',
+              'Invalid macro parameter definition',
               parser.template,
               token.loc,
             ),
@@ -74,14 +52,18 @@ async function* parseMacro(token: DirectiveToken, parser: Parser) {
 
           return;
         }
+      } else if (arg.type !== 'ID') {
+        parser.options.debug?.(
+          new CompileError(
+            'Invalid macro parameter definition',
+            parser.template,
+            token.loc,
+          ),
+        );
+
+        return;
       }
     }
-  } else if (val.type !== 'ID') {
-    parser.options.debug?.(
-      new CompileError('Invalid macro definition', parser.template, token.loc),
-    );
-
-    return;
   }
 
   yield new MacroNode(val, body, token.loc, token.strip);

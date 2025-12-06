@@ -17,17 +17,19 @@ it('error', () => {
   try {
     compile('and');
     expect(true).toBe(false);
-  } catch (error: any){
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-    `[ExpError: No left operand for "AND"]`);
+      `[ExpError: No left operand for "AND"]`,
+    );
   }
 
   try {
     compile('|');
     expect(true).toBe(false);
-  } catch (error: any){
+  } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-    `[ExpError: No left operand for "PIPE"]`);
+      `[ExpError: No left operand for "PIPE"]`,
+    );
   }
 });
 

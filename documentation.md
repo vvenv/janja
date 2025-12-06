@@ -43,7 +43,7 @@ Blocks with the same name will automatically overwrite or inherit, and blocks ar
 ### **macro / caller**: Macro Definition & Invocation
 
 ```janja
-{{ macro my_macro = (x, y) }}Content{{ caller }}{{ endmacro }}
+{{ macro my_macro(x, y) }}Content{{ caller }}{{ endmacro }}
 ```
 
 ### **call**: Macro Invocation
