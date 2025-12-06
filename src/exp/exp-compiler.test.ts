@@ -4,7 +4,7 @@ import { ExpParser } from './exp-parser';
 
 function compile(template: string) {
   return new ExpCompiler().compile(
-    new ExpParser(template).parse(template, {
+    new ExpParser().parse(template, {
       start: { line: 1, column: 1 },
       end: { line: 1, column: template.length },
     }),

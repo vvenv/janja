@@ -29,7 +29,7 @@ async function* parseFor(token: DirectiveToken, parser: Parser) {
   }
 
   yield new ForNode(
-    parser.parseExp(token.expression),
+    parser.parseExp(token.expression)!,
     body,
     token.loc,
     token.strip,

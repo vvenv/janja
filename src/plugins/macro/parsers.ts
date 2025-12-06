@@ -29,7 +29,7 @@ async function* parseMacro(token: DirectiveToken, parser: Parser) {
   }
 
   yield new MacroNode(
-    parser.parseExp(token.expression),
+    parser.parseExp(token.expression)!,
     body,
     token.loc,
     token.strip,

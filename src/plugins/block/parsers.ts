@@ -23,7 +23,7 @@ async function* parseBlock(token: DirectiveToken, parser: Parser) {
   }
 
   yield new BlockNode(
-    parser.parseExp(token.expression),
+    parser.parseExp(token.expression)!,
     body,
     token.loc,
     token.strip,

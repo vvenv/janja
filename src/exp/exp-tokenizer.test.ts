@@ -108,7 +108,7 @@ it('string', () => {
 });
 
 it('number', () => {
-  expect(tokenize('123 12.34 -1')).toMatchInlineSnapshot(
+  expect(tokenize('123 12.34 -1 0.1-1')).toMatchInlineSnapshot(
     `
     [
       {
@@ -149,6 +149,36 @@ it('number', () => {
           },
           "start": {
             "column": 11,
+            "line": 1,
+          },
+        },
+        "raw": "-1",
+        "type": "LIT",
+        "value": -1,
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 17,
+            "line": 1,
+          },
+          "start": {
+            "column": 14,
+            "line": 1,
+          },
+        },
+        "raw": "0.1",
+        "type": "LIT",
+        "value": 0.1,
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 19,
+            "line": 1,
+          },
+          "start": {
+            "column": 17,
             "line": 1,
           },
         },

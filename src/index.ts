@@ -2,9 +2,20 @@ import type { RendererOptions } from './options';
 import { Renderer } from './renderer';
 import type { ObjectType } from './types';
 
-export * from './renderer';
 export type * from './types';
 export type * from './exp/exp-types';
+export * from './compile-error';
+export * from './compiler';
+export * from './parser';
+export * from './render-error';
+export * from './renderer';
+export * from './safe';
+export * from './syntax-nodes';
+export * from './tokenizer';
+export * from './exp/exp-compiler';
+export * from './exp/exp-error';
+export * from './exp/exp-parser';
+export * from './exp/exp-tokenizer';
 
 export async function render(
   template: string,
