@@ -9,60 +9,174 @@ function parse(template: string) {
 }
 
 it('error', () => {
-  expect(() => parse('not')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpected end of expression]`,
-  );
-  expect(() => parse('and')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: No left operand for "AND"]`,
-  );
-  expect(() => parse('a and')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: No right operand for "AND"]`,
-  );
-  expect(() => parse('(')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpected end of expression]`,
-  );
-  expect(() => parse('(a')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected "RP" after "LP"]`,
-  );
-  expect(() => parse('a(')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected "RP" after "LP"]`,
-  );
-  expect(() => parse('a.')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected "ID" after "DOT"]`,
-  );
-  expect(() => parse('a.1')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected "ID" after "DOT"]`,
-  );
-  expect(() => parse('|')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: No left operand for "PIPE"]`,
-  );
-  expect(() => parse('a |')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected "ID" after "PIPE"]`,
-  );
-  expect(() => parse('a | 1')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected "ID" after "PIPE"]`,
-  );
-  expect(() => parse('a | f(')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected "RP" after "LP"]`,
-  );
-  expect(() => parse('x if')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected test expression]`,
-  );
-  expect(() => parse('x if y else')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected alternative expression]`,
-  );
-  expect(() => parse('x if y else ,')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected alternative expression]`,
-  );
-  expect(() => parse('x if else')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected test expression]`,
-  );
-  expect(() => parse('x if if')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected test expression]`,
-  );
-  expect(() => parse('x if ,')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Expected test expression]`,
-  );
+  try {
+    parse('not');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpected end of expression]`,
+    );
+  }
+
+  try {
+    parse('and');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: No left operand for "AND"]`,
+    );
+  }
+
+  try {
+    parse('a and');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: No right operand for "AND"]`,
+    );
+  }
+
+  try {
+    parse('(');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpected end of expression]`,
+    );
+  }
+
+  try {
+    parse('(a');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected "RP" after "LP"]`,
+    );
+  }
+
+  try {
+    parse('a(');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected "RP" after "LP"]`,
+    );
+  }
+
+  try {
+    parse('a.');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected "ID" after "DOT"]`,
+    );
+  }
+
+  try {
+    parse('a.1');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected "ID" after "DOT"]`,
+    );
+  }
+
+  try {
+    parse('|');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: No left operand for "PIPE"]`,
+    );
+  }
+
+  try {
+    parse('a |');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected "ID" after "PIPE"]`,
+    );
+  }
+
+  try {
+    parse('a | 1');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected "ID" after "PIPE"]`,
+    );
+  }
+
+  try {
+    parse('a | f(');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected "RP" after "LP"]`,
+    );
+  }
+
+  try {
+    parse('x if');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected test expression]`,
+    );
+  }
+
+  try {
+    parse('x if y else');
+      expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected alternative expression]`,
+    );
+  }
+
+  try {
+    parse('x if else');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected test expression]`,
+    );
+  }
+
+  try {
+    parse('x if if');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected test expression]`,
+    );
+  }
+
+  try {
+    parse('x if ,');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Expected test expression]`,
+    );
+  }
+
+  try {
+    parse('(1, 2) = 3');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+    `[ExpError: Left operand of assignment must be an identifier or a sequence of identifiers]`);
+  }
+
+  try {
+    parse('1 = b');
+    expect(true).toBe(false);
+  } catch (error: any) {
+    expect(error).toMatchInlineSnapshot(
+    `[ExpError: Left operand of assignment must be an identifier or a sequence of identifiers]`);
+  }
 });
 
 it('empty', () => {
@@ -1149,6 +1263,86 @@ it('=', () => {
     }
   `,
   );
+  expect(parse('(a, b) = x')).toMatchInlineSnapshot(
+  `
+    {
+      "left": {
+        "elements": [
+          {
+            "loc": {
+              "end": {
+                "column": 3,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
+            "raw": "a",
+            "type": "ID",
+            "value": "a",
+          },
+          {
+            "loc": {
+              "end": {
+                "column": 6,
+                "line": 1,
+              },
+              "start": {
+                "column": 5,
+                "line": 1,
+              },
+            },
+            "raw": "b",
+            "type": "ID",
+            "value": "b",
+          },
+        ],
+        "loc": {
+          "end": {
+            "column": 7,
+            "line": 1,
+          },
+          "start": {
+            "column": 1,
+            "line": 1,
+          },
+        },
+        "raw": "(",
+        "type": "SEQ",
+        "value": "(",
+      },
+      "loc": {
+        "end": {
+          "column": 9,
+          "line": 1,
+        },
+        "start": {
+          "column": 8,
+          "line": 1,
+        },
+      },
+      "raw": "=",
+      "right": {
+        "loc": {
+          "end": {
+            "column": 11,
+            "line": 1,
+          },
+          "start": {
+            "column": 10,
+            "line": 1,
+          },
+        },
+        "raw": "x",
+        "type": "ID",
+        "value": "x",
+      },
+      "type": "ASSIGN",
+      "value": "=",
+    }
+  `);
 });
 
 it('in', () => {

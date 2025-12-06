@@ -8,7 +8,7 @@ export class RenderError extends CompileError {
     protected getLoc: () => Loc,
   ) {
     super(message, src);
-    this.name = 'CompileError';
+    this.name = 'RenderError';
     RenderError.captureStackTrace?.(this, this.constructor);
   }
 

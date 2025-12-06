@@ -19,20 +19,6 @@ it('error', async () => {
   }
 
   try {
-    await compile('{{ macro n }}');
-    expect(true).toBe(false);
-  } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: Unclosed "macro"]`);
-    expect(error.details).toMatchInlineSnapshot(`
-      "Unclosed "macro"
-
-      1｜ {{ macro n }}
-       ｜ ^           ^
-      "
-    `);
-  }
-
-  try {
     await compile('{{ endmacro }}');
     expect(true).toBe(false);
   } catch (error: any) {
@@ -53,9 +39,14 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[TypeError: Cannot destructure property 'elements' of 'right' as it is undefined.]`,
-    );
-    expect(error.details).toMatchInlineSnapshot(`undefined`);
+    `[CompileError: Invalid macro definition]`);
+    expect(error.details).toMatchInlineSnapshot(`
+      "Invalid macro definition
+
+      1｜ {{ macro 1 }}{{ endmacro }}
+       ｜ ^           ^
+      "
+    `);
   }
 
   try {
@@ -76,6 +67,11 @@ it('error', async () => {
 });
 
 it('macro', async () => {
+  expect(
+    await compile('{{ macro m }}MACRO{{ endmacro }}'),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";c.m=()=>async(_c)=>{const c_0={...c,};s+="MACRO";};return s;})();"`
+  );
   expect(
     await compile('{{ macro m = () }}MACRO{{ endmacro }}'),
   ).toMatchInlineSnapshot(

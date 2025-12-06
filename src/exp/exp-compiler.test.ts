@@ -14,12 +14,21 @@ function compile(template: string) {
 }
 
 it('error', () => {
-  expect(() => compile('and')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: No left operand for "AND"]`,
-  );
-  expect(() => compile('|')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: No left operand for "PIPE"]`,
-  );
+  try {
+    compile('and');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+    `[ExpError: No left operand for "AND"]`);
+  }
+
+  try {
+    compile('|');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+    `[ExpError: No left operand for "PIPE"]`);
+  }
 });
 
 it('empty', () => {
