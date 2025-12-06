@@ -2,15 +2,15 @@ import type { BinaryExp, Exp, IdExp, SeqExp } from '../../exp/exp-types';
 import { type SyntaxNode, Traversal } from '../../syntax-nodes';
 import type { Loc, Strip } from '../../types';
 
+export type MacroNodeVal =
+  | IdExp
+  | BinaryExp<'ASSIGN', IdExp, SeqExp<IdExp | BinaryExp<'ASSIGN', IdExp, Exp>>>;
+
 export class MacroNode extends Traversal {
   readonly type = 'MACRO';
 
   constructor(
-    public readonly val: BinaryExp<
-      'ASSIGN',
-      IdExp,
-      SeqExp<IdExp | BinaryExp<'ASSIGN', IdExp, Exp>>
-    >,
+    public readonly val: MacroNodeVal,
     public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,

@@ -67,9 +67,14 @@ it('error', async () => {
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[TypeError: Cannot read properties of undefined (reading 'map')]`,
-    );
-    expect(error.details).toMatchInlineSnapshot(`undefined`);
+    `[CompileError: Left operand of assignment must be an identifier or a sequence of identifiers]`);
+    expect(error.details).toMatchInlineSnapshot(`
+      "Left operand of assignment must be an identifier or a sequence of identifiers
+
+      1｜ {{ set 1 = "a" }}
+       ｜          ^
+      "
+    `);
   }
 });
 

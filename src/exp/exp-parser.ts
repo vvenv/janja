@@ -231,6 +231,22 @@ export class ExpParser implements Pos {
           throw new ExpError(`No left operand for "${token.type}"`, token.loc);
         }
 
+        if (token.type === 'ASSIGN') {
+          if (left.type === 'SEQ') {
+            if (left.elements.some((el) => el.type !== 'ID')) {
+              throw new ExpError(
+                'Left operand of assignment must be an identifier or a sequence of identifiers',
+                token.loc,
+              );
+            }
+          } else if (left.type !== 'ID') {
+            throw new ExpError(
+              'Left operand of assignment must be an identifier or a sequence of identifiers',
+              token.loc,
+            );
+          }
+        }
+
         const right = this.parseExp((t) =>
           isHigher(token, t) ? 'BACK' : undefined,
         );

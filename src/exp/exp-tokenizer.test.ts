@@ -9,33 +9,86 @@ function tokenize(template: string) {
 }
 
 it('error', () => {
-  expect(() => tokenize('{')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpect "{"]`,
-  );
-  expect(() => tokenize('}')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpect "}"]`,
-  );
-  expect(() => tokenize('[')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpect "["]`,
-  );
-  expect(() => tokenize(']')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpect "]"]`,
-  );
-  expect(() => tokenize('&')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpect "&"]`,
-  );
-  expect(() => tokenize('@')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpect "@"]`,
-  );
-  expect(() => tokenize('#')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpect "#"]`,
-  );
-  expect(() => tokenize(':')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpect ":"]`,
-  );
-  expect(() => tokenize(';')).toThrowErrorMatchingInlineSnapshot(
-    `[ExpError: Unexpect ";"]`,
-  );
+  try {
+    tokenize('{');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpect "{"]`,
+    );
+  }
+
+  try {
+    tokenize('}');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpect "}"]`,
+    );
+  }
+
+  try {
+    tokenize('[');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpect "["]`,
+    );
+  }
+
+  try {
+    tokenize(']');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpect "]"]`,
+    );
+  }
+
+  try {
+    tokenize('&');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpect "&"]`,
+    );
+  }
+
+  try {
+    tokenize('@');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpect "@"]`,
+    );
+  }
+
+  try {
+    tokenize('#');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpect "#"]`,
+    );
+  }
+
+  try {
+    tokenize(':');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpect ":"]`,
+    );
+  }
+
+  try {
+    tokenize(';');
+    expect(true).toBe(false);
+  } catch (error: any){
+    expect(error).toMatchInlineSnapshot(
+      `[ExpError: Unexpect ";"]`,
+    );
+  }
 });
 
 it('string', () => {

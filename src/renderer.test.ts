@@ -27,18 +27,15 @@ it('error', async () => {
     await render('{{ for name of names }}{{ endfor }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(
-      `[CompileError: Cannot read properties of undefined (reading 'length')]`,
-    );
+    expect(error).toMatchInlineSnapshot(`[RenderError: Cannot read properties of undefined (reading 'length')]`);
     expect(error.details).toMatchInlineSnapshot(
-      `
+    `
       "Cannot read properties of undefined (reading 'length')
 
       1｜ {{ for name of names }}{{ endfor }}
        ｜             ^^
       "
-    `,
-    );
+    `);
   }
 
   try {

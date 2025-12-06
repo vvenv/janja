@@ -1,7 +1,7 @@
 import { CompileError } from '../../compile-error';
 import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
-import { CallerNode, MacroNode } from './syntax';
+import { CallerNode, MacroNode, type MacroNodeVal } from './syntax';
 
 const wm = new WeakMap<Parser, boolean>();
 
@@ -28,12 +28,63 @@ async function* parseMacro(token: DirectiveToken, parser: Parser) {
     );
   }
 
-  yield new MacroNode(
-    parser.parseExp(token.expression)!,
-    body,
-    token.loc,
-    token.strip,
-  );
+  const val: MacroNodeVal = parser.parseExp(token.expression)!;
+
+  if (val.type === 'ASSIGN') {
+    if (val.left.type !== 'ID') {
+      parser.options.debug?.(
+        new CompileError('Invalid macro name', parser.template, token.loc),
+      );
+
+      return;
+    }
+
+    if (val.right.type !== 'SEQ') {
+      parser.options.debug?.(
+        new CompileError(
+          'Invalid macro parameters',
+          parser.template,
+          token.loc,
+        ),
+      );
+
+      return;
+    } else {
+      for (const element of val.right.elements) {
+        if (element.type === 'ASSIGN') {
+          if (element.left.type !== 'ID') {
+            parser.options.debug?.(
+              new CompileError(
+                'Invalid parameter name',
+                parser.template,
+                token.loc,
+              ),
+            );
+
+            return;
+          }
+        } else if (element.type !== 'ID') {
+          parser.options.debug?.(
+            new CompileError(
+              'Invalid macro parameter',
+              parser.template,
+              token.loc,
+            ),
+          );
+
+          return;
+        }
+      }
+    }
+  } else if (val.type !== 'ID') {
+    parser.options.debug?.(
+      new CompileError('Invalid macro definition', parser.template, token.loc),
+    );
+
+    return;
+  }
+
+  yield new MacroNode(val, body, token.loc, token.strip);
 }
 
 async function* parseCaller(token: DirectiveToken, parser: Parser) {

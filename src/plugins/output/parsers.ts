@@ -8,7 +8,7 @@ async function* parseOutput(token: DirectiveToken, parser: Parser) {
     token.val,
     token.loc,
     token.strip,
-    parser.parseExp(token),
+    parser.parseExp(token)!,
   );
 }
 
