@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/vvenv/janja/compare/janja-v2.4.0...janja-v2.4.1) (2025-12-06)
+
+
+### Bug Fixes
+
+* number token ([c18536b](https://github.com/vvenv/janja/commit/c18536bf6be26ae66ea7ea2bbe00998eb1d06e15))
+
 ## [2.4.0](https://github.com/vvenv/janja/compare/janja-v2.3.0...janja-v2.4.0) (2025-11-30)
 
 
