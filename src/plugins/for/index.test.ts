@@ -190,3 +190,11 @@ it('nesting', async () => {
     `"return(async()=>{let s="";{const a_=c.y,n_=a_.length;let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};{const a_=c_0.x,n_=a_.length;let i_=0;for(const z of a_){const c_0_1={...c_0,loop:{first:i_===0,index:i_++,last:i_===n_,},z,};s+=e(c_0_1.z);s+=e(c_0_1.x);s+=e(c_0_1.y);}};}};return s;})();"`,
   );
 });
+
+it('else', async () => {
+  expect(
+    await compile('{{ for x of y }}{{= x }}{{ else }}-{{ endfor }}'),
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="";{const a_=c.y,n_=a_.length;if(!a_.length){s+="-";}else{let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};s+=e(c_0.x);}}};return s;})();"`,
+  );
+});

@@ -126,6 +126,25 @@ it('expression', async () => {
   expect(await render('{{= "*" }}')).toMatchInlineSnapshot(`"*"`);
 });
 
+it('if - else - elif', async () => {
+  expect(
+    await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}', {
+      name: 'foo',
+    }),
+  ).toMatchInlineSnapshot(`"foo"`);
+  expect(
+    await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}'),
+  ).toMatchInlineSnapshot(`"*"`);
+  expect(
+    await render(
+      '{{ if name eq "foo" }}1{{ elif name eq "bar" }}2{{ else }}3{{ endif }}',
+      {
+        name: 'bar',
+      },
+    ),
+  ).toMatchInlineSnapshot(`"2"`);
+});
+
 it('for loop', async () => {
   expect(
     await render('{{ for name of names }}{{= name }}{{ endfor }}', {
@@ -165,25 +184,6 @@ it('for loop - nested', async () => {
   );
 });
 
-it('if - else - elif', async () => {
-  expect(
-    await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}', {
-      name: 'foo',
-    }),
-  ).toMatchInlineSnapshot(`"foo"`);
-  expect(
-    await render('{{ if name }}{{= name }}{{ else }}{{= "*" }}{{ endif }}'),
-  ).toMatchInlineSnapshot(`"*"`);
-  expect(
-    await render(
-      '{{ if name eq "foo" }}1{{ elif name eq "bar" }}2{{ else }}3{{ endif }}',
-      {
-        name: 'bar',
-      },
-    ),
-  ).toMatchInlineSnapshot(`"2"`);
-});
-
 it('for - if', async () => {
   expect(
     await render(
@@ -215,6 +215,14 @@ it('for - destructing', async () => {
       ],
     }),
   ).toMatchInlineSnapshot(`"1342"`);
+});
+
+it('for - else', async () => {
+  expect(
+    await render('{{ for name of names }}y{{ else }}n{{ endfor }}', {
+      names: [],
+    }),
+  ).toMatchInlineSnapshot(`"n"`);
 });
 
 it('set', async () => {
