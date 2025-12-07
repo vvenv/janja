@@ -12,6 +12,19 @@ export class ForNode extends Traversal {
       Exp
     >,
     public readonly body: SyntaxNode[],
+    public readonly alternative: ElseNode | null,
+    public readonly loc: Loc,
+    public readonly strip: Strip,
+  ) {
+    super();
+  }
+}
+
+export class ElseNode extends Traversal {
+  readonly type = 'ELSE';
+
+  constructor(
+    public readonly body: SyntaxNode[],
     public readonly loc: Loc,
     public readonly strip: Strip,
   ) {
