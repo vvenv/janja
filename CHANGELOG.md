@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/vvenv/janja/compare/janja-v2.4.3...janja-v2.5.0) (2025-12-10)
+
+
+### Features
+
+* support for else ([20ba370](https://github.com/vvenv/janja/commit/20ba370ace6c57bf0a4c5aef5ef35ff463101e35))
+
 ## [2.4.3](https://github.com/vvenv/janja/compare/janja-v2.4.2...janja-v2.4.3) (2025-12-06)
 
 
