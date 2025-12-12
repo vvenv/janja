@@ -1,5 +1,6 @@
 name: NPM publish
 permissions:
+  id-token: write
   contents: read
 
 on:
@@ -39,5 +40,3 @@ jobs:
       - name: Publish
         run: npm publish
         working-directory: packages/janja
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
