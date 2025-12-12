@@ -35,7 +35,9 @@ jobs:
         run: yarn install --immutable
       - name: Build
         run: yarn build
+        working-directory: packages/janja
       - name: Publish
         run: npm publish
+        working-directory: packages/janja
         env:
           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}

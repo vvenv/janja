@@ -3193,17 +3193,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"janja@workspace:.":
+"janja.js@workspace:.":
   version: 0.0.0-use.local
-  resolution: "janja@workspace:."
+  resolution: "janja.js@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.39.1"
-    "@rollup/plugin-commonjs": "npm:^29.0.0"
-    "@rollup/plugin-node-resolve": "npm:^16.0.3"
-    "@rollup/plugin-typescript": "npm:^12.3.0"
     "@types/node": "npm:^24.10.1"
-    "@vitest/coverage-v8": "npm:4.0.15"
-    "@vitest/ui": "npm:4.0.15"
     eslint: "npm:^9.39.1"
     eslint-import-resolver-typescript: "npm:^4.4.4"
     eslint-plugin-import: "npm:^2.32.0"
@@ -3213,11 +3208,26 @@ __metadata:
     husky: "npm:^9.1.7"
     jiti: "npm:^2.6.1"
     prettier: "npm:^3.7.4"
-    rollup: "npm:^4.53.3"
-    rollup-plugin-dts: "npm:^6.3.0"
     tslib: "npm:^2.8.1"
     typescript: "npm:^5.9.3"
     typescript-eslint: "npm:^8.48.1"
+  languageName: unknown
+  linkType: soft
+
+"janja@workspace:packages/janja":
+  version: 0.0.0-use.local
+  resolution: "janja@workspace:packages/janja"
+  dependencies:
+    "@rollup/plugin-commonjs": "npm:^29.0.0"
+    "@rollup/plugin-node-resolve": "npm:^16.0.3"
+    "@rollup/plugin-typescript": "npm:^12.3.0"
+    "@types/node": "npm:^24.10.1"
+    "@vitest/coverage-v8": "npm:4.0.15"
+    "@vitest/ui": "npm:4.0.15"
+    husky: "npm:^9.1.7"
+    rollup: "npm:^4.53.3"
+    rollup-plugin-dts: "npm:^6.3.0"
+    typescript: "npm:^5.9.3"
     vite: "npm:^7.2.6"
     vitest: "npm:^4.0.15"
   languageName: unknown

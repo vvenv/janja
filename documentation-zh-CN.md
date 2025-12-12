@@ -131,4 +131,4 @@ const engine = new Engine({
 
 ---
 
-如需更多细节，可参考源码 `src/filters.ts`、`src/directive-parsers/` 和 `src/node-compilers/`。
+如需更多细节，可参考源码 `packages/janja/src/filters.ts` 和 `packages/janja/src/plugins/`。
