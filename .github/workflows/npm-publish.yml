@@ -37,6 +37,8 @@ jobs:
       - name: Build
         run: yarn build
         working-directory: packages/janja
+      - name: Update npm
+        run: npm install -g npm@latest
       - name: Publish
         run: npm publish
         working-directory: packages/janja
