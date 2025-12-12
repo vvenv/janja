@@ -2,7 +2,8 @@
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
   "packages": {
-    ".": { "release-as": "" }
+    "packages/janja": { "release-as": "" }
   },
+  "plugins": ["node-workspace"],
   "always-link-local": false
 }

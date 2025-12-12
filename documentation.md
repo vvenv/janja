@@ -131,4 +131,4 @@ Usage in template:
 
 ---
 
-For more details, refer to the source code in `src/filters.ts`, `src/directive-parsers/`, and `src/node-compilers/`.
+For more details, refer to the source code in `packages/janja/src/filters.ts` and `packages/janja/src/plugins/`.
