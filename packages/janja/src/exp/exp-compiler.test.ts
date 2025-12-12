@@ -89,7 +89,7 @@ it('or', () => {
 });
 
 it('is', () => {
-  expect(compile('a is b')).toMatchInlineSnapshot(`"(typeof c.a===c.b)"`);
+  expect(compile('a is b')).toMatchInlineSnapshot(`"typeof c.a===c.b"`);
 });
 
 it('eq', () => {
@@ -152,21 +152,21 @@ it('set', () => {
 });
 
 it('pipe', () => {
-  expect(compile('a | f')).toMatchInlineSnapshot(`"(await f.f.call(c,c.a))"`);
+  expect(compile('a | f')).toMatchInlineSnapshot(`"await f.f.call(c,c.a)"`);
   expect(compile('a | f | f2')).toMatchInlineSnapshot(
-    `"(await f.f2.call(c,(await f.f.call(c,c.a))))"`,
+    `"await f.f2.call(c,await f.f.call(c,c.a))"`,
   );
   expect(compile('a | f(x, "y")')).toMatchInlineSnapshot(
-    `"(await f.f.call(c,c.a,c.x,"y"))"`,
+    `"await f.f.call(c,c.a,c.x,"y")"`,
   );
   expect(compile('a | f(x, "y") | f2(not z, 1)')).toMatchInlineSnapshot(
-    `"(await f.f2.call(c,(await f.f.call(c,c.a,c.x,"y")),!c.z,1))"`,
+    `"await f.f2.call(c,await f.f.call(c,c.a,c.x,"y"),!c.z,1)"`,
   );
 });
 
 it('conditional', () => {
-  expect(compile('"a" if x')).toMatchInlineSnapshot(`"(c.x?"a":"")"`);
-  expect(compile('"a" if x else "b"')).toMatchInlineSnapshot(`"(c.x?"a":"b")"`);
+  expect(compile('"a" if x')).toMatchInlineSnapshot(`"c.x?"a":"""`);
+  expect(compile('"a" if x else "b"')).toMatchInlineSnapshot(`"c.x?"a":"b""`);
 });
 
 it('whitespace', () => {
@@ -180,7 +180,7 @@ it('combined', () => {
   expect(
     compile('user | get("age") gt 18 and user | get("name") eq "John"'),
   ).toMatchInlineSnapshot(
-    `"(await f.get.call(c,c.user,"age"))>18&&(await f.get.call(c,c.user,"name"))==="John""`,
+    `"await f.get.call(c,c.user,"age")>18&&await f.get.call(c,c.user,"name")==="John""`,
   );
   expect(compile('not a and not b')).toMatchInlineSnapshot(`"!c.a&&!c.b"`);
   expect(compile('a or b and c')).toMatchInlineSnapshot(`"c.a||c.b&&c.c"`);
@@ -189,12 +189,12 @@ it('combined', () => {
 
 it('real world', () => {
   expect(compile('f(a|x, y + b, z and c)')).toMatchInlineSnapshot(
-    `"c.f((await f.x.call(c,c.a)),c.y+c.b,c.z&&c.c)"`,
+    `"c.f(await f.x.call(c,c.a),c.y+c.b,c.z&&c.c)"`,
   );
   expect(compile('(a, b) = c')).toMatchInlineSnapshot(
     `"Object.assign(c,f.pick.call(c,c.c,["a","b"]));"`,
   );
   expect(compile('(a, b, c) = x | y')).toMatchInlineSnapshot(
-    `"Object.assign(c,f.pick.call(c,(await f.y.call(c,c.x)),["a","b","c"]));"`,
+    `"Object.assign(c,f.pick.call(c,await f.y.call(c,c.x),["a","b","c"]));"`,
   );
 });

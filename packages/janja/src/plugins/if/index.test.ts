@@ -90,10 +90,10 @@ it('id', async () => {
     `"return(async()=>{let s="";if(c.x){s+="id";}return s;})();"`,
   );
   expect(await compile('{{ if x | f }}id{{ endif }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if((await f.f.call(c,c.x))){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="";if(await f.f.call(c,c.x)){s+="id";}return s;})();"`,
   );
   expect(await compile('{{ if x | f(a) }}id{{ endif }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if((await f.f.call(c,c.x,c.a))){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="";if(await f.f.call(c,c.x,c.a)){s+="id";}return s;})();"`,
   );
   expect(await compile('{{ if x.y.z }}id{{ endif }}')).toMatchInlineSnapshot(
     `"return(async()=>{let s="";if(c.x.y.z){s+="id";}return s;})();"`,
@@ -101,12 +101,12 @@ it('id', async () => {
   expect(
     await compile('{{ if x.y.z | f }}id{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if((await f.f.call(c,c.x.y.z))){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="";if(await f.f.call(c,c.x.y.z)){s+="id";}return s;})();"`,
   );
   expect(
     await compile('{{ if x.y.z | f(a) }}id{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if((await f.f.call(c,c.x.y.z,c.a))){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="";if(await f.f.call(c,c.x.y.z,c.a)){s+="id";}return s;})();"`,
   );
 });
 
@@ -119,12 +119,12 @@ it('not', async () => {
   expect(
     await compile('{{ if not x | f }}not{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!(await f.f.call(c,c.x))){s+="not";}return s;})();"`,
+    `"return(async()=>{let s="";if(!await f.f.call(c,c.x)){s+="not";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x | f(a) }}not{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!(await f.f.call(c,c.x,c.a))){s+="not";}return s;})();"`,
+    `"return(async()=>{let s="";if(!await f.f.call(c,c.x,c.a)){s+="not";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x.y.z }}not{{ endif }}'),
@@ -134,12 +134,12 @@ it('not', async () => {
   expect(
     await compile('{{ if not x.y.z | f }}not{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!(await f.f.call(c,c.x.y.z))){s+="not";}return s;})();"`,
+    `"return(async()=>{let s="";if(!await f.f.call(c,c.x.y.z)){s+="not";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x.y.z | f(a) }}not{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!(await f.f.call(c,c.x.y.z,c.a))){s+="not";}return s;})();"`,
+    `"return(async()=>{let s="";if(!await f.f.call(c,c.x.y.z,c.a)){s+="not";}return s;})();"`,
   );
 });
 
@@ -150,12 +150,12 @@ it('and', async () => {
   expect(
     await compile('{{ if x | f and y | f }}and{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if((await f.f.call(c,c.x))&&(await f.f.call(c,c.y))){s+="and";}return s;})();"`,
+    `"return(async()=>{let s="";if(await f.f.call(c,c.x)&&await f.f.call(c,c.y)){s+="and";}return s;})();"`,
   );
   expect(
     await compile('{{ if x | f(a) and y | f(a) }}and{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if((await f.f.call(c,c.x,c.a))&&(await f.f.call(c,c.y,c.a))){s+="and";}return s;})();"`,
+    `"return(async()=>{let s="";if(await f.f.call(c,c.x,c.a)&&await f.f.call(c,c.y,c.a)){s+="and";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x and y }}and{{ endif }}'),

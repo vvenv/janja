@@ -120,14 +120,14 @@ it('for', async () => {
   expect(
     await compile('{{ for x of y | f }}{{= x }}{{= y }}{{ endfor }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";{const a_=(await f.f.call(c,c.y)),n_=a_.length;let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};s+=e(c_0.x);s+=e(c_0.y);}};return s;})();"`,
+    `"return(async()=>{let s="";{const a_=await f.f.call(c,c.y),n_=a_.length;let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};s+=e(c_0.x);s+=e(c_0.y);}};return s;})();"`,
   );
   expect(
     await compile(
       '{{ for x of y | f(a) | g("b") }}{{= x }}{{= y }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";{const a_=(await f.g.call(c,(await f.f.call(c,c.y,c.a)),"b")),n_=a_.length;let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};s+=e(c_0.x);s+=e(c_0.y);}};return s;})();"`,
+    `"return(async()=>{let s="";{const a_=await f.g.call(c,await f.f.call(c,c.y,c.a),"b"),n_=a_.length;let i_=0;for(const x of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,};s+=e(c_0.x);s+=e(c_0.y);}};return s;})();"`,
   );
 });
 
@@ -147,7 +147,7 @@ it('destructuring', async () => {
       '{{ for (x, y) of z | f(a) }}{{= x }}{{= y }}{{= z }}{{ endfor }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";{const a_=(await f.f.call(c,c.z,c.a)),n_=a_.length;let i_=0;for(const {x,y} of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,y,};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);}};return s;})();"`,
+    `"return(async()=>{let s="";{const a_=await f.f.call(c,c.z,c.a),n_=a_.length;let i_=0;for(const {x,y} of a_){const c_0={...c,loop:{first:i_===0,index:i_++,last:i_===n_,},x,y,};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);}};return s;})();"`,
   );
 });
 
