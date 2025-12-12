@@ -61,22 +61,22 @@ describe('literal', () => {
 describe('w/ filters', async () => {
   it('basic', async () => {
     expect(await compile('{{= x | upper }}')).toMatchInlineSnapshot(
-      `"return(async()=>{let s="";s+=e((await f.upper.call(c,c.x)));return s;})();"`,
+      `"return(async()=>{let s="";s+=e(await f.upper.call(c,c.x));return s;})();"`,
     );
     expect(await compile('{{= "x" | upper }}')).toMatchInlineSnapshot(
-      `"return(async()=>{let s="";s+=e((await f.upper.call(c,"x")));return s;})();"`,
+      `"return(async()=>{let s="";s+=e(await f.upper.call(c,"x"));return s;})();"`,
     );
     expect(await compile("{{= 'x' | upper }}")).toMatchInlineSnapshot(
-      `"return(async()=>{let s="";s+=e((await f.upper.call(c,"x")));return s;})();"`,
+      `"return(async()=>{let s="";s+=e(await f.upper.call(c,"x"));return s;})();"`,
     );
     expect(await compile('{{= `x` | upper }}')).toMatchInlineSnapshot(
-      `"return(async()=>{let s="";s+=e((await f.upper.call(c,"x")));return s;})();"`,
+      `"return(async()=>{let s="";s+=e(await f.upper.call(c,"x"));return s;})();"`,
     );
   });
 
   it('multiple', async () => {
     expect(await compile('{{= x | upper | lower }}')).toMatchInlineSnapshot(
-      `"return(async()=>{let s="";s+=e((await f.lower.call(c,(await f.upper.call(c,c.x)))));return s;})();"`,
+      `"return(async()=>{let s="";s+=e(await f.lower.call(c,await f.upper.call(c,c.x)));return s;})();"`,
     );
   });
 
@@ -84,24 +84,24 @@ describe('w/ filters', async () => {
     expect(
       await compile('{{= x | upper }} and {{= x | upper }}'),
     ).toMatchInlineSnapshot(
-      `"return(async()=>{let s="";s+=e((await f.upper.call(c,c.x)));s+=" and ";s+=e((await f.upper.call(c,c.x)));return s;})();"`,
+      `"return(async()=>{let s="";s+=e(await f.upper.call(c,c.x));s+=" and ";s+=e(await f.upper.call(c,c.x));return s;})();"`,
     );
   });
 
   it('safe', async () => {
     expect(await compile('{{= x | safe }}')).toMatchInlineSnapshot(
-      `"return(async()=>{let s="";s+=e((await f.safe.call(c,c.x)));return s;})();"`,
+      `"return(async()=>{let s="";s+=e(await f.safe.call(c,c.x));return s;})();"`,
     );
   });
 
   it('w/ args', async () => {
     expect(await compile('{{= name | split("") }}')).toMatchInlineSnapshot(
-      `"return(async()=>{let s="";s+=e((await f.split.call(c,c.name,"")));return s;})();"`,
+      `"return(async()=>{let s="";s+=e(await f.split.call(c,c.name,""));return s;})();"`,
     );
     expect(
       await compile('{{= "hello, {name}" | t(name="Janja") }}'),
     ).toMatchInlineSnapshot(
-      `"return(async()=>{let s="";s+=e((await f.t.call(c,"hello, {name}",c.name="Janja")));return s;})();"`,
+      `"return(async()=>{let s="";s+=e(await f.t.call(c,"hello, {name}",c.name="Janja"));return s;})();"`,
     );
   });
 });
@@ -147,26 +147,26 @@ it('whitespace control', async () => {
 
 it('inline if/else', async () => {
   expect(await compile('{{= "x" if level else "y" }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e((c.level?"x":"y"));return s;})();"`,
+    `"return(async()=>{let s="";s+=e(c.level?"x":"y");return s;})();"`,
   );
   expect(await compile('{{= "x" if level }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e((c.level?"x":""));return s;})();"`,
+    `"return(async()=>{let s="";s+=e(c.level?"x":"");return s;})();"`,
   );
   expect(
     await compile('{{= "x" | f if level else y | f(a) }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e((c.level?(await f.f.call(c,"x")):(await f.f.call(c,c.y,c.a))));return s;})();"`,
+    `"return(async()=>{let s="";s+=e(c.level?await f.f.call(c,"x"):await f.f.call(c,c.y,c.a));return s;})();"`,
   );
   expect(
     await compile('{{= "md:block" if page | get("toc") }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e(((await f.get.call(c,c.page,"toc"))?"md:block":""));return s;})();"`,
+    `"return(async()=>{let s="";s+=e(await f.get.call(c,c.page,"toc")?"md:block":"");return s;})();"`,
   );
   expect(
     await compile(
       '{{= "negative" if accounts | length lt 0 else "positive" }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e(((await f.length.call(c,c.accounts))<0?"negative":"positive"));return s;})();"`,
+    `"return(async()=>{let s="";s+=e(await f.length.call(c,c.accounts)<0?"negative":"positive");return s;})();"`,
   );
 });

@@ -94,6 +94,6 @@ it('line break feed', async () => {
 
 it('filters', async () => {
   expect(await compile('{{= x | f(y, true, "a", 1) }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e((await f.f.call(c,c.x,c.y,true,"a",1)));return s;})();"`,
+    `"return(async()=>{let s="";s+=e(await f.f.call(c,c.x,c.y,true,"a",1));return s;})();"`,
   );
 });

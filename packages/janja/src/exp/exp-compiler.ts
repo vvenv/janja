@@ -121,7 +121,7 @@ export class ExpCompiler {
   private compilePipe({ left, right }: BinaryExp<'PIPE'>) {
     const { value: name, args = [] } = right as IdExp;
 
-    return `(await ${this.filters}.${name}.call(${[this.context, this.compileExp(left), ...args.map((arg) => (arg.type === 'ASSIGN' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExp(arg.right)}` : this.compileExp(arg)))].join(',')}))`;
+    return `await ${this.filters}.${name}.call(${[this.context, this.compileExp(left), ...args.map((arg) => (arg.type === 'ASSIGN' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExp(arg.right)}` : this.compileExp(arg)))].join(',')})`;
   }
 
   private compileAssign({ left, right }: BinaryExp<'ASSIGN'>) {
@@ -134,7 +134,7 @@ export class ExpCompiler {
   }
 
   private compileIs({ left, right }: BinaryExp<'IS'>) {
-    return `(typeof ${this.compileExp(left)}===${this.compileExp(right)})`;
+    return `typeof ${this.compileExp(left)}===${this.compileExp(right)}`;
   }
 
   private compileBinary({ type, left, right }: BinaryExp) {
@@ -144,6 +144,6 @@ export class ExpCompiler {
   }
 
   private compileTernary({ test, consequent, alternative }: IfExp) {
-    return `(${this.compileExp(test)}?${this.compileExp(consequent)}:${alternative ? this.compileExp(alternative) : '""'})`;
+    return `${this.compileExp(test)}?${this.compileExp(consequent)}:${alternative ? this.compileExp(alternative) : '""'}`;
   }
 }
