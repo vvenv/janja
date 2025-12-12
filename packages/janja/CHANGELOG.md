@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/vvenv/janja/compare/janja-v2.5.0...janja-v2.5.1) (2025-12-12)
+
+
+### Bug Fixes
+
+* publish ([534f85a](https://github.com/vvenv/janja/commit/534f85a83954342a2a5c6ee0bb5e128614053bf9))
+
 ## [2.5.0](https://github.com/vvenv/janja/compare/janja-v2.4.3...janja-v2.5.0) (2025-12-12)
 
 
