@@ -88,7 +88,7 @@ export class ExpTokenizer implements Pos {
       if (isWhitespace(char)) {
         if (char === '\n') {
           this.line++;
-          this.column = 0;
+          this.column = 1;
         } else {
           this.column++;
         }

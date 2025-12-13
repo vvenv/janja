@@ -1,11 +1,11 @@
-import type { RendererOptions } from './options';
 import { Renderer } from './renderer';
-import type { ObjectType } from './types';
+import type { ObjectType, RendererOptions } from './types';
 
-export type * from './types';
-export type * from './exp/exp-types';
+export * from './types';
+export * from './exp/exp-types';
 export * from './compile-error';
 export * from './compiler';
+export * from './options';
 export * from './parser';
 export * from './render-error';
 export * from './renderer';

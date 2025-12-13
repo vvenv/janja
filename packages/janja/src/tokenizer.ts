@@ -1,12 +1,15 @@
 import { CompileError } from './compile-error';
-import { mergeOptions, type ParserOptions, parserOptions } from './options';
-import { type DirectiveToken, type Pos, type Token, TokenType } from './types';
+import {
+  type DirectiveToken,
+  type ParserOptions,
+  type Pos,
+  type Token,
+  TokenType,
+} from './types';
 import { unescapeTag } from './unescape-tag';
 import { updatePosition } from './update-position';
 
 export class Tokenizer implements Pos {
-  options: Required<ParserOptions>;
-
   template!: string;
 
   protected length!: number;
@@ -21,9 +24,7 @@ export class Tokenizer implements Pos {
 
   column = 1;
 
-  constructor(options?: ParserOptions) {
-    this.options = mergeOptions(parserOptions, options);
-
+  constructor(public options: Required<ParserOptions>) {
     const {
       commentOpen,
       commentClose,

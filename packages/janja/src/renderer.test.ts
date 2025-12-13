@@ -254,17 +254,11 @@ it('include', async () => {
     `
     "<html>
       <head>
-        {%- block head -%}
           <title>title</title>
-        {%- endblock -%}
-        {%-include "head"-%}
-      </head>
+        </head>
       <body>
-        {%- block body -%}
           <h1>body</h1>
-        {%- endblock -%}
-        {%-include "body"-%}
-      </body>
+        </body>
     </html>
     "
   `,

@@ -89,3 +89,31 @@ export type CompilerFn<T extends SyntaxNode = any> = (
   compiler: Compiler,
 ) => MaybePromise<void>;
 export type CompilerMap = Record<string, string | CompilerFn>;
+
+export interface BaseOptions {
+  debug?: (error: Error) => any;
+  filters?: Filters;
+  parsers?: ParserMap;
+  compilers?: CompilerMap;
+  plugins?: Plugin[];
+}
+
+export interface ParserOptions extends BaseOptions {
+  commentOpen?: string;
+  commentClose?: string;
+  directiveOpen?: string;
+  directiveClose?: string;
+  outputOpen?: string;
+  outputClose?: string;
+}
+
+export interface CompilerOptions extends ParserOptions {
+  trimWhitespace?: boolean;
+  stripComments?: boolean;
+  loader?: (path: string) => Promise<string>;
+}
+
+export interface RendererOptions extends CompilerOptions {
+  globals?: ObjectType;
+  autoEscape?: boolean;
+}

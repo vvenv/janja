@@ -1,9 +1,11 @@
 import { Compiler } from '../src/compiler';
-import type { RendererOptions } from '../src/options';
+import * as filters from '../src/filters';
+import { mergeOptions, renderOptions } from '../src/options';
 import { Parser } from '../src/parser';
+import { plugins } from '../src/plugins';
 import { Renderer } from '../src/renderer';
 import { Tokenizer } from '../src/tokenizer';
-import type { ObjectType } from '../src/types';
+import type { ObjectType, RendererOptions } from '../src/types';
 import { fileLoader } from './loaders/file-loader';
 
 const loader = async (_path: string) =>
@@ -11,27 +13,28 @@ const loader = async (_path: string) =>
 const debug = (error: Error) => {
   throw error;
 };
+const makeOptions = (options: RendererOptions = {}) =>
+  mergeOptions(
+    renderOptions,
+    {
+      filters,
+      plugins,
+      debug,
+      loader,
+    },
+    options,
+  );
 
 export async function tokenize(template: string, options?: RendererOptions) {
-  return new Tokenizer({
-    ...options,
-    debug,
-  }).tokenize(template);
+  return new Tokenizer(makeOptions(options)).tokenize(template);
 }
 
 export async function parse(template: string, options?: RendererOptions) {
-  return new Parser({
-    ...options,
-    debug,
-  }).parse(template);
+  return new Parser(makeOptions(options)).parse(template);
 }
 
 export async function compile(template: string, options?: RendererOptions) {
-  const { code } = await new Compiler({
-    ...options,
-    loader,
-    debug,
-  }).compile(template);
+  const { code } = await new Compiler(makeOptions(options)).compile(template);
 
   return code;
 }
@@ -41,11 +44,7 @@ export async function render(
   data: ObjectType = {},
   options?: RendererOptions,
 ) {
-  return new Renderer({
-    ...options,
-    loader,
-    debug,
-  }).render(template, data);
+  return new Renderer(makeOptions(options)).render(template, data);
 }
 
 export async function renderFile(
@@ -53,9 +52,5 @@ export async function renderFile(
   data: ObjectType = {},
   options?: RendererOptions,
 ) {
-  return new Renderer({
-    ...options,
-    loader,
-    debug,
-  }).renderFile(filepath, data);
+  return new Renderer(makeOptions(options)).renderFile(filepath, data);
 }

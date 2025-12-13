@@ -33,5 +33,11 @@ jobs:
           key: yarn-cache-${{ hashFiles('yarn.lock') }}
       - name: Install Dependencies
         run: yarn install --immutable
+      - name: Build Janja
+        run: yarn build
+        working-directory: packages/janja
+      - name: Build ESLint Plugin Janja
+        run: yarn build
+        working-directory: packages/eslint-plugin-janja
       - name: Run lint
         run: yarn lint

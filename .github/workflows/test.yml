@@ -36,9 +36,6 @@ jobs:
           key: yarn-cache-${{ hashFiles('yarn.lock') }}
       - name: Install Dependencies
         run: yarn install --immutable
-      - name: Build
-        run: yarn build
-        working-directory: packages/janja
       - name: Run test
         run: yarn test --coverage
         working-directory: packages/janja
