@@ -1,46 +1,16 @@
-import * as filters from './filters';
-import { plugins } from './plugins';
 import type {
-  CompilerMap,
-  Filters,
-  ObjectType,
-  ParserMap,
+  BaseOptions,
+  CompilerOptions,
+  ParserOptions,
   Plugin,
+  RendererOptions,
 } from './types';
 
-export interface BaseOptions {
-  debug?: (error: Error) => any;
-  filters?: Filters;
-  parsers?: ParserMap;
-  compilers?: CompilerMap;
-  plugins?: Plugin[];
-}
-
-export interface ParserOptions extends BaseOptions {
-  commentOpen?: string;
-  commentClose?: string;
-  directiveOpen?: string;
-  directiveClose?: string;
-  outputOpen?: string;
-  outputClose?: string;
-}
-
-export interface CompilerOptions extends ParserOptions {
-  trimWhitespace?: boolean;
-  stripComments?: boolean;
-  loader?: (path: string) => Promise<string>;
-}
-
-export interface RendererOptions extends CompilerOptions {
-  globals?: ObjectType;
-  autoEscape?: boolean;
-}
-
 export const baseOptions: Required<BaseOptions> = {
-  filters,
+  filters: {},
   parsers: {},
   compilers: {},
-  plugins,
+  plugins: [],
   debug: () => {},
 };
 
@@ -72,23 +42,32 @@ export const mergeOptions = <
   U extends RendererOptions,
 >(
   defaultOptions: T,
-  options?: U,
+  ...optionsArray: U[]
 ): Required<U> => {
   const mergedOptions = {
     ...defaultOptions,
-    ...options,
   } as Required<T & U>;
 
-  defaultOptions.plugins?.forEach((plugin) => {
-    Object.assign(mergedOptions.filters, plugin.filters ?? {});
-    Object.assign(mergedOptions.parsers, plugin.parsers ?? {});
-    Object.assign(mergedOptions.compilers, plugin.compilers ?? {});
-  });
+  const mergePlugins = (plugin: Plugin) => {
+    mergedOptions.filters = {
+      ...mergedOptions.filters,
+      ...plugin.filters,
+    };
+    mergedOptions.parsers = {
+      ...mergedOptions.parsers,
+      ...plugin.parsers,
+    };
+    mergedOptions.compilers = {
+      ...mergedOptions.compilers,
+      ...plugin.compilers,
+    };
+  };
 
-  options?.plugins?.forEach((plugin) => {
-    Object.assign(mergedOptions.filters, plugin.filters ?? {});
-    Object.assign(mergedOptions.parsers, plugin.parsers ?? {});
-    Object.assign(mergedOptions.compilers, plugin.compilers ?? {});
+  defaultOptions.plugins?.forEach(mergePlugins);
+
+  optionsArray.forEach(({ plugins, ...options }) => {
+    Object.assign(mergedOptions, options);
+    plugins?.forEach(mergePlugins);
   });
 
   return mergedOptions;

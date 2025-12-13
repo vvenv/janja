@@ -1,16 +1,24 @@
 import { Compiler } from './compiler';
 import { escape } from './escape';
 import * as filters from './filters';
-import { mergeOptions, type RendererOptions, renderOptions } from './options';
+import { mergeOptions, renderOptions } from './options';
+import { plugins } from './plugins';
 import { RenderError } from './render-error';
 import { Safe } from './safe';
-import type { ObjectType } from './types';
+import type { ObjectType, RendererOptions } from './types';
 
 export class Renderer {
   protected options: Required<RendererOptions>;
 
-  constructor(options?: RendererOptions) {
-    this.options = mergeOptions(renderOptions, options);
+  constructor(options: RendererOptions = {}) {
+    this.options = mergeOptions(
+      renderOptions,
+      {
+        filters,
+        plugins,
+      },
+      options,
+    );
   }
 
   async render(template: string, globals: ObjectType) {
@@ -20,7 +28,7 @@ export class Renderer {
       await compiler.compile(template);
 
       return await compiler.script(
-        { ...globals, ...this.options.globals },
+        { ...this.options.globals, ...globals },
         (v: unknown) => {
           if (v instanceof Safe) {
             return `${v}`;
@@ -28,7 +36,7 @@ export class Renderer {
 
           return this.options.autoEscape ? escape(v) : v;
         },
-        { ...filters, ...this.options.filters },
+        this.options.filters,
       );
     } catch (error: any) {
       this.options.debug(

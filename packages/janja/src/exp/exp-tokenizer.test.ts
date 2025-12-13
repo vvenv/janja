@@ -1722,53 +1722,53 @@ it('whitespace', () => {
     +\ty  `),
   ).toMatchInlineSnapshot(
     `
-      [
-        {
-          "loc": {
-            "end": {
-              "column": 4,
-              "line": 1,
-            },
-            "start": {
-              "column": 3,
-              "line": 1,
-            },
+    [
+      {
+        "loc": {
+          "end": {
+            "column": 4,
+            "line": 1,
           },
-          "raw": "x",
-          "type": "ID",
-          "value": "x",
-        },
-        {
-          "loc": {
-            "end": {
-              "column": 5,
-              "line": 2,
-            },
-            "start": {
-              "column": 4,
-              "line": 2,
-            },
+          "start": {
+            "column": 3,
+            "line": 1,
           },
-          "raw": "+",
-          "type": "ADD",
-          "value": "+",
         },
-        {
-          "loc": {
-            "end": {
-              "column": 7,
-              "line": 2,
-            },
-            "start": {
-              "column": 6,
-              "line": 2,
-            },
+        "raw": "x",
+        "type": "ID",
+        "value": "x",
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 6,
+            "line": 2,
           },
-          "raw": "y",
-          "type": "ID",
-          "value": "y",
+          "start": {
+            "column": 5,
+            "line": 2,
+          },
         },
-      ]
-    `,
+        "raw": "+",
+        "type": "ADD",
+        "value": "+",
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 8,
+            "line": 2,
+          },
+          "start": {
+            "column": 7,
+            "line": 2,
+          },
+        },
+        "raw": "y",
+        "type": "ID",
+        "value": "y",
+      },
+    ]
+  `,
   );
 });

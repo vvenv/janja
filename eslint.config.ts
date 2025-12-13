@@ -4,6 +4,7 @@ import prettier from 'eslint-plugin-prettier';
 import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
 import { parser as tsParser, plugin as tsPlugin } from 'typescript-eslint';
+import janja from 'eslint-plugin-janja';
 
 export default defineConfig([
   {
@@ -476,6 +477,16 @@ export default defineConfig([
     files: ['**/*.config.ts'],
     rules: {
       'import/no-default-export': 'off',
+    },
+  },
+  {
+    files: ['**/*.janja'],
+    plugins: {
+      janja,
+    },
+    language: 'janja/janja',
+    rules: {
+      'janja/spacing': ['error', 'always'],
     },
   },
 ]);

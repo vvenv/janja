@@ -2740,52 +2740,52 @@ it('whitespace', () => {
     +\ty  `),
   ).toMatchInlineSnapshot(
     `
-      {
-        "left": {
-          "loc": {
-            "end": {
-              "column": 4,
-              "line": 1,
-            },
-            "start": {
-              "column": 3,
-              "line": 1,
-            },
-          },
-          "raw": "x",
-          "type": "ID",
-          "value": "x",
-        },
+    {
+      "left": {
         "loc": {
           "end": {
-            "column": 5,
+            "column": 4,
+            "line": 1,
+          },
+          "start": {
+            "column": 3,
+            "line": 1,
+          },
+        },
+        "raw": "x",
+        "type": "ID",
+        "value": "x",
+      },
+      "loc": {
+        "end": {
+          "column": 6,
+          "line": 2,
+        },
+        "start": {
+          "column": 5,
+          "line": 2,
+        },
+      },
+      "raw": "+",
+      "right": {
+        "loc": {
+          "end": {
+            "column": 8,
             "line": 2,
           },
           "start": {
-            "column": 4,
+            "column": 7,
             "line": 2,
           },
         },
-        "raw": "+",
-        "right": {
-          "loc": {
-            "end": {
-              "column": 7,
-              "line": 2,
-            },
-            "start": {
-              "column": 6,
-              "line": 2,
-            },
-          },
-          "raw": "y",
-          "type": "ID",
-          "value": "y",
-        },
-        "type": "ADD",
-        "value": "+",
-      }
-    `,
+        "raw": "y",
+        "type": "ID",
+        "value": "y",
+      },
+      "type": "ADD",
+      "value": "+",
+    }
+  `,
   );
 });
 

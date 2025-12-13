@@ -1,15 +1,12 @@
 import { CompileError } from './compile-error';
 import { Context } from './context';
-import { type CompilerOptions, compilerOptions, mergeOptions } from './options';
 import { Parser } from './parser';
 import type { BlockNode } from './plugins/block/syntax';
 import type { IncludeNode } from './plugins/include/syntax';
 import type { RootNode, SyntaxNode } from './syntax-nodes';
-import type { CompilerFn } from './types';
+import type { CompilerFn, CompilerOptions } from './types';
 
 export class Compiler extends Context {
-  public options: Required<CompilerOptions>;
-
   public template!: string;
 
   public state!: Record<string, any>;
@@ -22,9 +19,8 @@ export class Compiler extends Context {
 
   private blocks!: Map<string, BlockNode[]>;
 
-  constructor(options?: CompilerOptions) {
+  constructor(public options: Required<CompilerOptions>) {
     super();
-    this.options = mergeOptions(compilerOptions, options);
   }
 
   async compile(
