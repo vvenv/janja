@@ -781,12 +781,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.10.3":
-  version: 24.10.3
-  resolution: "@types/node@npm:24.10.3"
+"@types/node@npm:^25.0.2":
+  version: 25.0.2
+  resolution: "@types/node@npm:25.0.2"
   dependencies:
     undici-types: "npm:~7.16.0"
-  checksum: 10c0/58ddaf9ce3dd9d3aa55f7dfacb7b8f16481ad64a47b99f1890fa3d4498d1958def78699838f422c0a81851d6be8b9de7ffc344435a60abcf02c0e2c085008b20
+  checksum: 10c0/12c4044bf2e46ba3d313ddf6256ee3c88e336a62d129fe788eeab8ff2631b3df51eb31ade4cdc04552fbe51e285f0663c49b60c78acd31da2b9f2c86a84347e3
   languageName: node
   linkType: hard
 
@@ -1973,7 +1973,7 @@ __metadata:
     "@rollup/plugin-node-resolve": "npm:^16.0.3"
     "@rollup/plugin-typescript": "npm:^12.3.0"
     "@types/eslint": "npm:^9.6.1"
-    "@types/node": "npm:^24.10.3"
+    "@types/node": "npm:^25.0.2"
     "@vitest/coverage-v8": "npm:4.0.15"
     "@vitest/ui": "npm:4.0.15"
     eslint: "npm:^9.39.2"
@@ -2905,7 +2905,7 @@ __metadata:
   resolution: "janja.js@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.39.2"
-    "@types/node": "npm:^24.10.3"
+    "@types/node": "npm:^25.0.2"
     eslint: "npm:^9.39.2"
     eslint-import-resolver-typescript: "npm:^4.4.4"
     eslint-plugin-import: "npm:^2.32.0"
@@ -2929,7 +2929,7 @@ __metadata:
     "@rollup/plugin-commonjs": "npm:^29.0.0"
     "@rollup/plugin-node-resolve": "npm:^16.0.3"
     "@rollup/plugin-typescript": "npm:^12.3.0"
-    "@types/node": "npm:^24.10.3"
+    "@types/node": "npm:^25.0.2"
     "@vitest/coverage-v8": "npm:4.0.15"
     "@vitest/ui": "npm:4.0.15"
     rollup: "npm:^4.53.3"
