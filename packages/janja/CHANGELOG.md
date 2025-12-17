@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/vvenv/janja/compare/janja-v2.6.0...janja-v2.7.0) (2025-12-17)
+
+
+### Features
+
+* add space-between rule ([5075719](https://github.com/vvenv/janja/commit/5075719ff9f5bb68786deaa53867700f07f66a1d))
+
 ## [2.6.0](https://github.com/vvenv/janja/compare/janja-v2.5.1...janja-v2.6.0) (2025-12-13)
 
 
