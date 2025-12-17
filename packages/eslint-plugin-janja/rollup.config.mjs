@@ -9,8 +9,8 @@ import pkg from './package.json' with { type: 'json' }
 export default defineConfig([{
   input: 'src/index.ts',
     output: [
-      { file: pkg.main, format: 'cjs' },
-      { file: pkg.module, format: 'es' },
+      { file: pkg.main, format: 'cjs', exports: 'named' },
+      { file: pkg.module, format: 'es', exports: 'named' },
     ],
   external: ['eslint', /^janja\//],
   plugins: [
