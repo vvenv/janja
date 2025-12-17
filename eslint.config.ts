@@ -486,7 +486,8 @@ export default defineConfig([
     },
     language: 'janja/janja',
     rules: {
-      'janja/spacing': ['error', 'always'],
+      'janja/space-around': ['error', 'always'],
+      'janja/space-between': ['error', 'always'],
     },
   },
 ]);

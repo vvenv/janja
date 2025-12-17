@@ -1,7 +1,9 @@
+import type { Plugin } from '@eslint/core';
 import { JanjaLanguage } from './language';
-import { spacing } from './rules/spacing';
+import { spaceAround } from './rules/space-around';
+import { spaceBetween } from './rules/space-between';
 
-const plugin = {
+const plugin: Plugin = {
   meta: {
     name: 'eslint-plugin-janja',
     version: '0.0.1',
@@ -10,20 +12,30 @@ const plugin = {
     janja: new JanjaLanguage(),
   },
   rules: {
-    spacing,
+    'space-around': spaceAround,
+    'space-between': spaceBetween,
   },
   configs: {
     recommended: {
       name: 'janja/recommended',
-      plugins: {} as Record<string, any>,
+      plugins: {},
       rules: {
-        'janja/spacing': 'error',
+        'janja/space-around': 'error',
+        'janja/space-between': 'error',
       },
     },
   },
 };
 
-plugin.configs.recommended.plugins.janja = plugin;
+plugin.configs!.recommended = {
+  name: 'janja/recommended',
+  plugins: {
+    janja: plugin,
+  },
+  rules: {
+    'janja/space-around': 'error',
+  },
+};
 
 export const { configs, languages, rules } = plugin;
 
