@@ -2,7 +2,7 @@ import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
 import { OutputNode } from './syntax';
 
-async function* parseOutput(token: DirectiveToken, parser: Parser) {
+function* parseOutput(token: DirectiveToken, parser: Parser) {
   yield 'NEXT';
   yield new OutputNode(
     token.val,

@@ -5,7 +5,7 @@ import { CallerNode, MacroNode, type MacroNodeVal } from './syntax';
 
 const wm = new WeakMap<Parser, boolean>();
 
-async function* parseMacro(token: DirectiveToken, parser: Parser) {
+function* parseMacro(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
@@ -16,7 +16,7 @@ async function* parseMacro(token: DirectiveToken, parser: Parser) {
 
   yield 'NEXT';
 
-  const body = await parser.parseUntil(['endmacro']);
+  const body = parser.parseUntil(['endmacro']);
 
   wm.set(parser, false);
 
@@ -69,7 +69,7 @@ async function* parseMacro(token: DirectiveToken, parser: Parser) {
   yield new MacroNode(val, body, token.loc, token.strip);
 }
 
-async function* parseCaller(token: DirectiveToken, parser: Parser) {
+function* parseCaller(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 

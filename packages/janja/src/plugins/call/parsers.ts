@@ -3,7 +3,7 @@ import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
 import { CallNode } from './syntax';
 
-async function* parseCall(token: DirectiveToken, parser: Parser) {
+function* parseCall(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
@@ -12,7 +12,7 @@ async function* parseCall(token: DirectiveToken, parser: Parser) {
 
   yield 'NEXT';
 
-  const body = await parser.parseUntil(['endcall']);
+  const body = parser.parseUntil(['endcall']);
 
   if (parser.match(['endcall'])) {
     yield 'NEXT';

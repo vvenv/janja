@@ -3,7 +3,7 @@ import type { Parser } from '../../parser';
 import type { DirectiveToken, Token } from '../../types';
 import { UnknownNode } from './syntax';
 
-export async function* parseUnknown(token: Token, parser: Parser) {
+export function* parseUnknown(token: Token, parser: Parser) {
   const name = (token as DirectiveToken).name ?? token.type;
 
   parser.options.debug?.(

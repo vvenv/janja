@@ -3,7 +3,7 @@ import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
 import { CaptureNode } from './syntax';
 
-async function* parseCapture(token: DirectiveToken, parser: Parser) {
+function* parseCapture(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
@@ -12,7 +12,7 @@ async function* parseCapture(token: DirectiveToken, parser: Parser) {
 
   yield 'NEXT';
 
-  const body = await parser.parseUntil(['endcapture']);
+  const body = parser.parseUntil(['endcapture']);
 
   if (parser.match(['endcapture'])) {
     yield 'NEXT';

@@ -3,7 +3,7 @@ import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
 import { ElseIfNode, ElseNode, IfNode } from './syntax';
 
-async function* parseIf(token: DirectiveToken, parser: Parser) {
+function* parseIf(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
@@ -12,13 +12,7 @@ async function* parseIf(token: DirectiveToken, parser: Parser) {
 
   yield 'NEXT';
 
-  const body = await parser.parseUntil([
-    'else',
-    'elseif',
-    'elsif',
-    'elif',
-    'endif',
-  ]);
+  const body = parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']);
   const alternatives: (ElseIfNode | ElseNode)[] = [];
 
   while (parser.match(['else', 'elseif', 'elsif', 'elif'])) {
@@ -28,7 +22,7 @@ async function* parseIf(token: DirectiveToken, parser: Parser) {
       const g = parseElse(branchToken, parser);
 
       while (true) {
-        const { value, done } = await g.next();
+        const { value, done } = g.next();
 
         if (done) {
           break;
@@ -48,7 +42,7 @@ async function* parseIf(token: DirectiveToken, parser: Parser) {
       const g = parseElseIf(branchToken, parser);
 
       while (true) {
-        const { value, done } = await g.next();
+        const { value, done } = g.next();
 
         if (done) {
           break;
@@ -84,7 +78,7 @@ async function* parseIf(token: DirectiveToken, parser: Parser) {
   );
 }
 
-async function* parseElseIf(token: DirectiveToken, parser: Parser) {
+function* parseElseIf(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
@@ -94,13 +88,13 @@ async function* parseElseIf(token: DirectiveToken, parser: Parser) {
   yield 'NEXT';
   yield new ElseIfNode(
     parser.parseExp(token.expression)!,
-    await parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']),
+    parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']),
     token.loc,
     token.strip,
   );
 }
 
-async function* parseElse(token: DirectiveToken, parser: Parser) {
+function* parseElse(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 
@@ -108,11 +102,7 @@ async function* parseElse(token: DirectiveToken, parser: Parser) {
   }
 
   yield 'NEXT';
-  yield new ElseNode(
-    await parser.parseUntil(['endif']),
-    token.loc,
-    token.strip,
-  );
+  yield new ElseNode(parser.parseUntil(['endif']), token.loc, token.strip);
 }
 
 export const parsers = {
