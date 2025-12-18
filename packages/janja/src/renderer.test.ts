@@ -286,7 +286,7 @@ it('custom directive', async () => {
         plugins: [
           {
             parsers: {
-              async *custom(token) {
+              *custom(token) {
                 yield 'NEXT';
                 yield new CustomNode(token.loc);
               },

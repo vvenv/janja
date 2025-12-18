@@ -3,7 +3,7 @@ import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
 import { BlockNode, SuperNode } from './syntax';
 
-async function* parseBlock(token: DirectiveToken, parser: Parser) {
+function* parseBlock(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
@@ -12,7 +12,7 @@ async function* parseBlock(token: DirectiveToken, parser: Parser) {
 
   yield 'NEXT';
 
-  const body = await parser.parseUntil(['endblock']);
+  const body = parser.parseUntil(['endblock']);
 
   if (parser.match(['endblock'])) {
     yield 'NEXT';
@@ -30,7 +30,7 @@ async function* parseBlock(token: DirectiveToken, parser: Parser) {
   );
 }
 
-async function* parseSuper(token: DirectiveToken, parser: Parser) {
+function* parseSuper(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 

@@ -5,7 +5,7 @@ import { BreakNode, ContinueNode, ElseNode, ForNode } from './syntax';
 
 const wm = new WeakMap<Parser, boolean>();
 
-async function* parseFor(token: DirectiveToken, parser: Parser) {
+function* parseFor(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
@@ -16,7 +16,7 @@ async function* parseFor(token: DirectiveToken, parser: Parser) {
 
   yield 'NEXT';
 
-  const body = await parser.parseUntil(['else', 'endfor']);
+  const body = parser.parseUntil(['else', 'endfor']);
 
   wm.set(parser, false);
 
@@ -26,7 +26,7 @@ async function* parseFor(token: DirectiveToken, parser: Parser) {
     const g = parseElse(parser.peek() as DirectiveToken, parser);
 
     while (true) {
-      const { value, done } = await g.next();
+      const { value, done } = g.next();
 
       if (done) {
         break;
@@ -61,7 +61,7 @@ async function* parseFor(token: DirectiveToken, parser: Parser) {
   );
 }
 
-async function* parseElse(token: DirectiveToken, parser: Parser) {
+function* parseElse(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 
@@ -69,14 +69,10 @@ async function* parseElse(token: DirectiveToken, parser: Parser) {
   }
 
   yield 'NEXT';
-  yield new ElseNode(
-    await parser.parseUntil(['endfor']),
-    token.loc,
-    token.strip,
-  );
+  yield new ElseNode(parser.parseUntil(['endfor']), token.loc, token.strip);
 }
 
-async function* parseBreak(token: DirectiveToken, parser: Parser) {
+function* parseBreak(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 
@@ -99,7 +95,7 @@ async function* parseBreak(token: DirectiveToken, parser: Parser) {
   yield new BreakNode(token.val, token.loc, token.strip);
 }
 
-async function* parseContinue(token: DirectiveToken, parser: Parser) {
+function* parseContinue(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
 

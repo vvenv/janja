@@ -81,7 +81,7 @@ export interface Plugin {
 export type ParserFn<T extends Token = any, U extends SyntaxNode = any> = (
   token: T,
   parser: Parser,
-) => AsyncGenerator<U | 'NEXT' | void>;
+) => Generator<U | 'NEXT' | void>;
 export type ParserMap = Record<string, string | ParserFn>;
 
 export type CompilerFn<T extends SyntaxNode = any> = (

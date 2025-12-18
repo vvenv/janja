@@ -2,7 +2,7 @@ import type { Parser } from '../../parser';
 import type { DirectiveToken } from '../../types';
 import { IncludeNode } from './syntax';
 
-async function* parseInclude(token: DirectiveToken, parser: Parser) {
+function* parseInclude(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 

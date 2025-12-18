@@ -16,7 +16,7 @@ export class Parser extends Tokenizer {
 
   protected cursor!: number;
 
-  async parse(template: string) {
+  parse(template: string) {
     this.tokenize(template);
 
     const start = this.tokens[0]?.loc.start ?? { line: 1, column: 1 };
@@ -26,10 +26,10 @@ export class Parser extends Tokenizer {
 
     this.cursor = 0;
 
-    return new RootNode(await this.parseUntil(), { start, end });
+    return new RootNode(this.parseUntil(), { start, end });
   }
 
-  async parseUntil(names?: string[]) {
+  parseUntil(names?: string[]) {
     const nodes: SyntaxNode[] = [];
 
     let prevToken: Token | null = null;
@@ -72,7 +72,7 @@ export class Parser extends Tokenizer {
 
       if (ag) {
         while (true) {
-          const { value, done } = await ag.next();
+          const { value, done } = ag.next();
 
           if (done) {
             break;
