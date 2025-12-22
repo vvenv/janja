@@ -1134,6 +1134,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vitest/pretty-format@npm:4.0.16":
+  version: 4.0.16
+  resolution: "@vitest/pretty-format@npm:4.0.16"
+  dependencies:
+    tinyrainbow: "npm:^3.0.3"
+  checksum: 10c0/11243e9c2d2d011ae23825c6b7464a4385a4a4efc4ceb28b7854bb9d73491f440b89d12f62c5c9737d26375cf9585b11bc20183d4dea4e983e79d5e162407eb9
+  languageName: node
+  linkType: hard
+
 "@vitest/runner@npm:4.0.15":
   version: 4.0.15
   resolution: "@vitest/runner@npm:4.0.15"
@@ -1162,11 +1171,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/ui@npm:4.0.15":
-  version: 4.0.15
-  resolution: "@vitest/ui@npm:4.0.15"
+"@vitest/ui@npm:4.0.16":
+  version: 4.0.16
+  resolution: "@vitest/ui@npm:4.0.16"
   dependencies:
-    "@vitest/utils": "npm:4.0.15"
+    "@vitest/utils": "npm:4.0.16"
     fflate: "npm:^0.8.2"
     flatted: "npm:^3.3.3"
     pathe: "npm:^2.0.3"
@@ -1174,8 +1183,8 @@ __metadata:
     tinyglobby: "npm:^0.2.15"
     tinyrainbow: "npm:^3.0.3"
   peerDependencies:
-    vitest: 4.0.15
-  checksum: 10c0/f6d1729de4d0ab43fbcc48aa1935315ab1c039fcf216abc01222e9170e0cb1829300a950952ca025ee9af0618fb4c24199cb1a912a76466c87a0eee86ed91d11
+    vitest: 4.0.16
+  checksum: 10c0/54bf7fff050784865ad2acbd8b45422468e8d43164f3cd1b5f960d700513f532ee224202d1302a798d63bb5d8e5a68a417176a17ac6ad46cffa21c6b97c6ea32
   languageName: node
   linkType: hard
 
@@ -1186,6 +1195,16 @@ __metadata:
     "@vitest/pretty-format": "npm:4.0.15"
     tinyrainbow: "npm:^3.0.3"
   checksum: 10c0/2ef661c2c2359ae956087f0b728b6a0f7555cd10524a7def27909f320f6b8ba00560ee1bd856bf68d4debc01020cea21b200203a5d2af36c44e94528c5587aee
+  languageName: node
+  linkType: hard
+
+"@vitest/utils@npm:4.0.16":
+  version: 4.0.16
+  resolution: "@vitest/utils@npm:4.0.16"
+  dependencies:
+    "@vitest/pretty-format": "npm:4.0.16"
+    tinyrainbow: "npm:^3.0.3"
+  checksum: 10c0/bba35b4e102be03e106ced227809437573aa5c5f64d512301ca8de127dcb91cbedc11a2e823305f8ba82528c909c10510ec8c7e3d92b3d6d1c1aec33e143572a
   languageName: node
   linkType: hard
 
@@ -1975,7 +1994,7 @@ __metadata:
     "@types/eslint": "npm:^9.6.1"
     "@types/node": "npm:^24.10.3"
     "@vitest/coverage-v8": "npm:4.0.15"
-    "@vitest/ui": "npm:4.0.15"
+    "@vitest/ui": "npm:4.0.16"
     eslint: "npm:^9.39.2"
     janja: "workspace:*"
     rollup: "npm:^4.53.3"
@@ -2931,7 +2950,7 @@ __metadata:
     "@rollup/plugin-typescript": "npm:^12.3.0"
     "@types/node": "npm:^24.10.3"
     "@vitest/coverage-v8": "npm:4.0.15"
-    "@vitest/ui": "npm:4.0.15"
+    "@vitest/ui": "npm:4.0.16"
     rollup: "npm:^4.53.3"
     rollup-plugin-dts: "npm:^6.3.0"
     typescript: "npm:^5.9.3"
