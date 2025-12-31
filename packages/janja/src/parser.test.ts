@@ -1,9 +1,9 @@
 import { expect, it } from 'vitest';
 import { parse } from '../test/__helper';
 
-it('error', async () => {
+it('error', () => {
   try {
-    await parse('{{}}');
+    parse('{{}}');
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: Unknown ""]`);
@@ -19,7 +19,7 @@ it('error', async () => {
   }
 
   try {
-    await parse('{{ else');
+    parse('{{ else');
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: Unclosed "{{"]`);
@@ -35,7 +35,7 @@ it('error', async () => {
   }
 
   try {
-    await parse('{{ else }}');
+    parse('{{ else }}');
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: Unknown "else"]`);
@@ -51,7 +51,7 @@ it('error', async () => {
   }
 
   try {
-    await parse('{{ elseif }}');
+    parse('{{ elseif }}');
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "elseif"]`);
@@ -67,7 +67,7 @@ it('error', async () => {
   }
 
   try {
-    await parse('{{ if }}');
+    parse('{{ if }}');
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -85,7 +85,7 @@ it('error', async () => {
   }
 
   try {
-    await parse('{{ if x }}');
+    parse('{{ if x }}');
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(`[CompileError: Unclosed "if"]`);
@@ -101,7 +101,7 @@ it('error', async () => {
   }
 
   try {
-    await parse('{{ if x }}{{ else y }}{{ endif }}');
+    parse('{{ if x }}{{ else y }}{{ endif }}');
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -119,7 +119,7 @@ it('error', async () => {
   }
 
   try {
-    await parse('{{ for }}');
+    parse('{{ for }}');
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
@@ -137,28 +137,13 @@ it('error', async () => {
   }
 });
 
-it('escape tag', async () => {
-  expect(await parse('{{= "{{ escape }}" }}')).toMatchInlineSnapshot(
+it('escape tag', () => {
+  expect(parse('{{= "{{ escape }}" }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
         OutputNode {
           "body": undefined,
-          "exp": {
-            "loc": {
-              "end": {
-                "column": 12,
-                "line": 1,
-              },
-              "start": {
-                "column": 2,
-                "line": 1,
-              },
-            },
-            "raw": ""{{ escape "",
-            "type": "LIT",
-            "value": "{{ escape ",
-          },
           "loc": {
             "end": {
               "column": 18,
@@ -174,7 +159,21 @@ it('escape tag', async () => {
             "before": false,
           },
           "type": "OUTPUT",
-          "val": " "{{ escape ",
+          "val": {
+            "loc": {
+              "end": {
+                "column": 12,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
+            "raw": ""{{ escape "",
+            "type": "LIT",
+            "value": "{{ escape ",
+          },
         },
         TextNode {
           "body": undefined,
@@ -207,27 +206,12 @@ it('escape tag', async () => {
     }
   `,
   );
-  expect(await parse('{{= "\\{\\{ escape \\}\\}" }}')).toMatchInlineSnapshot(
+  expect(parse('{{= "\\{\\{ escape \\}\\}" }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
         OutputNode {
           "body": undefined,
-          "exp": {
-            "loc": {
-              "end": {
-                "column": 14,
-                "line": 1,
-              },
-              "start": {
-                "column": 2,
-                "line": 1,
-              },
-            },
-            "raw": ""{{ escape }}"",
-            "type": "LIT",
-            "value": "{{ escape }}",
-          },
           "loc": {
             "end": {
               "column": 26,
@@ -243,7 +227,21 @@ it('escape tag', async () => {
             "before": false,
           },
           "type": "OUTPUT",
-          "val": " "{{ escape }}" ",
+          "val": {
+            "loc": {
+              "end": {
+                "column": 14,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
+            "raw": ""{{ escape }}"",
+            "type": "LIT",
+            "value": "{{ escape }}",
+          },
         },
       ],
       "loc": {
@@ -262,8 +260,8 @@ it('escape tag', async () => {
   );
 });
 
-it('empty', async () => {
-  expect(await parse('')).toMatchInlineSnapshot(
+it('empty', () => {
+  expect(parse('')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [],
@@ -281,7 +279,7 @@ it('empty', async () => {
     }
   `,
   );
-  expect(await parse(' ')).toMatchInlineSnapshot(
+  expect(parse(' ')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -318,8 +316,8 @@ it('empty', async () => {
   );
 });
 
-it('comment', async () => {
-  expect(await parse('{{# if x -#}}')).toMatchInlineSnapshot(
+it('comment', () => {
+  expect(parse('{{# if x -#}}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -359,8 +357,8 @@ it('comment', async () => {
   );
 });
 
-it('directive', async () => {
-  expect(await parse('{{if x -}}{{endif}}')).toMatchInlineSnapshot(
+it('directive', () => {
+  expect(parse('{{if x -}}{{endif}}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
@@ -415,28 +413,13 @@ it('directive', async () => {
   );
 });
 
-it('output', async () => {
-  expect(await parse('{{=- x }}')).toMatchInlineSnapshot(
+it('output', () => {
+  expect(parse('{{=- x }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
         OutputNode {
           "body": undefined,
-          "exp": {
-            "loc": {
-              "end": {
-                "column": 3,
-                "line": 1,
-              },
-              "start": {
-                "column": 2,
-                "line": 1,
-              },
-            },
-            "raw": "x",
-            "type": "ID",
-            "value": "x",
-          },
           "loc": {
             "end": {
               "column": 10,
@@ -452,7 +435,21 @@ it('output', async () => {
             "before": true,
           },
           "type": "OUTPUT",
-          "val": " x ",
+          "val": {
+            "loc": {
+              "end": {
+                "column": 3,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
+            "raw": "x",
+            "type": "ID",
+            "value": "x",
+          },
         },
       ],
       "loc": {
@@ -469,27 +466,12 @@ it('output', async () => {
     }
   `,
   );
-  expect(await parse('{{= null }}')).toMatchInlineSnapshot(
+  expect(parse('{{= null }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
         OutputNode {
           "body": undefined,
-          "exp": {
-            "loc": {
-              "end": {
-                "column": 6,
-                "line": 1,
-              },
-              "start": {
-                "column": 2,
-                "line": 1,
-              },
-            },
-            "raw": "null",
-            "type": "LIT",
-            "value": null,
-          },
           "loc": {
             "end": {
               "column": 12,
@@ -505,7 +487,21 @@ it('output', async () => {
             "before": false,
           },
           "type": "OUTPUT",
-          "val": " null ",
+          "val": {
+            "loc": {
+              "end": {
+                "column": 6,
+                "line": 1,
+              },
+              "start": {
+                "column": 2,
+                "line": 1,
+              },
+            },
+            "raw": "null",
+            "type": "LIT",
+            "value": null,
+          },
         },
       ],
       "loc": {
@@ -522,13 +518,28 @@ it('output', async () => {
     }
   `,
   );
-  expect(await parse('{{= x + 1 }}')).toMatchInlineSnapshot(
+  expect(parse('{{= x + 1 }}')).toMatchInlineSnapshot(
     `
     RootNode {
       "body": [
         OutputNode {
           "body": undefined,
-          "exp": {
+          "loc": {
+            "end": {
+              "column": 13,
+              "line": 1,
+            },
+            "start": {
+              "column": 1,
+              "line": 1,
+            },
+          },
+          "strip": {
+            "after": false,
+            "before": false,
+          },
+          "type": "OUTPUT",
+          "val": {
             "left": {
               "loc": {
                 "end": {
@@ -573,22 +584,6 @@ it('output', async () => {
             "type": "ADD",
             "value": "+",
           },
-          "loc": {
-            "end": {
-              "column": 13,
-              "line": 1,
-            },
-            "start": {
-              "column": 1,
-              "line": 1,
-            },
-          },
-          "strip": {
-            "after": false,
-            "before": false,
-          },
-          "type": "OUTPUT",
-          "val": " x + 1 ",
         },
       ],
       "loc": {
@@ -607,9 +602,9 @@ it('output', async () => {
   );
 });
 
-it('text', async () => {
+it('text', () => {
   expect(
-    await parse(`hello
+    parse(`hello
       world`),
   ).toMatchInlineSnapshot(
     `
@@ -649,9 +644,9 @@ it('text', async () => {
   );
 });
 
-it('custom open/close markers', async () => {
+it('custom open/close markers', () => {
   expect(
-    await parse('<% if x %>{{ x }}<% endif %>', {
+    parse('<% if x %>{{ x }}<% endif %>', {
       directiveOpen: '<%',
       directiveClose: '%>',
       outputOpen: '{{',
@@ -666,21 +661,6 @@ it('custom open/close markers', async () => {
           "body": [
             OutputNode {
               "body": undefined,
-              "exp": {
-                "loc": {
-                  "end": {
-                    "column": 13,
-                    "line": 1,
-                  },
-                  "start": {
-                    "column": 12,
-                    "line": 1,
-                  },
-                },
-                "raw": "x",
-                "type": "ID",
-                "value": "x",
-              },
               "loc": {
                 "end": {
                   "column": 18,
@@ -696,7 +676,21 @@ it('custom open/close markers', async () => {
                 "before": false,
               },
               "type": "OUTPUT",
-              "val": " x ",
+              "val": {
+                "loc": {
+                  "end": {
+                    "column": 13,
+                    "line": 1,
+                  },
+                  "start": {
+                    "column": 12,
+                    "line": 1,
+                  },
+                },
+                "raw": "x",
+                "type": "ID",
+                "value": "x",
+              },
             },
           ],
           "loc": {

@@ -1,9 +1,12 @@
-import type { Loc } from './types';
+import type { Exp } from './exp/exp-types';
+import type { Loc, Strip } from './types';
 
 export interface SyntaxNode {
   type: string;
   loc: Loc;
   body?: SyntaxNode[];
+  val?: Exp | string;
+  strip?: Strip;
   traverse: (cb: (node: SyntaxNode) => void) => void;
 }
 

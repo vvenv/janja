@@ -4,12 +4,7 @@ import { OutputNode } from './syntax';
 
 function* parseOutput(token: DirectiveToken, parser: Parser) {
   yield 'NEXT';
-  yield new OutputNode(
-    token.val,
-    token.loc,
-    token.strip,
-    parser.parseExp(token)!,
-  );
+  yield new OutputNode(parser.parseExp(token)!, token.loc, token.strip);
 }
 
 export const parsers = {
