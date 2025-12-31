@@ -1,8 +1,8 @@
 import { expect, it } from 'vitest';
 import { tokenize } from '../test/__helper';
 
-it('escape', async () => {
-  expect(await tokenize('{{ "{{ escape }}" }}')).toMatchInlineSnapshot(
+it('escape', () => {
+  expect(tokenize('{{ "{{ escape }}" }}')).toMatchInlineSnapshot(
     `
     [
       {
@@ -55,7 +55,7 @@ it('escape', async () => {
     ]
   `,
   );
-  expect(await tokenize('{{ "\\{\\{ escape \\}\\}" }}')).toMatchInlineSnapshot(
+  expect(tokenize('{{ "\\{\\{ escape \\}\\}" }}')).toMatchInlineSnapshot(
     `
     [
       {
@@ -96,8 +96,8 @@ it('escape', async () => {
 });
 
 it('empty', async () => {
-  expect(await tokenize('')).toMatchInlineSnapshot(`[]`);
-  expect(await tokenize(' ')).toMatchInlineSnapshot(
+  expect(tokenize('')).toMatchInlineSnapshot(`[]`);
+  expect(tokenize(' ')).toMatchInlineSnapshot(
     `
     [
       {
@@ -121,7 +121,7 @@ it('empty', async () => {
 });
 
 it('comment', async () => {
-  expect(await tokenize('{# if x -#}')).toMatchInlineSnapshot(`
+  expect(tokenize('{# if x -#}')).toMatchInlineSnapshot(`
     [
       {
         "loc": {
@@ -143,7 +143,7 @@ it('comment', async () => {
 });
 
 it('directive', async () => {
-  expect(await tokenize('{{if x -}}{{endif}}')).toMatchInlineSnapshot(
+  expect(tokenize('{{if x -}}{{endif}}')).toMatchInlineSnapshot(
     `
     [
       {
@@ -201,7 +201,7 @@ it('directive', async () => {
     ]
   `,
   );
-  expect(await tokenize('{{ if }}{{ endif }}')).toMatchInlineSnapshot(
+  expect(tokenize('{{ if }}{{ endif }}')).toMatchInlineSnapshot(
     `
     [
       {
@@ -250,7 +250,7 @@ it('directive', async () => {
 });
 
 it('output', async () => {
-  expect(await tokenize('{{- x }}')).toMatchInlineSnapshot(
+  expect(tokenize('{{- x }}')).toMatchInlineSnapshot(
     `
     [
       {
@@ -276,7 +276,7 @@ it('output', async () => {
     ]
   `,
   );
-  expect(await tokenize('{{ null }}')).toMatchInlineSnapshot(
+  expect(tokenize('{{ null }}')).toMatchInlineSnapshot(
     `
     [
       {
@@ -302,7 +302,7 @@ it('output', async () => {
     ]
   `,
   );
-  expect(await tokenize('{{ x + 1 }}')).toMatchInlineSnapshot(
+  expect(tokenize('{{ x + 1 }}')).toMatchInlineSnapshot(
     `
     [
       {
@@ -454,7 +454,7 @@ it('custom open/close markers', async () => {
     ]
   `,
   );
-  expect(await tokenize('{{ if x }}{{ x }}{{ endif }}')).toMatchInlineSnapshot(
+  expect(tokenize('{{ if x }}{{ x }}{{ endif }}')).toMatchInlineSnapshot(
     `
     [
       {

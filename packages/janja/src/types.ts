@@ -76,6 +76,7 @@ export interface Plugin {
   filters?: Filters;
   parsers?: ParserMap;
   compilers?: CompilerMap;
+  formatters?: FormatterMap;
 }
 
 export type ParserFn<T extends Token = any, U extends SyntaxNode = any> = (
@@ -89,6 +90,9 @@ export type CompilerFn<T extends SyntaxNode = any> = (
   compiler: Compiler,
 ) => MaybePromise<void>;
 export type CompilerMap = Record<string, string | CompilerFn>;
+
+export type FormatterFn<T extends SyntaxNode = any> = (node: T) => string;
+export type FormatterMap = Record<string, string | FormatterFn>;
 
 export interface BaseOptions {
   debug?: (error: Error) => any;
@@ -111,6 +115,11 @@ export interface CompilerOptions extends ParserOptions {
   trimWhitespace?: boolean;
   stripComments?: boolean;
   loader?: (path: string) => Promise<string>;
+}
+
+export interface FormatterOptions extends ParserOptions {
+  trimWhitespace?: boolean;
+  stripComments?: boolean;
 }
 
 export interface RendererOptions extends CompilerOptions {

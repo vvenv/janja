@@ -1,5 +1,6 @@
 import { Compiler } from '../src/compiler';
 import * as filters from '../src/filters';
+import { Formatter } from '../src/formatter';
 import { mergeOptions, renderOptions } from '../src/options';
 import { Parser } from '../src/parser';
 import { plugins } from '../src/plugins';
@@ -25,12 +26,18 @@ const makeOptions = (options: RendererOptions = {}) =>
     options,
   );
 
-export async function tokenize(template: string, options?: RendererOptions) {
+export function tokenize(template: string, options?: RendererOptions) {
   return new Tokenizer(makeOptions(options)).tokenize(template);
 }
 
-export async function parse(template: string, options?: RendererOptions) {
+export function parse(template: string, options?: RendererOptions) {
   return new Parser(makeOptions(options)).parse(template);
+}
+
+export function format(template: string, options?: RendererOptions) {
+  return new Formatter(makeOptions(options)).format(
+    parse(template, options).body[0],
+  );
 }
 
 export async function compile(template: string, options?: RendererOptions) {
