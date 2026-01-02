@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.1](https://github.com/vvenv/janja/compare/eslint-plugin-janja-v1.1.0...eslint-plugin-janja-v1.1.1) (2026-01-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * janja bumped to 2.8.0
+
 ## [1.1.0](https://github.com/vvenv/janja/compare/eslint-plugin-janja-v1.0.0...eslint-plugin-janja-v1.1.0) (2025-12-17)
 
 
