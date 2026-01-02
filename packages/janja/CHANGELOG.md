@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.0](https://github.com/vvenv/janja/compare/janja-v2.7.0...janja-v2.8.0) (2026-01-02)
+
+
+### Features
+
+* add node fomatter ([1349a50](https://github.com/vvenv/janja/commit/1349a50a5b5862c96b4cd022af8f991788d453cd))
+
 ## [2.7.0](https://github.com/vvenv/janja/compare/janja-v2.6.0...janja-v2.7.0) (2025-12-17)
 
 
