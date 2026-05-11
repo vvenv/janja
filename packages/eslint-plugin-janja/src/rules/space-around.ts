@@ -1,4 +1,4 @@
-import type { Rule } from 'eslint';
+import type { RuleDefinition } from '@eslint/core';
 import type { Token } from 'janja';
 import type { AST } from '../language';
 import type { Parser } from '../parser';
@@ -30,7 +30,7 @@ function checkSpaceAround(token: Token, mode: Mode) {
   return { error: 'noSpaces', expected: val.trim() };
 }
 
-export const spaceAround: Rule.RuleModule = {
+export const spaceAround: RuleDefinition = {
   meta: {
     type: 'layout',
     docs: {
@@ -51,9 +51,8 @@ export const spaceAround: Rule.RuleModule = {
     },
   },
 
-  // @ts-ignore
   create(context) {
-    const mode: Mode = context.options[0] || 'always';
+    const mode: Mode = (context.options[0] as Mode) || 'always';
 
     function checker(token: Token, _ast: AST, parser: Parser) {
       const { error, expected } = checkSpaceAround(token, mode);
@@ -65,8 +64,8 @@ export const spaceAround: Rule.RuleModule = {
           fix(fixer) {
             return fixer.replaceTextRange(
               [
-                context.sourceCode.getIndexFromLoc(token.loc.start),
-                context.sourceCode.getIndexFromLoc(token.loc.end),
+                (context.sourceCode as any).getIndexFromLoc(token.loc.start),
+                (context.sourceCode as any).getIndexFromLoc(token.loc.end),
               ],
               parser.format({
                 ...token,

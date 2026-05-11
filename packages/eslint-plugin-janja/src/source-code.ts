@@ -73,4 +73,18 @@ export class SourceCode extends TextSourceCodeBase {
   getParent(_token: Token) {
     return this.ast;
   }
+
+  getIndexFromLoc(loc: { line: number; column: number }): number {
+    const lines = this.text.split('\n');
+
+    let index = 0;
+
+    for (let i = 0; i < loc.line - 1; i++) {
+      index += lines[i].length + 1; // +1 for newline
+    }
+
+    index += loc.column - 1;
+
+    return index;
+  }
 }

@@ -1,4 +1,4 @@
-import type { Rule } from 'eslint';
+import type { RuleDefinition } from '@eslint/core';
 import type { DirectiveToken } from 'janja';
 import type { AST } from '../language';
 import type { Parser } from '../parser';
@@ -19,7 +19,7 @@ function checkSpaceBetween(token: DirectiveToken) {
   };
 }
 
-export const spaceBetween: Rule.RuleModule = {
+export const spaceBetween: RuleDefinition = {
   meta: {
     type: 'layout',
     docs: {
@@ -40,7 +40,6 @@ export const spaceBetween: Rule.RuleModule = {
     },
   },
 
-  // @ts-ignore
   create(context) {
     function checker(token: DirectiveToken, _ast: AST, parser: Parser) {
       const { error, expected } = checkSpaceBetween(token);
@@ -52,8 +51,8 @@ export const spaceBetween: Rule.RuleModule = {
           fix(fixer) {
             return fixer.replaceTextRange(
               [
-                context.sourceCode.getIndexFromLoc(token.loc.start),
-                context.sourceCode.getIndexFromLoc(token.loc.end),
+                (context.sourceCode as any).getIndexFromLoc(token.loc.start),
+                (context.sourceCode as any).getIndexFromLoc(token.loc.end),
               ],
               parser.format({
                 ...token,

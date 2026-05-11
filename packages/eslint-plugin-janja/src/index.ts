@@ -39,5 +39,4 @@ plugin.configs!.recommended = {
 
 export const { configs, languages, rules } = plugin;
 
-// eslint-disable-next-line import/no-default-export
 export default plugin;
