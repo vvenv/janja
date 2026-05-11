@@ -16,6 +16,11 @@ export * from './exp/exp-compiler';
 export * from './exp/exp-error';
 export * from './exp/exp-parser';
 export * from './exp/exp-tokenizer';
+export * from './precompile';
+export * from './i18n';
+export * from './compose';
+export * from './whitespace';
+export * from './mixins';
 
 export async function render(
   template: string,

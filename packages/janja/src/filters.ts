@@ -183,3 +183,163 @@ export function urlencode(this: ObjectType, value = '') {
 export function values(this: ObjectType, value: ObjectType = {}) {
   return Object.values(value);
 }
+
+// Date/DateTime filters
+export function date(this: ObjectType, value: Date | string, format = 'ISO') {
+  const dateObj = value instanceof Date ? value : new Date(value);
+
+  if (isNaN(dateObj.getTime())) {
+    return '';
+  }
+
+  switch (format) {
+    case 'ISO':
+      return dateObj.toISOString();
+    case 'date':
+      return dateObj.toISOString().split('T')[0];
+    case 'time':
+      return dateObj.toTimeString().split(' ')[0];
+    case 'locale':
+      return dateObj.toLocaleDateString();
+    case 'locale-time':
+      return dateObj.toLocaleTimeString();
+    case 'locale-datetime':
+      return dateObj.toLocaleString();
+    default:
+      return dateObj.toISOString();
+  }
+}
+
+export function timeAgo(this: ObjectType, value: Date | string) {
+  const dateObj = value instanceof Date ? value : new Date(value);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
+
+  const intervals = [
+    { label: 'year', seconds: 31536000 },
+    { label: 'month', seconds: 2592000 },
+    { label: 'day', seconds: 86400 },
+    { label: 'hour', seconds: 3600 },
+    { label: 'minute', seconds: 60 },
+  ];
+
+  for (const interval of intervals) {
+    const count = Math.floor(seconds / interval.seconds);
+
+    if (count >= 1) {
+      return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
+    }
+  }
+
+  return 'just now';
+}
+
+// Number formatting filters
+export function round(this: ObjectType, value: number, decimals = 0) {
+  return Number(`${Math.round(Number(`${value}e${decimals}`))}e-${decimals}`);
+}
+
+export function fixed(this: ObjectType, value: number, decimals = 2) {
+  return Number(value).toFixed(decimals);
+}
+
+export function percent(this: ObjectType, value: number, decimals = 0) {
+  return `${(value * 100).toFixed(decimals)}%`;
+}
+
+export function currency(
+  this: ObjectType,
+  value: number,
+  currencyCode = 'USD',
+  locale = 'en-US',
+) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currencyCode,
+  }).format(value);
+}
+
+// Text processing filters
+export function wordCount(this: ObjectType, value: string) {
+  return value.trim().split(/\s+/).filter(Boolean).length;
+}
+
+export function stripTags(this: ObjectType, value: string) {
+  return value.replace(/<[^>]*>/g, '');
+}
+
+export function slugify(this: ObjectType, value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Array manipulation filters
+export function shuffle(this: ObjectType, value: unknown[]) {
+  const arr = [...value];
+
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+
+  return arr;
+}
+
+export function chunk(this: ObjectType, value: unknown[], size: number) {
+  const chunks: unknown[][] = [];
+
+  for (let i = 0; i < value.length; i += size) {
+    chunks.push(value.slice(i, i + size));
+  }
+
+  return chunks;
+}
+
+export function pluck(this: ObjectType, value: ObjectType[], key: string) {
+  return value.map((item) => item[key]);
+}
+
+// Object transformation filters
+export function defaults(
+  this: ObjectType,
+  value: ObjectType,
+  defaultValues: ObjectType,
+) {
+  return { ...defaultValues, ...value };
+}
+
+export function invert(this: ObjectType, value: ObjectType) {
+  return Object.entries(value).reduce(
+    (acc, [key, val]) => ({ ...acc, [String(val)]: key }),
+    {},
+  );
+}
+
+export function merge(
+  this: ObjectType,
+  value: ObjectType,
+  ...objects: ObjectType[]
+) {
+  return Object.assign({}, value, ...objects);
+}
+
+export async function fetchUrl(
+  this: ObjectType,
+  url: string,
+  options: RequestInit = {},
+) {
+  const response = await fetch(url, options);
+
+  return response.text();
+}
+
+export async function delay(this: ObjectType, value: unknown, ms: number) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+
+  return value;
+}

@@ -1,0 +1,31 @@
+{
+  "name": "janja-cli",
+  "version": "1.0.0",
+  "description": "CLI tool for pre-compiling Janja templates",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "janja": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "dev": "tsc --watch",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "janja": "workspace:*",
+    "commander": "^12.0.0",
+    "chokidar": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.3",
+    "@vitest/coverage-v8": "4.0.16",
+    "@vitest/ui": "4.0.16",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7",
+    "vitest": "^4.0.16"
+  }
+}

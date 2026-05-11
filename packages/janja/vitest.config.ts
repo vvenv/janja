@@ -13,5 +13,8 @@ export default defineConfig(({ mode }) => ({
       include: ['src/**/*.ts', 'test/**/*.ts'],
       reporter: env.GITHUB_ACTIONS ? ['text'] : ['html'],
     },
+    benchmark: {
+      include: ['benchmarks/**/*.bench.ts'],
+    },
   },
 }));

@@ -1,3 +1,4 @@
+import type { LRUCache } from './cache';
 import { CompileError } from './compile-error';
 import { Context } from './context';
 import { Parser } from './parser';
@@ -19,8 +20,14 @@ export class Compiler extends Context {
 
   private blocks!: Map<string, BlockNode[]>;
 
-  constructor(public options: Required<CompilerOptions>) {
+  private cache?: LRUCache<string>;
+
+  constructor(
+    public options: Required<CompilerOptions>,
+    cache?: LRUCache<string>,
+  ) {
     super();
+    this.cache = cache;
   }
 
   async compile(
@@ -33,7 +40,22 @@ export class Compiler extends Context {
     this.isRoot = root;
     this.partials = partials;
     this.blocks = blocks;
-    this.rootNode = await new Parser(this.options).parse(template);
+
+    // Generate cache key from template and options
+    const cacheKey = this.generateCacheKey(template);
+
+    // Check cache first
+    if (this.cache && root) {
+      const cachedCode = this.cache.get(cacheKey);
+
+      if (cachedCode) {
+        this.code = cachedCode;
+
+        return this;
+      }
+    }
+
+    this.rootNode = new Parser(this.options).parse(template);
     this.state = {};
 
     this.start();
@@ -78,7 +100,26 @@ export class Compiler extends Context {
 
     this.end();
 
+    // Store in cache
+    if (this.cache && root) {
+      this.cache.set(cacheKey, this.code);
+    }
+
     return this;
+  }
+
+  private generateCacheKey(template: string): string {
+    // Simple hash-based cache key
+    let hash = 0;
+
+    for (let i = 0; i < template.length; i++) {
+      const char = template.charCodeAt(i);
+
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+
+    return `${hash}:${this.options.trimWhitespace}:${this.options.stripComments}`;
   }
 
   private async parseTemplates() {

@@ -12,6 +12,7 @@ import { plugin as setPlugin } from './set';
 import { plugin as textPlugin } from './text';
 import { plugin as unexpectedPlugin } from './unexpected';
 import { plugin as unknownPlugin } from './unknown';
+import { plugin as withPlugin } from './with';
 
 export const plugins: Plugin[] = [
   blockPlugin,
@@ -27,4 +28,5 @@ export const plugins: Plugin[] = [
   outputPlugin,
   unexpectedPlugin,
   unknownPlugin,
+  withPlugin,
 ];

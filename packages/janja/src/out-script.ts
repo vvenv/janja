@@ -3,7 +3,15 @@ import { SourceMap } from './source-map';
 import type { Loc, Pos, Script } from './types';
 
 export class OutScript extends SourceMap {
-  public code = '';
+  private codeParts: string[] = [];
+
+  get code() {
+    return this.codeParts.join('');
+  }
+
+  set code(value: string) {
+    this.codeParts = [value];
+  }
 
   get script() {
     // eslint-disable-next-line no-new-func
@@ -21,9 +29,7 @@ export class OutScript extends SourceMap {
   pushRaw(loc: Loc | null, ...lines: string[]) {
     const start = this.code.length;
 
-    for (const line of lines) {
-      this.code += line;
-    }
+    this.codeParts.push(...lines);
 
     if (!loc) {
       return;

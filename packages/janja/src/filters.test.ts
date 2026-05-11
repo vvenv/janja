@@ -431,3 +431,94 @@ describe('custom', () => {
     ).toMatchInlineSnapshot(`"foo-bar"`);
   });
 });
+
+describe('new filters', () => {
+  // Date/DateTime filters
+  it('date', async () => {
+    const date = new Date('2024-01-15T10:30:00Z');
+
+    expect(await render('{{= x | date }}', { x: date })).toContain(
+      '2024-01-15',
+    );
+  });
+
+  it('timeAgo', async () => {
+    const date = new Date(Date.now() - 3600000); // 1 hour ago
+    const result = await render('{{= x | timeAgo }}', { x: date });
+
+    expect(result).toContain('ago');
+  });
+
+  // Number formatting filters
+  it('round', async () => {
+    expect(await render('{{= x | round }}', { x: 4.567 })).toBe('5');
+  });
+
+  it('fixed', async () => {
+    expect(await render('{{= x | fixed }}', { x: 4.5678 })).toBe('4.57');
+  });
+
+  it('percent', async () => {
+    expect(await render('{{= x | percent }}', { x: 0.75 })).toBe('75%');
+  });
+
+  it('currency', async () => {
+    expect(await render('{{= x | currency }}', { x: 1234.56 })).toContain('$');
+  });
+
+  // Text processing filters
+  it('wordCount', async () => {
+    expect(
+      await render('{{= x | wordCount }}', { x: 'Hello world from Janja' }),
+    ).toBe('4');
+  });
+
+  it('stripTags', async () => {
+    expect(
+      await render('{{= x | stripTags }}', {
+        x: '<p>Hello <strong>world</strong></p>',
+      }),
+    ).toBe('Hello world');
+  });
+
+  it('slugify', async () => {
+    expect(
+      await render('{{= x | slugify }}', { x: 'Hello World! This is a Test' }),
+    ).toBe('hello-world-this-is-a-test');
+  });
+
+  // Array manipulation filters
+  it('shuffle', async () => {
+    const result = await render('{{= x | shuffle }}', { x: [1, 2, 3, 4, 5] });
+
+    expect(result).toContain('1');
+  });
+
+  // Object transformation filters
+  it('defaults', async () => {
+    expect(
+      await render('{{= x | defaults(y) | json }}', {
+        x: { name: 'Alice' },
+        y: { age: 0, city: 'Unknown' },
+      }),
+    ).toContain('Alice');
+  });
+
+  it('invert', async () => {
+    expect(
+      await render('{{= x | invert | json }}', {
+        x: { name: 'Alice', age: 30 },
+      }),
+    ).toContain('Alice');
+  });
+
+  it('merge', async () => {
+    expect(
+      await render('{{= x | merge(y, z) | json }}', {
+        x: { a: 1 },
+        y: { b: 2 },
+        z: { c: 3 },
+      }),
+    ).toContain('a');
+  });
+});

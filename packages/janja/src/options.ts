@@ -35,6 +35,11 @@ export const renderOptions: Required<RendererOptions> = {
   ...compilerOptions,
   globals: {},
   autoEscape: true,
+  cache: {
+    enabled: true,
+    maxSize: 1000,
+    ttl: 3600000,
+  },
 };
 
 export const mergeOptions = <

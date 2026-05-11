@@ -27,6 +27,8 @@ async function compileSuper({ loc }: SuperNode, compiler: Compiler) {
     return;
   }
 
+  // Support multi-level super() calls by keeping track of the stack position
+  // Each super() call pops the next level from the stack
   compiler.pushRaw(
     loc,
     `s+=await b["${compiler.state.block}"]?.s?.pop()?.()??"";`,

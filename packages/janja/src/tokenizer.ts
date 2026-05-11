@@ -20,6 +20,8 @@ export class Tokenizer implements Pos {
 
   private tokenPatterns!: [TokenType, string, string][];
 
+  private markerIndices!: Map<string, number>;
+
   line = 1;
 
   column = 1;
@@ -41,6 +43,15 @@ export class Tokenizer implements Pos {
     ].sort(([, open1], [, open2]) =>
       open1.length > open2.length ? -1 : 1,
     ) as [TokenType, string, string][];
+
+    // Build a map of first character to marker patterns for faster lookup
+    this.markerIndices = new Map();
+
+    for (const [, open] of this.tokenPatterns) {
+      if (open.length > 0) {
+        this.markerIndices.set(open[0], this.markerIndices.get(open[0]) || 0);
+      }
+    }
   }
 
   tokenize(template: string) {
@@ -185,14 +196,30 @@ export class Tokenizer implements Pos {
   private findNextSpecialIndex() {
     const { outputOpen, directiveOpen, commentOpen } = this.options;
 
-    const commentIndex = this.template.indexOf(commentOpen, this.index);
-    const directiveIndex = this.template.indexOf(directiveOpen, this.index);
-    const outputIndex = this.template.indexOf(outputOpen, this.index);
+    let minIndex = this.length;
 
-    const indexes = [commentIndex, directiveIndex, outputIndex]
-      .filter((index) => index !== -1)
-      .sort((a, b) => a - b);
+    // Find the earliest occurrence of any special marker
+    for (let i = this.index; i < this.length; i++) {
+      // Check each marker at current position
+      if (this.template.startsWith(commentOpen, i)) {
+        minIndex = i;
 
-    return indexes.length ? indexes[0] : this.length;
+        break;
+      }
+
+      if (this.template.startsWith(directiveOpen, i)) {
+        minIndex = i;
+
+        break;
+      }
+
+      if (this.template.startsWith(outputOpen, i)) {
+        minIndex = i;
+
+        break;
+      }
+    }
+
+    return minIndex;
   }
 }

@@ -19,7 +19,8 @@
   "scripts": {
     "build": "rm -rf dist && rollup -c",
     "dev": "vitest watch",
-    "test": "vitest"
+    "test": "vitest",
+    "bench": "vitest bench"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^29.0.0",

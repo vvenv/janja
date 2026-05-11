@@ -1,5 +1,6 @@
 import type { Compiler } from './compiler';
 import type { Parser } from './parser';
+import type { SecurityOptions } from './security';
 import type { SyntaxNode } from './syntax-nodes';
 
 export type MaybePromise<T> = T | Promise<T>;
@@ -122,7 +123,15 @@ export interface FormatterOptions extends ParserOptions {
   stripComments?: boolean;
 }
 
+export interface CacheOptions {
+  enabled?: boolean;
+  maxSize?: number;
+  ttl?: number;
+}
+
 export interface RendererOptions extends CompilerOptions {
   globals?: ObjectType;
   autoEscape?: boolean;
+  cache?: CacheOptions;
+  security?: SecurityOptions;
 }
