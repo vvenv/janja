@@ -12,8 +12,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""call" requires expression
 
-      1｜ {{ call }}
-       ｜ ^        ^
+      1│ {{ call }}
+       │ ^        ^
       "
     `);
   }
@@ -26,9 +26,14 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unclosed "call"
 
-      1｜ {{ call m }}
-       ｜ ^          ^
-      "
+      1│ {{ call m }}
+       │ ^          ^
+
+
+      Suggestions:
+        1. The call marker is not closed properly.
+           Fix: Add the closing marker for call.
+           Example: {{ ... }}"
     `);
   }
 
@@ -40,9 +45,13 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unexpected "endcall"
 
-      1｜ {{ endcall }}
-       ｜ ^           ^
-      "
+      1│ {{ endcall }}
+       │ ^           ^
+
+
+      Suggestions:
+        1. An unexpected token was found in the template.
+           Fix: Check your template syntax and ensure all markers are properly formatted."
     `);
   }
 });

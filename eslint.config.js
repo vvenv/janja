@@ -1,4 +1,3 @@
-import { defineConfig } from 'eslint/config';
 import _import from 'eslint-plugin-import';
 import prettier from 'eslint-plugin-prettier';
 import unusedImports from 'eslint-plugin-unused-imports';
@@ -6,9 +5,9 @@ import globals from 'globals';
 import { parser as tsParser, plugin as tsPlugin } from 'typescript-eslint';
 import janja from 'eslint-plugin-janja';
 
-export default defineConfig([
+export default [
   {
-    ignores: ['**/coverage/**', '**/dist/**', '**/*.yml'],
+    ignores: ['**/coverage/**', '**/dist/**', '**/node_modules/**', '**/*.yml'],
   },
   {
     files: ['**/*.ts'],
@@ -496,4 +495,4 @@ export default defineConfig([
       'janja/space-between': ['error', 'always'],
     },
   },
-]);
+];

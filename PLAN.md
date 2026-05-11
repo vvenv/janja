@@ -133,11 +133,11 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Impact**: High
 **Effort**: Medium
 
-- [ ] Enhance error messages with context
-- [ ] Add syntax error location highlighting
-- [ ] Provide fix suggestions for common errors
-- [ ] Create template validation tool
-- [ ] Add error recovery mechanisms
+- [x] Enhance error messages with context
+- [x] Add syntax error location highlighting
+- [x] Provide fix suggestions for common errors
+- [x] Create template validation tool
+- [x] Add error recovery mechanisms
 
 **Files to modify**:
 - `src/compile-error.ts`
@@ -165,11 +165,11 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Impact**: High
 **Effort**: Medium
 
-- [ ] Expand API documentation
-- [ ] Add comprehensive examples
-- [ ] Create best practices guide
+- [x] Expand API documentation
+- [x] Add comprehensive examples
+- [x] Create best practices guide
 - [ ] Write migration guides from other engines
-- [ ] Add troubleshooting section
+- [x] Add troubleshooting section
 - [ ] Create video tutorials
 
 **Files to create**:
@@ -181,11 +181,11 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Impact**: Medium
 **Effort**: Medium
 
-- [ ] Create performance benchmark suite
-- [ ] Add comparison tests with Handlebars, EJS, Nunjucks
-- [ ] Implement performance regression CI
-- [ ] Add load testing tools
-- [ ] Create performance optimization guide
+- [x] Create performance benchmark suite
+- [x] Add comparison tests with Handlebars, EJS, Nunjucks
+- [x] Implement performance regression CI
+- [x] Add load testing tools
+- [x] Create performance optimization guide
 
 **Files to create**:
 - `benchmarks/` directory

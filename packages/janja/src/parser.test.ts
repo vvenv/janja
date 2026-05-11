@@ -11,8 +11,8 @@ it('error', () => {
       `
       "Unknown ""
 
-      1｜ {{}}
-       ｜ ^  ^
+      1│ {{}}
+       │ ^  ^
       "
     `,
     );
@@ -27,9 +27,14 @@ it('error', () => {
       `
       "Unclosed "{{"
 
-      1｜ {{ else
-       ｜ ^^
-      "
+      1│ {{ else
+       │ ^^
+
+
+      Suggestions:
+        1. The {{ marker is not closed properly.
+           Fix: Add the closing marker for {{.
+           Example: {{ ... }}"
     `,
     );
   }
@@ -43,8 +48,8 @@ it('error', () => {
       `
       "Unknown "else"
 
-      1｜ {{ else }}
-       ｜ ^        ^
+      1│ {{ else }}
+       │ ^        ^
       "
     `,
     );
@@ -59,9 +64,13 @@ it('error', () => {
       `
       "Unexpected "elseif"
 
-      1｜ {{ elseif }}
-       ｜ ^          ^
-      "
+      1│ {{ elseif }}
+       │ ^          ^
+
+
+      Suggestions:
+        1. An unexpected token was found in the template.
+           Fix: Check your template syntax and ensure all markers are properly formatted."
     `,
     );
   }
@@ -77,8 +86,8 @@ it('error', () => {
       `
       ""if" requires expression
 
-      1｜ {{ if }}
-       ｜ ^      ^
+      1│ {{ if }}
+       │ ^      ^
       "
     `,
     );
@@ -93,9 +102,14 @@ it('error', () => {
       `
       "Unclosed "if"
 
-      1｜ {{ if x }}
-       ｜ ^        ^
-      "
+      1│ {{ if x }}
+       │ ^        ^
+
+
+      Suggestions:
+        1. The if marker is not closed properly.
+           Fix: Add the closing marker for if.
+           Example: {{ ... }}"
     `,
     );
   }
@@ -111,8 +125,8 @@ it('error', () => {
       `
       ""else" should not have expression
 
-      1｜ {{ if x }}{{ else y }}{{ endif }}
-       ｜           ^          ^
+      1│ {{ if x }}{{ else y }}{{ endif }}
+       │           ^          ^
       "
     `,
     );
@@ -129,8 +143,8 @@ it('error', () => {
       `
       ""for" requires expression
 
-      1｜ {{ for }}
-       ｜ ^       ^
+      1│ {{ for }}
+       │ ^       ^
       "
     `,
     );

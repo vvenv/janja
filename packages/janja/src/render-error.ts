@@ -6,8 +6,9 @@ export class RenderError extends CompileError {
     message: string,
     protected src: string,
     protected getLoc: () => Loc,
+    context?: string,
   ) {
-    super(message, src);
+    super(message, src, undefined, context);
     this.name = 'RenderError';
     RenderError.captureStackTrace?.(this, this.constructor);
   }

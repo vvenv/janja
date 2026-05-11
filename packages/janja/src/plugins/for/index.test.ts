@@ -12,8 +12,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""for" requires expression
 
-      1｜ {{ for }}
-       ｜ ^       ^
+      1│ {{ for }}
+       │ ^       ^
       "
     `);
   }
@@ -26,9 +26,14 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unclosed "for"
 
-      1｜ {{ for x }}
-       ｜ ^         ^
-      "
+      1│ {{ for x }}
+       │ ^         ^
+
+
+      Suggestions:
+        1. The for marker is not closed properly.
+           Fix: Add the closing marker for for.
+           Example: {{ ... }}"
     `);
   }
 
@@ -40,9 +45,13 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unexpected "endfor"
 
-      1｜ {{ endfor }}
-       ｜ ^          ^
-      "
+      1│ {{ endfor }}
+       │ ^          ^
+
+
+      Suggestions:
+        1. An unexpected token was found in the template.
+           Fix: Check your template syntax and ensure all markers are properly formatted."
     `);
   }
 
@@ -56,8 +65,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""break" directive used outside of a loop
 
-      1｜ {{ break }}
-       ｜ ^         ^
+      1│ {{ break }}
+       │ ^         ^
       "
     `);
   }
@@ -72,8 +81,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""break" should not have expression
 
-      1｜ {{ break x }}
-       ｜ ^           ^
+      1│ {{ break x }}
+       │ ^           ^
       "
     `);
   }
@@ -88,8 +97,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""continue" directive used outside of a loop
 
-      1｜ {{ continue }}
-       ｜ ^            ^
+      1│ {{ continue }}
+       │ ^            ^
       "
     `);
   }
@@ -104,8 +113,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""continue" should not have expression
 
-      1｜ {{ continue x }}
-       ｜ ^              ^
+      1│ {{ continue x }}
+       │ ^              ^
       "
     `);
   }

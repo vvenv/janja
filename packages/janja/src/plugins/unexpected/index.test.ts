@@ -10,9 +10,13 @@ it('unexpected', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unexpected "endif"
 
-      1｜ {{ endif }}
-       ｜ ^         ^
-      "
+      1│ {{ endif }}
+       │ ^         ^
+
+
+      Suggestions:
+        1. An unexpected token was found in the template.
+           Fix: Check your template syntax and ensure all markers are properly formatted."
     `);
   }
 });

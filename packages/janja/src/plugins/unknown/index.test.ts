@@ -10,8 +10,8 @@ it('unknown', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unknown "xxx"
 
-      1｜ {{ xxx }}
-       ｜ ^       ^
+      1│ {{ xxx }}
+       │ ^       ^
       "
     `);
   }

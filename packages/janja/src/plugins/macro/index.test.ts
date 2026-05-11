@@ -12,8 +12,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""macro" requires expression
 
-      1｜ {{ macro }}
-       ｜ ^         ^
+      1│ {{ macro }}
+       │ ^         ^
       "
     `);
   }
@@ -28,9 +28,13 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unexpected "endmacro"
 
-      1｜ {{ endmacro }}
-       ｜ ^            ^
-      "
+      1│ {{ endmacro }}
+       │ ^            ^
+
+
+      Suggestions:
+        1. An unexpected token was found in the template.
+           Fix: Check your template syntax and ensure all markers are properly formatted."
     `);
   }
 
@@ -44,8 +48,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Invalid macro definition
 
-      1｜ {{ macro 1 }}{{ endmacro }}
-       ｜ ^           ^
+      1│ {{ macro 1 }}{{ endmacro }}
+       │ ^           ^
       "
     `);
   }
@@ -60,8 +64,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""caller" directive used outside of a macro
 
-      1｜ {{ caller }}
-       ｜ ^          ^
+      1│ {{ caller }}
+       │ ^          ^
       "
     `);
   }

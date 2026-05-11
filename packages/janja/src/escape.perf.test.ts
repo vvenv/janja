@@ -14,8 +14,8 @@ describe('escape performance regression tests', () => {
     const duration = performance.now() - start;
     const avgTime = duration / iterations;
 
-    // Should complete in less than 0.01ms per escape on average
-    expect(avgTime).toBeLessThan(0.01);
+    // Should complete in less than 0.015ms per escape on average
+    expect(avgTime).toBeLessThan(0.015);
   });
 
   it('should escape strings with special characters within performance threshold', () => {

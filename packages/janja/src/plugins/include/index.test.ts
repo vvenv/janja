@@ -12,8 +12,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""include" requires expression
 
-      1｜ {{ include }}
-       ｜ ^           ^
+      1│ {{ include }}
+       │ ^           ^
       "
     `);
   }

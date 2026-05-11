@@ -20,9 +20,26 @@ it('parse error', () => {
     `
     "foo
 
-    1｜ {{ for }}
-     ｜    ^ ^
+    1│ {{ for }}
+     │    ^ ^
     "
   `,
   );
+});
+
+it('parse error with suggestions', () => {
+  const error = new CompileError('Unclosed "{{"', '{{ for }', {
+    start: {
+      line: 1,
+      column: 1,
+    },
+    end: {
+      line: 1,
+      column: 8,
+    },
+  });
+
+  expect(error.suggestions).toHaveLength(1);
+  expect(error.suggestions[0].message).toContain('not closed properly');
+  expect(error.details).toContain('Suggestions');
 });

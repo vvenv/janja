@@ -10,13 +10,13 @@
     "dev": "pnpm --filter janja dev",
     "test": "pnpm --filter janja test",
     "bench": "pnpm --filter janja bench",
-    "lint": "eslint . --ext .ts,.janja",
+    "lint": "eslint .",
     "prepare": "husky"
   },
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
+    "@eslint/js": "~9.17.0",
     "@types/node": "^25.6.2",
-    "eslint": "^9.17.0",
+    "eslint": "~9.17.0",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-janja": "workspace:*",

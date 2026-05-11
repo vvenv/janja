@@ -132,15 +132,11 @@ export class Compiler extends Context {
         try {
           template = await this.options.loader(path);
         } catch {
-          this.options.debug(
-            new CompileError(
-              `Failed to load template from "${path}"`,
-              this.template,
-              node.loc,
-            ),
+          throw new CompileError(
+            `Failed to load template from "${path}"`,
+            this.template,
+            node.loc,
           );
-
-          return;
         }
 
         if (template) {

@@ -5,6 +5,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig(({ mode }) => ({
   test: {
     env: loadEnv(mode, cwd(), ''),
+    watch: false,
     include: ['src/**/*.test.ts', 'test/**/*.test.ts'],
     exclude: ['**/node_modules/**'],
     reporters: env.GITHUB_ACTIONS ? ['github-actions'] : ['default'],

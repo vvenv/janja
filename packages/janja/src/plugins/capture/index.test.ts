@@ -12,8 +12,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""capture" requires expression
 
-      1｜ {{ capture }}
-       ｜ ^           ^
+      1│ {{ capture }}
+       │ ^           ^
       "
     `);
   }
@@ -26,9 +26,14 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unclosed "capture"
 
-      1｜ {{ capture x }}
-       ｜ ^             ^
-      "
+      1│ {{ capture x }}
+       │ ^             ^
+
+
+      Suggestions:
+        1. The capture marker is not closed properly.
+           Fix: Add the closing marker for capture.
+           Example: {{ ... }}"
     `);
   }
 
@@ -42,9 +47,13 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unexpected "endcapture"
 
-      1｜ {{ endcapture }}
-       ｜ ^              ^
-      "
+      1│ {{ endcapture }}
+       │ ^              ^
+
+
+      Suggestions:
+        1. An unexpected token was found in the template.
+           Fix: Check your template syntax and ensure all markers are properly formatted."
     `);
   }
 });

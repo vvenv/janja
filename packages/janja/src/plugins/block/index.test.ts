@@ -13,8 +13,8 @@ it('error', async () => {
       `
       ""block" requires expression
 
-      1｜ {{ block }}
-       ｜ ^         ^
+      1│ {{ block }}
+       │ ^         ^
       "
     `,
     );
@@ -29,9 +29,14 @@ it('error', async () => {
       `
       "Unclosed "block"
 
-      1｜ {{ block "" }}
-       ｜ ^            ^
-      "
+      1│ {{ block "" }}
+       │ ^            ^
+
+
+      Suggestions:
+        1. The block marker is not closed properly.
+           Fix: Add the closing marker for block.
+           Example: {{ ... }}"
     `,
     );
   }
@@ -47,8 +52,8 @@ it('error', async () => {
       `
       ""block" requires expression
 
-      1｜ {{ block }}{{ endblock }}
-       ｜ ^         ^
+      1│ {{ block }}{{ endblock }}
+       │ ^         ^
       "
     `,
     );
@@ -65,8 +70,8 @@ it('error', async () => {
       `
       ""super" should be used inside a block
 
-      1｜ {{ if x }}{{ super }}{{ endif }}
-       ｜           ^         ^
+      1│ {{ if x }}{{ super }}{{ endif }}
+       │           ^         ^
       "
     `,
     );

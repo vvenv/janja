@@ -26,10 +26,10 @@ export function highlightSource(
       return;
     }
 
-    output.push(`${`${index + 1}｜ `.padStart(indentWidth, ' ')}${line}`);
+    output.push(`${`${index + 1}│ `.padStart(indentWidth, ' ')}${line}`);
 
     if (l1 === index + 1) {
-      const caretLine = `${' '.repeat(indentWidth - 2)}｜ ${' '.repeat(c1 - 1)}^${l1 === l2 && c2 > c1 + 1 ? `${' '.repeat(c2 - c1 - 2)}^` : ''}`;
+      const caretLine = `${' '.repeat(indentWidth - 2)}│ ${' '.repeat(c1 - 1)}^${l1 === l2 && c2 > c1 + 1 ? `${' '.repeat(c2 - c1 - 2)}^` : ''}`;
 
       if (/\S/.test(caretLine)) {
         output.push(caretLine);
@@ -39,7 +39,7 @@ export function highlightSource(
     }
 
     if (l1 !== l2 && l2 === index + 1) {
-      const caretLine = `${' '.repeat(indentWidth - 2)}｜ ${' '.repeat(c2 - 1)}${'^'.repeat(1)}`;
+      const caretLine = `${' '.repeat(indentWidth - 2)}│ ${' '.repeat(c2 - 1)}${'^'.repeat(1)}`;
 
       if (/\S/.test(caretLine)) {
         output.push(caretLine);

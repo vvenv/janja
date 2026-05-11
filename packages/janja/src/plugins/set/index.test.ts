@@ -12,8 +12,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       ""set" requires expression
 
-      1｜ {{ set }}
-       ｜ ^       ^
+      1│ {{ set }}
+       │ ^       ^
       "
     `);
   }
@@ -26,8 +26,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unexpect "["
 
-      1｜ {{ set x = [1] }}
-       ｜            ^
+      1│ {{ set x = [1] }}
+       │            ^
       "
     `);
   }
@@ -40,8 +40,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unexpect "{"
 
-      1｜ {{ set x = {a:1} }}
-       ｜            ^
+      1│ {{ set x = {a:1} }}
+       │            ^
       "
     `);
   }
@@ -54,8 +54,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Unknown "endset"
 
-      1｜ {{ endset }}
-       ｜ ^          ^
+      1│ {{ endset }}
+       │ ^          ^
       "
     `);
   }
@@ -70,8 +70,8 @@ it('error', async () => {
     expect(error.details).toMatchInlineSnapshot(`
       "Left operand of assignment must be an identifier or a sequence of identifiers
 
-      1｜ {{ set 1 = "a" }}
-       ｜          ^
+      1│ {{ set 1 = "a" }}
+       │          ^
       "
     `);
   }

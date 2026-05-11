@@ -21,6 +21,8 @@ export * from './i18n';
 export * from './compose';
 export * from './whitespace';
 export * from './mixins';
+export * from './validator';
+export * from './error-recovery';
 
 export async function render(
   template: string,

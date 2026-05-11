@@ -14,9 +14,13 @@ it('error', async () => {
       `
       "Unexpected "endif"
 
-      1｜ {{ for name of names }}{{ endif }}
-       ｜                        ^         ^
-      "
+      1│ {{ for name of names }}{{ endif }}
+       │                        ^         ^
+
+
+      Suggestions:
+        1. An unexpected token was found in the template.
+           Fix: Check your template syntax and ensure all markers are properly formatted."
     `,
     );
   }
@@ -32,8 +36,8 @@ it('error', async () => {
       `
       "Cannot read properties of undefined (reading 'length')
 
-      1｜ {{ for name of names }}{{ endfor }}
-       ｜             ^^
+      1│ {{ for name of names }}{{ endfor }}
+       │             ^^
       "
     `,
     );
@@ -50,8 +54,8 @@ it('error', async () => {
       `
       "Failed to load template from "not-found"
 
-      1｜ {{ include "not-found" }}
-       ｜ ^                       ^
+      1│ {{ include "not-found" }}
+       │ ^                       ^
       "
     `,
     );
