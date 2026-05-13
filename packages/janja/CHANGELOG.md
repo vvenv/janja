@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.0](https://github.com/vvenv/janja/compare/janja-v2.8.0...janja-v2.9.0) (2026-05-13)
+
+
+### Features
+
+* add CLI, integration examples, and new core features ([4a8420a](https://github.com/vvenv/janja/commit/4a8420a3aed8047decef838ca78dd96575d6318f))
+* add error recovery, validation, and benchmarking infrastructure ([32006ba](https://github.com/vvenv/janja/commit/32006bad24fd79590d040db7ea3f15c95da2d138))
+
 ## [2.8.0](https://github.com/vvenv/janja/compare/janja-v2.7.0...janja-v2.8.0) (2026-05-11)
 
 
