@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/vvenv/janja/compare/janja-v2.9.0...janja-v3.0.0) (2026-10-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **janja:** errors throw unless a `debug` handler is passed; `null` and `undefined` output nothing; several expressions that silently evaluated wrongly now evaluate correctly or are rejected; `deepEscape` escapes; `with` no longer exposes outer names' mutations to the value; precompiled output is an ES module with a different shape; the CommonJS file is `dist/index.cjs`; `validateTemplate()` reports parser errors.
+
+### Features
+
+* **janja:** harden the engine, define the language, add streaming and tooling APIs ([5785aa7](https://github.com/vvenv/janja/commit/5785aa775045217a1e4f7be1d8c82a098516e7a9))
+
 ## [2.9.0](https://github.com/vvenv/janja/compare/janja-v2.8.0...janja-v2.9.0) (2026-05-13)
 
 

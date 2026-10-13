@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.3](https://github.com/vvenv/janja/compare/eslint-plugin-janja-v1.1.2...eslint-plugin-janja-v1.1.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **eslint-plugin-janja:** make the CommonJS entry loadable ([d52d8ff](https://github.com/vvenv/janja/commit/d52d8ff8f02eb476bd80bda45f8f11c09dfe28c6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * janja bumped to 3.0.0
+
 ## [1.1.2](https://github.com/vvenv/janja/compare/eslint-plugin-janja-v1.1.1...eslint-plugin-janja-v1.1.2) (2026-05-13)
 
 
