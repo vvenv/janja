@@ -1,0 +1,49 @@
+{
+  "name": "janja-language-server",
+  "version": "0.1.0",
+  "description": "Language server for Janja templates: diagnostics, completions and formatting",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vvenv/janja.git",
+    "directory": "packages/janja-language-server"
+  },
+  "homepage": "https://github.com/vvenv/janja#readme",
+  "bugs": "https://github.com/vvenv/janja/issues",
+  "keywords": ["janja", "lsp", "language-server", "template"],
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "janja-language-server": "./dist/cli.js"
+  },
+  "main": "./dist/server.js",
+  "types": "./dist/server.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./service": {
+      "types": "./dist/service.d.ts",
+      "import": "./dist/service.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "janja": "workspace:^",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  }
+}
