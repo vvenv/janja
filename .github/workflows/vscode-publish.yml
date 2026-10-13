@@ -1,6 +1,6 @@
 name: VS Code extension
 permissions:
-  contents: write
+  contents: read
 
 on:
   release:
@@ -38,14 +38,8 @@ jobs:
           name: janja-vsix
           path: packages/vscode-janja/janja.vsix
           if-no-files-found: error
-      - name: Attach to the release
-        if: github.event_name == 'release'
-        run: gh release upload "$TAG" packages/vscode-janja/janja.vsix --clobber
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.event.release.tag_name }}
       # Each registry is skipped until its token is configured, so that the
-      # workflow can package and attach the extension without them
+      # workflow can package the extension without them
       - name: Publish to the Visual Studio Marketplace
         run: |
           if [ -z "$VSCE_PAT" ]; then
