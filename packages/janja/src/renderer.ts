@@ -30,6 +30,10 @@ export class Renderer {
 
   private escape: (value: unknown) => unknown;
 
+  // Compilations in progress, so that renders of the same template that
+  // start together share one instead of each compiling it
+  private compiling = new Map<string, Promise<Compiler>>();
+
   constructor(options: RendererOptions = {}) {
     this.options = mergeOptions(
       renderOptions,
@@ -97,14 +101,16 @@ export class Renderer {
       }
     }
 
-    const compiler = this.createCompiler();
+    let compiler: Compiler | undefined;
 
     try {
-      await compiler.compile(template);
+      compiler = await this.compile(template);
 
       return await this.run(compiler.script, globals);
     } catch (error: any) {
-      this.options.debug(this.wrapError(error, template, compiler));
+      this.options.debug(
+        this.wrapError(error, template, compiler ?? new SourceMap()),
+      );
     }
 
     return '';
@@ -157,13 +163,13 @@ export class Renderer {
           }
         };
 
-        const compiler = this.createCompiler(true);
+        let compiler: Compiler | undefined;
 
         // Not awaited: `start` returns right away and chunks are enqueued as
         // they are produced
         void (async () => {
           try {
-            await compiler.compile(template);
+            compiler = await this.compile(template, true);
 
             const rest = await this.run(compiler.script, globals, write);
 
@@ -178,7 +184,9 @@ export class Renderer {
             }
 
             try {
-              this.options.debug(this.wrapError(error, template, compiler));
+              this.options.debug(
+                this.wrapError(error, template, compiler ?? new SourceMap()),
+              );
               controller.close();
             } catch (reported) {
               controller.error(reported);
@@ -197,13 +205,24 @@ export class Renderer {
     });
   }
 
-  private createCompiler(stream = false) {
-    return new Compiler(
-      this.options,
-      this.cache,
-      this.options.cache?.revalidate ?? true,
-      stream,
-    );
+  private compile(template: string, stream = false) {
+    const key = templateCacheKey(template, stream);
+
+    let compiling = this.compiling.get(key);
+
+    if (!compiling) {
+      compiling = new Compiler(
+        this.options,
+        this.cache,
+        this.options.cache?.revalidate ?? true,
+        stream,
+      )
+        .compile(template)
+        .finally(() => this.compiling.delete(key));
+      this.compiling.set(key, compiling);
+    }
+
+    return compiling;
   }
 
   private wrapError(error: any, template: string, sourceMap: SourceMap) {

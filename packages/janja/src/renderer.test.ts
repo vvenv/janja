@@ -580,6 +580,52 @@ it('loop scopes do not leak between iterations', async () => {
   ).toBe('11false,12true,0;21false,22true,1;');
 });
 
+it('renders that start together share one compilation', async () => {
+  let loads = 0;
+
+  const renderer = new Renderer({
+    loader: async () => {
+      loads++;
+      await new Promise((resolve) => setTimeout(resolve, 5));
+
+      return 'P{{= x }}';
+    },
+  });
+  const renderAll = () =>
+    Promise.all(
+      [1, 2, 3, 4].map((x) => renderer.render('{{ include "p" }}', { x })),
+    );
+
+  expect(await renderAll()).toEqual(['P1', 'P2', 'P3', 'P4']);
+  expect(loads).toBe(1);
+
+  // The same goes for checking a cached template for changed includes
+  expect(await renderAll()).toEqual(['P1', 'P2', 'P3', 'P4']);
+  expect(loads).toBe(2);
+});
+
+it('a failed compilation is not shared with later renders', async () => {
+  let fail = true;
+
+  const renderer = new Renderer({
+    loader: async () => {
+      if (fail) {
+        throw new Error('offline');
+      }
+
+      return 'P';
+    },
+  });
+
+  await expect(renderer.render('{{ include "p" }}', {})).rejects.toThrow(
+    'Failed to load template from "p"',
+  );
+
+  fail = false;
+
+  expect(await renderer.render('{{ include "p" }}', {})).toBe('P');
+});
+
 it('a template that includes itself without end fails instead of hanging', async () => {
   const renderer = new Renderer({ loader: async () => 'x{{ include "a" }}' });
 
