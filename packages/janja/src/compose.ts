@@ -1,9 +1,9 @@
 import { Renderer } from './renderer';
-import type { ObjectType } from './types';
+import type { ObjectType, RendererOptions } from './types';
 
 export interface CompositionOptions {
   data?: ObjectType;
-  options?: any;
+  options?: RendererOptions;
 }
 
 /**
@@ -54,9 +54,9 @@ export class TemplatePipeline {
 
   private data: ObjectType = {};
 
-  private options: any;
+  private options?: RendererOptions;
 
-  constructor(options?: any) {
+  constructor(options?: RendererOptions) {
     this.options = options;
   }
 
@@ -72,7 +72,7 @@ export class TemplatePipeline {
     return this;
   }
 
-  setOptions(options: any): TemplatePipeline {
+  setOptions(options: RendererOptions): TemplatePipeline {
     this.options = { ...this.options, ...options };
 
     return this;

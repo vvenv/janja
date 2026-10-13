@@ -1,4 +1,3 @@
-import { readFile } from 'fs/promises';
 import { I18n, type I18nOptions, type TranslationDict } from './index';
 
 export interface TranslationLoaderOptions {
@@ -11,33 +10,38 @@ export async function loadTranslations(
   options: TranslationLoaderOptions,
 ): Promise<void> {
   const { directory, format = 'json' } = options;
-  const { readdir } = await import('fs/promises');
-  const { join } = await import('path');
+  // Loaded lazily so that the entry point stays importable in browsers
+  const { readdir, readFile } = await import('node:fs/promises');
+  const { join } = await import('node:path');
 
-  try {
-    const files = await readdir(directory);
+  if (format !== 'json' && format !== 'yaml') {
+    throw new Error(`Unsupported format: ${format}`);
+  }
 
-    for (const file of files) {
-      const [locale] = file.split('.');
-      const filePath = join(directory, file);
-      const content = await readFile(filePath, 'utf-8');
+  const extension = format === 'json' ? /\.json$/ : /\.ya?ml$/;
 
-      let translations: TranslationDict;
+  // Only files of the requested format are translations; anything else in
+  // the directory is left alone
+  for (const file of (await readdir(directory)).sort()) {
+    if (!extension.test(file)) {
+      continue;
+    }
 
-      if (format === 'json') {
-        translations = JSON.parse(content);
-      } else if (format === 'yaml') {
-        // Simple YAML parser for basic cases
-        // For production, use a proper YAML library like js-yaml
-        translations = parseSimpleYaml(content);
-      } else {
-        throw new Error(`Unsupported format: ${format}`);
-      }
+    const [locale] = file.split('.');
+    const content = await readFile(join(directory, file), 'utf-8');
+
+    try {
+      // The YAML parser handles nested key/value maps only; pre-parse the
+      // files with a YAML library if they use anything beyond that
+      const translations: TranslationDict =
+        format === 'json' ? JSON.parse(content) : parseSimpleYaml(content);
 
       i18n.addTranslations(locale, translations);
+    } catch (error: any) {
+      throw new Error(
+        `Failed to load translations from ${join(directory, file)}: ${error.message}`,
+      );
     }
-  } catch (error) {
-    console.error(`Failed to load translations from ${directory}:`, error);
   }
 }
 

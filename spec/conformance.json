@@ -1,0 +1,845 @@
+{
+  "description": "Janja conformance suite. Every case renders `template` with `data` (default: the shared data below) and must produce `output`, or fail with a message containing `error`. `files` are templates available to include, `options` are renderer options, `filters` and `functions` are JavaScript sources of extra filters and data functions.",
+  "data": {
+    "a": 1,
+    "b": 2,
+    "s": "str",
+    "t": true,
+    "f": false,
+    "n": null,
+    "zero": 0,
+    "empty": "",
+    "list": [
+      1,
+      2,
+      3
+    ],
+    "obj": {
+      "k": "v",
+      "n": {
+        "m": 5
+      }
+    },
+    "html": "<b>&\"'"
+  },
+  "sections": [
+    {
+      "section": "text",
+      "cases": [
+        {
+          "template": "plain text",
+          "output": "plain text"
+        },
+        {
+          "template": "line one\r\nline two\ttab",
+          "output": "line one\r\nline two\ttab"
+        },
+        {
+          "template": "quotes \" ' ` and \\ backslash ${x}",
+          "output": "quotes \" ' ` and \\ backslash ${x}"
+        },
+        {
+          "template": "\\{\\{= a \\}\\}",
+          "output": "{{= a }}"
+        },
+        {
+          "template": "a }} b { c",
+          "output": "a }} b { c"
+        }
+      ]
+    },
+    {
+      "section": "output",
+      "cases": [
+        {
+          "template": "{{= a }}",
+          "output": "1"
+        },
+        {
+          "template": "{{=a}}",
+          "output": "1"
+        },
+        {
+          "template": "[{{= s }}]",
+          "output": "[str]"
+        },
+        {
+          "template": "{{= t }}{{= f }}",
+          "output": "truefalse"
+        },
+        {
+          "template": "{{= zero }}",
+          "output": "0"
+        },
+        {
+          "template": "[{{= n }}{{= missing }}{{= obj.missing }}]",
+          "output": "[]"
+        },
+        {
+          "template": "{{= list }}",
+          "output": "1,2,3"
+        },
+        {
+          "template": "{{= missing.deep }}",
+          "error": "Cannot read properties of undefined"
+        },
+        {
+          "template": "{{ a }}",
+          "error": "Unknown \"a\""
+        }
+      ]
+    },
+    {
+      "section": "escaping",
+      "cases": [
+        {
+          "template": "{{= html }}",
+          "output": "&lt;b&gt;&amp;&#34;&#39;"
+        },
+        {
+          "template": "{{= html | safe }}",
+          "output": "<b>&\"'"
+        },
+        {
+          "template": "{{= \"<i>\" }}",
+          "output": "&lt;i&gt;"
+        },
+        {
+          "template": "{{= html }}",
+          "output": "<b>&\"'",
+          "options": {
+            "autoEscape": false
+          }
+        },
+        {
+          "template": "{{= obj | json }}",
+          "output": "{\"k\":\"v\",\"n\":{\"m\":5}}"
+        }
+      ]
+    },
+    {
+      "section": "literals",
+      "cases": [
+        {
+          "template": "{{= 42 }}|{{= 1.5 }}|{{= -2 }}",
+          "output": "42|1.5|-2"
+        },
+        {
+          "template": "{{= \"double\" }}|{{= 'single' }}|{{= `tick` }}",
+          "output": "double|single|tick"
+        },
+        {
+          "template": "{{= true }}|{{= false }}|[{{= null }}{{= undefined }}]",
+          "output": "true|false|[]"
+        },
+        {
+          "template": "{{= \"a\\nb\\tc\" | json }}",
+          "output": "\"a\\nb\\tc\""
+        },
+        {
+          "template": "{{= \"say \\\"hi\\\"\" | safe }}",
+          "output": "say \"hi\""
+        },
+        {
+          "template": "{{= \"\\d+\" | safe }}",
+          "output": "\\d+"
+        },
+        {
+          "template": "{{= \"\\{\\{\" }}",
+          "output": "{{"
+        }
+      ]
+    },
+    {
+      "section": "arithmetic",
+      "cases": [
+        {
+          "template": "{{= a + b }}",
+          "output": "3"
+        },
+        {
+          "template": "{{= a - b }}",
+          "output": "-1"
+        },
+        {
+          "template": "{{= b * 3 }}",
+          "output": "6"
+        },
+        {
+          "template": "{{= 7 / 2 }}",
+          "output": "3.5"
+        },
+        {
+          "template": "{{= 7 % 2 }}",
+          "output": "1"
+        },
+        {
+          "template": "{{= a + b * 2 }}",
+          "output": "5"
+        },
+        {
+          "template": "{{= (a + b) * 2 }}",
+          "output": "6"
+        },
+        {
+          "template": "{{= 10 - 2 - 3 }}",
+          "output": "5"
+        },
+        {
+          "template": "{{= a -1 }}|{{= a-1 }}|{{= a - -1 }}|{{= a + -1 }}",
+          "output": "0|0|2|0"
+        },
+        {
+          "template": "{{= s + a }}",
+          "output": "str1"
+        },
+        {
+          "template": "{{= \"a\" + \"b\" }}",
+          "output": "ab"
+        },
+        {
+          "template": "{{= -a }}",
+          "error": "No left operand for \"SUB\""
+        },
+        {
+          "template": "{{= b * (a + 1) }}|{{= 12 / (a + b) }}|{{= (a + b) * (b + 1) }}",
+          "output": "4|4|9"
+        }
+      ]
+    },
+    {
+      "section": "comparison",
+      "cases": [
+        {
+          "template": "{{= a eq 1 }}{{= a ne 1 }}",
+          "output": "truefalse"
+        },
+        {
+          "template": "{{= a gt 1 }}{{= a ge 1 }}{{= a lt 2 }}{{= a le 0 }}",
+          "output": "falsetruetruefalse"
+        },
+        {
+          "template": "{{= a eq \"1\" }}",
+          "output": "false"
+        },
+        {
+          "template": "{{= a is \"number\" }}{{= s is \"string\" }}{{= t is \"boolean\" }}{{= missing is \"undefined\" }}",
+          "output": "truetruetruetrue"
+        },
+        {
+          "template": "{{= \"k\" in obj }}{{= \"z\" in obj }}{{= \"z\" ni obj }}{{= \"k\" ni obj }}",
+          "output": "truefalsetruefalse"
+        },
+        {
+          "template": "{{= a == 1 }}",
+          "error": "ASSIGN"
+        },
+        {
+          "template": "{{= a > 0 }}",
+          "error": "Unexpected \">\""
+        }
+      ]
+    },
+    {
+      "section": "logic",
+      "cases": [
+        {
+          "template": "{{= t and f }}{{= t or f }}{{= not t }}{{= not not t }}",
+          "output": "falsetruefalsetrue"
+        },
+        {
+          "template": "{{= a and b }}|{{= zero or \"default\" }}|{{= zero and b }}",
+          "output": "2|default|0"
+        },
+        {
+          "template": "{{= not f and t }}",
+          "output": "true"
+        },
+        {
+          "template": "{{= a eq 1 and b eq 2 or f }}",
+          "output": "true"
+        },
+        {
+          "template": "{{= not a eq 2 }}",
+          "output": "false",
+          "note": "`not` binds tighter than comparison: (not a) eq 2"
+        },
+        {
+          "template": "{{= not (a eq 2) }}",
+          "output": "true"
+        },
+        {
+          "template": "{{= a && b }}",
+          "error": "Unexpected \"&\""
+        },
+        {
+          "template": "{{= !t }}",
+          "error": "Unexpected \"!\""
+        },
+        {
+          "template": "{{= t and (f or t) }}{{= not (t and f) }}",
+          "output": "truetrue"
+        }
+      ]
+    },
+    {
+      "section": "conditional expression",
+      "cases": [
+        {
+          "template": "{{= \"yes\" if t else \"no\" }}",
+          "output": "yes"
+        },
+        {
+          "template": "{{= \"yes\" if f else \"no\" }}",
+          "output": "no"
+        },
+        {
+          "template": "[{{= \"yes\" if f }}]",
+          "output": "[]"
+        },
+        {
+          "template": "{{= a if t else b | add(10) }}",
+          "output": "1",
+          "note": "a filter applies to the operand next to it"
+        }
+      ]
+    },
+    {
+      "section": "property access and calls",
+      "cases": [
+        {
+          "template": "{{= obj.k }}{{= obj.n.m }}",
+          "output": "v5"
+        },
+        {
+          "template": "{{= list.length }}{{= s.length }}",
+          "output": "33"
+        },
+        {
+          "template": "{{= fn(a, \"x\") }}{{= o.m(2) }}",
+          "output": "1-x4",
+          "data": {
+            "a": 1
+          },
+          "functions": {
+            "fn": "(x, y) => x + '-' + y",
+            "o": "({ m: (v) => v * 2 })"
+          }
+        },
+        {
+          "template": "{{= a b }}",
+          "error": "Unexpected \"b\""
+        },
+        {
+          "template": "{{= obj[\"k\"] }}",
+          "error": "Unexpected \"[\""
+        },
+        {
+          "template": "{{= list.0 }}",
+          "error": "Expected \"ID\" after \"DOT\""
+        },
+        {
+          "template": "{{= x.constructor }}",
+          "error": "is not allowed in expressions"
+        },
+        {
+          "template": "{{= __proto__ }}",
+          "error": "is not allowed in expressions"
+        }
+      ]
+    },
+    {
+      "section": "filters",
+      "cases": [
+        {
+          "template": "{{= s | upper }}",
+          "output": "STR"
+        },
+        {
+          "template": "{{= s | upper | lower }}",
+          "output": "str"
+        },
+        {
+          "template": "{{= list | join(\"-\") }}",
+          "output": "1-2-3"
+        },
+        {
+          "template": "{{= list | first }}{{= list | last }}",
+          "output": "13"
+        },
+        {
+          "template": "{{= a + b | add(10) }}",
+          "output": "13"
+        },
+        {
+          "template": "{{= (a + b) | add(10) }}",
+          "output": "13"
+        },
+        {
+          "template": "{{= s | upper + \"!\" }}",
+          "output": "STR!"
+        },
+        {
+          "template": "{{= list | length gt 2 }}",
+          "output": "true"
+        },
+        {
+          "template": "{{= \"x\" | repeat(a + b) }}",
+          "output": "xxx"
+        },
+        {
+          "template": "{{= missing | fallback(\"d\") }}{{= a | fallback(\"d\") }}",
+          "output": "d1"
+        },
+        {
+          "template": "{{= list | reverse }}|{{= list }}",
+          "output": "3,2,1|1,2,3",
+          "note": "filters never modify the data"
+        },
+        {
+          "template": "{{= a | twice }}{{= a | later }}",
+          "output": "23",
+          "filters": {
+            "twice": "(v) => v * 2",
+            "later": "async (v) => v + 2"
+          }
+        },
+        {
+          "template": "{{= a | nope }}",
+          "error": "nope"
+        },
+        {
+          "template": "{{= a | }}",
+          "error": "Expected \"ID\" after \"PIPE\""
+        },
+        {
+          "template": "{{= s | upper | shout }}",
+          "output": "STR!",
+          "filters": {
+            "shout": "(v) => v + '!'"
+          },
+          "note": "custom filters add to the built-in ones"
+        }
+      ]
+    },
+    {
+      "section": "whitespace control",
+      "cases": [
+        {
+          "template": "a  {{= a }}  b",
+          "output": "a  1  b"
+        },
+        {
+          "template": "a  {{=- a }}  b",
+          "output": "a1  b"
+        },
+        {
+          "template": "a  {{= a -}}  b",
+          "output": "a  1b"
+        },
+        {
+          "template": "a \n {{=- a -}} \n b",
+          "output": "a1b"
+        },
+        {
+          "template": "x {{- if t -}} y {{- endif -}} z",
+          "output": "xyz"
+        },
+        {
+          "template": "x {{ if t }} y {{ endif }} z",
+          "output": "x  y  z"
+        },
+        {
+          "template": "  {{ if t }}\n  y\n  {{ endif }}  ",
+          "output": "y",
+          "options": {
+            "trimWhitespace": true
+          }
+        },
+        {
+          "template": "a {{- for x of list -}} {{= x }} {{- endfor -}} b",
+          "output": "a123b"
+        },
+        {
+          "template": "a {{# c -#}} b",
+          "output": "a <!-- c -->b",
+          "note": "comments take the markers too"
+        }
+      ]
+    },
+    {
+      "section": "comments",
+      "cases": [
+        {
+          "template": "a{{# note #}}b",
+          "output": "a<!-- note -->b"
+        },
+        {
+          "template": "a{{# note #}}b",
+          "output": "ab",
+          "options": {
+            "stripComments": true
+          }
+        },
+        {
+          "template": "{{# {{= a }} #}}",
+          "output": "<!-- {{= a }} -->"
+        }
+      ]
+    },
+    {
+      "section": "if",
+      "cases": [
+        {
+          "template": "{{ if t }}y{{ endif }}",
+          "output": "y"
+        },
+        {
+          "template": "[{{ if f }}y{{ endif }}]",
+          "output": "[]"
+        },
+        {
+          "template": "{{ if zero }}y{{ else }}n{{ endif }}{{ if empty }}y{{ else }}n{{ endif }}{{ if n }}y{{ else }}n{{ endif }}",
+          "output": "nnn"
+        },
+        {
+          "template": "{{ if list }}y{{ endif }}{{ if obj }}y{{ endif }}",
+          "output": "yy"
+        },
+        {
+          "template": "{{ if a eq 2 }}2{{ elif a eq 1 }}1{{ else }}e{{ endif }}",
+          "output": "1"
+        },
+        {
+          "template": "{{ if f }}1{{ elseif t }}2{{ endif }}{{ if f }}1{{ elsif t }}2{{ endif }}",
+          "output": "22"
+        },
+        {
+          "template": "{{ if t }}{{ if f }}x{{ else }}y{{ endif }}{{ endif }}",
+          "output": "y"
+        },
+        {
+          "template": "{{ IF t }}y{{ ENDIF }}",
+          "output": "y"
+        },
+        {
+          "template": "{{ if }}y{{ endif }}",
+          "error": "\"if\" requires expression"
+        },
+        {
+          "template": "{{ if t }}y",
+          "error": "Unclosed \"if\""
+        },
+        {
+          "template": "y{{ endif }}",
+          "error": "Unexpected \"endif\""
+        },
+        {
+          "template": "{{ if t }}y{{ else t }}n{{ endif }}",
+          "error": "\"else\" should not have expression"
+        }
+      ]
+    },
+    {
+      "section": "for",
+      "cases": [
+        {
+          "template": "{{ for x of list }}{{= x }}{{ endfor }}",
+          "output": "123"
+        },
+        {
+          "template": "{{ for x of list }}{{= loop.index }}{{= loop.first }}{{= loop.last }};{{ endfor }}",
+          "output": "0truefalse;1falsefalse;2falsetrue;"
+        },
+        {
+          "template": "{{ for ch of s }}{{= ch }},{{ endfor }}",
+          "output": "s,t,r,"
+        },
+        {
+          "template": "{{ for x of missing }}{{= x }}{{ else }}none{{ endfor }}{{ for x of n }}{{= x }}{{ else }}none{{ endfor }}",
+          "output": "nonenone"
+        },
+        {
+          "template": "{{ for x of list }}{{ if x eq 2 }}{{ continue }}{{ endif }}{{= x }}{{ endfor }}",
+          "output": "13"
+        },
+        {
+          "template": "{{ for x of list }}{{ if x eq 2 }}{{ break }}{{ endif }}{{= x }}{{ endfor }}",
+          "output": "1"
+        },
+        {
+          "template": "{{ for x of list }}{{ for y of list }}{{ if y eq 2 }}{{ break }}{{ endif }}{{= x }}{{= y }} {{ endfor }}{{ endfor }}",
+          "output": "11 21 31 "
+        },
+        {
+          "template": "{{ for (id, name=\"?\") of rows }}{{= id }}{{= name }};{{ endfor }}",
+          "output": "1a;2?;",
+          "data": {
+            "rows": [
+              {
+                "id": 1,
+                "name": "a"
+              },
+              {
+                "id": 2
+              }
+            ]
+          }
+        },
+        {
+          "template": "{{ for key of obj | keys }}{{= key }};{{ endfor }}{{ for pair of obj | entries }}{{= pair | first }};{{ endfor }}",
+          "output": "k;n;k;n;"
+        },
+        {
+          "template": "{{ for x of obj }}{{= x }}{{ else }}none{{ endfor }}",
+          "output": "none",
+          "note": "plain objects are not iterable; use keys, values or entries"
+        },
+        {
+          "template": "{{ for x of list }}{{ set last = x }}{{ endfor }}[{{= last }}{{= x }}]",
+          "output": "[]"
+        },
+        {
+          "template": "{{ for x of list }}[{{= seen }}]{{ set seen = x }}{{ endfor }}",
+          "output": "[][][]"
+        },
+        {
+          "template": "{{ for s of list }}{{= s }}{{ endfor }}{{= s }}",
+          "output": "123str"
+        },
+        {
+          "template": "{{ for x }}y{{ endfor }}",
+          "error": "\"for\" expects \"item of items\""
+        },
+        {
+          "template": "{{ for x of list }}y",
+          "error": "Unclosed \"for\""
+        },
+        {
+          "template": "{{ break }}",
+          "error": "\"break\" directive used outside of a loop"
+        }
+      ]
+    },
+    {
+      "section": "set",
+      "cases": [
+        {
+          "template": "{{ set x = 5 }}{{= x }}",
+          "output": "5"
+        },
+        {
+          "template": "{{ set x = a | add(1) }}{{= x }}",
+          "output": "2"
+        },
+        {
+          "template": "{{ set (k, n) = obj }}{{= k }}{{= n.m }}",
+          "output": "v5"
+        },
+        {
+          "template": "{{ if t }}{{ set y = 1 }}{{ endif }}{{= y }}",
+          "output": "1"
+        },
+        {
+          "template": "{{ set a = 9 }}{{= a }}",
+          "output": "9",
+          "note": "assignments shadow the data, they never modify it"
+        },
+        {
+          "template": "{{ set }}",
+          "error": "\"set\" requires expression"
+        },
+        {
+          "template": "{{ set a.b = 1 }}",
+          "error": "Left operand of assignment must be an identifier"
+        },
+        {
+          "template": "{{ set (k, n) = obj }}{{ set (zz) = obj }}[{{= zz }}]",
+          "output": "[]"
+        }
+      ]
+    },
+    {
+      "section": "capture",
+      "cases": [
+        {
+          "template": "{{ capture c }}<{{= a }}>{{ endcapture }}[{{= c }}{{= c }}]",
+          "output": "[<1><1>]"
+        },
+        {
+          "template": "{{ capture c }}{{= html }}{{ endcapture }}{{= c }}",
+          "output": "&lt;b&gt;&amp;&#34;&#39;",
+          "note": "captured output is not escaped again"
+        },
+        {
+          "template": "{{ capture c }}x",
+          "error": "Unclosed \"capture\""
+        }
+      ]
+    },
+    {
+      "section": "with",
+      "cases": [
+        {
+          "template": "{{ with obj }}{{= k }}{{= n.m }}{{ endwith }}",
+          "output": "v5"
+        },
+        {
+          "template": "{{ with obj }}[{{= a }}]{{ endwith }}{{= a }}",
+          "output": "[]1",
+          "note": "inside, only the value's properties are visible"
+        },
+        {
+          "template": "{{ with obj }}{{ set k = 1 }}{{= k }}{{ endwith }}{{= obj.k }}",
+          "output": "1v",
+          "note": "assignments do not modify the value"
+        }
+      ]
+    },
+    {
+      "section": "macro and call",
+      "cases": [
+        {
+          "template": "{{ macro m(x, y=\"d\") }}[{{= x }}{{= y }}]{{ endmacro }}{{ call m(1) }}{{ endcall }}{{ call m(1, 2) }}{{ endcall }}",
+          "output": "[1d][12]"
+        },
+        {
+          "template": "{{ macro box(title) }}<{{= title }}:{{ caller }}>{{ endmacro }}{{ call box(\"T\") }}body {{= a }}{{ endcall }}",
+          "output": "<T:body 1>"
+        },
+        {
+          "template": "{{ macro m }}M{{= a }}{{ endmacro }}{{ call m() }}{{ endcall }}",
+          "output": "M1"
+        },
+        {
+          "template": "{{ macro m(s, c) }}{{= s }}{{= c }}{{ endmacro }}{{ call m(7, 8) }}{{ endcall }}",
+          "output": "78"
+        },
+        {
+          "template": "{{ macro m }}x",
+          "error": "Unclosed \"macro\""
+        },
+        {
+          "template": "{{ caller }}",
+          "error": "\"caller\" directive used outside of a macro"
+        }
+      ]
+    },
+    {
+      "section": "include",
+      "cases": [
+        {
+          "template": "{{ include \"part\" }}",
+          "output": "P1",
+          "files": {
+            "base": "<{{ block a }}A{{ endblock }}|{{ block b }}B{{ endblock }}>",
+            "mid": "{{ include \"base\" }}{{ block a }}M[{{ super }}]{{ endblock }}",
+            "part": "P{{= x }}{{= a }}"
+          }
+        },
+        {
+          "template": "{{ set x = 3 }}{{ include \"part\" }}",
+          "output": "P31",
+          "files": {
+            "base": "<{{ block a }}A{{ endblock }}|{{ block b }}B{{ endblock }}>",
+            "mid": "{{ include \"base\" }}{{ block a }}M[{{ super }}]{{ endblock }}",
+            "part": "P{{= x }}{{= a }}"
+          }
+        },
+        {
+          "template": "{{ include \"part\" }}{{ include \"part\" }}",
+          "output": "P1P1",
+          "files": {
+            "base": "<{{ block a }}A{{ endblock }}|{{ block b }}B{{ endblock }}>",
+            "mid": "{{ include \"base\" }}{{ block a }}M[{{ super }}]{{ endblock }}",
+            "part": "P{{= x }}{{= a }}"
+          }
+        },
+        {
+          "template": "{{ include \"nope\" }}",
+          "error": "Failed to load template from \"nope\"",
+          "files": {
+            "base": "<{{ block a }}A{{ endblock }}|{{ block b }}B{{ endblock }}>",
+            "mid": "{{ include \"base\" }}{{ block a }}M[{{ super }}]{{ endblock }}",
+            "part": "P{{= x }}{{= a }}"
+          }
+        },
+        {
+          "template": "{{ include }}",
+          "error": "\"include\" requires expression"
+        }
+      ]
+    },
+    {
+      "section": "block and super",
+      "cases": [
+        {
+          "template": "{{ include \"base\" }}",
+          "output": "<A|B>",
+          "files": {
+            "base": "<{{ block a }}A{{ endblock }}|{{ block b }}B{{ endblock }}>",
+            "mid": "{{ include \"base\" }}{{ block a }}M[{{ super }}]{{ endblock }}",
+            "part": "P{{= x }}{{= a }}"
+          }
+        },
+        {
+          "template": "{{ include \"base\" }}{{ block a }}X{{ endblock }}",
+          "output": "<X|B>",
+          "files": {
+            "base": "<{{ block a }}A{{ endblock }}|{{ block b }}B{{ endblock }}>",
+            "mid": "{{ include \"base\" }}{{ block a }}M[{{ super }}]{{ endblock }}",
+            "part": "P{{= x }}{{= a }}"
+          }
+        },
+        {
+          "template": "{{ include \"base\" }}{{ block b }}Y{{ super }}{{ endblock }}",
+          "output": "<A|YB>",
+          "files": {
+            "base": "<{{ block a }}A{{ endblock }}|{{ block b }}B{{ endblock }}>",
+            "mid": "{{ include \"base\" }}{{ block a }}M[{{ super }}]{{ endblock }}",
+            "part": "P{{= x }}{{= a }}"
+          }
+        },
+        {
+          "template": "{{ include \"mid\" }}{{ block a }}T({{ super }}){{ endblock }}",
+          "output": "<T(M[A])|B>",
+          "files": {
+            "base": "<{{ block a }}A{{ endblock }}|{{ block b }}B{{ endblock }}>",
+            "mid": "{{ include \"base\" }}{{ block a }}M[{{ super }}]{{ endblock }}",
+            "part": "P{{= x }}{{= a }}"
+          }
+        },
+        {
+          "template": "{{ block solo }}S{{ endblock }}-{{ block solo }}T{{ endblock }}",
+          "output": "T-",
+          "note": "the last definition wins and is rendered where the block first appears"
+        },
+        {
+          "template": "{{ super }}",
+          "error": "\"super\" should be used inside a block"
+        },
+        {
+          "template": "{{ block x }}y",
+          "error": "Unclosed \"block\""
+        }
+      ]
+    },
+    {
+      "section": "custom delimiters",
+      "cases": [
+        {
+          "template": "<%= a %><% if t %>y<% endif %><%# c #%>{{= a }}",
+          "output": "1y<!-- c -->{{= a }}",
+          "options": {
+            "outputOpen": "<%=",
+            "outputClose": "%>",
+            "directiveOpen": "<%",
+            "directiveClose": "%>",
+            "commentOpen": "<%#",
+            "commentClose": "#%>"
+          }
+        }
+      ]
+    }
+  ]
+}

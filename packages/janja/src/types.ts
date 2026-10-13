@@ -65,12 +65,25 @@ export interface DirectiveExpression {
 
 export type Token = CommentToken | DirectiveToken | OutputToken | TextToken;
 
-export type Filters = Record<string, (value: any, ...args: any[]) => any>;
+/**
+ * A filter receives the piped value followed by the arguments written in the
+ * template. `this` is the context the expression is evaluated in. It may
+ * return a promise.
+ */
+export type Filter<
+  Value = any,
+  Args extends any[] = any[],
+  Result = unknown,
+> = (this: ObjectType, value: Value, ...args: Args) => Result;
+
+export type Filters = Record<string, Filter>;
 
 export type Script = (
   globals: ObjectType,
   escape: (v: any) => any,
   filters: Filters,
+  /** Receives chunks of output when the template was compiled for streaming */
+  write?: (chunk: string) => void | Promise<void>,
 ) => Promise<string>;
 
 export interface Plugin {
@@ -127,6 +140,13 @@ export interface CacheOptions {
   enabled?: boolean;
   maxSize?: number;
   ttl?: number;
+  /**
+   * Re-read included templates through the loader on every cache hit and
+   * recompile when one of them changed. Disable when templates are immutable
+   * at runtime to skip those loader calls.
+   * @default true
+   */
+  revalidate?: boolean;
 }
 
 export interface RendererOptions extends CompilerOptions {
@@ -134,4 +154,19 @@ export interface RendererOptions extends CompilerOptions {
   autoEscape?: boolean;
   cache?: CacheOptions;
   security?: SecurityOptions;
+}
+
+/**
+ * Define filters with their value and argument types checked, e.g.
+ * `defineFilters({ shout: (value: string, times = 1) => ... })`.
+ */
+export function defineFilters<T extends Filters>(filters: T): T {
+  return filters;
+}
+
+/**
+ * Define a plugin (filters, parsers and compilers) with its shape checked.
+ */
+export function definePlugin<T extends Plugin>(plugin: T): T {
+  return plugin;
 }

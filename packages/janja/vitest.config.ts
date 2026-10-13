@@ -13,6 +13,12 @@ export default defineConfig(({ mode }) => ({
       enabled: true,
       include: ['src/**/*.ts', 'test/**/*.ts'],
       reporter: env.GITHUB_ACTIONS ? ['text'] : ['html'],
+      thresholds: {
+        statements: 88,
+        branches: 84,
+        functions: 90,
+        lines: 88,
+      },
     },
     benchmark: {
       include: ['benchmarks/**/*.bench.ts'],

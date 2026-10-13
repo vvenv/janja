@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { Safe } from './safe';
 import { deepEscape, SecurityAuditor, SecuritySandbox } from './security';
 
 describe('SecuritySandbox', () => {
@@ -79,7 +80,27 @@ describe('SecuritySandbox', () => {
 describe('deepEscape', () => {
   it('should escape strings', () => {
     expect(deepEscape('test')).toBe('test');
-    expect(deepEscape('<script>')).toBe('<script>');
+    expect(deepEscape('<script>')).toBe('&lt;script&gt;');
+    expect(deepEscape(`"a" & 'b'`)).toBe('&#34;a&#34; &amp; &#39;b&#39;');
+  });
+
+  it('should escape strings nested in arrays and objects', () => {
+    expect(deepEscape(['<b>', { a: '<i>', b: ['<u>'] }])).toBe(
+      '&lt;b&gt;&lt;i&gt;&lt;u&gt;',
+    );
+  });
+
+  it('should not escape safe strings', () => {
+    expect(deepEscape(new Safe('<b>'))).toBe('<b>');
+    expect(deepEscape([new Safe('<b>'), '<i>'])).toBe('<b>&lt;i&gt;');
+  });
+
+  it('should handle circular references', () => {
+    const value: Record<string, unknown> = { a: '<b>' };
+
+    value.self = value;
+
+    expect(deepEscape(value)).toBe('&lt;b&gt;');
   });
 
   it('should handle null and undefined', () => {

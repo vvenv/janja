@@ -109,7 +109,7 @@ it('add', () => {
 });
 
 it('sub', () => {
-  expect(format('a - b')).toMatchInlineSnapshot(`"b"`);
+  expect(format('a - b')).toMatchInlineSnapshot(`"a - b"`);
 });
 
 it('mul', () => {

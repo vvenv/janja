@@ -112,7 +112,7 @@ P99: ${result.p99Latency.toFixed(2)}
 
 // CLI usage example
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const template = 'Hello {{ name }}!';
+  const template = 'Hello {{= name }}!';
   const data = { name: 'World' };
 
   console.log('Starting load test...');

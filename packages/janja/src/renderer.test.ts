@@ -1,6 +1,7 @@
 import { expect, it } from 'vitest';
 import { render, renderFile } from '../test/__helper';
 import type { Compiler } from './compiler';
+import { Renderer } from './renderer';
 import { Traversal } from './syntax-nodes';
 import type { Loc } from './types';
 
@@ -26,21 +27,19 @@ it('error', async () => {
   }
 
   try {
-    await render('{{ for name of names }}{{ endfor }}');
+    await render('{{= a.b.c }}');
     expect(true).toBe(false);
   } catch (error: any) {
     expect(error).toMatchInlineSnapshot(
-      `[RenderError: Cannot read properties of undefined (reading 'length')]`,
+      `[RenderError: Cannot read properties of undefined (reading 'b')]`,
     );
-    expect(error.details).toMatchInlineSnapshot(
-      `
-      "Cannot read properties of undefined (reading 'length')
+    expect(error.details).toMatchInlineSnapshot(`
+      "Cannot read properties of undefined (reading 'b')
 
-      1│ {{ for name of names }}{{ endfor }}
-       │             ^^
+      1│ {{= a.b.c }}
+       │     ^
       "
-    `,
-    );
+    `);
   }
 
   try {
@@ -164,15 +163,7 @@ it('for loop', async () => {
         names: ['foo', 'bar'],
       },
     ),
-  ).toMatchInlineSnapshot(
-    `
-    "
-      foo
-
-      bar
-    "
-  `,
-  );
+  ).toMatchInlineSnapshot(`"foobar"`);
 });
 
 it('for loop - nested', async () => {
@@ -257,12 +248,8 @@ it('include', async () => {
   expect(await render('{{ include "default" }}')).toMatchInlineSnapshot(
     `
     "<html>
-      <head>
-          <title>title</title>
-        </head>
-      <body>
-          <h1>body</h1>
-        </body>
+      <head><title>title</title></head>
+      <body><h1>body</h1></body>
     </html>
     "
   `,
@@ -270,7 +257,7 @@ it('include', async () => {
 });
 
 it('null', async () => {
-  expect(await render('{{= null }}')).toMatchInlineSnapshot(`"null"`);
+  expect(await render('{{= null }}')).toMatchInlineSnapshot(`""`);
 });
 
 it('custom directive', async () => {
@@ -305,4 +292,290 @@ it('custom directive', async () => {
       },
     ),
   ).toMatchInlineSnapshot(`"<CUSTOM/>"`);
+});
+
+it('terminates on directives missing their expression', async () => {
+  const errors: string[] = [];
+  const renderer = new Renderer({
+    debug: (error) => errors.push(error.message),
+  });
+
+  for (const template of [
+    '{{ if }}a',
+    '{{ if }}a{{ endif }}',
+    '{{ for }}a{{ endfor }}',
+    '{{ if x }}a{{ elif }}b{{ endif }}',
+    '{{ if x }}a{{ else 1 }}b{{ endif }}',
+    '{{ for x of y }}a{{ else 1 }}b{{ endfor }}',
+    '{{ break 1 }}{{ continue }}',
+  ]) {
+    await renderer.render(template, {});
+  }
+
+  expect(errors).toContain('"if" requires expression');
+  expect(errors).toContain('"for" requires expression');
+}, 2000);
+
+it('deep escape still escapes html', async () => {
+  const renderer = new Renderer({ security: { deepEscape: true } });
+
+  expect(
+    await renderer.render('{{= a }}{{= b }}', {
+      a: '<script>',
+      b: ['<b>', { c: '<i>' }],
+    }),
+  ).toBe('&lt;script&gt;&lt;b&gt;&lt;i&gt;');
+});
+
+it('cache never serves another template', async () => {
+  const renderer = new Renderer();
+
+  // "Aa" and "BB" collide under a 31-based string hash
+  expect(await renderer.render('Aa', {})).toBe('Aa');
+  expect(await renderer.render('BB', {})).toBe('BB');
+  expect(renderer.getCacheStats()).toMatchObject({ hits: 0, size: 2 });
+
+  expect(await renderer.render('BB', {})).toBe('BB');
+  expect(renderer.getCacheStats()).toMatchObject({ hits: 1, size: 2 });
+});
+
+it('null and undefined render as empty', async () => {
+  const renderer = new Renderer();
+
+  expect(
+    await renderer.render('[{{= a }}{{= b }}{{= c.d }}{{= 0 }}{{= false }}]', {
+      a: null,
+      c: {},
+    }),
+  ).toBe('[0false]');
+  expect(
+    await new Renderer({ autoEscape: false }).render('[{{= a }}{{= b }}]', {
+      a: null,
+    }),
+  ).toBe('[]');
+});
+
+it('for treats null and undefined as empty and accepts any iterable', async () => {
+  const renderer = new Renderer();
+  const template =
+    '{{ for i of items }}{{= i }}{{ if loop.last }}.{{ endif }}{{ else }}none{{ endfor }}';
+
+  expect(await renderer.render(template, {})).toBe('none');
+  expect(await renderer.render(template, { items: null })).toBe('none');
+  expect(await renderer.render(template, { items: new Set([1, 2]) })).toBe(
+    '12.',
+  );
+});
+
+it('keeps line endings and special characters of text intact', async () => {
+  const text = ['a\r\nb\rc\td\u2028e"f\\g$', '{h}`i'].join('');
+
+  expect(await new Renderer().render(`${text}{{= x }}`, { x: 1 })).toBe(
+    `${text}1`,
+  );
+});
+
+it('expressions cannot reach object internals', async () => {
+  const errors: string[] = [];
+  const renderer = new Renderer({
+    debug: (error) => errors.push(error.message),
+  });
+  const data = { x: {}, list: [{}] };
+
+  for (const template of [
+    '{{= x.constructor }}',
+    '{{= constructor }}',
+    '{{= x.__proto__ }}',
+    '{{= x.toString.constructor("return 1")() }}',
+    '{{= x | constructor }}',
+    '{{ set __proto__ = x }}',
+    '{{ for constructor of list }}{{ endfor }}',
+    '{{ macro prototype }}{{ endmacro }}',
+  ]) {
+    errors.length = 0;
+    await renderer.render(template, data);
+
+    expect(errors.join()).toMatch(/is not allowed in expressions/);
+  }
+
+  // dynamic keys handed to filters are covered as well
+  expect(
+    await new Renderer().render(
+      '[{{= x | get("constructor") }}{{= x | pick("constructor") | values }}{{= list | map("constructor") }}]',
+      data,
+    ),
+  ).toBe('[]');
+
+  // names that merely live on Object.prototype are ordinary identifiers
+  expect(
+    await new Renderer().render('{{= toString }}{{= x.valueOf }}', {
+      toString: 'a',
+      x: { valueOf: 'b' },
+    }),
+  ).toBe('ab');
+});
+
+it('sandbox restricts configured globals but not render data', async () => {
+  const renderer = new Renderer({
+    globals: { site: 'janja', secret: 'hidden' },
+    security: { sandbox: true, allowedGlobals: ['site'] },
+  });
+
+  expect(
+    await renderer.render('{{= name }}@{{= site }}[{{= secret }}]', {
+      name: 'World',
+    }),
+  ).toBe('World@janja[]');
+});
+
+it('cache picks up changes to included templates', async () => {
+  const files: Record<string, string> = { a: 'A1{{ include "b" }}', b: 'B1' };
+  const loader = async (path: string) => {
+    if (!(path in files)) {
+      throw new Error('not found');
+    }
+
+    return files[path];
+  };
+  const template = '{{ include "a" }}';
+  const renderer = new Renderer({ loader });
+
+  expect(await renderer.render(template, {})).toBe('A1B1');
+  expect(await renderer.render(template, {})).toBe('A1B1');
+  expect(renderer.getCacheStats()).toMatchObject({ hits: 1 });
+
+  // nested include changed
+  files.b = 'B2';
+  expect(await renderer.render(template, {})).toBe('A1B2');
+
+  files.a = 'A2';
+  expect(await renderer.render(template, {})).toBe('A2');
+
+  // revalidation can be turned off for immutable templates
+  const frozen = new Renderer({ loader, cache: { revalidate: false } });
+
+  files.a = 'A3';
+  expect(await frozen.render(template, {})).toBe('A3');
+  files.a = 'A4';
+  expect(await frozen.render(template, {})).toBe('A3');
+});
+
+it('cache is enabled unless explicitly disabled', async () => {
+  expect(
+    new Renderer({ cache: { maxSize: 5 } }).getCacheStats(),
+  ).not.toBeNull();
+  expect(
+    new Renderer({ cache: { enabled: false } }).getCacheStats(),
+  ).toBeNull();
+});
+
+it('reports the source location of errors on cache hits', async () => {
+  const errors: any[] = [];
+  const renderer = new Renderer({ debug: (error) => errors.push(error) });
+
+  await renderer.render('ab{{= a.b.c }}', {});
+  await renderer.render('ab{{= a.b.c }}', {});
+
+  expect(errors).toHaveLength(2);
+  expect(errors[1].details).toBe(errors[0].details);
+  expect(errors[1].details).toContain('1│ ab{{= a.b.c }}');
+});
+
+it('arithmetic', async () => {
+  const renderer = new Renderer();
+
+  expect(
+    await renderer.render(
+      '{{= a - b }},{{= a -1 }},{{= a-1 }},{{= -1 }},{{= a + -1 }},{{= a | add(-1) }},{{= 5 - 2 - 1 }},{{= a - b * 2 }}',
+      { a: 5, b: 2 },
+    ),
+  ).toBe('3,4,4,-1,4,4,2,1');
+});
+
+it('rejects expressions with two operands in a row', async () => {
+  const renderer = new Renderer();
+
+  for (const template of [
+    '{{= a b }}',
+    '{{ if a b }}x{{ endif }}',
+    '{{= a "b" }}',
+    '{{= a 1 }}',
+    '{{= 1 (a) }}',
+  ]) {
+    await expect(renderer.render(template, { a: 1 })).rejects.toThrow(
+      /^Unexpected "/,
+    );
+  }
+});
+
+it('lenient mode reports problems and renders the rest of the template', async () => {
+  const lenient = async (template: string) => {
+    const errors: string[] = [];
+    const output = await new Renderer({
+      debug: (error) => errors.push(error.message),
+    }).render(template, { a: 1, items: [1, 2] });
+
+    return [output, ...errors];
+  };
+
+  expect(await lenient('a{{ nope }}b')).toEqual([
+    'a<!--Unknown "nope"-->b',
+    'Unknown "nope"',
+  ]);
+  expect(await lenient('a{{ endif }}b')).toEqual([
+    'a<!--Unexpected "endif"-->b',
+    'Unexpected "endif"',
+  ]);
+  expect(await lenient('[{{= (a }}]{{= a }}')).toEqual([
+    '[]1',
+    'Expected "RP" after "LP"',
+    'Invalid "output" directive',
+  ]);
+  expect(await lenient('[{{ if a | }}x{{ endif }}]{{= a }}')).toEqual([
+    '[]1',
+    'Expected "ID" after "PIPE"',
+    'Invalid "if" directive',
+  ]);
+  expect(await lenient('[{{ for x }}y{{ endfor }}]{{= a }}')).toEqual([
+    '[]1',
+    '"for" expects "item of items"',
+  ]);
+  expect(
+    await lenient('{{ for i of items }}{{= (i }}{{= i }}{{ endfor }}'),
+  ).toEqual(['12', 'Expected "RP" after "LP"', 'Invalid "output" directive']);
+});
+
+it('template variables may use any name', async () => {
+  const renderer = new Renderer();
+
+  // these used to collide with variables of the generated code
+  expect(
+    await renderer.render(
+      '{{ for s of list }}{{= s }}{{ endfor }}|{{ for (c, e) of pairs }}{{= c }}{{= e }}{{ endfor }}|{{ for (f=9) of pairs }}{{= f }}{{ endfor }}',
+      { list: [1, 2], pairs: [{ c: 'a', e: 'b' }] },
+    ),
+  ).toBe('12|ab|9');
+  expect(
+    await renderer.render(
+      '{{ macro m(s, c="d") }}[{{= s }}{{= c }}]{{ endmacro }}{{ call m(1) }}{{ endcall }}{{ call m(2, 3) }}{{ endcall }}',
+      {},
+    ),
+  ).toBe('[1d][23]');
+});
+
+it('loop scopes do not leak between iterations', async () => {
+  const renderer = new Renderer();
+
+  expect(
+    await renderer.render(
+      '{{ for i of list }}[{{= seen }}]{{ set seen = i }}{{ endfor }}({{= seen }})',
+      { list: [1, 2, 3] },
+    ),
+  ).toBe('[][][]()');
+  expect(
+    await renderer.render(
+      '{{ for i of list }}{{ for j of list }}{{= i }}{{= j }}{{= loop.last }},{{ endfor }}{{= loop.index }};{{ endfor }}',
+      { list: [1, 2] },
+    ),
+  ).toBe('11false,12true,0;21false,22true,1;');
 });

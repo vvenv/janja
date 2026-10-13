@@ -3,17 +3,17 @@ import { compile, render } from '../../../test/__helper';
 
 it('raw', async () => {
   expect(await compile('hello world')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+="hello world";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+="hello world";return s;})();"`,
   );
   expect(await render('hello world')).toMatchInlineSnapshot(`"hello world"`);
   expect(await compile(' hello world ')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=" hello world ";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=" hello world ";return s;})();"`,
   );
   expect(await render(' hello world ')).toMatchInlineSnapshot(
     `" hello world "`,
   );
   expect(await compile(' hello\nworld ')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=" hello\\nworld ";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=" hello\\nworld ";return s;})();"`,
   );
   expect(await render(' hello\nworld ')).toMatchInlineSnapshot(
     `
@@ -25,9 +25,9 @@ it('raw', async () => {
 
 it('whitespace', async () => {
   expect(
-    await compile(' {{= t x -}} hello world {{=- t }} '),
+    await compile(' {{= x -}} hello world {{=- t }} '),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=" ";s+=e(c.x);s+="hello world";s+=e(c.t);s+=" ";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=" ";s+=e(c.x);s+="hello world";s+=e(c.t);s+=" ";return s;})();"`,
   );
   expect(
     await render(' {{= t -}} hello world {{=- t }} ', { t: 1 }),
@@ -35,7 +35,7 @@ it('whitespace', async () => {
   expect(
     await compile(' {{=- t }} hello world {{= t -}}  '),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e(c.t);s+=" hello world ";s+=e(c.t);return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=e(c.t);s+=" hello world ";s+=e(c.t);return s;})();"`,
   );
   expect(
     await render(' {{=- t }} hello world {{= t -}}  ', { t: 1 }),
@@ -43,7 +43,7 @@ it('whitespace', async () => {
   expect(
     await compile(' {{=- t -}} hello world {{=- t -}}  '),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e(c.t);s+="hello world";s+=e(c.t);return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=e(c.t);s+="hello world";s+=e(c.t);return s;})();"`,
   );
   expect(
     await render(' {{=- t -}} hello world {{=- t -}}  ', { t: 1 }),

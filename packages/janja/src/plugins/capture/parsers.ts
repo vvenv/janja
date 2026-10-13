@@ -17,7 +17,7 @@ function* parseCapture(token: DirectiveToken, parser: Parser) {
   if (parser.match(['endcapture'])) {
     yield 'NEXT';
   } else {
-    throw parser.options.debug?.(
+    parser.options.debug?.(
       new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
     );
   }

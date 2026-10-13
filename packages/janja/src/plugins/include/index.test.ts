@@ -47,7 +47,7 @@ it('include', async () => {
           "val": {
             "loc": {
               "end": {
-                "column": 16,
+                "column": 18,
                 "line": 1,
               },
               "start": {
@@ -80,7 +80,7 @@ it('include', async () => {
           "val": {
             "loc": {
               "end": {
-                "column": 37,
+                "column": 39,
                 "line": 1,
               },
               "start": {
@@ -113,7 +113,7 @@ it('include', async () => {
           "val": {
             "loc": {
               "end": {
-                "column": 57,
+                "column": 59,
                 "line": 1,
               },
               "start": {

@@ -18,6 +18,11 @@ export class ForNode extends Traversal {
   ) {
     super();
   }
+
+  traverse(cb: (node: SyntaxNode) => void) {
+    this.body.forEach(cb);
+    this.alternative?.body.forEach(cb);
+  }
 }
 
 export class ElseNode extends Traversal {

@@ -11,7 +11,9 @@ export const baseOptions: Required<BaseOptions> = {
   parsers: {},
   compilers: {},
   plugins: [],
-  debug: () => {},
+  debug: (error) => {
+    throw error;
+  },
 };
 
 export const parserOptions: Required<ParserOptions> = {
@@ -39,7 +41,9 @@ export const renderOptions: Required<RendererOptions> = {
     enabled: true,
     maxSize: 1000,
     ttl: 3600000,
+    revalidate: true,
   },
+  security: {},
 };
 
 export const mergeOptions = <
@@ -70,10 +74,21 @@ export const mergeOptions = <
 
   defaultOptions.plugins?.forEach(mergePlugins);
 
-  optionsArray.forEach(({ plugins, ...options }) => {
-    Object.assign(mergedOptions, options);
-    plugins?.forEach(mergePlugins);
-  });
+  optionsArray.forEach(
+    ({ plugins, filters, parsers, compilers, ...options }) => {
+      for (const [key, value] of Object.entries(options)) {
+        // An option explicitly set to undefined keeps its default
+        if (value !== undefined) {
+          (mergedOptions as Record<string, unknown>)[key] = value;
+        }
+      }
+
+      // Filters, parsers and compilers add to the built-in ones rather than
+      // replace them
+      mergePlugins({ filters, parsers, compilers });
+      plugins?.forEach(mergePlugins);
+    },
+  );
 
   return mergedOptions;
 };

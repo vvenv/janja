@@ -1,3 +1,5 @@
+import { escape } from './escape';
+import { Safe } from './safe';
 import type { ObjectType } from './types';
 
 export interface SecurityOptions {
@@ -81,26 +83,31 @@ export class SecuritySandbox {
   }
 }
 
-export function deepEscape(value: unknown): string {
+export function deepEscape(value: unknown, seen = new WeakSet()): string {
   if (value === null || value === undefined) {
     return '';
   }
 
-  if (typeof value === 'string') {
-    return value;
+  if (value instanceof Safe) {
+    return `${value}`;
   }
 
   if (typeof value === 'object') {
-    if (Array.isArray(value)) {
-      return value.map(deepEscape).join('');
+    // Guard against circular references
+    if (seen.has(value)) {
+      return '';
     }
 
-    return Object.values(value as ObjectType)
-      .map(deepEscape)
-      .join('');
+    seen.add(value);
+
+    const values = Array.isArray(value)
+      ? value
+      : Object.values(value as ObjectType);
+
+    return values.map((v) => deepEscape(v, seen)).join('');
   }
 
-  return String(value);
+  return escape(value);
 }
 
 export interface SecurityAuditResult {

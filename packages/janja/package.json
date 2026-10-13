@@ -4,14 +4,38 @@
   "description": "A simple, fast, lightweight, and extensible template engine for Node.js and browsers.",
   "type": "module",
   "license": "MIT",
-  "main": "./dist/index.cjs.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vvenv/janja.git",
+    "directory": "packages/janja"
+  },
+  "homepage": "https://github.com/vvenv/janja#readme",
+  "bugs": "https://github.com/vvenv/janja/issues",
+  "keywords": [
+    "template",
+    "template-engine",
+    "templating",
+    "jinja",
+    "html",
+    "browser"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.cjs",
   "module": "./dist/index.esm.js",
   "browser": "./dist/index.js",
+  "unpkg": "./dist/index.min.js",
+  "jsdelivr": "./dist/index.min.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/index.esm.js",
-    "require": "./dist/index.cjs.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"
@@ -20,15 +44,25 @@
     "build": "rm -rf dist && rollup -c",
     "dev": "vitest watch",
     "test": "vitest",
-    "bench": "vitest bench"
+    "bench": "vitest bench",
+    "typecheck": "tsc --noEmit",
+    "prepack": "cp ../../README.md ../../LICENSE ."
   },
   "devDependencies": {
+    "@jridgewell/trace-mapping": "^0.3.31",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
+    "@types/ejs": "^3.1.5",
     "@types/node": "^24.10.3",
+    "@types/nunjucks": "^3.2.6",
     "@vitest/coverage-v8": "4.1.5",
     "@vitest/ui": "4.0.16",
+    "ejs": "^7.0.1",
+    "eta": "^4.6.0",
+    "handlebars": "^4.7.10",
+    "nunjucks": "^3.2.4",
     "rollup": "^4.53.3",
     "rollup-plugin-dts": "^6.3.0",
     "typescript": "^5.9.3",

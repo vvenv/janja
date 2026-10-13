@@ -6,9 +6,10 @@
   "description": "A simple, fast, lightweight, and extensible template engine for Node.js and browsers.",
   "license": "MIT",
   "scripts": {
-    "build": "pnpm --filter janja build",
+    "build": "pnpm -r build",
     "dev": "pnpm --filter janja dev",
-    "test": "pnpm --filter janja test",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
     "bench": "pnpm --filter janja bench",
     "lint": "eslint .",
     "prepare": "husky"

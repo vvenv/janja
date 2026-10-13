@@ -19,6 +19,22 @@ export class Parser extends Tokenizer {
   parse(template: string) {
     this.tokenize(template);
 
+    // `{{-` and `-}}` strip the whitespace of the text next to them, however
+    // the tokens end up nested
+    this.tokens.forEach((token, i) => {
+      if (token.type !== TokenType.TEXT) {
+        return;
+      }
+
+      if (this.tokens[i - 1]?.strip?.after) {
+        token.strip.start = true;
+      }
+
+      if (this.tokens[i + 1]?.strip?.before) {
+        token.strip.end = true;
+      }
+    });
+
     const start = this.tokens[0]?.loc.start ?? { line: 1, column: 1 };
     const end = this.tokens.at(-1)?.loc.end ?? { line: 1, column: 1 };
 
@@ -68,6 +84,7 @@ export class Parser extends Tokenizer {
         parser = this.options.parsers['unknown'];
       }
 
+      const { cursor } = this;
       const ag = (parser as ParserFn)?.(token, this);
 
       if (ag) {
@@ -84,6 +101,12 @@ export class Parser extends Tokenizer {
             nodes.push(value);
           }
         }
+      }
+
+      // A parser that bails out without consuming its token (e.g. after
+      // reporting an error) would otherwise be handed the same token forever.
+      if (this.cursor === cursor) {
+        this.advance();
       }
 
       prevToken = token;
@@ -113,7 +136,8 @@ export class Parser extends Tokenizer {
   }
 
   match(names: string[], token = this.peek()) {
-    return names.includes((token as DirectiveToken)?.name);
+    // Directive names are case-insensitive, like the lookup of their parser
+    return names.includes((token as DirectiveToken)?.name?.toLowerCase());
   }
 
   emitExpErr({ name, loc }: DirectiveToken, required = true) {

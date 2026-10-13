@@ -3,26 +3,32 @@ import { compile } from '../../../test/__helper';
 
 it('comment', async () => {
   expect(await compile('{{# foo #}}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+="<!-- foo -->";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+="<!-- foo -->";return s;})();"`,
   );
   expect(await compile('{{# foo\nbar #}}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+="<!-- foo\\nbar -->";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+="<!-- foo\\nbar -->";return s;})();"`,
   );
   expect(
     await compile('{{# {{ if x }}id{{ endif }} #}}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+="<!-- {{ if x }}id{{ endif }} -->";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+="<!-- {{ if x }}id{{ endif }} -->";return s;})();"`,
   );
 });
 
 it('w/ stripComments', async () => {
   expect(
     await compile('{{# foo #}}', { stripComments: true }),
-  ).toMatchInlineSnapshot(`"return(async()=>{let s="";return s;})();"`);
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};return s;})();"`,
+  );
   expect(
     await compile('{{# foo\nbar #}}', { stripComments: true }),
-  ).toMatchInlineSnapshot(`"return(async()=>{let s="";return s;})();"`);
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};return s;})();"`,
+  );
   expect(
     await compile('{{# {{ if x }}id{{ endif }} #}}', { stripComments: true }),
-  ).toMatchInlineSnapshot(`"return(async()=>{let s="";return s;})();"`);
+  ).toMatchInlineSnapshot(
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};return s;})();"`,
+  );
 });

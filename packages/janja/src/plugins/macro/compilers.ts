@@ -12,20 +12,14 @@ async function compileMacro(
 
   compiler.pushRaw(
     loc,
-    `${context}.${value}=(${
-      args
-        ?.map((el) =>
-          el.type === 'ASSIGN'
-            ? `${el.left.value}=${expCompiler.compile(el.right)}`
-            : el.value,
-        )
-        .join(',') ?? ''
-    })=>async(_c)=>{`,
+    `${context}.${value}=(...a_)=>async(_c)=>{`,
     `const ${compiler.in()}={`,
     `...${context},`,
-    args
-      ?.map((el) => (el.type === 'ASSIGN' ? el.left.value : el.value))
-      .join(',') ?? '',
+    ...(args ?? []).map((el, i) =>
+      el.type === 'ASSIGN'
+        ? `${el.left.value}:a_[${i}]===undefined?${expCompiler.compile(el.right)}:a_[${i}],`
+        : `${el.value}:a_[${i}],`,
+    ),
     '};',
   );
 

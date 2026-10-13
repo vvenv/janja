@@ -4,8 +4,62 @@ import { Context } from './context';
 import { Parser } from './parser';
 import type { BlockNode } from './plugins/block/syntax';
 import type { IncludeNode } from './plugins/include/syntax';
+import type { Mapping } from './source-map';
 import type { RootNode, SyntaxNode } from './syntax-nodes';
-import type { CompilerFn, CompilerOptions } from './types';
+import type { CompilerFn, CompilerOptions, Script } from './types';
+
+export interface CompiledTemplate {
+  code: string;
+  mappings: Mapping[];
+  // Created on first use and then shared by every render of the template
+  script?: Script;
+  // Source of every included template, to detect when one of them changed
+  sources: Map<string, string>;
+  // The options the template was compiled with
+  fingerprint: string;
+}
+
+const fingerprints = new WeakMap<object, string>();
+
+// Directives whose body is still the template's own top-level output
+const transparent = new Set(['IF', 'FOR']);
+
+// The template itself is the key: one string that is hashed once, and two
+// different templates can never share an entry
+export function templateCacheKey(template: string, stream = false) {
+  return stream ? `\0stream:${template}` : template;
+}
+
+export function optionsFingerprint(options: Required<CompilerOptions>) {
+  let fingerprint = fingerprints.get(options);
+
+  if (fingerprint === undefined) {
+    const {
+      trimWhitespace,
+      stripComments,
+      commentOpen,
+      commentClose,
+      directiveOpen,
+      directiveClose,
+      outputOpen,
+      outputClose,
+    } = options;
+
+    fingerprint = JSON.stringify([
+      trimWhitespace,
+      stripComments,
+      commentOpen,
+      commentClose,
+      directiveOpen,
+      directiveClose,
+      outputOpen,
+      outputClose,
+    ]);
+    fingerprints.set(options, fingerprint);
+  }
+
+  return fingerprint;
+}
 
 export class Compiler extends Context {
   public template!: string;
@@ -20,11 +74,23 @@ export class Compiler extends Context {
 
   private blocks!: Map<string, BlockNode[]>;
 
-  private cache?: LRUCache<string>;
+  private sources!: Map<string, string>;
+
+  private cache?: LRUCache<CompiledTemplate>;
+
+  private compiled?: CompiledTemplate;
+
+  /**
+   * Whether the code being generated may write output to the stream. True
+   * only in stream mode, for the template's own top-level output.
+   */
+  public flushable = false;
 
   constructor(
     public options: Required<CompilerOptions>,
-    cache?: LRUCache<string>,
+    cache?: LRUCache<CompiledTemplate>,
+    private revalidate = true,
+    private stream = false,
   ) {
     super();
     this.cache = cache;
@@ -35,30 +101,41 @@ export class Compiler extends Context {
     root = true,
     partials = new Map<string, string>(),
     blocks = new Map<string, BlockNode[]>(),
+    sources = new Map<string, string>(),
   ) {
     this.template = template;
     this.isRoot = root;
     this.partials = partials;
     this.blocks = blocks;
+    this.sources = sources;
 
     // Generate cache key from template and options
     const cacheKey = this.generateCacheKey(template);
 
     // Check cache first
     if (this.cache && root) {
-      const cachedCode = this.cache.get(cacheKey);
+      const cached = this.cache.get(cacheKey);
 
-      if (cachedCode) {
-        this.code = cachedCode;
+      if (cached) {
+        if (
+          cached.fingerprint === this.fingerprint() &&
+          (await this.isFresh(cached))
+        ) {
+          this.code = cached.code;
+          this.mappings = cached.mappings;
+          this.compiled = cached;
 
-        return this;
+          return this;
+        }
+
+        this.cache.delete(cacheKey);
       }
     }
 
     this.rootNode = new Parser(this.options).parse(template);
     this.state = {};
 
-    this.start();
+    this.start(this.isRoot);
 
     await this.parseTemplates();
 
@@ -67,7 +144,7 @@ export class Compiler extends Context {
         this.pushRaw(null, 'const p={');
 
         for (const [path, code] of this.partials) {
-          this.pushRaw(null, `"${path}":async()=>{`, code, '},');
+          this.pushRaw(null, `${JSON.stringify(path)}:async()=>{`, code, '},');
         }
 
         this.pushRaw(null, '};');
@@ -77,7 +154,7 @@ export class Compiler extends Context {
         this.pushRaw(null, 'const b={');
 
         for (const [name, _blocks] of this.blocks) {
-          this.pushRaw(null, `"${name}":{`, 'u:0,', 's:[');
+          this.pushRaw(null, `${JSON.stringify(name)}:{`, 'u:0,', 's:[');
 
           this.state.block = name;
 
@@ -96,30 +173,60 @@ export class Compiler extends Context {
       }
     }
 
+    this.flushable = this.isRoot && this.stream;
+
     await this.compileNode(this.rootNode);
+
+    this.flushable = false;
 
     this.end();
 
     // Store in cache
     if (this.cache && root) {
-      this.cache.set(cacheKey, this.code);
+      this.compiled = {
+        code: this.code,
+        mappings: this.mappings,
+        sources: this.sources,
+        fingerprint: this.fingerprint(),
+      };
+      this.cache.set(cacheKey, this.compiled);
     }
 
     return this;
   }
 
-  private generateCacheKey(template: string): string {
-    // Simple hash-based cache key
-    let hash = 0;
-
-    for (let i = 0; i < template.length; i++) {
-      const char = template.charCodeAt(i);
-
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash; // Convert to 32bit integer
+  get script() {
+    if (!this.compiled) {
+      return super.script;
     }
 
-    return `${hash}:${this.options.trimWhitespace}:${this.options.stripComments}`;
+    return (this.compiled.script ??= super.script);
+  }
+
+  private generateCacheKey(template: string): string {
+    return templateCacheKey(template, this.stream);
+  }
+
+  private fingerprint() {
+    return optionsFingerprint(this.options);
+  }
+
+  private async isFresh({ sources }: CompiledTemplate) {
+    if (!this.revalidate) {
+      return true;
+    }
+
+    try {
+      for (const [path, source] of sources) {
+        if ((await this.options.loader(path)) !== source) {
+          return false;
+        }
+      }
+    } catch {
+      return false;
+    }
+
+    return true;
   }
 
   private async parseTemplates() {
@@ -138,6 +245,8 @@ export class Compiler extends Context {
             node.loc,
           );
         }
+
+        this.sources.set(path, template ?? '');
 
         if (template) {
           await this.compilePartial(path, node, template);
@@ -186,7 +295,15 @@ export class Compiler extends Context {
 
   private async compileNode(node: SyntaxNode) {
     if (node.type === 'TEMPLATE') {
-      await this.compileNodes((node as RootNode).body);
+      for (const child of (node as RootNode).body) {
+        await this.compileNode(child);
+
+        // Between top-level nodes is always a safe place to write to the
+        // stream
+        if (this.flushable && child.type !== 'TEXT') {
+          this.pushFlush();
+        }
+      }
 
       return;
     }
@@ -201,7 +318,36 @@ export class Compiler extends Context {
       compiler = this.options.compilers['UNKNOWN'];
     }
 
-    await (compiler as CompilerFn)?.(node, this);
+    const checkpoint = this.checkpoint();
+    const { flushable } = this;
+
+    if (!transparent.has(node.type)) {
+      this.flushable = false;
+    }
+
+    try {
+      await (compiler as CompilerFn)?.(node, this);
+    } catch (error: any) {
+      this.flushable = flushable;
+
+      if (error?.name === 'CompileError') {
+        throw error;
+      }
+
+      // The node is not what its compiler expects, typically because its
+      // expression failed to parse. Drop whatever was emitted for it so the
+      // rest of the template still compiles.
+      this.rollback(checkpoint);
+      this.options.debug(
+        new CompileError(
+          `Invalid "${node.type.toLowerCase()}" directive`,
+          this.template,
+          node.loc,
+        ),
+      );
+    }
+
+    this.flushable = flushable;
   }
 
   async compileNodes(nodes: SyntaxNode[]) {
@@ -221,6 +367,7 @@ export class Compiler extends Context {
         false,
         this.partials,
         this.blocks,
+        this.sources,
       );
 
       this.partials.set(path, code);

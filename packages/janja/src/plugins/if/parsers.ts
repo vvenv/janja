@@ -64,7 +64,7 @@ function* parseIf(token: DirectiveToken, parser: Parser) {
   if (parser.match(['endif'])) {
     yield 'NEXT';
   } else {
-    throw parser.options.debug?.(
+    parser.options.debug?.(
       new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
     );
   }
@@ -82,6 +82,10 @@ function* parseElseIf(token: DirectiveToken, parser: Parser) {
   if (!token.expression) {
     parser.emitExpErr(token);
 
+    // Skip the broken branch, otherwise the caller never gets past it
+    yield 'NEXT';
+    parser.parseUntil(['else', 'elseif', 'elsif', 'elif', 'endif']);
+
     return;
   }
 
@@ -97,6 +101,10 @@ function* parseElseIf(token: DirectiveToken, parser: Parser) {
 function* parseElse(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
+
+    // Skip the broken branch, otherwise the caller never gets past it
+    yield 'NEXT';
+    parser.parseUntil(['endif']);
 
     return;
   }

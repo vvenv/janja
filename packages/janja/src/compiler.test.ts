@@ -59,45 +59,45 @@ it('error', async () => {
 
 it('escape tag', async () => {
   expect(await compile('{{= "{\\{ escape }\\}" }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e("{{ escape }}");return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=e("{{ escape }}");return s;})();"`,
   );
   expect(await compile('{{= "\\{\\{ escape \\}\\}" }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e("{{ escape }}");return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=e("{{ escape }}");return s;})();"`,
   );
 });
 
 it('empty', async () => {
   expect(await compile('')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};return s;})();"`,
   );
 });
 
 it('null', async () => {
   expect(await compile('{{= null }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e(null);return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=e(null);return s;})();"`,
   );
 });
 
 it('html tags', async () => {
   expect(await compile('<foo>foo</foo>')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+="<foo>foo</foo>";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+="<foo>foo</foo>";return s;})();"`,
   );
 });
 
 it('quotes', async () => {
   expect(await compile('"\'foo\'"')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+="\\"'foo'\\"";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+="\\"'foo'\\"";return s;})();"`,
   );
 });
 
 it('line break feed', async () => {
   expect(await compile('\nfoo\n')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+="\\nfoo\\n";return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+="\\nfoo\\n";return s;})();"`,
   );
 });
 
 it('filters', async () => {
   expect(await compile('{{= x | f(y, true, "a", 1) }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";s+=e(await f.f.call(c,c.x,c.y,true,"a",1));return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=e((r_=(f.f||u_("f")).call(c,c.x,c.y,true,"a",1),r_ instanceof Promise?await r_:r_));return s;})();"`,
   );
 });

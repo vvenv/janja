@@ -5,7 +5,7 @@ async function compileUnexpected(
   { name, loc }: UnexpectedNode,
   compiler: Compiler,
 ) {
-  compiler.pushRaw(loc, `<!--Unexpected "${name}"-->`);
+  compiler.pushStr(loc, `<!--Unexpected "${name}"-->`);
 }
 
 export const compilers = {

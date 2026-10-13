@@ -47,23 +47,37 @@ function* parseFor(token: DirectiveToken, parser: Parser) {
   if (parser.match(['endfor'])) {
     yield 'NEXT';
   } else {
-    throw parser.options.debug?.(
+    parser.options.debug?.(
       new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
     );
   }
 
-  yield new ForNode(
-    parser.parseExp(token.expression)!,
-    body,
-    alternative,
-    token.loc,
-    token.strip,
-  );
+  const loop = parser.parseExp<ForNode['loop']>(token.expression);
+
+  if (loop?.type !== 'OF') {
+    if (loop) {
+      parser.options.debug?.(
+        new CompileError(
+          `"${token.name}" expects "item of items"`,
+          parser.template,
+          token.loc,
+        ),
+      );
+    }
+
+    return;
+  }
+
+  yield new ForNode(loop, body, alternative, token.loc, token.strip);
 }
 
 function* parseElse(token: DirectiveToken, parser: Parser) {
   if (token.expression) {
     parser.emitExpErr(token, false);
+
+    // Skip the broken branch, otherwise the caller never gets past it
+    yield 'NEXT';
+    parser.parseUntil(['endfor']);
 
     return;
   }

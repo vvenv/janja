@@ -49,6 +49,32 @@ export const expTokenTypes: Record<string, ExpTokenType> = {
   '.': 'DOT',
 };
 
+// Names that would let an expression climb out of the data it was given,
+// e.g. `x.constructor.constructor("...")()`.
+const forbiddenIdentifiers = new Set([
+  'constructor',
+  'prototype',
+  '__proto__',
+  '__defineGetter__',
+  '__defineSetter__',
+  '__lookupGetter__',
+  '__lookupSetter__',
+]);
+
+export function isForbiddenIdentifier(name: unknown) {
+  return typeof name === 'string' && forbiddenIdentifiers.has(name);
+}
+
+const stringEscapes: Record<string, string> = {
+  n: '\n',
+  t: '\t',
+  r: '\r',
+  '\\': '\\',
+  '"': '"',
+  "'": "'",
+  '`': '`',
+};
+
 function normalizeLitValue(value: string) {
   switch (value) {
     case 'true':
@@ -104,7 +130,14 @@ export class ExpTokenizer implements Pos {
         continue;
       }
 
-      if (isDigitStart(char)) {
+      // "-" starts a negative number only where an operand may start;
+      // after one (`a - 1`, `a -1`) it is the subtraction operator
+      if (
+        isDigit(char) ||
+        (char === '-' &&
+          isDigit(this.val[this.index + 1] ?? '') &&
+          !this.afterOperand())
+      ) {
         this.readNumber(char);
 
         continue;
@@ -122,7 +155,7 @@ export class ExpTokenizer implements Pos {
         continue;
       }
 
-      throw new ExpError(`Unexpect "${char}"`, {
+      throw new ExpError(`Unexpected "${char}"`, {
         start: { line: this.line, column: this.column },
         end: { line: this.line, column: this.column + 1 },
       });
@@ -131,8 +164,16 @@ export class ExpTokenizer implements Pos {
     return this.tokens;
   }
 
+  private afterOperand() {
+    const type = this.tokens.at(-1)?.type;
+
+    return type === 'ID' || type === 'LIT' || type === 'RP';
+  }
+
   private readString(quoteChar: string) {
     let value = '';
+    // The string as written, which is what positions are computed from
+    let raw = '';
     let escaped = false;
 
     const start: Pos = { line: this.line, column: this.column };
@@ -144,15 +185,19 @@ export class ExpTokenizer implements Pos {
       const char = this.val[this.index];
 
       if (escaped) {
-        value += char;
+        // Unknown escapes keep their backslash, so that patterns such as
+        // "\d+" can be passed to filters as written
+        value += stringEscapes[char] ?? `\\${char}`;
+        raw += char;
         escaped = false;
       } else if (char === '\\') {
-        value += char;
+        raw += char;
         escaped = true;
       } else if (char === quoteChar) {
         break;
       } else {
         value += char;
+        raw += char;
       }
 
       this.index++;
@@ -166,9 +211,9 @@ export class ExpTokenizer implements Pos {
       value,
       loc: {
         start,
-        end: updatePosition(value, this),
+        end: updatePosition(`${quoteChar}${raw}${quoteChar}`, this),
       },
-      raw: `${quoteChar}${value}${quoteChar}`,
+      raw: `${quoteChar}${raw}${quoteChar}`,
     });
   }
 
@@ -227,10 +272,16 @@ export class ExpTokenizer implements Pos {
       break;
     }
 
-    const type =
-      value in expTokenTypes
-        ? expTokenTypes[value as keyof typeof expTokenTypes]
-        : 'ID';
+    if (isForbiddenIdentifier(value)) {
+      throw new ExpError(`"${value}" is not allowed in expressions`, {
+        start,
+        end: { line: this.line, column: this.column + value.length },
+      });
+    }
+
+    const type = Object.prototype.hasOwnProperty.call(expTokenTypes, value)
+      ? expTokenTypes[value]
+      : 'ID';
 
     this.tokens.push({
       type,
@@ -266,10 +317,6 @@ function isWhitespace(char: string) {
 
 function isSymbol(char: string) {
   return /[+\-*/%|=(),.]/.test(char);
-}
-
-function isDigitStart(char: string) {
-  return /[-\d]/.test(char);
 }
 
 function isDigit(char: string) {
