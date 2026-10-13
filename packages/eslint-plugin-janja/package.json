@@ -4,14 +4,21 @@
   "description": "ESLint plugin for Janja template formatting",
   "type": "module",
   "license": "MIT",
-  "main": "./dist/index.cjs.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vvenv/janja.git",
+    "directory": "packages/eslint-plugin-janja"
+  },
+  "homepage": "https://github.com/vvenv/janja#readme",
+  "bugs": "https://github.com/vvenv/janja/issues",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.esm.js",
-      "require": "./dist/index.cjs.js"
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
@@ -20,7 +27,8 @@
   "scripts": {
     "build": "rm -rf dist && rollup -c",
     "dev": "vitest watch",
-    "test": "vitest"
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "eslint",
