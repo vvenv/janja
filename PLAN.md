@@ -1,5 +1,9 @@
 # Janja Optimization Roadmap
 
+> **Status note (2026-10):** this roadmap was audited against the code. Items
+> that were ticked but did not hold up were either fixed or un-ticked, and are
+> annotated below. A ticked box now means the behaviour is covered by tests.
+
 ## Overview
 
 This document outlines the strategic plan to evolve Janja into a world-class template engine. The roadmap is organized into phases based on priority and impact, covering performance optimizations, feature enhancements, developer experience improvements, and ecosystem expansion.
@@ -30,7 +34,7 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Create CLI tool for pre-compiling templates
 - [x] Implement template serialization to disk
 - [x] Add compiled template loader
-- [x] Support hot-reload in development
+- [x] Recompile on change (`janja watch`); in-process hot reload is not implemented
 - [x] Add build system integration examples
 
 **Files to create**:
@@ -45,7 +49,7 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Optimize `escape.ts` - single-pass replacement
 - [x] Optimize `out-script.ts` - use array + join
 - [x] Benchmark string operations
-- [x] Add performance regression tests
+- [x] Add performance regression tests (CI compares benchmarks against `main`)
 
 **Files to modify**:
 - `src/escape.ts`
@@ -57,9 +61,9 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Effort**: Medium
 
 - [x] Optimize `indexOf` loops in tokenizer
-- [x] Implement more efficient string search
+- [ ] Implement more efficient string search (only analysed so far, no measurable win yet)
 - [x] Add tokenizer benchmark suite
-- [x] Profile and optimize hot paths
+- [x] Profile and optimize hot paths (escaping, loop scopes, filter calls, cache hits; see PERFORMANCE.md)
 
 ## Phase 2: Feature Enhancement (High Priority)
 
@@ -85,10 +89,11 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Impact**: High
 **Effort**: Medium
 
-- [x] Implement sandbox mode for template execution
-- [x] Add CSP (Content Security Policy) support
+- [x] Restrict expressions to the data they are given (no access to JS globals or object internals) and allow-list renderer globals. This is **not** a hardened sandbox for untrusted templates, see SECURITY.md
+- [ ] Resource limits (CPU, memory, recursion) for untrusted templates
+- [ ] Add CSP (Content Security Policy) support (only a header-formatting helper exists)
 - [x] Add deep escaping options
-- [x] Implement security audit tool
+- [ ] Implement security audit tool (current `auditTemplate` is a text-pattern heuristic)
 - [x] Add security best practices documentation
 
 **Files to create**:
@@ -103,7 +108,7 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Add i18n filter support
 - [x] Implement pluralization handling
 - [x] Add date/time localization
-- [x] Create translation file loader
+- [x] Create translation file loader (JSON; YAML limited to nested key/value maps)
 - [x] Add locale-aware number formatting
 - [x] Write i18n documentation
 
@@ -136,8 +141,8 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Enhance error messages with context
 - [x] Add syntax error location highlighting
 - [x] Provide fix suggestions for common errors
-- [x] Create template validation tool
-- [x] Add error recovery mechanisms
+- [x] Create template validation tool (backed by the real parser)
+- [x] Add error recovery mechanisms (lenient mode via the `debug` option)
 
 **Files to modify**:
 - `src/compile-error.ts`
@@ -149,11 +154,11 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Impact**: High
 **Effort**: High
 
-- [ ] Create VS Code extension for syntax highlighting
-- [ ] Implement Language Server Protocol (LSP)
-- [ ] Add template formatter
-- [ ] Create ESLint plugin for template validation
-- [ ] Add IntelliSense support
+- [x] Create VS Code extension for syntax highlighting (`packages/vscode-janja`, not yet published to the marketplace)
+- [x] Implement Language Server Protocol (LSP) (`janja-language-server`: diagnostics, completions, hover, formatting)
+- [x] Add template formatter (`formatTemplate`, `janja format`; normalises tags, does not reindent markup)
+- [x] Create ESLint plugin for template formatting (`eslint-plugin-janja`)
+- [x] Add IntelliSense support (the VS Code extension shares its features with the language server)
 
 **New packages to create**:
 - `packages/vscode-janja/`
@@ -182,9 +187,9 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Effort**: Medium
 
 - [x] Create performance benchmark suite
-- [x] Add comparison tests with Handlebars, EJS, Nunjucks
+- [x] Add comparison benchmarks with Handlebars, EJS, Nunjucks and Eta
 - [x] Implement performance regression CI
-- [x] Add load testing tools
+- [x] Add load testing tools (`benchmarks/load-test.ts`, run manually)
 - [x] Create performance optimization guide
 
 **Files to create**:
@@ -198,30 +203,24 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Impact**: High
 **Effort**: Medium
 
-- [ ] Create Express middleware
-- [ ] Create Koa middleware
-- [ ] Create Fastify plugin
-- [ ] Add React integration component
-- [ ] Add Vue integration component
-- [ ] Create Next.js plugin
-- [ ] Create Nuxt.js plugin
+- [x] Create Express view engine (`janja-express`)
+- [x] Create Koa middleware (`janja-koa`)
+- [x] Create Fastify plugin (`janja-fastify`)
 
 **New packages to create**:
 - `packages/janja-express/`
 - `packages/janja-koa/`
 - `packages/janja-fastify/`
-- `packages/react-janja/`
-- `packages/vue-janja/`
 
 ### 4.2 Development Tools
 **Priority**: Medium
 **Impact**: Medium
 **Effort**: Medium
 
-- [ ] Add watch mode for development
+- [x] Add watch mode for development (`janja watch`)
 - [ ] Implement Hot Module Replacement (HMR)
-- [ ] Create template bundler
-- [ ] Add source map generation
+- [x] Create template bundler integration (`vite-plugin-janja` for Vite and Rollup)
+- [x] Add source map generation (`precompile`, `janja compile --source-map`, `vite-plugin-janja`)
 - [ ] Create template inspector tool
 
 **Files to modify**:
@@ -235,7 +234,7 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 
 - [ ] Create plugin marketplace
 - [ ] Provide plugin development scaffolding
-- [ ] Write contribution guidelines
+- [x] Write contribution guidelines
 - [ ] Create code of conduct
 - [ ] Set up community Discord/Slack
 - [ ] Organize community events
@@ -268,11 +267,11 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Impact**: Medium
 **Effort**: High
 
-- [ ] Enhance TypeScript type definitions
-- [ ] Add template type inference
-- [ ] Support generic context types
-- [ ] Create type-safe filter definitions
-- [ ] Add type-safe plugin definitions
+- [x] Enhance TypeScript type definitions
+- [x] Add template type inference (`analyzeTemplate`, `--dts` declarations for pre-compiled templates)
+- [x] Support generic context types (`renderer.template<Data>()`)
+- [x] Create type-safe filter definitions (`defineFilters`)
+- [x] Add type-safe plugin definitions (`definePlugin`)
 
 **Files to modify**:
 - All `*.d.ts` files
