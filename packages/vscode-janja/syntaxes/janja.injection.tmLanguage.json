@@ -1,0 +1,187 @@
+{
+  "scopeName": "janja.injection",
+  "injectionSelector": "L:text.html.janja -comment.block.janja -meta.embedded.expression.janja",
+  "patterns": [
+    {
+      "include": "#tags"
+    }
+  ],
+  "repository": {
+    "tags": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#output"
+        },
+        {
+          "include": "#directive"
+        }
+      ]
+    },
+    "comment": {
+      "name": "comment.block.janja",
+      "begin": "\\{\\{#",
+      "end": "#\\}\\}",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.comment.begin.janja"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.comment.end.janja"
+        }
+      }
+    },
+    "output": {
+      "name": "meta.tag.output.janja",
+      "contentName": "meta.embedded.expression.janja",
+      "begin": "(\\{\\{=)(-?)",
+      "end": "(-?)(\\}\\})",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.section.embedded.begin.janja"
+        },
+        "2": {
+          "name": "keyword.operator.whitespace.janja"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "keyword.operator.whitespace.janja"
+        },
+        "2": {
+          "name": "punctuation.section.embedded.end.janja"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "directive": {
+      "name": "meta.tag.directive.janja",
+      "contentName": "meta.embedded.expression.janja",
+      "begin": "(\\{\\{)(-?)\\s*([A-Za-z_]+)?",
+      "end": "(-?)(\\}\\})",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.section.embedded.begin.janja"
+        },
+        "2": {
+          "name": "keyword.operator.whitespace.janja"
+        },
+        "3": {
+          "name": "keyword.control.janja"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "keyword.operator.whitespace.janja"
+        },
+        "2": {
+          "name": "punctuation.section.embedded.end.janja"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "expression": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.janja",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.janja",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.janja",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.janja",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.other.janja",
+          "begin": "`",
+          "end": "`",
+          "patterns": [
+            {
+              "name": "constant.character.escape.janja",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "constant.numeric.janja",
+          "match": "(?<![\\w.])-?\\d+(\\.\\d+)?"
+        },
+        {
+          "name": "constant.language.janja",
+          "match": "\\b(true|false|null|undefined)\\b"
+        },
+        {
+          "name": "keyword.operator.word.janja",
+          "match": "\\b(and|or|not|in|ni|is|eq|ne|gt|ge|lt|le|of|if|else)\\b"
+        },
+        {
+          "match": "(\\|)\\s*([A-Za-z_$][\\w$]*)",
+          "captures": {
+            "1": {
+              "name": "keyword.operator.pipe.janja"
+            },
+            "2": {
+              "name": "support.function.filter.janja"
+            }
+          }
+        },
+        {
+          "name": "keyword.operator.arithmetic.janja",
+          "match": "[+\\-*/%]"
+        },
+        {
+          "name": "keyword.operator.assignment.janja",
+          "match": "="
+        },
+        {
+          "name": "entity.name.function.janja",
+          "match": "[A-Za-z_$][\\w$]*(?=\\()"
+        },
+        {
+          "match": "(\\.)([A-Za-z_$][\\w$]*)",
+          "captures": {
+            "1": {
+              "name": "punctuation.accessor.janja"
+            },
+            "2": {
+              "name": "variable.other.property.janja"
+            }
+          }
+        },
+        {
+          "name": "variable.other.janja",
+          "match": "[A-Za-z_$][\\w$]*"
+        },
+        {
+          "name": "punctuation.separator.janja",
+          "match": ","
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "comments": {
+    "blockComment": [
+      "{{#",
+      "#}}"
+    ]
+  },
+  "brackets": [
+    [
+      "{{",
+      "}}"
+    ],
+    [
+      "(",
+      ")"
+    ],
+    [
+      "<",
+      ">"
+    ]
+  ],
+  "autoClosingPairs": [
+    {
+      "open": "{{",
+      "close": "}}"
+    },
+    {
+      "open": "(",
+      "close": ")"
+    },
+    {
+      "open": "\"",
+      "close": "\"",
+      "notIn": [
+        "string"
+      ]
+    },
+    {
+      "open": "'",
+      "close": "'",
+      "notIn": [
+        "string"
+      ]
+    },
+    {
+      "open": "<!--",
+      "close": "-->",
+      "notIn": [
+        "comment",
+        "string"
+      ]
+    }
+  ],
+  "surroundingPairs": [
+    [
+      "(",
+      ")"
+    ],
+    [
+      "\"",
+      "\""
+    ],
+    [
+      "'",
+      "'"
+    ],
+    [
+      "<",
+      ">"
+    ]
+  ],
+  "indentationRules": {
+    "increaseIndentPattern": "\\{\\{-?\\s*(if|elif|elseif|elsif|else|for|block|macro|call|capture|with)\\b[^}]*\\}\\}(?!.*\\{\\{-?\\s*end)",
+    "decreaseIndentPattern": "^\\s*\\{\\{-?\\s*(elif|elseif|elsif|else|endif|endfor|endblock|endmacro|endcall|endcapture|endwith)\\b"
+  }
+}
