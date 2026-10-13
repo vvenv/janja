@@ -46,6 +46,12 @@ export class Renderer {
     const { autoEscape } = this.options;
 
     this.escape = (v: unknown) => {
+      // Strings are by far the most common value, so they are handled before
+      // anything else is checked
+      if (typeof v === 'string') {
+        return autoEscape ? escape(v) : v;
+      }
+
       if (v === null || v === undefined) {
         return '';
       }

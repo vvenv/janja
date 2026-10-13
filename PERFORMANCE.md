@@ -52,13 +52,13 @@ One run on an Apple Silicon laptop with Node.js 26, for orientation only. Run it
 
 | Engine     | Renders per second |
 | ---------- | -----------------: |
-| Eta        |           ~115,000 |
-| **Janja**  |            ~96,000 |
-| Handlebars |            ~52,000 |
-| EJS        |            ~28,000 |
-| Nunjucks   |            ~14,500 |
+| Eta        |           ~124,000 |
+| **Janja**  |           ~111,000 |
+| Handlebars |            ~54,500 |
+| EJS        |            ~30,700 |
+| Nunjucks   |            ~15,500 |
 
-Janja's rendering is always asynchronous (filters and includes may be async) and every loop has its own scope, which accounts for the remaining gap to Eta.
+Most of a render is spent escaping values, so the figures above mainly reflect how much of the data needs escaping. Janja's rendering is always asynchronous (filters and includes may be async), but that costs next to nothing here: generating a synchronous function for this page makes no measurable difference.
 
 CI runs the benchmarks on every push and pull request and fails when a benchmark becomes more than twice as slow as on `main`.
 

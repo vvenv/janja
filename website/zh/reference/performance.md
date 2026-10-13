@@ -52,13 +52,13 @@ pnpm --filter janja bench benchmarks/comparison.bench.ts
 
 | 引擎       | 每秒渲染次数 |
 | ---------- | -----------: |
-| Eta        |     ~115,000 |
-| **Janja**  |      ~96,000 |
-| Handlebars |      ~52,000 |
-| EJS        |      ~28,000 |
-| Nunjucks   |      ~14,500 |
+| Eta        |     ~124,000 |
+| **Janja**  |     ~111,000 |
+| Handlebars |      ~54,500 |
+| EJS        |      ~30,700 |
+| Nunjucks   |      ~15,500 |
 
-Janja 的渲染始终是异步的（过滤器和 include 都可能是异步的），而且每个循环有自己的作用域，这就是与 Eta 之间剩余差距的来源。
+一次渲染的大部分时间花在转义上，所以上面的数字主要反映数据里有多少内容需要转义。Janja 的渲染始终是异步的（过滤器和 include 都可能是异步的），但在这里几乎没有代价：为这个页面生成同步函数，测不出差别。
 
 CI 在每次 push 和 pull request 时运行基准测试，某项基准的耗时超过 `main` 上的两倍时会失败。
 
