@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.0.0](https://github.com/vvenv/janja/compare/janja-v3.0.0...janja-v4.0.0) (2026-10-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **janja:** a named argument is no longer passed positionally. `x | split(sep=",")` now calls the filter with `{ sep: "," }`; write `x | split(",")` for filters that take positional arguments.
+
+### Bug Fixes
+
+* **janja:** let templates include themselves ([4598c2b](https://github.com/vvenv/janja/commit/4598c2b7e7d258ca8fdf603e9d47ae7c932671e7))
+* **janja:** pass named arguments as an object and hide inherited names ([3092f31](https://github.com/vvenv/janja/commit/3092f31c384d8bb7941a6ed25fbb9fe435343ff0))
+* **janja:** write macro output where the macro is called ([b8841fc](https://github.com/vvenv/janja/commit/b8841fc98dc4e2e1c7d2d10cfb9e1a1a561bdd92))
+
+
+### Performance Improvements
+
+* **janja:** escape with a pre-check and a single replace ([06ec03d](https://github.com/vvenv/janja/commit/06ec03d81971816dda46d375db6113a947c867af))
+* **janja:** share one compilation between concurrent renders ([7bf61b3](https://github.com/vvenv/janja/commit/7bf61b31ef47eba23f7164c2f66c349e571a71ad))
+
 ## [3.0.0](https://github.com/vvenv/janja/compare/janja-v2.9.0...janja-v3.0.0) (2026-10-13)
 
 

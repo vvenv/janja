@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.1](https://github.com/vvenv/janja/compare/janja-cli-v2.0.0...janja-cli-v2.0.1) (2026-10-13)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * janja bumped to 4.0.0
+
 ## [2.0.0](https://github.com/vvenv/janja/compare/janja-cli-v1.0.0...janja-cli-v2.0.0) (2026-10-13)
 
 

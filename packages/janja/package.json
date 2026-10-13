@@ -1,6 +1,6 @@
 {
   "name": "janja",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "A simple, fast, lightweight, and extensible template engine for Node.js and browsers.",
   "type": "module",
   "license": "MIT",
