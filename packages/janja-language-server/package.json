@@ -9,7 +9,7 @@
     "url": "git+https://github.com/vvenv/janja.git",
     "directory": "packages/janja-language-server"
   },
-  "homepage": "https://github.com/vvenv/janja#readme",
+  "homepage": "https://janja.wenfu.dev",
   "bugs": "https://github.com/vvenv/janja/issues",
   "keywords": ["janja", "lsp", "language-server", "template"],
   "engines": {

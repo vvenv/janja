@@ -4,6 +4,8 @@ The language itself is defined in the [specification](./SPEC.md); this document 
 
 ## Error Handling
 
+<!-- #region errors -->
+
 ### Errors Throw by Default
 
 `render()` rejects with a `CompileError` when the template is malformed and with a `RenderError` when it fails while running. Both carry a `details` property with the offending source line highlighted:
@@ -62,7 +64,11 @@ Pass the same options as the renderer (custom delimiters, filters, plugins) as t
 - **`Unknown "name"`**: `{{ name }}` is not a directive; use `{{= name }}` to output a value
 - **`"constructor" is not allowed in expressions`**: see [Security](./SECURITY.md)
 
+<!-- #endregion errors -->
+
 ## Built-in Directives
+
+<!-- #region directives -->
 
 ### **include**: Template Inheritance & Inclusion
 
@@ -146,7 +152,11 @@ Blocks with the same name will automatically overwrite or inherit, and blocks ar
 {{= a if cond else b }}
 ```
 
+<!-- #endregion directives -->
+
 ## Built-in Filters
+
+<!-- #region filters -->
 
 abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, groupby, join, json, keys, last, length, lower, map, max, min, mul, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sub, sum, trim, truncate, unique, upper, urldecode, urlencode, values
 
@@ -194,7 +204,11 @@ abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, g
 {{= arr | groupby(key_name) }}
 ```
 
+<!-- #endregion filters -->
+
 ## CLI Tool
+
+<!-- #region cli -->
 
 `janja-cli` compiles templates ahead of time into ES modules, so nothing is parsed or compiled when your application runs.
 
@@ -265,7 +279,11 @@ import render from './compiled/page.js';
 const html = await render({ title: 'Hello' });
 ```
 
+<!-- #endregion cli -->
+
 ## API Reference
+
+<!-- #region api -->
 
 ### render()
 
@@ -438,7 +456,11 @@ const { code, map, dts } = await precompile(template, {
 
 `janja compile --source-map` and `vite-plugin-janja` use this, so stack traces and debuggers show template lines.
 
+<!-- #endregion api -->
+
 ## Customization
+
+<!-- #region customization -->
 
 ### Custom Directive
 
@@ -488,9 +510,11 @@ await renderer.render('{{= foo | my_filter }}', { foo: 'bar' });
 
 Filters may be `async`.
 
----
+<!-- #endregion customization -->
 
 ## Best Practices
+
+<!-- #region best-practices -->
 
 ### 1. Validate Templates in CI
 
@@ -547,7 +571,11 @@ Let errors throw in development and tests. In production either catch them aroun
 {{ block content }}<h1>My Content</h1>{{ endblock }}
 ```
 
+<!-- #endregion best-practices -->
+
 ## Troubleshooting
+
+<!-- #region troubleshooting -->
 
 ### `Unknown "name"`
 
@@ -571,7 +599,11 @@ Let errors throw in development and tests. In production either catch them aroun
 
 See [SECURITY.md](./SECURITY.md).
 
+<!-- #endregion troubleshooting -->
+
 ## Ecosystem
+
+<!-- #region ecosystem -->
 
 | Package | Purpose |
 | ------- | ------- |
@@ -583,3 +615,5 @@ See [SECURITY.md](./SECURITY.md).
 | [`janja-language-server`](./packages/janja-language-server) | Diagnostics, completions, hover and formatting for any LSP editor |
 | [`eslint-plugin-janja`](./packages/eslint-plugin-janja) | Formatting rules for templates |
 | [`vscode-janja`](./packages/vscode-janja) | Highlighting and the language server's features in VS Code |
+
+<!-- #endregion ecosystem -->

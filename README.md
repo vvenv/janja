@@ -26,7 +26,7 @@
 
 ## Play Online
 
-[StackBlitz](https://stackblitz.com/edit/janja?file=main.ts)
+Try it in the [playground](https://janja.wenfu.dev/playground), which runs the engine in your browser.
 
 ## Getting Started
 
@@ -48,6 +48,8 @@ document.body.innerHTML = await renderFile('./template.html', { name: 'World' },
 ```
 
 ## Documentation
+
+The documentation lives at **[janja.wenfu.dev](https://janja.wenfu.dev)**. The same content is in this repository:
 
 - [Language specification](./SPEC.md) - Syntax and semantics, backed by a conformance suite
 - [Documentation](./documentation.md) - API, CLI and tooling

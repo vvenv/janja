@@ -26,7 +26,7 @@
 
 ## 在线试玩
 
-[StackBlitz](https://stackblitz.com/edit/janja?file=main.ts)
+在[演练场](https://janja.wenfu.dev/zh/playground)中试用，引擎直接运行在你的浏览器里。
 
 ## 快速开始
 
@@ -48,6 +48,8 @@ document.body.innerHTML = await renderFile('./template.html', { name: '蒹葭' }
 ```
 
 ## 文档
+
+文档站点：**[janja.wenfu.dev/zh](https://janja.wenfu.dev/zh/)**。同样的内容也在本仓库中：
 
 - [使用文档](./documentation-zh-CN.md) - 核心文档
 - [过滤器](./FILTERS.md) - 内置过滤器参考

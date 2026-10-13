@@ -9,7 +9,7 @@
     "url": "git+https://github.com/vvenv/janja.git",
     "directory": "packages/eslint-plugin-janja"
   },
-  "homepage": "https://github.com/vvenv/janja#readme",
+  "homepage": "https://janja.wenfu.dev",
   "bugs": "https://github.com/vvenv/janja/issues",
   "main": "./dist/index.cjs",
   "module": "./dist/index.esm.js",

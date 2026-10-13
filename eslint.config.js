@@ -7,7 +7,13 @@ import janja from 'eslint-plugin-janja';
 
 export default [
   {
-    ignores: ['**/coverage/**', '**/dist/**', '**/node_modules/**', '**/*.yml'],
+    ignores: [
+      '**/coverage/**',
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/*.yml',
+      'website/.vitepress/cache/**',
+    ],
   },
   {
     files: ['**/*.ts'],
