@@ -1,7 +1,6 @@
 name: Performance Benchmark
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   push:
@@ -16,6 +15,10 @@ concurrency:
 jobs:
   benchmark:
     runs-on: ubuntu-latest
+    env:
+      # What the change is compared with: the branch a pull request targets,
+      # or the commit that `main` was at before a push
+      BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
     steps:
       - uses: actions/checkout@v4
       - name: Enable Corepack
@@ -27,31 +30,23 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Run benchmarks
-        run: pnpm --filter janja bench --outputJson benchmark-raw.json
-      - name: Convert results
-        run: node packages/janja/scripts/benchmark-results.mjs packages/janja/benchmark-raw.json benchmark-results.json
-      # Results of `main` are kept in the Actions cache and pull requests are
-      # compared against them. The first run has nothing to compare with.
-      - name: Restore the results of main
-        uses: actions/cache/restore@v4
-        with:
-          path: ./benchmark-cache
-          key: benchmark-data-${{ github.run_id }}
-          restore-keys: benchmark-data-
-      - name: Compare benchmark result
-        uses: benchmark-action/github-action-benchmark@v1
-        with:
-          tool: customBiggerIsBetter
-          output-file-path: benchmark-results.json
-          external-data-json-path: ./benchmark-cache/benchmark-data.json
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          alert-threshold: '200%'
-          comment-on-alert: true
-          fail-on-alert: true
-          alert-comment-cc-users: '@vvenv'
-      - name: Save the results of main
-        if: github.event_name == 'push'
-        uses: actions/cache/save@v4
-        with:
-          path: ./benchmark-cache
-          key: benchmark-data-${{ github.run_id }}
+        run: pnpm --filter janja bench --outputJson "$RUNNER_TEMP/head.json"
+      # Runners are not equally fast, so results of an earlier run say little.
+      # The base is measured here, right after the change and on this machine.
+      - name: Check out the base
+        id: base
+        run: |
+          if git fetch --depth=1 origin "$BASE" && git worktree add "$RUNNER_TEMP/base" FETCH_HEAD; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Base commit $BASE is not available, nothing to compare with"
+          fi
+      - name: Run benchmarks of the base
+        if: steps.base.outputs.found
+        working-directory: ${{ runner.temp }}/base
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter janja bench --outputJson "$RUNNER_TEMP/base.json"
+      - name: Compare
+        if: steps.base.outputs.found
+        run: node packages/janja/scripts/benchmark-compare.mjs "$RUNNER_TEMP/base.json" "$RUNNER_TEMP/head.json"

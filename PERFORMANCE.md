@@ -60,7 +60,7 @@ One run on an Apple Silicon laptop with Node.js 26, for orientation only. Run it
 
 Most of a render is spent escaping values, so the figures above mainly reflect how much of the data needs escaping. Janja's rendering is always asynchronous (filters and includes may be async), but that costs next to nothing here: generating a synchronous function for this page makes no measurable difference.
 
-CI runs the benchmarks on every push and pull request and fails when a benchmark becomes more than twice as slow as on `main`.
+CI runs the benchmarks on every push and pull request, for the change and for the commit it is based on, both on the same machine. It fails when a benchmark becomes more than twice as slow. How much the other engines moved between the two runs is taken as the drift of the machine and removed first, so a runner that slows down half way through does not count as a regression.
 
 ## Template Tips
 
