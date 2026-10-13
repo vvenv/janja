@@ -1,0 +1,52 @@
+{
+  "name": "janja-koa",
+  "version": "0.1.0",
+  "description": "Janja view rendering for Koa",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vvenv/janja.git",
+    "directory": "packages/janja-koa"
+  },
+  "homepage": "https://github.com/vvenv/janja#readme",
+  "bugs": "https://github.com/vvenv/janja/issues",
+  "keywords": [
+    "koa",
+    "middleware",
+    "views",
+    "janja",
+    "template"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "janja": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.15.0",
+    "@types/node": "^24.10.3",
+    "janja": "workspace:*",
+    "koa": "^3.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  }
+}
