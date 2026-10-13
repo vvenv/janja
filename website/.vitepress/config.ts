@@ -109,6 +109,8 @@ const zh = {
         { text: 'API', link: '/zh/guide/api' },
         { text: '命令行', link: '/zh/guide/cli' },
         { text: '自定义', link: '/zh/guide/customization' },
+        { text: '最佳实践', link: '/zh/guide/best-practices' },
+        { text: '疑难排查', link: '/zh/guide/troubleshooting' },
         { text: '生态', link: '/zh/guide/ecosystem' },
       ],
     },
