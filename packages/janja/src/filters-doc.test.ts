@@ -1,23 +1,29 @@
 import { readFileSync } from 'node:fs';
-import { expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { render } from './index';
 
-// FILTERS.md states the output of its examples; keep it honest
-const source = readFileSync(
-  new URL('../../../FILTERS.md', import.meta.url),
-  'utf-8',
-);
-const exampleRE =
-  /```janja\n((?:(?!```)[^])*?)\n```\n\n(?:Data: `(.*)`\n\n)?Output: `(.*)`/g;
-const examples = [...source.matchAll(exampleRE)];
+// The filter references state the output of their examples; keep them honest
+describe.each([
+  ['FILTERS.md', 'Data: ', 'Output: '],
+  ['website/zh/reference/filters.md', '数据：', '输出：'],
+])('%s', (file, dataLabel, outputLabel) => {
+  const source = readFileSync(
+    new URL(`../../../${file}`, import.meta.url),
+    'utf-8',
+  );
+  const exampleRE = new RegExp(
+    `\`\`\`janja\\n((?:(?!\`\`\`)[^])*?)\\n\`\`\`\\n\\n(?:${dataLabel}\`(.*)\`\\n\\n)?${outputLabel}\`(.*)\``,
+    'g',
+  );
+  const examples = [...source.matchAll(exampleRE)];
 
-it('finds the examples', () => {
-  expect(examples.length).toBeGreaterThan(60);
-});
+  it('finds the examples', () => {
+    expect(examples.length).toBeGreaterThan(60);
+  });
 
-it.each(examples.map(([, template, data, output]) => [template, data, output]))(
-  '%s',
-  async (template, data, output) => {
+  it.each(
+    examples.map(([, template, data, output]) => [template, data, output]),
+  )('%s', async (template, data, output) => {
     expect(await render(template, data ? JSON.parse(data) : {})).toBe(output);
-  },
-);
+  });
+});
