@@ -12,3 +12,4 @@ benchmark-results.json
 packages/janja/README.md
 packages/janja/LICENSE
 .test-*
+benchmark-cache

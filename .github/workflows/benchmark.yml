@@ -1,6 +1,6 @@
 name: Performance Benchmark
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 on:
@@ -30,16 +30,28 @@ jobs:
         run: pnpm --filter janja bench --outputJson benchmark-raw.json
       - name: Convert results
         run: node packages/janja/scripts/benchmark-results.mjs packages/janja/benchmark-raw.json benchmark-results.json
-      - name: Store benchmark result
+      # Results of `main` are kept in the Actions cache and pull requests are
+      # compared against them. The first run has nothing to compare with.
+      - name: Restore the results of main
+        uses: actions/cache/restore@v4
+        with:
+          path: ./benchmark-cache
+          key: benchmark-data-${{ github.run_id }}
+          restore-keys: benchmark-data-
+      - name: Compare benchmark result
         uses: benchmark-action/github-action-benchmark@v1
         with:
           tool: customBiggerIsBetter
           output-file-path: benchmark-results.json
+          external-data-json-path: ./benchmark-cache/benchmark-data.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          # History is only recorded for main; pull requests are compared to it
-          auto-push: ${{ github.event_name == 'push' }}
-          save-data-file: ${{ github.event_name == 'push' }}
           alert-threshold: '200%'
           comment-on-alert: true
           fail-on-alert: true
           alert-comment-cc-users: '@vvenv'
+      - name: Save the results of main
+        if: github.event_name == 'push'
+        uses: actions/cache/save@v4
+        with:
+          path: ./benchmark-cache
+          key: benchmark-data-${{ github.run_id }}

@@ -56,6 +56,16 @@ it('keeps string contents, escaping what must stay escaped', () => {
   );
 });
 
+it('keeps a backslash in front of a brace inside a string', async () => {
+  // The string value is the two characters `\\{`
+  const template = String.raw`{{= "\\\{" | safe }}`;
+  const formatted = formatTemplate(template);
+
+  expect(formatTemplate(formatted)).toBe(formatted);
+  expect(await new Renderer().render(template, {})).toBe('\\{');
+  expect(await new Renderer().render(formatted, {})).toBe('\\{');
+});
+
 it('leaves tags it cannot parse exactly as written', () => {
   expect(formatTemplate('{{=  (a }}{{=b}}{{ if | }}{{  }}')).toBe(
     '{{=  (a }}{{= b }}{{ if | }}{{  }}',
