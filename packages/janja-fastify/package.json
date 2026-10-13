@@ -1,0 +1,54 @@
+{
+  "name": "janja-fastify",
+  "version": "0.1.0",
+  "description": "Janja view rendering for Fastify",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vvenv/janja.git",
+    "directory": "packages/janja-fastify"
+  },
+  "homepage": "https://github.com/vvenv/janja#readme",
+  "bugs": "https://github.com/vvenv/janja/issues",
+  "keywords": [
+    "fastify",
+    "fastify-plugin",
+    "views",
+    "janja",
+    "template"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fastify-plugin": "^5.0.0"
+  },
+  "peerDependencies": {
+    "janja": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.3",
+    "fastify": "^5.0.0",
+    "janja": "workspace:*",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  }
+}
