@@ -1,6 +1,6 @@
 {
   "name": "janja-koa",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Janja view rendering for Koa",
   "type": "module",
   "license": "MIT",
