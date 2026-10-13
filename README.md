@@ -16,13 +16,13 @@
 - 🔄 **Layout and partials**: Supports template inheritance and reusable components.
 - 🛠️ **Built-in directives and filters**: A collection of built-in directives and filters.
 - 🎨 **Custom directives and filters**: Ability to define custom directives and filters.
-- 🚀 **High performance**: LRU cache for compiled templates, pre-compilation support, and optimized string processing.
-- 🛡️ **Enhanced security**: Sandbox mode, CSP support, deep escaping, and security audit tools.
+- 🚀 **Fast**: Templates compile to JavaScript functions, cached per renderer or pre-compiled at build time. See the [benchmarks](./PERFORMANCE.md#benchmarks).
+- 🛡️ **Safe by default**: HTML auto-escaping, and expressions that cannot reach JavaScript globals or object internals. See [Security](./SECURITY.md) for what is and is not covered.
 - 📊 **Rich filter library**: Date/time, number formatting, text processing, array manipulation, object transformation, and async filters.
-- 🐛 **Error handling and debugging**: Provides detailed error reporting and debugging support.
-- 🛫 **Asynchronous data loading**: Supports fetching and displaying remote data asynchronously.
+- 🐛 **Helpful errors**: Errors throw by default and point at the offending line of the template; a lenient mode and a validator are available.
+- 🛫 **Async and streaming**: Async filters and loaders, and `renderStream()` to send a page while it renders.
 - 🌐 **Universal compatibility**: Works in both Node.js and browser environments.
-- 📦 **Zero dependencies**: Lightweight with no external dependencies.
+- 📦 **Zero dependencies**: About 19 kB minified and gzipped.
 
 ## Play Online
 
@@ -41,14 +41,28 @@ or
 ```javascript
 import { renderFile } from 'janja'
 
-document.body.innerHTML = await renderFile('./template.html', { name: 'World' })
+// templates are loaded through the `loader` option, which also resolves `include`
+const options = { loader: (path) => fetch(path).then((res) => res.text()) }
+
+document.body.innerHTML = await renderFile('./template.html', { name: 'World' }, options)
 ```
 
 ## Documentation
 
-- [Documentation](./documentation.md) - Core documentation
+- [Language specification](./SPEC.md) - Syntax and semantics, backed by a conformance suite
+- [Documentation](./documentation.md) - API, CLI and tooling
 - [Filters](./FILTERS.md) - Built-in filter reference
-- [Security](./SECURITY.md) - Security best practices
+- [Security](./SECURITY.md) - What is protected, what is not, and how to report issues
+- [Performance](./PERFORMANCE.md) - Caching, pre-compilation and benchmarks
+
+## Ecosystem
+
+- [`janja-cli`](./packages/janja-cli) - pre-compile, watch and check templates
+- [`vite-plugin-janja`](./packages/vite-plugin-janja) - import templates in Vite and Rollup
+- [`janja-express`](./packages/janja-express), [`janja-koa`](./packages/janja-koa), [`janja-fastify`](./packages/janja-fastify) - server framework integrations
+- [`janja-language-server`](./packages/janja-language-server) - language server for any LSP editor
+- [`eslint-plugin-janja`](./packages/eslint-plugin-janja) - formatting rules
+- [`vscode-janja`](./packages/vscode-janja) - VS Code language support
 
 ## License
 

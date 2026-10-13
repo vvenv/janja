@@ -1,91 +1,53 @@
-# Webpack Integration Example
+# Webpack Integration
 
-This example demonstrates how to integrate Janja pre-compiled templates with Webpack.
+Pre-compile Janja templates as part of a Webpack build with a small loader, [`janja-loader.js`](./janja-loader.js).
 
 ## Setup
 
-1. Install dependencies:
 ```bash
-npm install --save-dev janja
+pnpm add janja
+pnpm add -D webpack webpack-cli
 ```
 
-2. Create a Webpack loader for Janja templates (or use the example loader below):
+```js
+// webpack.config.js
+const path = require('node:path');
 
-```javascript
-// janja-webpack-loader.js
-const { precompileTemplate } = require('janja');
-
-module.exports = function (source) {
-  const compiled = precompileTemplate(source, { includeRuntime: true });
-  return `export default ${compiled}`;
-};
-```
-
-3. Add the loader to your webpack.config.js:
-
-```javascript
 module.exports = {
+  entry: './src/index.js',
   module: {
     rules: [
       {
         test: /\.janja$/,
-        use: './janja-webpack-loader.js',
+        use: [
+          {
+            loader: path.resolve(__dirname, 'janja-loader.js'),
+            options: { root: 'src/templates' },
+          },
+        ],
       },
     ],
   },
 };
 ```
 
-4. Import and use templates in your code:
+## Usage
 
-```javascript
-import template from './template.janja';
+```js
+import render from './templates/page.janja';
 
-const result = await template({ name: 'World' });
-console.log(result);
+document.body.innerHTML = await render({ title: 'Hello' });
 ```
 
-## Pre-compilation Workflow
+The loader compiles each `.janja` file at build time into a module whose default export is `render(data, options)`. Included templates are inlined, and editing one triggers a rebuild of the templates that include it.
 
-For production builds, you may want to pre-compile templates during the build process:
+`janja` stays a runtime dependency: the compiled module imports the small rendering runtime (escaping and filters) from it.
 
-```javascript
-// webpack.config.js
-const { precompileTemplate } = require('janja');
-const fs = require('fs');
-const path = require('path');
+For TypeScript, declare the module type once:
 
-module.exports = {
-  plugins: [
-    {
-      apply: (compiler) => {
-        compiler.hooks.emit.tapAsync('JanjaPrecompile', (compilation, callback) => {
-          const templateDir = path.resolve(__dirname, 'src/templates');
-          const outputDir = path.resolve(__dirname, 'dist/compiled');
-
-          if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true });
-          }
-
-          fs.readdirSync(templateDir).forEach((file) => {
-            if (file.endsWith('.janja')) {
-              const template = fs.readFileSync(path.join(templateDir, file), 'utf-8');
-              const compiled = precompileTemplate(template, { includeRuntime: true });
-              fs.writeFileSync(path.join(outputDir, file.replace('.janja', '.js')), compiled);
-            }
-          });
-
-          callback();
-        });
-      },
-    },
-  ],
-};
+```ts
+declare module '*.janja' {
+  const render: (data?: Record<string, unknown>) => Promise<string>;
+  export default render;
+}
 ```
-
-## Benefits
-
-- **Faster runtime**: Templates are already compiled to JavaScript
-- **Smaller bundle size**: No need to include the full Janja compiler in your bundle
-- **Type safety**: Can be combined with TypeScript for better type checking
-- **Hot reload**: Works with Webpack's hot module replacement

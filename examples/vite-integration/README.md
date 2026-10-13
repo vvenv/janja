@@ -1,95 +1,32 @@
-# Vite Integration Example
+# Vite Integration
 
-This example demonstrates how to integrate Janja pre-compiled templates with Vite.
+Pre-compile Janja templates in Vite, in development and in production builds, with [`vite-plugin-janja`](../../packages/vite-plugin-janja).
 
 ## Setup
 
-1. Install dependencies:
 ```bash
-npm install --save-dev janja
+pnpm add janja
+pnpm add -D vite vite-plugin-janja
 ```
 
-2. Create a Vite plugin for Janja templates:
-
-```javascript
-// vite-plugin-janja.js
-import { precompileTemplate } from 'janja';
-
-export default function janjaPlugin() {
-  return {
-    name: 'janja',
-    transform(code, id) {
-      if (id.endsWith('.janja')) {
-        const compiled = precompileTemplate(code, { includeRuntime: true });
-        return {
-          code: `export default ${compiled}`,
-          map: null,
-        };
-      }
-    },
-  };
-}
-```
-
-3. Add the plugin to your vite.config.js:
-
-```javascript
-import { defineConfig } from 'vite';
-import janjaPlugin from './vite-plugin-janja.js';
-
-export default defineConfig({
-  plugins: [janjaPlugin()],
-});
-```
-
-4. Import and use templates in your code:
-
-```javascript
-import template from './template.janja';
-
-const result = await template({ name: 'World' });
-console.log(result);
-```
-
-## Pre-compilation with Vite
-
-For production builds, you can pre-compile templates during the build process:
-
-```javascript
+```js
 // vite.config.js
 import { defineConfig } from 'vite';
-import { precompileTemplate } from 'janja';
-import fs from 'fs';
-import path from 'path';
+import janja from 'vite-plugin-janja';
 
 export default defineConfig({
-  plugins: [
-    {
-      name: 'janja-precompile',
-      buildEnd() {
-        const templateDir = path.resolve(process.cwd(), 'src/templates');
-        const outputDir = path.resolve(process.cwd(), 'dist/compiled');
-
-        if (!fs.existsSync(outputDir)) {
-          fs.mkdirSync(outputDir, { recursive: true });
-        }
-
-        fs.readdirSync(templateDir).forEach((file) => {
-          if (file.endsWith('.janja')) {
-            const template = fs.readFileSync(path.join(templateDir, file), 'utf-8');
-            const compiled = precompileTemplate(template, { includeRuntime: true });
-            fs.writeFileSync(path.join(outputDir, file.replace('.janja', '.js')), compiled);
-          }
-        });
-      },
-    },
-  ],
+  plugins: [janja()],
 });
 ```
 
-## Benefits
+## Usage
 
-- **Fast HMR**: Vite's hot module replacement works seamlessly with Janja templates
-- **Native ESM**: Works with Vite's native ES modules support
-- **Optimized builds**: Templates are pre-compiled during production builds
-- **TypeScript support**: Can be combined with TypeScript for better type checking
+```js
+import render from './templates/page.janja';
+
+document.body.innerHTML = await render({ title: 'Hello' });
+```
+
+Each `.janja` file is compiled at build time into a module whose default export is `render(data, options)`. Included templates are inlined, and editing one rebuilds the templates that include it. See the [plugin's README](../../packages/vite-plugin-janja/README.md) for options and TypeScript setup.
+
+`janja` stays a runtime dependency: compiled templates import its small rendering runtime (escaping and filters).

@@ -29,7 +29,19 @@
 ```janja
 {{ set foo = 123 }}
 {{ set (a, b) = obj }}
-{{ set foo }}内容{{ endset }}
+```
+
+### **capture**：捕获渲染内容
+
+```janja
+{{ capture foo }}内容{{ endcapture }}
+{{= foo }}
+```
+
+### **with**：局部上下文
+
+```janja
+{{ with user }}{{= name }}{{ endwith }}
 ```
 
 ### **block / super**：区块覆盖与继承
@@ -120,53 +132,64 @@ abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, g
 {{= arr | groupby(key_name) }}
 ```
 
+## 错误处理
+
+- **默认抛出错误**：模板有语法错误时 `render()` 以 `CompileError` 拒绝，运行时出错以 `RenderError` 拒绝，`error.details` 会标出模板中的出错行。
+- **宽松模式**：传入 `debug` 回调后，错误交给回调处理；出错的指令被跳过，未闭合的块在模板末尾自动闭合，运行时失败的模板渲染为空字符串。
+- **缺失的值**：`null` 和 `undefined` 输出为空字符串，对它们做 `for` 循环会进入 `else` 分支。
+- **模板校验**：`validateTemplate(template, options?)` 使用真实的解析器，返回全部语法错误（含行列号）以及未注册过滤器的警告。
+
+```typescript
+import { render, validateTemplate } from 'janja';
+
+const html = await render(template, data, {
+  debug: (error) => console.warn(error.details ?? error.message),
+});
+
+const { valid, errors, warnings } = await validateTemplate(template);
+```
+
 ## CLI 工具
 
-Janja 提供了一个 CLI 工具用于预编译模板，以提高生产环境性能。
+`janja-cli` 在构建期把模板预编译成 ES 模块，运行时不再解析或编译模板。
 
 ### 安装
 
 ```bash
-pnpm add -g janja-cli
+pnpm add -D janja-cli
 ```
 
 ### 编译命令
 
-编译单个模板文件：
-
 ```bash
+# 单个文件
 janja compile template.janja ./compiled
-```
 
-编译目录中的模板：
-
-```bash
-janja compile ./templates ./compiled
+# 目录中的所有 .janja 和 .html 文件
+janja compile ./templates ./compiled --recursive
 ```
 
 选项：
-- `-w, --watch`: 监听文件变化并重新编译
-- `-r, --recursive`: 递归编译目录中的模板
+- `-r, --recursive`: 同时编译子目录中的模板（保留目录结构）
+- `--runtime`: 额外导出可直接调用的 `render(data, options)` 函数
+
+`{{ include "partials/footer" }}` 相对输入目录解析（扩展名可省略），并内联到编译产物中。模板有错误时命令以非零状态码退出。
 
 ### 监听命令
 
-监听模板变化并自动重新编译：
+先完整编译一次，之后模板新增、修改或删除时重新编译：
 
 ```bash
-janja watch ./templates ./compiled
+janja watch ./templates ./compiled --recursive
 ```
 
-选项：
-- `-r, --recursive`: 递归监听目录中的模板
+### 使用编译产物
 
-### 示例
+```typescript
+import { renderCompiled } from 'janja';
+import { script } from './compiled/page.js';
 
-```bash
-# 编译所有模板
-janja compile ./src/templates ./dist/templates
-
-# 开发时监听变化
-janja watch ./src/templates ./dist/templates
+const html = await renderCompiled(script, { title: 'Hello' });
 ```
 
 ## 自定义
@@ -174,37 +197,44 @@ janja watch ./src/templates ./dist/templates
 ### 自定义指令
 
 ```typescript
+import { render, Traversal, type Loc } from 'janja';
+
 class CustomNode extends Traversal {
-  readonly type = 'CUSTOM'
+  readonly type = 'CUSTOM';
+
   constructor(public readonly loc: Loc) {
     super();
   }
 }
-render('{{ custom }}', {}, {
+
+await render('{{ custom }}', {}, {
   parsers: {
-    async *custom(token) {
+    *custom(token) {
       yield 'NEXT';
       yield new CustomNode(token.loc);
     },
   },
   compilers: {
-    CUSTOM: async (node, compiler) => {
-      compiler.pushStr(node.loc, '<CUSTOM/>')
+    CUSTOM: (node, compiler) => {
+      compiler.pushStr(node.loc, '<CUSTOM/>');
     },
   },
-})
+});
+// "<CUSTOM/>"
 ```
 
 ### 自定义过滤器
 
-```javascript
-const engine = new Engine({
+```typescript
+import { Renderer } from 'janja';
+
+const renderer = new Renderer({
   filters: {
     my_filter(value) {
-      return `自定义：${value}`
+      return `自定义：${value}`;
     },
   },
-})
+});
 ```
 
 模板中即可使用

@@ -1,7 +1,4 @@
-// Webpack integration example for Janja pre-compiled templates
-// This example shows how to use pre-compiled Janja templates in a Webpack project
-
-const path = require('path');
+const path = require('node:path');
 
 module.exports = {
   entry: './src/index.js',
@@ -15,16 +12,11 @@ module.exports = {
         test: /\.janja$/,
         use: [
           {
-            loader: 'janja-webpack-loader',
-            options: {
-              runtime: true, // Include runtime for standalone execution
-            },
+            loader: path.resolve(__dirname, 'janja-loader.js'),
+            options: { root: 'src/templates' },
           },
         ],
       },
     ],
-  },
-  resolve: {
-    extensions: ['.js', '.janja'],
   },
 };

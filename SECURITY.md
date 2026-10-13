@@ -1,231 +1,94 @@
-# Security Best Practices for Janja
+# Security
 
-This document outlines security best practices for using the Janja template engine safely in production environments.
+## What Janja Protects Against
 
-## Overview
+### Cross-site scripting: output is escaped by default
 
-Janja provides several security features to help you build secure applications. However, proper configuration and usage are essential to maintain security.
-
-## Core Security Features
-
-### 1. Auto-Escaping
-
-Janja automatically escapes HTML output by default to prevent XSS (Cross-Site Scripting) attacks.
+Everything written with `{{= ... }}` is HTML-escaped (`&`, `<`, `>`, `"`, `'`) unless you opt out.
 
 ```javascript
-import { Renderer } from 'janja';
+import { render } from 'janja';
 
-const renderer = new Renderer({ autoEscape: true }); // Default
-const result = await renderer.render('{{= user_input }}', {
-  user_input: '<script>alert("XSS")</script>',
-});
-// Output: &lt;script&gt;alert("XSS")&lt;/script&gt;
+await render('{{= input }}', { input: '<script>alert(1)</script>' });
+// &lt;script&gt;alert(1)&lt;/script&gt;
 ```
 
-**Best Practice:** Always keep `autoEscape: true` unless you have a specific reason to disable it.
+Opt out per value, for HTML you trust:
 
-### 2. Sandbox Mode
+```javascript
+import { render, Safe } from 'janja';
 
-Enable sandbox mode to restrict access to dangerous globals and functions in template execution.
+await render('{{= html }} {{= other | safe }}', {
+  html: new Safe('<b>trusted</b>'),
+  other: '<i>also trusted</i>',
+});
+```
+
+Keep `autoEscape: true` (the default). Escaping is for HTML text and quoted attribute values; it does not make a value safe inside `<script>`, inline event handlers, CSS, or unquoted attributes. Use the `json` filter to pass data to scripts and `urlencode` for URL components.
+
+`security.deepEscape: true` changes how arrays and objects are written: instead of their default string form, the escaped values they contain are concatenated.
+
+### Expressions cannot leave the data you give them
+
+Template expressions are not JavaScript. They can read properties of the data and globals you pass, call functions found there, and apply registered filters. They cannot reference JavaScript globals such as `process`, `globalThis` or `require`.
+
+The identifiers `constructor`, `prototype`, `__proto__`, `__defineGetter__`, `__defineSetter__`, `__lookupGetter__` and `__lookupSetter__` are rejected at compile time anywhere in an expression, and the built-in `get`, `pick` and `map` filters refuse them as keys. This closes the usual route from a plain object to the `Function` constructor.
+
+### Restricting globals: sandbox mode
+
+`security.sandbox` limits the *renderer-level* `globals` to an allow-list. Data passed to an individual `render()` call is always available.
 
 ```javascript
 import { Renderer } from 'janja';
 
 const renderer = new Renderer({
+  globals: { site, db },
   security: {
     sandbox: true,
-    allowedGlobals: ['Math', 'Date', 'JSON'],
+    allowedGlobals: ['site'], // `db` is not visible to templates
   },
 });
 ```
 
-**Best Practice:** Use sandbox mode in production, especially when rendering user-provided templates.
+`Math`, `Date` and `JSON` are added in sandbox mode.
 
-### 3. Deep Escaping
+## What Janja Does Not Protect Against
 
-Enable deep escaping to recursively escape objects and arrays.
+**Do not render templates written by people you do not trust without additional isolation.** Janja is not a hardened sandbox:
 
-```javascript
-import { Renderer } from 'janja';
+- A template can call any function reachable from the data and globals you pass. If you pass an object with a method that deletes files, a template can call it. Pass plain data.
+- Custom filters and plugins run with full privileges.
+- There are no CPU or memory limits. A template can loop over a huge collection or recurse through macros until the process runs out of resources.
+- `include` loads whatever your `loader` returns for the requested path. If template authors are untrusted, the loader must confine paths itself.
 
-const renderer = new Renderer({
-  security: {
-    deepEscape: true,
-  },
-});
-```
+If you must run untrusted templates, do it in a separate process or isolate with resource limits, and pass only JSON-like data.
 
-**Best Practice:** Enable deep escaping when your data contains nested objects or arrays that may include user input.
+## Auditing Helper
 
-### 4. Content Security Policy (CSP)
+`renderer.auditTemplate(template)` scans the template text for a few suspicious patterns (`eval(`, `Function(`, `require(`, `import(`). It is a lint-level heuristic, not a security boundary: a clean result does not mean a template is safe.
 
-Use CSP headers to restrict resource loading and prevent injection attacks.
+## Content Security Policy
 
-```javascript
-import { Renderer } from 'janja';
-
-const renderer = new Renderer({
-  security: {
-    cspNonce: 'random-nonce-value',
-  },
-});
-
-// Get CSP headers
-const headers = renderer.getCSPHeaders();
-// Headers: { 'Content-Security-Policy': "script-src 'nonce-random-nonce-value'" }
-```
-
-**Best Practice:** Always use CSP with nonces when rendering HTML in web applications.
-
-### 5. Security Auditing
-
-Audit templates before rendering to detect potential security issues.
+Janja does not add CSP headers or nonces to your markup. `renderer.getCSPHeaders()` is a small convenience that formats the nonce you configured:
 
 ```javascript
-import { Renderer } from 'janja';
+const renderer = new Renderer({ security: { cspNonce: nonce } });
 
-const renderer = new Renderer();
-const auditResult = renderer.auditTemplate(template);
-
-if (auditResult.severity === 'critical') {
-  console.error('Critical security issues found:', auditResult.issues);
-  // Handle accordingly
-}
+renderer.getCSPHeaders();
+// { 'Content-Security-Policy': "script-src 'nonce-...'" }
 ```
 
-**Best Practice:** Audit all user-provided templates before rendering them in production.
+Generate a fresh nonce per response, send the header yourself, and pass the nonce to the template as data for your `<script nonce="...">` tags.
 
-## Security Configuration Examples
+## Checklist
 
-### Production Configuration
-
-```javascript
-import { Renderer } from 'janja';
-
-const renderer = new Renderer({
-  autoEscape: true,
-  security: {
-    sandbox: true,
-    allowedGlobals: ['Math', 'Date', 'JSON'],
-    deepEscape: true,
-    cspNonce: generateSecureNonce(),
-  },
-  cache: {
-    enabled: true,
-    maxSize: 1000,
-    ttl: 3600000, // 1 hour
-  },
-});
-```
-
-### Development Configuration
-
-```javascript
-import { Renderer } from 'janja';
-
-const renderer = new Renderer({
-  autoEscape: true,
-  security: {
-    sandbox: false, // Disabled for easier debugging
-    deepEscape: false,
-  },
-  cache: {
-    enabled: false, // Disabled to see changes immediately
-  },
-});
-```
-
-## Common Security Pitfalls
-
-### ❌ Don't: Disable Auto-Escaping
-
-```javascript
-const renderer = new Renderer({ autoEscape: false });
-```
-
-**Risk:** XSS vulnerabilities if user input contains malicious scripts.
-
-### ✅ Do: Use Safe Strings for Trusted Content
-
-```javascript
-import { Safe } from 'janja';
-
-const renderer = new Renderer({ autoEscape: true });
-const result = await renderer.render('{{= content }}', {
-  content: new Safe('<div>Trusted HTML</div>'),
-});
-```
-
-### ❌ Don't: Pass Dangerous Globals
-
-```javascript
-const renderer = new Renderer({
-  security: {
-    sandbox: true,
-    allowedGlobals: ['process', 'require'], // Dangerous!
-  },
-});
-```
-
-**Risk:** Templates can access Node.js internals and execute arbitrary code.
-
-### ✅ Do: Whitelist Safe Globals Only
-
-```javascript
-const renderer = new Renderer({
-  security: {
-    sandbox: true,
-    allowedGlobals: ['Math', 'Date', 'JSON'],
-  },
-});
-```
-
-### ❌ Don't: Render User-Provided Templates Without Auditing
-
-```javascript
-const userTemplate = req.body.template;
-const result = await renderer.render(userTemplate, data);
-```
-
-**Risk:** Users can inject malicious code into templates.
-
-### ✅ Do: Audit Before Rendering
-
-```javascript
-const userTemplate = req.body.template;
-const auditResult = renderer.auditTemplate(userTemplate);
-
-if (auditResult.severity !== 'low') {
-  throw new Error('Template contains security issues');
-}
-
-const result = await renderer.render(userTemplate, data);
-```
-
-## Security Checklist
-
-Before deploying to production:
-
-- [ ] Auto-escaping is enabled (`autoEscape: true`)
-- [ ] Sandbox mode is enabled for user-provided templates
-- [ ] Allowed globals are whitelisted and minimal
-- [ ] Deep escaping is enabled for complex data structures
-- [ ] CSP headers are configured with nonces
-- [ ] All user-provided templates are audited before rendering
-- [ ] Cache is configured with appropriate TTL
-- [ ] Security audit tool is integrated into CI/CD pipeline
+- [ ] `autoEscape` is left enabled
+- [ ] `safe` / `Safe` are only applied to HTML you produced or sanitized
+- [ ] Templates come from your own codebase, or run in an isolated process
+- [ ] Data passed to templates is plain data, without powerful methods
+- [ ] The `loader` cannot be steered outside the template directory
+- [ ] Templates are validated in CI (`validateTemplate`)
 
 ## Reporting Security Issues
 
-If you discover a security vulnerability in Janja, please report it responsibly:
-
-1. Do not create a public issue
-2. Email security@janja.dev with details
-3. Include steps to reproduce the vulnerability
-4. Allow time for the issue to be fixed before disclosing
-
-## Additional Resources
-
-- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
-- [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
-- [Node.js Security Best Practices](https://nodejs.org/en/docs/guides/security/)
+Please do not open a public issue. Report vulnerabilities privately through GitHub: <https://github.com/vvenv/janja/security/advisories/new>.
