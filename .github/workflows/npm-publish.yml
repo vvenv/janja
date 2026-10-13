@@ -36,8 +36,11 @@ jobs:
       - name: Update npm
         run: npm install -g npm@latest
       # Publishes every workspace package whose version is not on npm yet and
-      # replaces `workspace:*` ranges with real versions
+      # replaces `workspace:*` ranges with real versions. pnpm tries trusted
+      # publishing first and falls back to the token, which is what creates a
+      # package that is not on npm yet
       - name: Publish
         run: pnpm -r publish --access public --no-git-checks
         env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
