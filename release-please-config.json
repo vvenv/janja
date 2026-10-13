@@ -3,7 +3,13 @@
   "bump-patch-for-minor-pre-major": true,
   "packages": {
     "packages/eslint-plugin-janja": { "release-as": "" },
-    "packages/janja": { "release-as": "" }
+    "packages/janja": { "release-as": "" },
+    "packages/janja-cli": { "release-as": "" },
+    "packages/janja-express": { "release-as": "" },
+    "packages/janja-fastify": { "release-as": "" },
+    "packages/janja-koa": { "release-as": "" },
+    "packages/janja-language-server": { "release-as": "" },
+    "packages/vite-plugin-janja": { "release-as": "" }
   },
   "plugins": ["node-workspace"],
   "always-link-local": false

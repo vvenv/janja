@@ -1,4 +1,10 @@
 {
+  "packages/eslint-plugin-janja": "1.1.2",
   "packages/janja": "2.9.0",
-  "packages/eslint-plugin-janja": "1.1.2"
+  "packages/janja-cli": "1.0.0",
+  "packages/janja-express": "0.1.0",
+  "packages/janja-fastify": "0.1.0",
+  "packages/janja-koa": "0.1.0",
+  "packages/janja-language-server": "0.1.0",
+  "packages/vite-plugin-janja": "0.1.0"
 }
