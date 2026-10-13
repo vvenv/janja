@@ -53,9 +53,10 @@ There are no array or object literals; pass such values as data.
 
 ### 3.2 Names and properties
 
-- `name` reads a value from the context. A name that does not exist is `undefined`.
+- `name` reads a value from the context. A name that does not exist is `undefined`; this includes the names every JavaScript object inherits, such as `toString` and `valueOf`, unless the data or the template defines them.
 - `a.b.c` reads properties. Only identifiers may follow a dot; there is no `a[b]` and no `a.0`. Reading a property of `null` or `undefined` is an error.
 - `f(x, y)` and `a.b(x)` call a function found in the context.
+- `f(x, name=value, other=value)` passes named arguments: they are collected into one object that is passed after the positional arguments, here `f(x, { name, other })`. Nothing is assigned in the template's scope.
 - These identifiers are forbidden everywhere in an expression: `constructor`, `prototype`, `__proto__`, `__defineGetter__`, `__defineSetter__`, `__lookupGetter__`, `__lookupSetter__`.
 
 ### 3.3 Operators
@@ -65,7 +66,7 @@ Operators are words, not symbols (except arithmetic). From loosest to tightest b
 | Level | Operators                                             | Meaning |
 | ----- | ----------------------------------------------------- | ------- |
 | 1     | `x if test else y`                                    | Conditional. `else` is optional; without it a false test yields an empty value |
-| 2     | `=`                                                   | Assignment (`set`, named filter arguments, defaults) |
+| 2     | `=`                                                   | Assignment (`set`, defaults) and named arguments |
 | 3     | `or`                                                  | First truthy operand, else the last |
 | 4     | `and`                                                 | First falsy operand, else the last |
 | 5     | `eq` `ne` `gt` `ge` `lt` `le` `in` `ni` `is`          | Comparison |
@@ -86,7 +87,7 @@ Operators are words, not symbols (except arithmetic). From loosest to tightest b
 
 ### 3.4 Filters
 
-`value | name` and `value | name(arg, ...)` call the filter `name` with the value as its first argument. Filters chain left to right. A filter applies to the single operand before it: in `a + b | add(10)` the filter applies to `b`, so use parentheses to filter a whole expression.
+`value | name` and `value | name(arg, ...)` call the filter `name` with the value as its first argument. Named arguments work as in calls: `value | name(arg, key=x)` calls the filter with `value`, `arg` and `{ key: x }`. Filters chain left to right. A filter applies to the single operand before it: in `a + b | add(10)` the filter applies to `b`, so use parentheses to filter a whole expression.
 
 Filters may be asynchronous; the template waits for them. Using a filter that is not registered is an error when the expression is evaluated.
 
@@ -153,7 +154,7 @@ Renders the body in a scope made of the properties of `value` only. Assignments 
 {{ call name(arguments) }}...{{ endcall }}
 ```
 
-A macro is a named, parameterised piece of template. `call` invokes it; the body of the `call` is rendered wherever the macro has `{{ caller }}`. Parameters are positional; a default applies when the argument is missing or `undefined`. The macro body sees the names that were in scope where the macro was defined, plus its parameters. `caller` is an error outside a macro.
+A macro is a named, parameterised piece of template. `call` invokes it and writes its output at the position of the `call`, also when that is inside a `capture`, a `block` or an included template; the body of the `call` is rendered wherever the macro has `{{ caller }}`. Parameters are positional; a default applies when the argument is missing or `undefined`. The macro body sees the names that were in scope where the macro was defined, plus its parameters. `caller` is an error outside a macro.
 
 ### 5.7 `include`
 
@@ -161,7 +162,7 @@ A macro is a named, parameterised piece of template. `call` invokes it; the body
 {{ include "path" }}
 ```
 
-Renders another template in place. The path is a string literal handed to the renderer's `loader`; what it means is up to the loader. The included template sees the top-level context of the including template, including names assigned at the top level before the `include`. A template that cannot be loaded is an error.
+Renders another template in place. The path is a string literal handed to the renderer's `loader`; what it means is up to the loader. The included template sees the top-level context of the including template, including names assigned at the top level before the `include`. A template may include itself, directly or through other templates; includes nested more than 100 levels deep are an error when the template is rendered, which is what an include cycle that never ends runs into. A template that cannot be loaded is an error.
 
 ### 5.8 `block` and `super`
 

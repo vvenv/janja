@@ -327,6 +327,24 @@
           }
         },
         {
+          "template": "{{= valueOf }}|{{= toString is \"undefined\" }}|{{ if hasOwnProperty }}x{{ endif }}",
+          "output": "|true|",
+          "note": "names that every JavaScript object inherits are not in the context"
+        },
+        {
+          "template": "{{ set toString = 1 }}{{= toString }}|{{= a.toString() }}",
+          "output": "1|1",
+          "note": "such names can still be assigned, and read as properties of values"
+        },
+        {
+          "template": "{{= fn(1, x=2, y=a) }}|{{= x }}",
+          "output": "1:2:1|",
+          "functions": {
+            "fn": "(v, named) => v + ':' + named.x + ':' + named.y"
+          },
+          "note": "named arguments are passed as one object after the positional ones and do not assign"
+        },
+        {
           "template": "{{= a b }}",
           "error": "Unexpected \"b\""
         },
@@ -402,6 +420,21 @@
           "filters": {
             "twice": "(v) => v * 2",
             "later": "async (v) => v + 2"
+          }
+        },
+        {
+          "template": "{{= a | f(2, y=3, z=4) }}|{{= y }}",
+          "output": "1:2:3:4|",
+          "filters": {
+            "f": "(v, x, named) => [v, x, named.y, named.z].join(':')"
+          },
+          "note": "named arguments are passed as one object after the positional ones and do not assign"
+        },
+        {
+          "template": "{{ for n of list }}{{= n | f(sep=\"-\") }}{{= sep }}{{ endfor }}",
+          "output": "1-2-3-",
+          "filters": {
+            "f": "(v, named) => v + named.sep"
           }
         },
         {
@@ -716,6 +749,26 @@
           "output": "78"
         },
         {
+          "template": "{{ macro m(x) }}<{{= x }}{{ caller }}>{{ endmacro }}{{ capture c }}{{ call m(1) }}b{{ endcall }}{{ endcapture }}[{{= c }}]",
+          "output": "[<1b>]",
+          "note": "a macro writes where it is called, not where it was defined"
+        },
+        {
+          "template": "{{ macro m }}M{{ endmacro }}{{ block b }}({{ call m() }}{{ endcall }}){{ endblock }}|",
+          "output": "(M)|"
+        },
+        {
+          "template": "{{ macro m }}M{{ endmacro }}{{ include \"p\" }}|",
+          "output": "(M)|",
+          "files": {
+            "p": "({{ call m() }}{{ endcall }})"
+          }
+        },
+        {
+          "template": "{{ macro o }}[{{ caller }}]{{ endmacro }}{{ macro i }}<{{ caller }}>{{ endmacro }}{{ call o() }}{{ call i() }}x{{ endcall }}{{ endcall }}",
+          "output": "[<x>]"
+        },
+        {
           "template": "{{ macro m }}x",
           "error": "Unclosed \"macro\""
         },
@@ -756,6 +809,22 @@
           }
         },
         {
+          "template": "{{ set n = 3 }}{{ include \"down\" }}",
+          "output": "321",
+          "files": {
+            "down": "{{= n }}{{ set n = n - 1 }}{{ if n gt 0 }}{{ include \"down\" }}{{ endif }}"
+          },
+          "note": "a template may include itself"
+        },
+        {
+          "template": "{{ set n = 4 }}{{ include \"ping\" }}",
+          "output": "ping4pong3ping2pong1",
+          "files": {
+            "ping": "ping{{= n }}{{ set n = n - 1 }}{{ if n gt 0 }}{{ include \"pong\" }}{{ endif }}",
+            "pong": "pong{{= n }}{{ set n = n - 1 }}{{ if n gt 0 }}{{ include \"ping\" }}{{ endif }}"
+          }
+        },
+        {
           "template": "{{ include \"nope\" }}",
           "error": "Failed to load template from \"nope\"",
           "files": {
@@ -767,6 +836,14 @@
         {
           "template": "{{ include }}",
           "error": "\"include\" requires expression"
+        },
+        {
+          "template": "{{ include \"loop\" }}",
+          "error": "Includes of \"loop\" are nested too deeply",
+          "files": {
+            "loop": "x{{ include \"loop\" }}"
+          },
+          "note": "an include cycle that never ends is a render error"
         }
       ]
     },
