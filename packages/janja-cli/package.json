@@ -1,6 +1,6 @@
 {
   "name": "janja-cli",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "CLI tool for pre-compiling Janja templates",
   "type": "module",
   "license": "MIT",
