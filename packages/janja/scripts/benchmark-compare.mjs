@@ -83,9 +83,11 @@ const slower = rows
 const format = (hz) => Math.round(hz).toLocaleString('en-US');
 
 const lines = [
-  `Compared ${rows.length} benchmarks. The machine was ${drift.toFixed(2)}x ${
-    drift >= 1 ? 'slower' : 'faster'
-  } during the second run, measured on ${controls.length} benchmarks of other engines; this is removed from the figures below.`,
+  `Compared ${rows.length} benchmarks. Measured on ${controls.length} benchmarks of other engines, the machine was ${
+    drift >= 1
+      ? `${drift.toFixed(2)}x slower`
+      : `${(1 / drift).toFixed(2)}x faster`
+  } while running the change than while running the base; this is removed from the figures below.`,
   '',
   slower.length
     ? `**${slower.length} benchmark(s) became more than ${threshold}x slower:**`
