@@ -19,7 +19,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20, 22, 24]
+        # pnpm 11 itself needs Node.js 22; older runtimes are covered by the
+        # `compat` job below
+        node-version: [22, 24]
     steps:
       - uses: actions/checkout@v4
       - name: Enable Corepack
@@ -36,5 +38,33 @@ jobs:
         run: pnpm typecheck
       - name: Run tests
         run: pnpm test
+      - name: Smoke test the published entry points
+        run: node packages/janja/scripts/smoke.mjs
+      - name: Keep the build for the compatibility job
+        if: matrix.node-version == 24
+        uses: actions/upload-artifact@v4
+        with:
+          name: janja-dist
+          path: packages/janja/dist
+          retention-days: 1
+
+  # The published package supports older Node.js versions than the toolchain
+  # that builds it: load and render with the built files on each of them
+  compat:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: janja-dist
+          path: packages/janja/dist
       - name: Smoke test the published entry points
         run: node packages/janja/scripts/smoke.mjs

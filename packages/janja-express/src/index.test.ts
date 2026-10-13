@@ -40,9 +40,11 @@ async function start(options?: EngineOptions, cache = false) {
   app.set('view cache', cache);
   app.locals.site = 'janja';
 
-  app.get('/:view', (req, res) => {
-    res.render(req.params.view, { title: req.query.title ?? '<T>' });
-  });
+  for (const view of ['page', 'opts', 'broken', 'escape']) {
+    app.get(`/${view}`, (req, res) => {
+      res.render(view, { title: req.query.title ?? '<T>' });
+    });
+  }
   app.use(
     (
       error: Error,

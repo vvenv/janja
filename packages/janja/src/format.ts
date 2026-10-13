@@ -72,7 +72,8 @@ export function formatTemplate(template: string, options: FormatOptions = {}) {
       }
 
       // Braces only occur in string literals, where they must stay escaped
-      // so that they cannot end the tag
+      // so that they cannot end the tag. Backslashes are already escaped by
+      // the expression formatter and must not be escaped again here.
       return formatted.replace(/[{}]/g, '\\$&');
     } catch {
       return null;
