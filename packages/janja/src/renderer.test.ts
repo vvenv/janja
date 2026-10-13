@@ -579,3 +579,11 @@ it('loop scopes do not leak between iterations', async () => {
     ),
   ).toBe('11false,12true,0;21false,22true,1;');
 });
+
+it('a template that includes itself without end fails instead of hanging', async () => {
+  const renderer = new Renderer({ loader: async () => 'x{{ include "a" }}' });
+
+  await expect(renderer.render('{{ include "a" }}', {})).rejects.toThrow(
+    'Includes of "a" are nested too deeply',
+  );
+});

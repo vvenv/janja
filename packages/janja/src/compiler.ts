@@ -21,6 +21,11 @@ export interface CompiledTemplate {
 
 const fingerprints = new WeakMap<object, string>();
 
+// How deep includes may nest while rendering. Only templates that include
+// themselves get anywhere near it; the limit turns a cycle that never ends
+// into an error instead of a stack overflow.
+export const MAX_INCLUDE_DEPTH = 100;
+
 // Directives whose body is still the template's own top-level output
 const transparent = new Set(['IF', 'FOR']);
 
@@ -141,10 +146,19 @@ export class Compiler extends Context {
 
     if (this.isRoot) {
       if (this.partials.size) {
-        this.pushRaw(null, 'const p={');
+        this.pushRaw(null, 'let d_=0;', 'const p={');
 
         for (const [path, code] of this.partials) {
-          this.pushRaw(null, `${JSON.stringify(path)}:async()=>{`, code, '},');
+          this.pushRaw(
+            null,
+            `${JSON.stringify(path)}:async()=>{`,
+            `if(d_>=${MAX_INCLUDE_DEPTH})throw new Error(${JSON.stringify(`Includes of ${JSON.stringify(path)} are nested too deeply`)});`,
+            'd_++;',
+            'try{return await(async()=>{',
+            code,
+            '})();}finally{d_--;}',
+            '},',
+          );
         }
 
         this.pushRaw(null, '};');
@@ -247,6 +261,11 @@ export class Compiler extends Context {
         }
 
         this.sources.set(path, template ?? '');
+
+        // Reserved before compiling, so that a template that includes itself,
+        // directly or through others, refers to the partial being compiled
+        // instead of compiling it again without end
+        this.partials.set(path, '');
 
         if (template) {
           await this.compilePartial(path, node, template);
