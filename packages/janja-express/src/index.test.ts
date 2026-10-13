@@ -45,6 +45,7 @@ async function start(options?: EngineOptions, cache = false) {
       res.render(view, { title: req.query.title ?? '<T>' });
     });
   }
+
   app.use(
     (
       error: Error,
