@@ -26,6 +26,7 @@ node packages/janja/scripts/smoke.mjs   # check the built entry points
   - `src/tokenizer.ts`, `src/parser.ts`, `src/compiler.ts`, `src/renderer.ts` – the pipeline from template text to output
   - `src/exp/` – the expression language
   - `src/plugins/` – one directory per directive (parser, compiler, syntax node, tests)
+- `website` – the documentation site and playground at [janja.wenfu.dev](https://janja.wenfu.dev), built with VitePress. `pnpm --filter janja-website dev` serves it locally (build the packages first). Most pages pull their text from the Markdown files in the repository root, so edit those
 - `packages/janja-cli` – the `janja` command for pre-compiling templates
 - `packages/eslint-plugin-janja` – ESLint rules for template formatting
 - `packages/vite-plugin-janja` – Vite and Rollup plugin

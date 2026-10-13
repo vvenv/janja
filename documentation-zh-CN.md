@@ -2,6 +2,8 @@
 
 ## 内置指令
 
+<!-- #region directives -->
+
 ### **include**：模板继承与包含
 
 ```janja
@@ -84,7 +86,11 @@
 {{= a if cond else b }}
 ```
 
+<!-- #endregion directives -->
+
 ## 内置过滤器
+
+<!-- #region filters -->
 
 abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, groupby, join, json, keys, last, length, lower, map, max, min, mul, odd, omit, pick, repeat, replace, reverse, safe, slice, sort, split, sub, sum, trim, truncate, unique, upper, urldecode, urlencode, values
 
@@ -132,7 +138,11 @@ abs, capitalize, add, ceil, compact, div, entries, even, fallback, first, get, g
 {{= arr | groupby(key_name) }}
 ```
 
+<!-- #endregion filters -->
+
 ## 错误处理
+
+<!-- #region errors -->
 
 - **默认抛出错误**：模板有语法错误时 `render()` 以 `CompileError` 拒绝，运行时出错以 `RenderError` 拒绝，`error.details` 会标出模板中的出错行。
 - **宽松模式**：传入 `debug` 回调后，错误交给回调处理；出错的指令被跳过，未闭合的块在模板末尾自动闭合，运行时失败的模板渲染为空字符串。
@@ -149,7 +159,11 @@ const html = await render(template, data, {
 const { valid, errors, warnings } = await validateTemplate(template);
 ```
 
+<!-- #endregion errors -->
+
 ## CLI 工具
+
+<!-- #region cli -->
 
 `janja-cli` 在构建期把模板预编译成 ES 模块，运行时不再解析或编译模板。
 
@@ -192,7 +206,11 @@ import { script } from './compiled/page.js';
 const html = await renderCompiled(script, { title: 'Hello' });
 ```
 
+<!-- #endregion cli -->
+
 ## 自定义
+
+<!-- #region customization -->
 
 ### 自定义指令
 
@@ -246,3 +264,5 @@ const renderer = new Renderer({
 ---
 
 如需更多细节，可参考源码 `packages/janja/src/filters.ts` 和 `packages/janja/src/plugins/`。
+
+<!-- #endregion customization -->

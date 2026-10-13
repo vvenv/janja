@@ -13,3 +13,5 @@ packages/janja/README.md
 packages/janja/LICENSE
 .test-*
 benchmark-cache
+website/.vitepress/dist
+website/.vitepress/cache
