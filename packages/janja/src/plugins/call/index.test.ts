@@ -58,12 +58,12 @@ it('error', async () => {
 
 it('call', async () => {
   expect(await compile('{{ call m() }}{{ endcall }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};await c.m()(async()=>{});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=await c.m()(async()=>{let s="";return s;})??"";return s;})();"`,
   );
   expect(
     await compile('{{ call m(1, "2") }}3{{ endcall }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};await c.m(1,"2")(async()=>{s+="3";});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=await c.m(1,"2")(async()=>{let s="";s+="3";return s;})??"";return s;})();"`,
   );
 });
 
@@ -73,13 +73,13 @@ it('macro and call', async () => {
       "{{ macro m(x, y) }}{{= x }}{{ caller }}{{= y }}{{ endmacro }}{{ call m('f', 1) }}2{{ endcall }}",
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.m=(...a_)=>async(_c)=>{const c_0={...c,x:a_[0],y:a_[1],};s+=e(c_0.x);await _c?.();s+=e(c_0.y);};await c.m("f",1)(async()=>{s+="2";});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.m=(...a_)=>async(_c)=>{let s="";const c_0={...c,x:a_[0],y:a_[1],};s+=e(c_0.x);s+=await _c?.()??"";s+=e(c_0.y);return s;};s+=await c.m("f",1)(async()=>{let s="";s+="2";return s;})??"";return s;})();"`,
   );
   expect(
     await compile(
       "{{ macro m(x='f', y=1) }}{{= x }}{{ caller }}{{= y }}{{ endmacro }}{{ call m() }}2{{ endcall }}",
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.m=(...a_)=>async(_c)=>{const c_0={...c,x:a_[0]===undefined?"f":a_[0],y:a_[1]===undefined?1:a_[1],};s+=e(c_0.x);await _c?.();s+=e(c_0.y);};await c.m()(async()=>{s+="2";});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.m=(...a_)=>async(_c)=>{let s="";const c_0={...c,x:a_[0]===undefined?"f":a_[0],y:a_[1]===undefined?1:a_[1],};s+=e(c_0.x);s+=await _c?.()??"";s+=e(c_0.y);return s;};s+=await c.m()(async()=>{let s="";s+="2";return s;})??"";return s;})();"`,
   );
 });

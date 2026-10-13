@@ -12,7 +12,10 @@ async function compileMacro(
 
   compiler.pushRaw(
     loc,
+    // A macro collects its own output and returns it, so that it ends up
+    // where the macro is called rather than where it was defined
     `${context}.${value}=(...a_)=>async(_c)=>{`,
+    'let s="";',
     `const ${compiler.in()}={`,
     `...${context},`,
     ...(args ?? []).map((el, i) =>
@@ -25,11 +28,11 @@ async function compileMacro(
 
   await compiler.compileNodes(body);
   compiler.out();
-  compiler.pushRaw(null, '};');
+  compiler.pushRaw(null, 'return s;', '};');
 }
 
 function compileCaller({ loc }: CallerNode, compiler: Compiler) {
-  compiler.pushRaw(loc, 'await _c?.();');
+  compiler.pushRaw(loc, 's+=await _c?.()??"";');
 }
 
 export const compilers = {
