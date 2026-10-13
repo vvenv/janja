@@ -8,20 +8,16 @@ on:
     types: [created]
   workflow_dispatch:
 
+# Never cancel a publish half way through
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 jobs:
   npm-publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Enable Corepack
         run: corepack enable
       - uses: actions/setup-node@v4
@@ -29,17 +25,19 @@ jobs:
           node-version: 24
           cache: pnpm
           registry-url: https://registry.npmjs.org/
-      - uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: pnpm-cache-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Build
         run: pnpm build
-        working-directory: packages/janja
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Test
+        run: pnpm test
       - name: Update npm
         run: npm install -g npm@latest
+      # Publishes every workspace package whose version is not on npm yet and
+      # replaces `workspace:*` ranges with real versions
       - name: Publish
-        run: npm publish
-        working-directory: packages/janja
+        run: pnpm -r publish --access public --no-git-checks
+        env:
+          NPM_CONFIG_PROVENANCE: true

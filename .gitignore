@@ -7,3 +7,8 @@ node_modules
 yarn-debug.log*
 yarn-error.log*
 .DS_Store
+benchmark-raw.json
+benchmark-results.json
+packages/janja/README.md
+packages/janja/LICENSE
+.test-*

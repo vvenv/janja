@@ -1,7 +1,6 @@
 name: Lint
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   push:
@@ -19,25 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Enable Corepack
         run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
-      - uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: pnpm-cache-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Build Janja
+      # The ESLint config loads the built eslint-plugin-janja
+      - name: Build
         run: pnpm build
-        working-directory: packages/janja
-      - name: Build ESLint Plugin Janja
-        run: pnpm build
-        working-directory: packages/eslint-plugin-janja
       - name: Run lint
         run: pnpm lint
