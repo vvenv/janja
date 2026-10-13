@@ -2,7 +2,7 @@ import { Traversal } from '../../syntax-nodes';
 import type { Loc, Strip } from '../../types';
 
 export class UnexpectedNode extends Traversal {
-  readonly type = 'unexpected';
+  readonly type = 'UNEXPECTED';
 
   constructor(
     public readonly name: string,

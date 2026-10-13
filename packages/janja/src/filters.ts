@@ -1,3 +1,4 @@
+import { isForbiddenIdentifier } from './exp/exp-tokenizer';
 import { Safe } from './safe';
 import type { ObjectType } from './types';
 
@@ -41,7 +42,12 @@ export function first(this: ObjectType, value: string | any[] = []) {
 export function get(this: ObjectType, value: ObjectType, ...path: string[]) {
   return path.reduce(
     (acc, cur) =>
-      acc && typeof acc === 'object' && cur in acc ? acc[cur] : undefined,
+      acc &&
+      typeof acc === 'object' &&
+      !isForbiddenIdentifier(cur) &&
+      cur in acc
+        ? acc[cur]
+        : undefined,
     value,
   );
 }
@@ -90,7 +96,9 @@ export function map(
   key: string,
   defaultValue?: unknown,
 ) {
-  return value.map((o) => o[key] ?? defaultValue);
+  return value.map((o) =>
+    isForbiddenIdentifier(key) ? defaultValue : (o[key] ?? defaultValue),
+  );
 }
 export function max(this: ObjectType, value = 0, ...rest: number[]) {
   return Math.max(value, ...rest);
@@ -119,7 +127,10 @@ export function pick(
   value: ObjectType = {},
   ...pickKeys: string[]
 ) {
-  return pickKeys.reduce((o, k) => ({ ...o, [k]: value[k] }), {});
+  return pickKeys.reduce(
+    (o, k) => (isForbiddenIdentifier(k) ? o : { ...o, [k]: value[k] }),
+    {},
+  );
 }
 export function repeat(this: ObjectType, value = '', count = 0) {
   return value.repeat(count);
@@ -133,7 +144,10 @@ export function replace(
   return value.replace(new RegExp(search, 'g'), replacement);
 }
 export function reverse(this: ObjectType, value: string | unknown[] = []) {
-  return Array.isArray(value) ? value.reverse() : [...value].reverse().join('');
+  // Never in place: the array belongs to the caller's data
+  return Array.isArray(value)
+    ? [...value].reverse()
+    : [...value].reverse().join('');
 }
 export function safe(this: ObjectType, value = '') {
   return new Safe(value);
@@ -142,7 +156,8 @@ export function slice(this: ObjectType, value = '', start = 0, end?: number) {
   return value.slice(start, end);
 }
 export function sort(this: ObjectType, value: string | unknown[] = []) {
-  return Array.isArray(value) ? value.sort() : [...value].sort().join('');
+  // Never in place: the array belongs to the caller's data
+  return Array.isArray(value) ? [...value].sort() : [...value].sort().join('');
 }
 export function split(this: ObjectType, value = '', separator = '') {
   return value.split(separator);

@@ -9,7 +9,9 @@ async function compileWith(node: WithNode, compiler: Compiler) {
 
   compiler.pushRaw(
     node.loc,
-    `const ${compiler.in()}=${expCompiler.compile(node.expression, context)};`,
+    // The value's properties become the whole scope. It is copied so that
+    // assignments inside the block do not modify the value itself.
+    `const ${compiler.in()}={...${expCompiler.compile(node.expression, context)}};`,
   );
 
   await compiler.compileNodes(node.body);

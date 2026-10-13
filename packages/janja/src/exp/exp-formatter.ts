@@ -64,6 +64,7 @@ export class ExpFormatter {
       case 'LE':
       case 'IN':
       case 'NI':
+      case 'OF':
       case 'ADD':
       case 'SUB':
       case 'MUL':

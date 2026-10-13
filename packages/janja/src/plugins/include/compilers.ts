@@ -5,7 +5,7 @@ async function compileInclude(
   { val: { value }, loc }: IncludeNode,
   compiler: Compiler,
 ) {
-  compiler.pushRaw(loc, `s+=await p["${value}"]?.()??"";`);
+  compiler.pushRaw(loc, `s+=await p[${JSON.stringify(value)}]?.()??"";`);
 }
 
 export const compilers = {

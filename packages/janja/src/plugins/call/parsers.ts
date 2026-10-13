@@ -17,7 +17,7 @@ function* parseCall(token: DirectiveToken, parser: Parser) {
   if (parser.match(['endcall'])) {
     yield 'NEXT';
   } else {
-    throw parser.options.debug?.(
+    parser.options.debug?.(
       new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
     );
   }

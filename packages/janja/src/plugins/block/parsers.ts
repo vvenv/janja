@@ -17,7 +17,7 @@ function* parseBlock(token: DirectiveToken, parser: Parser) {
   if (parser.match(['endblock'])) {
     yield 'NEXT';
   } else {
-    throw parser.options.debug?.(
+    parser.options.debug?.(
       new CompileError(`Unclosed "${token.name}"`, parser.template, token.loc),
     );
   }

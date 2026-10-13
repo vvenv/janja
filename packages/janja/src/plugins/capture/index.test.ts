@@ -62,17 +62,17 @@ it('capture', async () => {
   expect(
     await compile('{{ capture x }}{{ endcapture }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";c.x=await(async(s)=>{return s;})("");return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.x=f.safe.call(c,await(async(s)=>{return s;})(""));return s;})();"`,
   );
   expect(
     await compile('{{ capture x }}a{{ endcapture }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";c.x=await(async(s)=>{s+="a";return s;})("");return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.x=f.safe.call(c,await(async(s)=>{s+="a";return s;})(""));return s;})();"`,
   );
   expect(
     await compile('{{ capture x}}{{= y and z }}{{ endcapture }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";c.x=await(async(s)=>{s+=e(c.y&&c.z);return s;})("");return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.x=f.safe.call(c,await(async(s)=>{s+=e(c.y&&c.z);return s;})(""));return s;})();"`,
   );
 });
 
@@ -82,6 +82,6 @@ it('override', async () => {
       '{{ capture x }}foo{{ endcapture }}{{ capture x }}bar{{ endcapture }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";c.x=await(async(s)=>{s+="foo";return s;})("");c.x=await(async(s)=>{s+="bar";return s;})("");return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.x=f.safe.call(c,await(async(s)=>{s+="foo";return s;})(""));c.x=f.safe.call(c,await(async(s)=>{s+="bar";return s;})(""));return s;})();"`,
   );
 });

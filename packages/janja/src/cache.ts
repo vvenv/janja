@@ -21,10 +21,10 @@ export class LRUCache<T> {
     evictions: number;
   };
 
-  constructor(options: Required<CacheOptions>) {
+  constructor(options: CacheOptions = {}) {
     this.cache = new Map();
-    this.maxSize = options.maxSize;
-    this.ttl = options.ttl;
+    this.maxSize = options.maxSize ?? 1000;
+    this.ttl = options.ttl ?? 3600000;
     this.stats = {
       hits: 0,
       misses: 0,
@@ -54,6 +54,19 @@ export class LRUCache<T> {
     this.cache.set(key, entry);
     entry.hits++;
     this.stats.hits++;
+
+    return entry.value;
+  }
+
+  /**
+   * Look at an entry without counting it as a hit or changing its position.
+   */
+  peek(key: string): T | null {
+    const entry = this.cache.get(key);
+
+    if (!entry || (this.ttl > 0 && Date.now() - entry.timestamp > this.ttl)) {
+      return null;
+    }
 
     return entry.value;
   }

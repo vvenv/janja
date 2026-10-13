@@ -176,11 +176,11 @@ it('escape tag', () => {
           "val": {
             "loc": {
               "end": {
-                "column": 12,
+                "column": 17,
                 "line": 1,
               },
               "start": {
-                "column": 2,
+                "column": 5,
                 "line": 1,
               },
             },
@@ -244,11 +244,11 @@ it('escape tag', () => {
           "val": {
             "loc": {
               "end": {
-                "column": 14,
+                "column": 19,
                 "line": 1,
               },
               "start": {
-                "column": 2,
+                "column": 5,
                 "line": 1,
               },
             },
@@ -452,11 +452,11 @@ it('output', () => {
           "val": {
             "loc": {
               "end": {
-                "column": 3,
+                "column": 7,
                 "line": 1,
               },
               "start": {
-                "column": 2,
+                "column": 6,
                 "line": 1,
               },
             },
@@ -504,11 +504,11 @@ it('output', () => {
           "val": {
             "loc": {
               "end": {
-                "column": 6,
+                "column": 9,
                 "line": 1,
               },
               "start": {
-                "column": 2,
+                "column": 5,
                 "line": 1,
               },
             },
@@ -557,11 +557,11 @@ it('output', () => {
             "left": {
               "loc": {
                 "end": {
-                  "column": 3,
+                  "column": 6,
                   "line": 1,
                 },
                 "start": {
-                  "column": 2,
+                  "column": 5,
                   "line": 1,
                 },
               },
@@ -571,11 +571,11 @@ it('output', () => {
             },
             "loc": {
               "end": {
-                "column": 5,
+                "column": 8,
                 "line": 1,
               },
               "start": {
-                "column": 4,
+                "column": 7,
                 "line": 1,
               },
             },
@@ -583,11 +583,11 @@ it('output', () => {
             "right": {
               "loc": {
                 "end": {
-                  "column": 7,
+                  "column": 10,
                   "line": 1,
                 },
                 "start": {
-                  "column": 6,
+                  "column": 9,
                   "line": 1,
                 },
               },
@@ -693,11 +693,11 @@ it('custom open/close markers', () => {
               "val": {
                 "loc": {
                   "end": {
-                    "column": 13,
+                    "column": 15,
                     "line": 1,
                   },
                   "start": {
-                    "column": 12,
+                    "column": 14,
                     "line": 1,
                   },
                 },

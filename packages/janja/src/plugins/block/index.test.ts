@@ -82,46 +82,46 @@ it('block', async () => {
   expect(
     await compile('{{ block title }}1{{ endblock }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";const b={"title":{u:0,s:[async()=>{let s="";s+="1";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};const b={"title":{u:0,s:[async()=>{let s="";s+="1";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
   );
   expect(
     await compile('{{ block title }}1{{ super }}2{{ endblock }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";const b={"title":{u:0,s:[async()=>{let s="";s+="1";s+=await b["title"]?.s?.pop()?.()??"";s+="2";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};const b={"title":{u:0,s:[async()=>{let s="";s+="1";s+=await b["title"]?.s?.pop()?.()??"";s+="2";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
   );
   expect(
     await compile(
       '{{ block title }}1{{ super }}2{{ endblock }}{{ block title }}3{{ super }}4{{ endblock }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";const b={"title":{u:0,s:[async()=>{let s="";s+="1";s+=await b["title"]?.s?.pop()?.()??"";s+="2";return s;},async()=>{let s="";s+="3";s+=await b["title"]?.s?.pop()?.()??"";s+="4";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};const b={"title":{u:0,s:[async()=>{let s="";s+="1";s+=await b["title"]?.s?.pop()?.()??"";s+="2";return s;},async()=>{let s="";s+="3";s+=await b["title"]?.s?.pop()?.()??"";s+="4";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
   );
   expect(
     await compile(
       '{{ block title }}1{{ endblock }}{{ block title }}2{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";const b={"title":{u:0,s:[async()=>{let s="";s+="1";return s;},async()=>{let s="";s+="2";return s;},async()=>{let s="";s+=await b["title"]?.s?.pop()?.()??"";s+="3";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};const b={"title":{u:0,s:[async()=>{let s="";s+="1";return s;},async()=>{let s="";s+="2";return s;},async()=>{let s="";s+=await b["title"]?.s?.pop()?.()??"";s+="3";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
   );
   expect(
     await compile(
       '{{ block title }}1{{ endblock }}{{ block title }}2{{ super }}{{ endblock }}{{ block title }}{{ super }}3{{ endblock }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";const b={"title":{u:0,s:[async()=>{let s="";s+="1";return s;},async()=>{let s="";s+="2";s+=await b["title"]?.s?.pop()?.()??"";return s;},async()=>{let s="";s+=await b["title"]?.s?.pop()?.()??"";s+="3";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};const b={"title":{u:0,s:[async()=>{let s="";s+="1";return s;},async()=>{let s="";s+="2";s+=await b["title"]?.s?.pop()?.()??"";return s;},async()=>{let s="";s+=await b["title"]?.s?.pop()?.()??"";s+="3";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
   );
   expect(
     await compile(
       ' {{- block title }} 1 {{- endblock }} {{ block title -}} 2 {{ super -}} {{ endblock -}} {{- block title -}} {{- super -}} 3 {{- endblock -}} ',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";const b={"title":{u:0,s:[async()=>{let s="";s+=" 1 ";return s;},async()=>{let s="";s+=" 2 ";s+=await b["title"]?.s?.pop()?.()??"";return s;},async()=>{let s="";s+=await b["title"]?.s?.pop()?.()??"";s+="3 ";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}s+=" ";if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};const b={"title":{u:0,s:[async()=>{let s="";s+=" 1";return s;},async()=>{let s="";s+="2 ";s+=await b["title"]?.s?.pop()?.()??"";return s;},async()=>{let s="";s+=await b["title"]?.s?.pop()?.()??"";s+="3";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}s+=" ";if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}return s;})();"`,
   );
   expect(
     await compile(
       '{{ block title }}1{{ endblock }}{{ if x }}{{ block title }}2{{ endblock }}{{ endif }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";const b={"title":{u:0,s:[async()=>{let s="";s+="1";return s;},async()=>{let s="";s+="2";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(c.x){if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};const b={"title":{u:0,s:[async()=>{let s="";s+="1";return s;},async()=>{let s="";s+="2";return s;},],},};if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}if(c.x){if(b["title"]&&!(b["title"].u++)){s+=await b["title"].s?.pop()?.()??"";}}return s;})();"`,
   );
 });

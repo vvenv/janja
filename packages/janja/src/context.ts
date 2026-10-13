@@ -8,6 +8,18 @@ export class Context extends OutScript {
 
   private index = 0;
 
+  checkpoint(): unknown {
+    return [super.checkpoint(), this.context, [...this.stack]];
+  }
+
+  rollback(checkpoint: unknown) {
+    const [code, context, stack] = checkpoint as [unknown, string, string[]];
+
+    super.rollback(code);
+    this.context = context;
+    this.stack = stack;
+  }
+
   in() {
     this.context = `${this.context}_${this.index++}`;
     this.stack.push(this.context);

@@ -46,7 +46,7 @@ it('string', () => {
 it('number', () => {
   expect(compile('123')).toMatchInlineSnapshot(`"123"`);
   expect(compile('12.34')).toMatchInlineSnapshot(`"12.34"`);
-  expect(compile('(12,34)')).toMatchInlineSnapshot(`"12,34"`);
+  expect(compile('(12,34)')).toMatchInlineSnapshot(`"(12,34)"`);
 });
 
 it('boolean', () => {
@@ -121,7 +121,7 @@ it('in', () => {
 });
 
 it('ni', () => {
-  expect(compile('a ni b')).toMatchInlineSnapshot(`"!c.a in c.b"`);
+  expect(compile('a ni b')).toMatchInlineSnapshot(`"!(c.a in c.b)"`);
 });
 
 it('add', () => {
@@ -129,7 +129,7 @@ it('add', () => {
 });
 
 it('sub', () => {
-  expect(compile('a - b')).toMatchInlineSnapshot(`"c.b"`);
+  expect(compile('a - b')).toMatchInlineSnapshot(`"c.a-c.b"`);
 });
 
 it('mul', () => {
@@ -147,20 +147,22 @@ it('mod', () => {
 it('set', () => {
   expect(compile('a = b')).toMatchInlineSnapshot(`"Object.assign(c,{a:c.b});"`);
   expect(compile('(a, b) = c')).toMatchInlineSnapshot(
-    `"Object.assign(c,f.pick.call(c,c.c,["a","b"]));"`,
+    `"Object.assign(c,f.pick.call(c,c.c,"a","b"));"`,
   );
 });
 
 it('pipe', () => {
-  expect(compile('a | f')).toMatchInlineSnapshot(`"await f.f.call(c,c.a)"`);
+  expect(compile('a | f')).toMatchInlineSnapshot(
+    `"(r_=(f.f||u_("f")).call(c,c.a),r_ instanceof Promise?await r_:r_)"`,
+  );
   expect(compile('a | f | f2')).toMatchInlineSnapshot(
-    `"await f.f2.call(c,await f.f.call(c,c.a))"`,
+    `"(r_=(f.f2||u_("f2")).call(c,(r_=(f.f||u_("f")).call(c,c.a),r_ instanceof Promise?await r_:r_)),r_ instanceof Promise?await r_:r_)"`,
   );
   expect(compile('a | f(x, "y")')).toMatchInlineSnapshot(
-    `"await f.f.call(c,c.a,c.x,"y")"`,
+    `"(r_=(f.f||u_("f")).call(c,c.a,c.x,"y"),r_ instanceof Promise?await r_:r_)"`,
   );
   expect(compile('a | f(x, "y") | f2(not z, 1)')).toMatchInlineSnapshot(
-    `"await f.f2.call(c,await f.f.call(c,c.a,c.x,"y"),!c.z,1)"`,
+    `"(r_=(f.f2||u_("f2")).call(c,(r_=(f.f||u_("f")).call(c,c.a,c.x,"y"),r_ instanceof Promise?await r_:r_),!c.z,1),r_ instanceof Promise?await r_:r_)"`,
   );
 });
 
@@ -180,7 +182,7 @@ it('combined', () => {
   expect(
     compile('user | get("age") gt 18 and user | get("name") eq "John"'),
   ).toMatchInlineSnapshot(
-    `"await f.get.call(c,c.user,"age")>18&&await f.get.call(c,c.user,"name")==="John""`,
+    `"(r_=(f.get||u_("get")).call(c,c.user,"age"),r_ instanceof Promise?await r_:r_)>18&&(r_=(f.get||u_("get")).call(c,c.user,"name"),r_ instanceof Promise?await r_:r_)==="John""`,
   );
   expect(compile('not a and not b')).toMatchInlineSnapshot(`"!c.a&&!c.b"`);
   expect(compile('a or b and c')).toMatchInlineSnapshot(`"c.a||c.b&&c.c"`);
@@ -189,12 +191,12 @@ it('combined', () => {
 
 it('real world', () => {
   expect(compile('f(a|x, y + b, z and c)')).toMatchInlineSnapshot(
-    `"c.f(await f.x.call(c,c.a),c.y+c.b,c.z&&c.c)"`,
+    `"c.f((r_=(f.x||u_("x")).call(c,c.a),r_ instanceof Promise?await r_:r_),c.y+c.b,c.z&&c.c)"`,
   );
   expect(compile('(a, b) = c')).toMatchInlineSnapshot(
-    `"Object.assign(c,f.pick.call(c,c.c,["a","b"]));"`,
+    `"Object.assign(c,f.pick.call(c,c.c,"a","b"));"`,
   );
   expect(compile('(a, b, c) = x | y')).toMatchInlineSnapshot(
-    `"Object.assign(c,f.pick.call(c,await f.y.call(c,c.x),["a","b","c"]));"`,
+    `"Object.assign(c,f.pick.call(c,(r_=(f.y||u_("y")).call(c,c.x),r_ instanceof Promise?await r_:r_),"a","b","c"));"`,
   );
 });

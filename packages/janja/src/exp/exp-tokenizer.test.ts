@@ -13,63 +13,63 @@ it('error', () => {
     tokenize('{');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "{"]`);
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpected "{"]`);
   }
 
   try {
     tokenize('}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "}"]`);
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpected "}"]`);
   }
 
   try {
     tokenize('[');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "["]`);
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpected "["]`);
   }
 
   try {
     tokenize(']');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "]"]`);
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpected "]"]`);
   }
 
   try {
     tokenize('&');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "&"]`);
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpected "&"]`);
   }
 
   try {
     tokenize('@');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "@"]`);
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpected "@"]`);
   }
 
   try {
     tokenize('#');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect "#"]`);
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpected "#"]`);
   }
 
   try {
     tokenize(':');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect ":"]`);
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpected ":"]`);
   }
 
   try {
     tokenize(';');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpect ";"]`);
+    expect(error).toMatchInlineSnapshot(`[ExpError: Unexpected ";"]`);
   }
 });
 
@@ -80,7 +80,7 @@ it('string', () => {
       {
         "loc": {
           "end": {
-            "column": 4,
+            "column": 6,
             "line": 1,
           },
           "start": {
@@ -95,11 +95,11 @@ it('string', () => {
       {
         "loc": {
           "end": {
-            "column": 8,
+            "column": 12,
             "line": 1,
           },
           "start": {
-            "column": 5,
+            "column": 7,
             "line": 1,
           },
         },
@@ -110,11 +110,11 @@ it('string', () => {
       {
         "loc": {
           "end": {
-            "column": 12,
+            "column": 18,
             "line": 1,
           },
           "start": {
-            "column": 9,
+            "column": 13,
             "line": 1,
           },
         },
@@ -125,17 +125,17 @@ it('string', () => {
       {
         "loc": {
           "end": {
-            "column": 21,
+            "column": 29,
             "line": 1,
           },
           "start": {
-            "column": 13,
+            "column": 19,
             "line": 1,
           },
         },
         "raw": ""\\"escape"",
         "type": "LIT",
-        "value": "\\"escape",
+        "value": ""escape",
       },
     ]
   `,
@@ -179,7 +179,7 @@ it('number', () => {
       {
         "loc": {
           "end": {
-            "column": 13,
+            "column": 12,
             "line": 1,
           },
           "start": {
@@ -187,9 +187,24 @@ it('number', () => {
             "line": 1,
           },
         },
-        "raw": "-1",
+        "raw": "-",
+        "type": "SUB",
+        "value": "-",
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 13,
+            "line": 1,
+          },
+          "start": {
+            "column": 12,
+            "line": 1,
+          },
+        },
+        "raw": "1",
         "type": "LIT",
-        "value": -1,
+        "value": 1,
       },
       {
         "loc": {
@@ -209,7 +224,7 @@ it('number', () => {
       {
         "loc": {
           "end": {
-            "column": 19,
+            "column": 18,
             "line": 1,
           },
           "start": {
@@ -217,9 +232,24 @@ it('number', () => {
             "line": 1,
           },
         },
-        "raw": "-1",
+        "raw": "-",
+        "type": "SUB",
+        "value": "-",
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 19,
+            "line": 1,
+          },
+          "start": {
+            "column": 18,
+            "line": 1,
+          },
+        },
+        "raw": "1",
         "type": "LIT",
-        "value": -1,
+        "value": 1,
       },
     ]
   `,
@@ -542,8 +572,8 @@ it('symbols', () => {
           },
         },
         "raw": "-",
-        "type": "LIT",
-        "value": NaN,
+        "type": "SUB",
+        "value": "-",
       },
       {
         "loc": {
@@ -1133,7 +1163,7 @@ it('pipe', () => {
       {
         "loc": {
           "end": {
-            "column": 11,
+            "column": 13,
             "line": 1,
           },
           "start": {
@@ -1148,11 +1178,11 @@ it('pipe', () => {
       {
         "loc": {
           "end": {
-            "column": 12,
+            "column": 14,
             "line": 1,
           },
           "start": {
-            "column": 11,
+            "column": 13,
             "line": 1,
           },
         },
@@ -1163,11 +1193,11 @@ it('pipe', () => {
       {
         "loc": {
           "end": {
-            "column": 14,
+            "column": 16,
             "line": 1,
           },
           "start": {
-            "column": 13,
+            "column": 15,
             "line": 1,
           },
         },
@@ -1178,11 +1208,11 @@ it('pipe', () => {
       {
         "loc": {
           "end": {
-            "column": 17,
+            "column": 19,
             "line": 1,
           },
           "start": {
-            "column": 15,
+            "column": 17,
             "line": 1,
           },
         },
@@ -1193,11 +1223,11 @@ it('pipe', () => {
       {
         "loc": {
           "end": {
-            "column": 18,
+            "column": 20,
             "line": 1,
           },
           "start": {
-            "column": 17,
+            "column": 19,
             "line": 1,
           },
         },
@@ -1208,11 +1238,11 @@ it('pipe', () => {
       {
         "loc": {
           "end": {
-            "column": 21,
+            "column": 23,
             "line": 1,
           },
           "start": {
-            "column": 18,
+            "column": 20,
             "line": 1,
           },
         },
@@ -1223,32 +1253,17 @@ it('pipe', () => {
       {
         "loc": {
           "end": {
-            "column": 23,
+            "column": 25,
             "line": 1,
           },
           "start": {
-            "column": 22,
+            "column": 24,
             "line": 1,
           },
         },
         "raw": "c",
         "type": "ID",
         "value": "c",
-      },
-      {
-        "loc": {
-          "end": {
-            "column": 24,
-            "line": 1,
-          },
-          "start": {
-            "column": 23,
-            "line": 1,
-          },
-        },
-        "raw": ",",
-        "type": "COMMA",
-        "value": ",",
       },
       {
         "loc": {
@@ -1261,24 +1276,24 @@ it('pipe', () => {
             "line": 1,
           },
         },
-        "raw": "1",
-        "type": "LIT",
-        "value": 1,
+        "raw": ",",
+        "type": "COMMA",
+        "value": ",",
       },
       {
         "loc": {
           "end": {
-            "column": 27,
+            "column": 28,
             "line": 1,
           },
           "start": {
-            "column": 26,
+            "column": 27,
             "line": 1,
           },
         },
-        "raw": ")",
-        "type": "RP",
-        "value": ")",
+        "raw": "1",
+        "type": "LIT",
+        "value": 1,
       },
       {
         "loc": {
@@ -1291,6 +1306,21 @@ it('pipe', () => {
             "line": 1,
           },
         },
+        "raw": ")",
+        "type": "RP",
+        "value": ")",
+      },
+      {
+        "loc": {
+          "end": {
+            "column": 31,
+            "line": 1,
+          },
+          "start": {
+            "column": 30,
+            "line": 1,
+          },
+        },
         "raw": "|",
         "type": "PIPE",
         "value": "|",
@@ -1298,11 +1328,11 @@ it('pipe', () => {
       {
         "loc": {
           "end": {
-            "column": 32,
+            "column": 34,
             "line": 1,
           },
           "start": {
-            "column": 30,
+            "column": 32,
             "line": 1,
           },
         },
@@ -1322,7 +1352,7 @@ it('conditional', () => {
       {
         "loc": {
           "end": {
-            "column": 2,
+            "column": 4,
             "line": 1,
           },
           "start": {
@@ -1337,11 +1367,11 @@ it('conditional', () => {
       {
         "loc": {
           "end": {
-            "column": 5,
+            "column": 7,
             "line": 1,
           },
           "start": {
-            "column": 3,
+            "column": 5,
             "line": 1,
           },
         },
@@ -1352,11 +1382,11 @@ it('conditional', () => {
       {
         "loc": {
           "end": {
-            "column": 7,
+            "column": 9,
             "line": 1,
           },
           "start": {
-            "column": 6,
+            "column": 8,
             "line": 1,
           },
         },
@@ -1373,7 +1403,7 @@ it('conditional', () => {
       {
         "loc": {
           "end": {
-            "column": 2,
+            "column": 4,
             "line": 1,
           },
           "start": {
@@ -1388,11 +1418,11 @@ it('conditional', () => {
       {
         "loc": {
           "end": {
-            "column": 5,
+            "column": 7,
             "line": 1,
           },
           "start": {
-            "column": 3,
+            "column": 5,
             "line": 1,
           },
         },
@@ -1403,11 +1433,11 @@ it('conditional', () => {
       {
         "loc": {
           "end": {
-            "column": 7,
+            "column": 9,
             "line": 1,
           },
           "start": {
-            "column": 6,
+            "column": 8,
             "line": 1,
           },
         },
@@ -1418,11 +1448,11 @@ it('conditional', () => {
       {
         "loc": {
           "end": {
-            "column": 12,
+            "column": 14,
             "line": 1,
           },
           "start": {
-            "column": 8,
+            "column": 10,
             "line": 1,
           },
         },
@@ -1433,11 +1463,11 @@ it('conditional', () => {
       {
         "loc": {
           "end": {
-            "column": 14,
+            "column": 18,
             "line": 1,
           },
           "start": {
-            "column": 13,
+            "column": 15,
             "line": 1,
           },
         },
@@ -1519,7 +1549,7 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 15,
+            "column": 17,
             "line": 1,
           },
           "start": {
@@ -1534,11 +1564,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 16,
+            "column": 18,
             "line": 1,
           },
           "start": {
-            "column": 15,
+            "column": 17,
             "line": 1,
           },
         },
@@ -1549,11 +1579,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 19,
+            "column": 21,
             "line": 1,
           },
           "start": {
-            "column": 17,
+            "column": 19,
             "line": 1,
           },
         },
@@ -1564,11 +1594,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 22,
+            "column": 24,
             "line": 1,
           },
           "start": {
-            "column": 20,
+            "column": 22,
             "line": 1,
           },
         },
@@ -1579,11 +1609,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 26,
+            "column": 28,
             "line": 1,
           },
           "start": {
-            "column": 23,
+            "column": 25,
             "line": 1,
           },
         },
@@ -1594,11 +1624,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 31,
+            "column": 33,
             "line": 1,
           },
           "start": {
-            "column": 27,
+            "column": 29,
             "line": 1,
           },
         },
@@ -1609,11 +1639,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 33,
+            "column": 35,
             "line": 1,
           },
           "start": {
-            "column": 32,
+            "column": 34,
             "line": 1,
           },
         },
@@ -1624,11 +1654,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 37,
+            "column": 39,
             "line": 1,
           },
           "start": {
-            "column": 34,
+            "column": 36,
             "line": 1,
           },
         },
@@ -1639,11 +1669,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 38,
+            "column": 40,
             "line": 1,
           },
           "start": {
-            "column": 37,
+            "column": 39,
             "line": 1,
           },
         },
@@ -1654,11 +1684,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 42,
+            "column": 46,
             "line": 1,
           },
           "start": {
-            "column": 38,
+            "column": 40,
             "line": 1,
           },
         },
@@ -1669,11 +1699,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 43,
+            "column": 47,
             "line": 1,
           },
           "start": {
-            "column": 42,
+            "column": 46,
             "line": 1,
           },
         },
@@ -1684,11 +1714,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 46,
+            "column": 50,
             "line": 1,
           },
           "start": {
-            "column": 44,
+            "column": 48,
             "line": 1,
           },
         },
@@ -1699,11 +1729,11 @@ it('complex', () => {
       {
         "loc": {
           "end": {
-            "column": 51,
+            "column": 57,
             "line": 1,
           },
           "start": {
-            "column": 47,
+            "column": 51,
             "line": 1,
           },
         },

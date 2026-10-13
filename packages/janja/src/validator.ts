@@ -1,3 +1,9 @@
+import * as filters from './filters';
+import { compilerOptions, mergeOptions } from './options';
+import { Parser } from './parser';
+import { plugins } from './plugins';
+import type { CompilerOptions } from './types';
+
 export interface ValidationError {
   type: 'error' | 'warning';
   message: string;
@@ -12,15 +18,43 @@ export interface ValidationResult {
   warnings: ValidationError[];
 }
 
+/**
+ * Validates templates by running them through the real parser, so it reports
+ * exactly the syntax errors that rendering would.
+ */
 export class TemplateValidator {
+  constructor(private options: CompilerOptions = {}) {}
+
   async validate(template: string): Promise<ValidationResult> {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
-    // Static validation checks only
-    this.checkUnclosedMarkers(template, errors);
-    this.checkFilterUsage(template, warnings);
-    this.checkVariableSyntax(template, warnings);
+    const report = (error: any) => {
+      const [suggestion] = error?.suggestions ?? [];
+
+      errors.push({
+        type: 'error',
+        message: `${error?.message ?? error}`,
+        line: error?.loc?.start.line,
+        column: error?.loc?.start.column,
+        suggestion: suggestion?.fix ?? suggestion?.message,
+      });
+    };
+
+    const options = mergeOptions(
+      compilerOptions,
+      { filters, plugins },
+      this.options,
+      { debug: report },
+    );
+
+    try {
+      const root = new Parser(options).parse(template);
+
+      this.checkFilters(root, options.filters, warnings);
+    } catch (error) {
+      report(error);
+    }
 
     return {
       valid: errors.length === 0,
@@ -29,111 +63,41 @@ export class TemplateValidator {
     };
   }
 
-  private checkUnclosedMarkers(template: string, errors: ValidationError[]) {
-    const markers = [
-      { open: '{{', close: '}}' },
-      { open: '{%', close: '%}' },
-      { open: '{#', close: '#}' },
-    ];
-
-    for (const { open, close } of markers) {
-      let openCount = 0;
-      let closeCount = 0;
-
-      for (let i = 0; i < template.length; i++) {
-        if (template.slice(i, i + open.length) === open) {
-          openCount++;
-        }
-
-        if (template.slice(i, i + close.length) === close) {
-          closeCount++;
-        }
-      }
-
-      if (openCount !== closeCount) {
-        const line = this.findLine(template, open);
-
-        errors.push({
-          type: 'error',
-          message: `Unclosed ${open} marker: found ${openCount} opening but ${closeCount} closing`,
-          line,
-          suggestion: `Add missing ${close} marker(s)`,
-        });
-      }
-    }
-  }
-
-  private checkFilterUsage(template: string, warnings: ValidationError[]) {
-    // Find all filter usages like {{ value|filter }}
-    const filterRegex = /\|\s*([a-zA-Z_][a-zA-Z0-9_]*)/g;
-
-    let match;
-
-    while ((match = filterRegex.exec(template)) !== null) {
-      const [filterName] = match;
-      const line = this.findLine(template, filterName);
-
-      // Check if this is a common filter that might not exist
-      // This is a basic check - in a real implementation, you'd check against the actual filter registry
-      if (filterName.length > 20) {
-        warnings.push({
-          type: 'warning',
-          message: `Unusually long filter name: "${filterName}" - possible typo?`,
-          line,
-        });
-      }
-    }
-  }
-
-  private checkVariableSyntax(template: string, warnings: ValidationError[]) {
-    // Check for common variable syntax issues
-    const issues = [
-      {
-        regex: /\{\{\s*\.\s*\}\}/,
-        message: 'Empty dot notation - likely missing property name',
-      },
-      {
-        regex: /\{\{\s*\|\s*[a-zA-Z]/,
-        message: 'Pipe operator without left operand',
-      },
-      {
-        regex: /\{\{[^}]*$/,
-        message: 'Possible unclosed expression',
-      },
-    ];
-
-    for (const { regex, message } of issues) {
-      const match = regex.exec(template);
-
-      if (match) {
-        const line = this.findLine(template, match[0]);
-
-        warnings.push({
-          type: 'warning',
-          message,
-          line,
-        });
-      }
-    }
-  }
-
-  private findLine(template: string, substring: string): number | undefined {
-    const index = template.indexOf(substring);
-
-    if (index === -1) {
-      return undefined;
+  // Unknown filters only fail once the expression using them is evaluated
+  private checkFilters(
+    node: any,
+    known: Record<string, unknown>,
+    warnings: ValidationError[],
+    seen = new Set<object>(),
+  ) {
+    if (!node || typeof node !== 'object' || seen.has(node)) {
+      return;
     }
 
-    const before = template.slice(0, index);
+    seen.add(node);
 
-    return before.split('\n').length;
+    if (
+      node.type === 'PIPE' &&
+      node.right?.type === 'ID' &&
+      !Object.prototype.hasOwnProperty.call(known, node.right.value)
+    ) {
+      warnings.push({
+        type: 'warning',
+        message: `Unknown filter "${node.right.value}"`,
+        line: node.right.loc?.start.line,
+        column: node.right.loc?.start.column,
+      });
+    }
+
+    for (const value of Object.values(node)) {
+      this.checkFilters(value, known, warnings, seen);
+    }
   }
 }
 
 export async function validateTemplate(
   template: string,
+  options?: CompilerOptions,
 ): Promise<ValidationResult> {
-  const validator = new TemplateValidator();
-
-  return validator.validate(template);
+  return new TemplateValidator(options).validate(template);
 }

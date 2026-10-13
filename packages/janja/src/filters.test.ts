@@ -138,7 +138,7 @@ describe('builtin', () => {
           },
         },
       }),
-    ).toMatchInlineSnapshot(`"undefined"`);
+    ).toMatchInlineSnapshot(`""`);
     expect(
       await render('{{= a | get("c", "d", "e") }}', {
         a: {
@@ -147,7 +147,7 @@ describe('builtin', () => {
           },
         },
       }),
-    ).toMatchInlineSnapshot(`"undefined"`);
+    ).toMatchInlineSnapshot(`""`);
   });
 
   it('groupby', async () => {

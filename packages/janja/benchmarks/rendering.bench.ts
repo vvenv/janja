@@ -2,12 +2,12 @@ import { bench, describe, expect, it } from 'vitest';
 import { render } from '../src';
 
 describe('Rendering Performance Benchmarks', () => {
-  const simpleTemplate = 'Hello {{ name }}!';
+  const simpleTemplate = 'Hello {{= name }}!';
   const complexTemplate = `
     <html>
-      <head><title>{{ title }}</title></head>
+      <head><title>{{= title }}</title></head>
       <body>
-        <h1>{{ header }}</h1>
+        <h1>{{= header }}</h1>
         {{ for item of items }}
           <div>{{= item.name }}</div>
           <p>{{= item.description | truncate(100) }}</p>

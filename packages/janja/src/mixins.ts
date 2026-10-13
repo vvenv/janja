@@ -1,5 +1,5 @@
 import { Renderer } from './renderer';
-import type { ObjectType } from './types';
+import type { ObjectType, RendererOptions } from './types';
 
 export interface MixinDefinition {
   name: string;
@@ -9,7 +9,7 @@ export interface MixinDefinition {
 
 export interface MixinOptions {
   data?: ObjectType;
-  options?: any;
+  options?: RendererOptions;
 }
 
 export class MixinRegistry {

@@ -22,13 +22,17 @@ it('error', async () => {
     await compile('{{ set x = [1] }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpect "["]`);
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "["]`);
     expect(error.details).toMatchInlineSnapshot(`
-      "Unexpect "["
+      "Unexpected "["
 
       1│ {{ set x = [1] }}
        │            ^
-      "
+
+
+      Suggestions:
+        1. An unexpected token was found in the template.
+           Fix: Check your template syntax and ensure all markers are properly formatted."
     `);
   }
 
@@ -36,13 +40,17 @@ it('error', async () => {
     await compile('{{ set x = {a:1} }}');
     expect(true).toBe(false);
   } catch (error: any) {
-    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpect "{"]`);
+    expect(error).toMatchInlineSnapshot(`[CompileError: Unexpected "{"]`);
     expect(error.details).toMatchInlineSnapshot(`
-      "Unexpect "{"
+      "Unexpected "{"
 
       1│ {{ set x = {a:1} }}
        │            ^
-      "
+
+
+      Suggestions:
+        1. An unexpected token was found in the template.
+           Fix: Check your template syntax and ensure all markers are properly formatted."
     `);
   }
 
@@ -79,61 +87,61 @@ it('error', async () => {
 
 it('literal', async () => {
   expect(await compile('{{ set x = "" }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:""});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:""});return s;})();"`,
   );
   expect(await compile('{{ set x = "a" }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:"a"});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:"a"});return s;})();"`,
   );
   expect(await compile('{{ set x = 12 }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:12});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:12});return s;})();"`,
   );
   expect(await compile('{{ set x = 12.34 }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:12.34});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:12.34});return s;})();"`,
   );
   expect(await compile('{{ set x = true }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:true});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:true});return s;})();"`,
   );
   expect(await compile('{{ set x = false }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:false});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:false});return s;})();"`,
   );
 });
 
 it('id', async () => {
   expect(await compile('{{ set x = y }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:c.y});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:c.y});return s;})();"`,
   );
   expect(await compile('{{ set x = y | f }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:await f.f.call(c,c.y)});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:(r_=(f.f||u_("f")).call(c,c.y),r_ instanceof Promise?await r_:r_)});return s;})();"`,
   );
   expect(await compile('{{ set x = y | f(a) }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:await f.f.call(c,c.y,c.a)});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:(r_=(f.f||u_("f")).call(c,c.y,c.a),r_ instanceof Promise?await r_:r_)});return s;})();"`,
   );
   expect(await compile('{{ set x = y.z }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:c.y.z});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:c.y.z});return s;})();"`,
   );
   expect(await compile('{{ set x = y.z | f }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:await f.f.call(c,c.y.z)});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:(r_=(f.f||u_("f")).call(c,c.y.z),r_ instanceof Promise?await r_:r_)});return s;})();"`,
   );
   expect(await compile('{{ set x = y.z | f(a) }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:await f.f.call(c,c.y.z,c.a)});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:(r_=(f.f||u_("f")).call(c,c.y.z,c.a),r_ instanceof Promise?await r_:r_)});return s;})();"`,
   );
 });
 
 it('expression', async () => {
   expect(await compile('{{ set x = y and z }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:c.y&&c.z});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:c.y&&c.z});return s;})();"`,
   );
 });
 
 it('destructuring', async () => {
   expect(await compile('{{ set (x, y) = z }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,f.pick.call(c,c.z,["x","y"]));return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,f.pick.call(c,c.z,"x","y"));return s;})();"`,
   );
   expect(await compile('{{ set (x, y) = z | f }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,f.pick.call(c,await f.f.call(c,c.z),["x","y"]));return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,f.pick.call(c,(r_=(f.f||u_("f")).call(c,c.z),r_ instanceof Promise?await r_:r_),"x","y"));return s;})();"`,
   );
   expect(await compile('{{ set (x, y) = z | f(a) }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,f.pick.call(c,await f.f.call(c,c.z,c.a),["x","y"]));return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,f.pick.call(c,(r_=(f.f||u_("f")).call(c,c.z,c.a),r_ instanceof Promise?await r_:r_),"x","y"));return s;})();"`,
   );
 });
 
@@ -141,6 +149,6 @@ it('override', async () => {
   expect(
     await compile('{{ set x = \'y\' }}{{ set x = "y" }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";Object.assign(c,{x:"y"});Object.assign(c,{x:"y"});return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};Object.assign(c,{x:"y"});Object.assign(c,{x:"y"});return s;})();"`,
   );
 });

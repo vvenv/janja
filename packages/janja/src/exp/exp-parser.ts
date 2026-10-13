@@ -99,6 +99,10 @@ export class ExpParser implements Pos {
         break;
       }
 
+      if (left) {
+        assertNotOperand(token);
+      }
+
       if (token.type === 'LP') {
         if (!this.peek()) {
           throw new ExpError('Unexpected end of expression', token.loc);
@@ -233,13 +237,15 @@ export class ExpParser implements Pos {
 
         if (token.type === 'ASSIGN') {
           if (left.type === 'SEQ') {
-            if (left.elements.some((el) => el.type !== 'ID')) {
+            if (
+              left.elements.some((el) => el.type !== 'ID' || el.path || el.args)
+            ) {
               throw new ExpError(
                 'Left operand of assignment must be an identifier or a sequence of identifiers',
                 token.loc,
               );
             }
-          } else if (left.type !== 'ID') {
+          } else if (left.type !== 'ID' || left.path || left.args) {
             throw new ExpError(
               'Left operand of assignment must be an identifier or a sequence of identifiers',
               token.loc,
@@ -385,6 +391,18 @@ export class ExpParser implements Pos {
   }
 }
 
+// Two operands in a row, e.g. `a b`
+function assertNotOperand(token: ExpToken) {
+  if (token.type === 'ID' || token.type === 'LIT' || token.type === 'LP') {
+    throw new ExpError(`Unexpected "${token.raw ?? token.value}"`, token.loc);
+  }
+}
+
 function isHigher(a: ExpToken, b: ExpToken) {
+  // "(" starts an operand; it is not an operator to compare against
+  if (b.type === 'LP') {
+    return false;
+  }
+
   return expTokenPrecedences[a.type] > expTokenPrecedences[b.type];
 }

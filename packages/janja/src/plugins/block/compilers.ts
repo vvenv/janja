@@ -6,10 +6,12 @@ async function compileBlock(
   { val: { value }, loc }: BlockNode,
   compiler: Compiler,
 ) {
+  const name = JSON.stringify(value);
+
   compiler.pushRaw(
     loc,
-    `if(b["${value}"]&&!(b["${value}"].u++)){`,
-    `s+=await b["${value}"].s?.pop()?.()??"";`,
+    `if(b[${name}]&&!(b[${name}].u++)){`,
+    `s+=await b[${name}].s?.pop()?.()??"";`,
     '}',
   );
 }
@@ -31,7 +33,7 @@ async function compileSuper({ loc }: SuperNode, compiler: Compiler) {
   // Each super() call pops the next level from the stack
   compiler.pushRaw(
     loc,
-    `s+=await b["${compiler.state.block}"]?.s?.pop()?.()??"";`,
+    `s+=await b[${JSON.stringify(compiler.state.block)}]?.s?.pop()?.()??"";`,
   );
 }
 

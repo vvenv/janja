@@ -1,4 +1,4 @@
-import { CONTEXT, FILTERS } from '../param-names';
+import { CONTEXT, FILTERS, RESULT, UNKNOWN_FILTER } from '../param-names';
 import type {
   BinaryExp,
   Exp,
@@ -111,17 +111,31 @@ export class ExpCompiler {
   }
 
   private compileLit({ value }: LitExp) {
-    return value === undefined ? 'undefined' : JSON.stringify(value);
+    if (value === undefined) {
+      return 'undefined';
+    }
+
+    // Parenthesised, or `a - -1` would compile to the decrement `a--1`
+    if (typeof value === 'number' && value < 0) {
+      return `(${value})`;
+    }
+
+    return JSON.stringify(value);
   }
 
   private compileSeq({ elements }: SeqExp) {
-    return elements.map((element) => this.compileExp(element)).toString();
+    // Parenthesised, so that grouping survives: `(a + b) * 2`
+    return `(${elements.map((element) => this.compileExp(element)).join(',')})`;
   }
 
   private compilePipe({ left, right }: BinaryExp<'PIPE'>) {
     const { value: name, args = [] } = right as IdExp;
 
-    return `await ${this.filters}.${name}.call(${[this.context, this.compileExp(left), ...args.map((arg) => (arg.type === 'ASSIGN' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExp(arg.right)}` : this.compileExp(arg)))].join(',')})`;
+    const call = `(${this.filters}.${name}||${UNKNOWN_FILTER}("${name}")).call(${[this.context, this.compileExp(left), ...args.map((arg) => (arg.type === 'ASSIGN' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExp(arg.right)}` : this.compileExp(arg)))].join(',')})`;
+
+    // Awaiting a plain value still costs a trip through the microtask queue,
+    // so only promises returned by async filters are awaited
+    return `(${RESULT}=${call},${RESULT} instanceof Promise?await ${RESULT}:${RESULT})`;
   }
 
   private compileAssign({ left, right }: BinaryExp<'ASSIGN'>) {
@@ -130,7 +144,7 @@ export class ExpCompiler {
     }
 
     // destructuring
-    return `Object.assign(${this.context},${this.filters}.pick.call(${this.context},${this.compileExp(right)},[${((left as SeqExp).elements as IdExp[]).map(({ value }) => `"${value}"`).join(',')}]));`;
+    return `Object.assign(${this.context},${this.filters}.pick.call(${this.context},${this.compileExp(right)},${((left as SeqExp).elements as IdExp[]).map(({ value }) => `"${value}"`).join(',')}));`;
   }
 
   private compileIs({ left, right }: BinaryExp<'IS'>) {
@@ -140,7 +154,7 @@ export class ExpCompiler {
   private compileBinary({ type, left, right }: BinaryExp) {
     const ret = `${this.compileExp(left)}${expTokenOperators[type]}${this.compileExp(right)}`;
 
-    return type === 'NI' ? `!${ret}` : ret;
+    return type === 'NI' ? `!(${ret})` : ret;
   }
 
   private compileTernary({ test, consequent, alternative }: IfExp) {

@@ -1,2 +1,2 @@
-yarn lint --fix
-CI=true yarn test
+pnpm lint --fix
+CI=true pnpm test

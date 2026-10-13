@@ -99,26 +99,26 @@ it('error', async () => {
 
 it('id', async () => {
   expect(await compile('{{ if x }}id{{ endif }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(c.x){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(c.x){s+="id";}return s;})();"`,
   );
   expect(await compile('{{ if x | f }}id{{ endif }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(await f.f.call(c,c.x)){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if((r_=(f.f||u_("f")).call(c,c.x),r_ instanceof Promise?await r_:r_)){s+="id";}return s;})();"`,
   );
   expect(await compile('{{ if x | f(a) }}id{{ endif }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(await f.f.call(c,c.x,c.a)){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if((r_=(f.f||u_("f")).call(c,c.x,c.a),r_ instanceof Promise?await r_:r_)){s+="id";}return s;})();"`,
   );
   expect(await compile('{{ if x.y.z }}id{{ endif }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(c.x.y.z){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(c.x.y.z){s+="id";}return s;})();"`,
   );
   expect(
     await compile('{{ if x.y.z | f }}id{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(await f.f.call(c,c.x.y.z)){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if((r_=(f.f||u_("f")).call(c,c.x.y.z),r_ instanceof Promise?await r_:r_)){s+="id";}return s;})();"`,
   );
   expect(
     await compile('{{ if x.y.z | f(a) }}id{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(await f.f.call(c,c.x.y.z,c.a)){s+="id";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if((r_=(f.f||u_("f")).call(c,c.x.y.z,c.a),r_ instanceof Promise?await r_:r_)){s+="id";}return s;})();"`,
   );
 });
 
@@ -126,58 +126,58 @@ it('not', async () => {
   expect(
     await compile('{{ if not x }}{{= x }}{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!c.x){s+=e(c.x);}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(!c.x){s+=e(c.x);}return s;})();"`,
   );
   expect(
     await compile('{{ if not x | f }}not{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!await f.f.call(c,c.x)){s+="not";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(!(r_=(f.f||u_("f")).call(c,c.x),r_ instanceof Promise?await r_:r_)){s+="not";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x | f(a) }}not{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!await f.f.call(c,c.x,c.a)){s+="not";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(!(r_=(f.f||u_("f")).call(c,c.x,c.a),r_ instanceof Promise?await r_:r_)){s+="not";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x.y.z }}not{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!c.x.y.z){s+="not";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(!c.x.y.z){s+="not";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x.y.z | f }}not{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!await f.f.call(c,c.x.y.z)){s+="not";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(!(r_=(f.f||u_("f")).call(c,c.x.y.z),r_ instanceof Promise?await r_:r_)){s+="not";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x.y.z | f(a) }}not{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!await f.f.call(c,c.x.y.z,c.a)){s+="not";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(!(r_=(f.f||u_("f")).call(c,c.x.y.z,c.a),r_ instanceof Promise?await r_:r_)){s+="not";}return s;})();"`,
   );
 });
 
 it('and', async () => {
   expect(await compile('{{ if x and y }}and{{ endif }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(c.x&&c.y){s+="and";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(c.x&&c.y){s+="and";}return s;})();"`,
   );
   expect(
     await compile('{{ if x | f and y | f }}and{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(await f.f.call(c,c.x)&&await f.f.call(c,c.y)){s+="and";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if((r_=(f.f||u_("f")).call(c,c.x),r_ instanceof Promise?await r_:r_)&&(r_=(f.f||u_("f")).call(c,c.y),r_ instanceof Promise?await r_:r_)){s+="and";}return s;})();"`,
   );
   expect(
     await compile('{{ if x | f(a) and y | f(a) }}and{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(await f.f.call(c,c.x,c.a)&&await f.f.call(c,c.y,c.a)){s+="and";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if((r_=(f.f||u_("f")).call(c,c.x,c.a),r_ instanceof Promise?await r_:r_)&&(r_=(f.f||u_("f")).call(c,c.y,c.a),r_ instanceof Promise?await r_:r_)){s+="and";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x and y }}and{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!c.x&&c.y){s+="and";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(!c.x&&c.y){s+="and";}return s;})();"`,
   );
   expect(
     await compile('{{ if not x and not y }}and{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(!c.x&&!c.y){s+="and";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(!c.x&&!c.y){s+="and";}return s;})();"`,
   );
 });
 
@@ -185,24 +185,24 @@ it('in', async () => {
   expect(
     await compile('{{ if x in names }}in{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(c.x in c.names){s+="in";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(c.x in c.names){s+="in";}return s;})();"`,
   );
   expect(
     await compile('{{ if "x" in names }}in{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if("x" in c.names){s+="in";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if("x" in c.names){s+="in";}return s;})();"`,
   );
 });
 
 it('eq', async () => {
   expect(await compile('{{ if x eq y }}eq{{ endif }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(c.x===c.y){s+="eq";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(c.x===c.y){s+="eq";}return s;})();"`,
   );
 });
 
 it('ne', async () => {
   expect(await compile('{{ if x ne y }}ne{{ endif }}')).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(c.x!==c.y){s+="ne";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(c.x!==c.y){s+="ne";}return s;})();"`,
   );
 });
 
@@ -210,7 +210,7 @@ it('else', async () => {
   expect(
     await compile('{{ if x }}yes{{ else }}no{{ endif }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(c.x){s+="yes";}else{s+="no";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(c.x){s+="yes";}else{s+="no";}return s;})();"`,
   );
 });
 
@@ -220,7 +220,7 @@ it('elif', async () => {
       '{{ if x eq "foo" }}1{{ elif x eq "bar" }}2{{ elif x eq "baz" }}3{{ else }}4{{ endif }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(c.x==="foo"){s+="1";}else if(c.x==="bar"){s+="2";}else if(c.x==="baz"){s+="3";}else{s+="4";}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(c.x==="foo"){s+="1";}else if(c.x==="bar"){s+="2";}else if(c.x==="baz"){s+="3";}else{s+="4";}return s;})();"`,
   );
 });
 
@@ -230,6 +230,6 @@ it('nested', async () => {
       '{{ if x }}{{ if x }}x{{ elif y }}y{{ else }}z{{ endif }}{{ elif y }}{{ if x }}x{{ elif y }}y{{ else }}z{{ endif }}{{ else }}{{ if x }}x{{ elif y }}y{{ else }}z{{ endif }}{{ endif }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";if(c.x){if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}else if(c.y){if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}else{if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};if(c.x){if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}else if(c.y){if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}else{if(c.x){s+="x";}else if(c.y){s+="y";}else{s+="z";}}return s;})();"`,
   );
 });

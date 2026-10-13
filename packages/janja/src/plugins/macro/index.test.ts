@@ -75,28 +75,28 @@ it('macro', async () => {
   expect(
     await compile('{{ macro m }}MACRO{{ endmacro }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";c.m=()=>async(_c)=>{const c_0={...c,};s+="MACRO";};return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.m=(...a_)=>async(_c)=>{const c_0={...c,};s+="MACRO";};return s;})();"`,
   );
   expect(
     await compile('{{ macro m() }}MACRO{{ endmacro }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";c.m=()=>async(_c)=>{const c_0={...c,};s+="MACRO";};return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.m=(...a_)=>async(_c)=>{const c_0={...c,};s+="MACRO";};return s;})();"`,
   );
   expect(
     await compile('{{ macro m() }}1{{ caller }}2{{ endmacro }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";c.m=()=>async(_c)=>{const c_0={...c,};s+="1";await _c?.();s+="2";};return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.m=(...a_)=>async(_c)=>{const c_0={...c,};s+="1";await _c?.();s+="2";};return s;})();"`,
   );
   expect(
     await compile('{{ macro m(x, y) }}{{= x }}{{= y }}{{ endmacro }}'),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";c.m=(x,y)=>async(_c)=>{const c_0={...c,x,y};s+=e(c_0.x);s+=e(c_0.y);};return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.m=(...a_)=>async(_c)=>{const c_0={...c,x:a_[0],y:a_[1],};s+=e(c_0.x);s+=e(c_0.y);};return s;})();"`,
   );
   expect(
     await compile(
       '{{ macro m(x="=", y=1, z=x) }}{{= x }}{{= y }}{{= z }}{{ endmacro }}',
     ),
   ).toMatchInlineSnapshot(
-    `"return(async()=>{let s="";c.m=(x="=",y=1,z=c.x)=>async(_c)=>{const c_0={...c,x,y,z};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);};return s;})();"`,
+    `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};c.m=(...a_)=>async(_c)=>{const c_0={...c,x:a_[0]===undefined?"=":a_[0],y:a_[1]===undefined?1:a_[1],z:a_[2]===undefined?c.x:a_[2],};s+=e(c_0.x);s+=e(c_0.y);s+=e(c_0.z);};return s;})();"`,
   );
 });
