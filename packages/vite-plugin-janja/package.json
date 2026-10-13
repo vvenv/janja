@@ -1,0 +1,61 @@
+{
+  "name": "vite-plugin-janja",
+  "version": "0.1.0",
+  "description": "Vite and Rollup plugin that pre-compiles Janja templates",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vvenv/janja.git",
+    "directory": "packages/vite-plugin-janja"
+  },
+  "homepage": "https://github.com/vvenv/janja#readme",
+  "bugs": "https://github.com/vvenv/janja/issues",
+  "keywords": [
+    "vite-plugin",
+    "rollup-plugin",
+    "janja",
+    "template"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./client.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "client.d.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "janja": "workspace:^",
+    "vite": ">=5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.3",
+    "janja": "workspace:*",
+    "rollup": "^4.53.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7",
+    "vitest": "^4.0.16"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  }
+}
