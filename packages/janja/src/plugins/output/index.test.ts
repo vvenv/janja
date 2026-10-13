@@ -101,7 +101,7 @@ describe('w/ filters', async () => {
     expect(
       await compile('{{= "hello, {name}" | t(name="Janja") }}'),
     ).toMatchInlineSnapshot(
-      `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=e((r_=(f.t||u_("t")).call(c,"hello, {name}",c.name="Janja"),r_ instanceof Promise?await r_:r_));return s;})();"`,
+      `"return(async()=>{let s="",r_;const u_=(n)=>{throw new Error('Unknown filter "'+n+'"')};s+=e((r_=(f.t||u_("t")).call(c,"hello, {name}",{name:"Janja"}),r_ instanceof Promise?await r_:r_));return s;})();"`,
     );
   });
 });

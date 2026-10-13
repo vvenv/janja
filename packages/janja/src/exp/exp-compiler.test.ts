@@ -62,9 +62,7 @@ it('null and undefined', () => {
 it('id', () => {
   expect(compile('a')).toMatchInlineSnapshot(`"c.a"`);
   expect(compile('a(x)')).toMatchInlineSnapshot(`"c.a(c.x)"`);
-  expect(compile('a(x,y="b")')).toMatchInlineSnapshot(
-    `"c.a(c.x,Object.assign(c,{y:"b"});)"`,
-  );
+  expect(compile('a(x,y="b")')).toMatchInlineSnapshot(`"c.a(c.x,{y:"b"})"`);
 });
 
 it('dot', () => {

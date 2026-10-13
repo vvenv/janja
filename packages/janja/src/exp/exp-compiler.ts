@@ -41,6 +41,11 @@ const expTokenOperators: Record<ExpTokenType, string> = {
   ELSE: '',
 };
 
+// Names every object inherits (`toString`, `valueOf`, ...). The context is a
+// plain object, so these are only read from it when it has them itself;
+// otherwise a name nobody defined would resolve to a built-in function.
+const inherited = new Set(Object.getOwnPropertyNames(Object.prototype));
+
 export class ExpCompiler {
   private context!: string;
 
@@ -97,17 +102,44 @@ export class ExpCompiler {
   }
 
   private compileId({ value, path, args }: IdExp) {
-    let s = `${this.context}.${value}`;
+    let s = inherited.has(value)
+      ? `(Object.hasOwn(${this.context},"${value}")?${this.context}.${value}:undefined)`
+      : `${this.context}.${value}`;
 
     if (path) {
       s += path.map((p) => `.${p.value}`).join('');
     }
 
     if (args) {
-      s += `(${args.map((arg) => this.compileExp(arg)).join(',')})`;
+      s += `(${this.compileArgs(args).join(',')})`;
     }
 
     return s;
+  }
+
+  /**
+   * Positional arguments in the order they are written, followed by one
+   * object holding the named ones: `f(1, a=2, b=3)` calls `f(1, {a:2,b:3})`.
+   */
+  private compileArgs(args: Exp[]) {
+    const positional: string[] = [];
+    const named: string[] = [];
+
+    for (const arg of args) {
+      if (arg.type === 'ASSIGN') {
+        const { left, right } = arg as BinaryExp<'ASSIGN'>;
+
+        named.push(`${(left as IdExp).value}:${this.compileExp(right)}`);
+      } else {
+        positional.push(this.compileExp(arg));
+      }
+    }
+
+    if (named.length) {
+      positional.push(`{${named.join(',')}}`);
+    }
+
+    return positional;
   }
 
   private compileLit({ value }: LitExp) {
@@ -131,7 +163,7 @@ export class ExpCompiler {
   private compilePipe({ left, right }: BinaryExp<'PIPE'>) {
     const { value: name, args = [] } = right as IdExp;
 
-    const call = `(${this.filters}.${name}||${UNKNOWN_FILTER}("${name}")).call(${[this.context, this.compileExp(left), ...args.map((arg) => (arg.type === 'ASSIGN' ? `${this.context}.${((arg as BinaryExp).left as IdExp).value}=${this.compileExp(arg.right)}` : this.compileExp(arg)))].join(',')})`;
+    const call = `(${this.filters}.${name}||${UNKNOWN_FILTER}("${name}")).call(${[this.context, this.compileExp(left), ...this.compileArgs(args)].join(',')})`;
 
     // Awaiting a plain value still costs a trip through the microtask queue,
     // so only promises returned by async filters are awaited

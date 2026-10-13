@@ -1,6 +1,6 @@
 import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
-import type { Exp } from '../../exp/exp-types';
+import type { BinaryExp, Exp } from '../../exp/exp-types';
 import type { SyntaxNode } from '../../syntax-nodes';
 import { type BreakNode, type ContinueNode, type ForNode } from './syntax';
 
@@ -13,9 +13,20 @@ function hasAssignment(exp: unknown, seen = new Set<object>()): boolean {
 
   seen.add(exp);
 
-  return (
-    (exp as Exp).type === 'ASSIGN' ||
-    Object.values(exp).some((value) => hasAssignment(value, seen))
+  if ((exp as Exp).type === 'ASSIGN') {
+    return true;
+  }
+
+  return Object.entries(exp).some(([key, value]) =>
+    // `f(name=value)` passes a named argument; only its value matters
+    key === 'args' && Array.isArray(value)
+      ? value.some((arg: Exp) =>
+          hasAssignment(
+            arg.type === 'ASSIGN' ? (arg as BinaryExp).right : arg,
+            seen,
+          ),
+        )
+      : hasAssignment(value, seen),
   );
 }
 
