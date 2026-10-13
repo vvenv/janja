@@ -154,7 +154,7 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 **Impact**: High
 **Effort**: High
 
-- [x] Create VS Code extension for syntax highlighting (`packages/vscode-janja`, not yet published to the marketplace)
+- [x] Create VS Code extension for syntax highlighting (`packages/vscode-janja`; the `VS Code extension` workflow publishes it once the marketplace tokens are configured)
 - [x] Implement Language Server Protocol (LSP) (`janja-language-server`: diagnostics, completions, hover, formatting)
 - [x] Add template formatter (`formatTemplate`, `janja format`; normalises tags, does not reindent markup)
 - [x] Create ESLint plugin for template formatting (`eslint-plugin-janja`)

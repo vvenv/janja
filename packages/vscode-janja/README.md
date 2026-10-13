@@ -21,6 +21,8 @@ To use it for `.html` files as well, add to your settings:
 pnpm --filter vscode-janja build
 ```
 
-Then open this directory in VS Code and press F5 to launch an Extension Development Host. Package with [`vsce`](https://github.com/microsoft/vscode-vsce): `vsce package --no-dependencies` (the build bundles everything the extension needs).
+Then open this directory in VS Code and press F5 to launch an Extension Development Host. `pnpm --filter vscode-janja package` writes `janja.vsix`, which *Extensions: Install from VSIX...* installs (the build bundles everything the extension needs).
+
+Releases are published by the `VS Code extension` workflow: it attaches the `.vsix` to the GitHub release, and publishes to the Visual Studio Marketplace and Open VSX when the `VSCE_PAT` and `OVSX_PAT` repository secrets are set.
 
 The editor features come from [`janja-language-server`](../janja-language-server), which other editors can use over LSP.

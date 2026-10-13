@@ -11,6 +11,8 @@ benchmark-raw.json
 benchmark-results.json
 packages/janja/README.md
 packages/janja/LICENSE
+packages/vscode-janja/LICENSE
+*.vsix
 .test-*
 benchmark-cache
 website/.vitepress/dist

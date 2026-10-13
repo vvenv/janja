@@ -9,7 +9,8 @@
     "packages/janja-fastify": { "release-as": "" },
     "packages/janja-koa": { "release-as": "" },
     "packages/janja-language-server": { "release-as": "" },
-    "packages/vite-plugin-janja": { "release-as": "" }
+    "packages/vite-plugin-janja": { "release-as": "" },
+    "packages/vscode-janja": { "release-as": "" }
   },
   "plugins": ["node-workspace"],
   "always-link-local": false

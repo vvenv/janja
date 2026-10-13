@@ -1,0 +1,66 @@
+name: VS Code extension
+permissions:
+  contents: write
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+# Never cancel a publish half way through
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  vscode-publish:
+    # Every package gets a release of its own; only the extension's counts
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'vscode-janja-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm build
+      - name: Test
+        run: pnpm --filter vscode-janja test
+      - name: Package
+        run: pnpm --filter vscode-janja package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: janja-vsix
+          path: packages/vscode-janja/janja.vsix
+          if-no-files-found: error
+      - name: Attach to the release
+        if: github.event_name == 'release'
+        run: gh release upload "$TAG" packages/vscode-janja/janja.vsix --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+      # Each registry is skipped until its token is configured, so that the
+      # workflow can package and attach the extension without them
+      - name: Publish to the Visual Studio Marketplace
+        run: |
+          if [ -z "$VSCE_PAT" ]; then
+            echo "::warning::VSCE_PAT is not set, not publishing to the Visual Studio Marketplace"
+            exit 0
+          fi
+          pnpm dlx @vscode/vsce@3 publish --packagePath packages/vscode-janja/janja.vsix --skip-duplicate
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      - name: Publish to Open VSX
+        run: |
+          if [ -z "$OVSX_PAT" ]; then
+            echo "::warning::OVSX_PAT is not set, not publishing to Open VSX"
+            exit 0
+          fi
+          pnpm dlx ovsx@0.10 publish packages/vscode-janja/janja.vsix --skip-duplicate
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}

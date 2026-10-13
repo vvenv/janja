@@ -2,7 +2,7 @@
   "name": "vscode-janja",
   "displayName": "Janja",
   "description": "Syntax highlighting, diagnostics, completions, hover and formatting for Janja templates",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "publisher": "vvenv",
   "license": "MIT",
@@ -11,6 +11,15 @@
     "url": "git+https://github.com/vvenv/janja.git",
     "directory": "packages/vscode-janja"
   },
+  "homepage": "https://janja.wenfu.dev",
+  "bugs": "https://github.com/vvenv/janja/issues",
+  "keywords": [
+    "janja",
+    "template",
+    "template-engine",
+    "jinja",
+    "html"
+  ],
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -54,6 +63,7 @@
   },
   "scripts": {
     "build": "rm -rf dist && rollup -c",
+    "package": "cp ../../LICENSE . && pnpm dlx @vscode/vsce@3 package --no-dependencies --out janja.vsix",
     "test": "vitest",
     "typecheck": "tsc --noEmit"
   },

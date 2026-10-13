@@ -6,5 +6,6 @@
   "packages/janja-fastify": "0.1.1",
   "packages/janja-koa": "0.1.1",
   "packages/janja-language-server": "0.1.1",
-  "packages/vite-plugin-janja": "0.1.1"
+  "packages/vite-plugin-janja": "0.1.1",
+  "packages/vscode-janja": "0.1.0"
 }
