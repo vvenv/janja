@@ -46,12 +46,12 @@
   },
   "dependencies": {
     "janja": "workspace:^",
-    "vscode-languageserver": "^9.0.1",
-    "vscode-languageserver-textdocument": "^1.0.12"
+    "vscode-languageserver": "^10.1.2",
+    "vscode-languageserver-textdocument": "^1.0.15"
   },
   "devDependencies": {
-    "@types/node": "^24.10.3",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.16"
+    "@types/node": "^26.6.5",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.4"
   }
 }
