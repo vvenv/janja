@@ -37,12 +37,7 @@ export type UnaryExpType = UnaryExpTokenType;
 export type BinaryExpType = BinaryExpTokenType;
 export type TernaryExpType = TernaryExpTokenType;
 export type ExpType =
-  | UnaryExpType
-  | BinaryExpType
-  | TernaryExpType
-  | 'SEQ'
-  | 'ID'
-  | 'LIT';
+  UnaryExpType | BinaryExpType | TernaryExpType | 'SEQ' | 'ID' | 'LIT';
 
 export interface ExpBase<T = ExpType> {
   type: T;

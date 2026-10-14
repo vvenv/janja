@@ -2,7 +2,7 @@ import ejs from 'ejs';
 import { Eta } from 'eta';
 import Handlebars from 'handlebars';
 import nunjucks from 'nunjucks';
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import { Renderer } from '../src';
 
 // The same page in every engine's syntax: HTML-escaped output, a loop, a
@@ -70,10 +70,14 @@ for (const [name, run] of Object.entries(engines)) {
   }
 }
 
-describe('render a page with a compiled template', () => {
-  for (const [name, run] of Object.entries(engines)) {
-    bench(name, async () => {
-      await run();
-    });
-  }
+test('render a page with a compiled template', async ({ bench }) => {
+  await bench.compare(
+    ...Object.entries(engines).map(([name, run]) =>
+      bench(name, async () => {
+        await run();
+      }),
+    ),
+    // As long as Vitest 4 measured each benchmark
+    { time: 500 },
+  );
 });

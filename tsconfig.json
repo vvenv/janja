@@ -13,7 +13,8 @@
     "noEmit": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "types": ["node"]
   },
   "include": ["**/*.ts"]
 }

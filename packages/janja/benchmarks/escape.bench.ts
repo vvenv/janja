@@ -1,7 +1,9 @@
-import { bench, describe } from 'vitest';
+import { test } from 'vitest';
 import { escape } from '../src/escape';
 
-describe('escape function benchmarks', () => {
+// A dozen benchmarks of very fast calls: collecting their many samples takes
+// close to the default timeout of a test
+test('escape function benchmarks', { timeout: 120_000 }, async ({ bench }) => {
   const testStrings = {
     simple: 'Hello World',
     withQuotes: 'He said "Hello" to her',
@@ -11,51 +13,55 @@ describe('escape function benchmarks', () => {
     longString: `${'A'.repeat(1000)}<&>"${'B'.repeat(1000)}`,
   };
 
-  bench('escape simple string', () => {
-    escape(testStrings.simple);
-  });
+  await bench.compare(
+    bench('escape simple string', () => {
+      escape(testStrings.simple);
+    }),
 
-  bench('escape string with quotes', () => {
-    escape(testStrings.withQuotes);
-  });
+    bench('escape string with quotes', () => {
+      escape(testStrings.withQuotes);
+    }),
 
-  bench('escape string with HTML tags', () => {
-    escape(testStrings.withTags);
-  });
+    bench('escape string with HTML tags', () => {
+      escape(testStrings.withTags);
+    }),
 
-  bench('escape string with ampersand', () => {
-    escape(testStrings.withAmpersand);
-  });
+    bench('escape string with ampersand', () => {
+      escape(testStrings.withAmpersand);
+    }),
 
-  bench('escape string with mixed special characters', () => {
-    escape(testStrings.withMixed);
-  });
+    bench('escape string with mixed special characters', () => {
+      escape(testStrings.withMixed);
+    }),
 
-  bench('escape long string', () => {
-    escape(testStrings.longString);
-  });
+    bench('escape long string', () => {
+      escape(testStrings.longString);
+    }),
 
-  bench('escape string with no special characters', () => {
-    escape('No special characters here');
-  });
+    bench('escape string with no special characters', () => {
+      escape('No special characters here');
+    }),
 
-  bench('escape empty string', () => {
-    escape('');
-  });
+    bench('escape empty string', () => {
+      escape('');
+    }),
 
-  bench('escape null', () => {
-    escape(null);
-  });
+    bench('escape null', () => {
+      escape(null);
+    }),
 
-  bench('escape undefined', () => {
-    escape(undefined);
-  });
+    bench('escape undefined', () => {
+      escape(undefined);
+    }),
 
-  bench('escape number', () => {
-    escape(12345);
-  });
+    bench('escape number', () => {
+      escape(12345);
+    }),
 
-  bench('escape object', () => {
-    escape({ key: 'value' });
-  });
+    bench('escape object', () => {
+      escape({ key: 'value' });
+    }),
+    // As long as Vitest 4 measured each benchmark
+    { time: 500 },
+  );
 });
