@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/vvenv/janja/compare/janja-cli-v2.0.1...janja-cli-v3.0.0) (2026-10-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **janja-cli:** janja-cli requires Node.js 22.12 or later, as commander 15 does.
+
+### Bug Fixes
+
+* **janja-cli:** upgrade commander to 15 and chokidar to 5 ([09be32d](https://github.com/vvenv/janja/commit/09be32db64b99a54cd6cc2bc5909ec95dceed4f7))
+
 ## [2.0.1](https://github.com/vvenv/janja/compare/janja-cli-v2.0.0...janja-cli-v2.0.1) (2026-10-13)
 
 

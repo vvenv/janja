@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/vvenv/janja/compare/janja-fastify-v0.1.2...janja-fastify-v0.1.3) (2026-10-14)
+
+
+### Bug Fixes
+
+* **janja-fastify:** upgrade fastify-plugin to 6 ([2edd35b](https://github.com/vvenv/janja/commit/2edd35b529e08ae0114320daafbb1e17a5bca4c3))
+
 ## [0.1.2](https://github.com/vvenv/janja/compare/janja-fastify-v0.1.1...janja-fastify-v0.1.2) (2026-10-13)
 
 

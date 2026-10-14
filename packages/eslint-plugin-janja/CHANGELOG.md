@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/vvenv/janja/compare/eslint-plugin-janja-v1.1.4...eslint-plugin-janja-v2.0.0) (2026-10-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **eslint-plugin-janja:** eslint-plugin-janja requires Node.js 20.19, 22.13, or 24 and later, as @eslint/plugin-kit 0.7 does.
+
+### Bug Fixes
+
+* **eslint-plugin-janja:** upgrade @eslint/plugin-kit to 0.7 ([49b0b06](https://github.com/vvenv/janja/commit/49b0b0666b5af167fe7931cfbdeb4d3be458fb39))
+
 ## [1.1.4](https://github.com/vvenv/janja/compare/eslint-plugin-janja-v1.1.3...eslint-plugin-janja-v1.1.4) (2026-10-13)
 
 
