@@ -12,7 +12,7 @@
   "homepage": "https://janja.wenfu.dev",
   "bugs": "https://github.com/vvenv/janja/issues",
   "engines": {
-    "node": ">=18"
+    "node": ">=22.12.0"
   },
   "bin": {
     "janja": "./dist/index.js"
@@ -28,16 +28,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "janja": "workspace:*",
-    "commander": "^12.0.0",
-    "chokidar": "^3.6.0"
+    "chokidar": "^5.0.0",
+    "commander": "^15.0.0",
+    "janja": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^24.10.3",
-    "@vitest/coverage-v8": "4.1.5",
-    "@vitest/ui": "4.0.16",
-    "typescript": "^5.9.3",
-    "vite": "^7.2.7",
-    "vitest": "^4.0.16"
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-v8": "5.0.4",
+    "@vitest/ui": "5.0.4",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
   }
 }
