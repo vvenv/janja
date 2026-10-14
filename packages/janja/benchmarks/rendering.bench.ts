@@ -1,13 +1,12 @@
-import { bench, describe, expect, it } from 'vitest';
+import { expect, test } from 'vitest';
 import { render } from '../src';
 
 // Shared CI runners are several times slower and much noisier than a
 // developer machine; regressions there are caught by the benchmark workflow
 const slack = process.env.CI ? 10 : 1;
 
-describe('Rendering Performance Benchmarks', () => {
-  const simpleTemplate = 'Hello {{= name }}!';
-  const complexTemplate = `
+const simpleTemplate = 'Hello {{= name }}!';
+const complexTemplate = `
     <html>
       <head><title>{{= title }}</title></head>
       <body>
@@ -20,71 +19,76 @@ describe('Rendering Performance Benchmarks', () => {
     </html>
   `;
 
-  const simpleData = { name: 'World' };
-  const complexData = {
-    title: 'Test Page',
-    header: 'Welcome',
-    items: Array.from({ length: 100 }, (_, i) => ({
-      name: `Item ${i}`,
-      description: `This is a description for item ${i} with some text to make it longer`,
-    })),
-  };
+const simpleData = { name: 'World' };
+const complexData = {
+  title: 'Test Page',
+  header: 'Welcome',
+  items: Array.from({ length: 100 }, (_, i) => ({
+    name: `Item ${i}`,
+    description: `This is a description for item ${i} with some text to make it longer`,
+  })),
+};
 
-  it('should compile simple template quickly', async () => {
-    const iterations = 1000;
-    const start = performance.now();
+test('should compile simple template quickly', async () => {
+  const iterations = 1000;
+  const start = performance.now();
 
-    for (let i = 0; i < iterations; i++) {
-      await render(simpleTemplate, simpleData);
-    }
-
-    const duration = performance.now() - start;
-    const avgTime = duration / iterations;
-
-    expect(avgTime).toBeLessThan(1 * slack); // Less than 1ms per render
-  });
-
-  it('should compile complex template quickly', async () => {
-    const iterations = 100;
-    const start = performance.now();
-
-    for (let i = 0; i < iterations; i++) {
-      await render(complexTemplate, complexData);
-    }
-
-    const duration = performance.now() - start;
-    const avgTime = duration / iterations;
-
-    expect(avgTime).toBeLessThan(10 * slack); // Less than 10ms per render
-  });
-
-  bench('simple template render', async () => {
+  for (let i = 0; i < iterations; i++) {
     await render(simpleTemplate, simpleData);
-  });
+  }
 
-  bench('complex template render', async () => {
+  const duration = performance.now() - start;
+  const avgTime = duration / iterations;
+
+  expect(avgTime).toBeLessThan(1 * slack); // Less than 1ms per render
+});
+
+test('should compile complex template quickly', async () => {
+  const iterations = 100;
+  const start = performance.now();
+
+  for (let i = 0; i < iterations; i++) {
     await render(complexTemplate, complexData);
-  });
+  }
 
-  bench('template with filters', async () => {
-    const template = '{{= text | upper | truncate(50) }}';
+  const duration = performance.now() - start;
+  const avgTime = duration / iterations;
 
-    await render(template, {
-      text: 'This is a long text that should be truncated',
-    });
-  });
+  expect(avgTime).toBeLessThan(10 * slack); // Less than 10ms per render
+});
 
-  bench('template with loops', async () => {
-    const template = '{{ for item of items }}{{= item }},{{ endfor }}';
+test('Rendering Performance Benchmarks', async ({ bench }) => {
+  await bench.compare(
+    bench('simple template render', async () => {
+      await render(simpleTemplate, simpleData);
+    }),
 
-    await render(template, {
-      items: Array.from({ length: 50 }, (_, i) => `Item ${i}`),
-    });
-  });
+    bench('complex template render', async () => {
+      await render(complexTemplate, complexData);
+    }),
 
-  bench('template with conditionals', async () => {
-    const template = '{{ if show }}{{= message }}{{ else }}Hidden{{ endif }}';
+    bench('template with filters', async () => {
+      const template = '{{= text | upper | truncate(50) }}';
 
-    await render(template, { show: true, message: 'Hello' });
-  });
+      await render(template, {
+        text: 'This is a long text that should be truncated',
+      });
+    }),
+
+    bench('template with loops', async () => {
+      const template = '{{ for item of items }}{{= item }},{{ endfor }}';
+
+      await render(template, {
+        items: Array.from({ length: 50 }, (_, i) => `Item ${i}`),
+      });
+    }),
+
+    bench('template with conditionals', async () => {
+      const template = '{{ if show }}{{= message }}{{ else }}Hidden{{ endif }}';
+
+      await render(template, { show: true, message: 'Hello' });
+    }),
+    // As long as Vitest 4 measured each benchmark
+    { time: 500 },
+  );
 });

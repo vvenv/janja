@@ -1,4 +1,4 @@
-// Compares two results of `vitest bench --outputJson` that were measured on
+// Compares two JSON results of `vitest bench` that were measured on
 // the same machine, and fails when a benchmark got much slower.
 //
 // Machines differ, and the same machine is not equally fast from one minute
@@ -23,19 +23,36 @@ const isControl = (file, name) =>
   file.endsWith('comparison.bench.ts') && name !== 'janja';
 
 async function read(path) {
-  const { files } = JSON.parse(await readFile(path, 'utf-8'));
+  const json = JSON.parse(await readFile(path, 'utf-8'));
   const results = new Map();
 
-  for (const { groups } of files) {
+  const add = (file, group, name, hz) =>
+    results.set([file, ...group, name].join(' > '), {
+      label: [...group, name].join(' > '),
+      control: isControl(file, name),
+      hz,
+    });
+
+  // `vitest bench --reporter=json` of Vitest 5 and later
+  for (const { name: path, assertionResults } of json.testResults ?? []) {
+    const file = path.slice(path.lastIndexOf('benchmarks/'));
+
+    for (const { benchmarks = [] } of assertionResults) {
+      for (const { name: group, tasks } of benchmarks) {
+        for (const { name, latency } of tasks) {
+          add(file, group.split(' > '), name, 1000 / latency.mean);
+        }
+      }
+    }
+  }
+
+  // `vitest bench --outputJson` of Vitest 4, which the base may still use
+  for (const { groups } of json.files ?? []) {
     for (const { fullName, benchmarks } of groups) {
       const [file, ...group] = fullName.split(' > ');
 
       for (const { name, hz } of benchmarks) {
-        results.set(`${fullName} > ${name}`, {
-          label: `${group.join(' > ')} > ${name}`,
-          control: isControl(file, name),
-          hz,
-        });
+        add(file, group, name, hz);
       }
     }
   }

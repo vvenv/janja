@@ -30,7 +30,7 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Run benchmarks
-        run: pnpm --filter janja bench --outputJson "$RUNNER_TEMP/head.json"
+        run: pnpm --filter janja bench --reporter=default --reporter=json --outputFile.json="$RUNNER_TEMP/head.json"
       # Runners are not equally fast, so results of an earlier run say little.
       # The base is measured here, right after the change and on this machine.
       - name: Check out the base
@@ -46,7 +46,12 @@ jobs:
         working-directory: ${{ runner.temp }}/base
         run: |
           pnpm install --frozen-lockfile
-          pnpm --filter janja bench --outputJson "$RUNNER_TEMP/base.json"
+          # A base from before Vitest 5 only knows `--outputJson`
+          if [ "$(node -p "require('./packages/janja/node_modules/vitest/package.json').version.split('.')[0]")" -lt 5 ]; then
+            pnpm --filter janja bench --outputJson "$RUNNER_TEMP/base.json"
+          else
+            pnpm --filter janja bench --reporter=default --reporter=json --outputFile.json="$RUNNER_TEMP/base.json"
+          fi
       - name: Compare
         if: steps.base.outputs.found
         run: node packages/janja/scripts/benchmark-compare.mjs "$RUNNER_TEMP/base.json" "$RUNNER_TEMP/head.json"
