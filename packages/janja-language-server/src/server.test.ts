@@ -7,7 +7,7 @@ import {
   type MessageConnection,
   StreamMessageReader,
   StreamMessageWriter,
-} from 'vscode-languageserver/node.js';
+} from 'vscode-languageserver/node';
 import { startServer } from './server.js';
 
 // A real protocol session over in-memory streams: what an editor would send
