@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.2](https://github.com/vvenv/janja/compare/vscode-janja-v0.1.1...vscode-janja-v0.1.2) (2026-10-14)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * janja-language-server bumped to 0.1.3
+
 ## [0.1.1](https://github.com/vvenv/janja/compare/vscode-janja-v0.1.0...vscode-janja-v0.1.1) (2026-10-13)
 
 
