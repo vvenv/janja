@@ -1,7 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { type CompilerOptions, precompile } from 'janja';
-import type { Plugin } from 'vite';
 
 export interface JanjaPluginOptions {
   /**
@@ -19,6 +18,24 @@ export interface JanjaPluginOptions {
   compilerOptions?: Omit<CompilerOptions, 'loader'>;
 }
 
+type PrecompileResult = Awaited<ReturnType<typeof precompile>>;
+
+/**
+ * The hooks the plugin uses, typed so that it fits both Vite, whose plugins
+ * are Rolldown plugins since Vite 8, and Rollup.
+ */
+export interface JanjaPlugin {
+  name: 'janja';
+  transform(
+    this: { addWatchFile(id: string): void },
+    code: string,
+    id: string,
+  ): Promise<{
+    code: string;
+    map: PrecompileResult['map'];
+  } | null>;
+}
+
 /**
  * Compile imported templates at build time:
  *
@@ -32,7 +49,7 @@ export default function janja({
   root,
   extensions = ['.janja'],
   compilerOptions,
-}: JanjaPluginOptions = {}): Plugin {
+}: JanjaPluginOptions = {}): JanjaPlugin {
   return {
     name: 'janja',
 

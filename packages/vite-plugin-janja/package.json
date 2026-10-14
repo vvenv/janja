@@ -46,12 +46,12 @@
     "vite": ">=5"
   },
   "devDependencies": {
-    "@types/node": "^24.10.3",
+    "@types/node": "^26.6.5",
     "janja": "workspace:*",
-    "rollup": "^4.53.3",
-    "typescript": "^5.9.3",
-    "vite": "^7.2.7",
-    "vitest": "^4.0.16"
+    "rollup": "^4.64.5",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
   },
   "peerDependenciesMeta": {
     "vite": {
