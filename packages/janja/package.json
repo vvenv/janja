@@ -58,7 +58,7 @@
     "@types/node": "^26.6.5",
     "@types/nunjucks": "^3.2.6",
     "@vitest/coverage-v8": "5.0.4",
-    "@vitest/ui": "5.0.4",
+    "@vitest/ui": "5.0.5",
     "ejs": "^7.0.1",
     "eta": "^4.6.0",
     "handlebars": "^4.7.10",
@@ -66,7 +66,7 @@
     "rollup": "^4.64.5",
     "rollup-plugin-dts": "^6.5.1",
     "typescript": "^6.0.3",
-    "vite": "^8.3.4",
+    "vite": "^8.3.5",
     "vitest": "^5.0.4"
   }
 }
