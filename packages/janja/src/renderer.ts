@@ -260,7 +260,27 @@ export class Renderer {
         }
       : { ...this.options.globals, ...globals };
 
-    return script(context, this.escape, this.filters, write);
+    const result = script(context, this.escape, this.filters, write);
+    const { timeoutMs } = this.options.security ?? {};
+
+    if (timeoutMs == null) {
+      return result;
+    }
+
+    // The script keeps running after the budget; only the promise rejects.
+    // Use a separate process when templates must be forcibly stopped.
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    return Promise.race([
+      Promise.resolve(result).finally(() => {
+        clearTimeout(timer);
+      }),
+      new Promise<string>((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error(`Render timed out after ${timeoutMs}ms`));
+        }, timeoutMs);
+      }),
+    ]);
   }
 
   async renderFile(filepath: string, globals: ObjectType) {

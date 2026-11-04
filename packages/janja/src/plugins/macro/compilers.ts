@@ -1,5 +1,7 @@
 import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
+import { resolveSecurityLimits } from '../../security';
+import type { RendererOptions } from '../../types';
 import type { CallerNode, MacroNode } from './syntax';
 
 async function compileMacro(
@@ -9,12 +11,22 @@ async function compileMacro(
   const { context } = compiler;
 
   const expCompiler = new ExpCompiler();
+  const { maxCallDepth } = resolveSecurityLimits(
+    (compiler.options as RendererOptions).security,
+  );
 
   compiler.pushRaw(
     loc,
     // A macro collects its own output and returns it, so that it ends up
     // where the macro is called rather than where it was defined
     `${context}.${value}=(...a_)=>async(_c)=>{`,
+    ...(maxCallDepth == null
+      ? []
+      : [
+          `if(cd_>=${maxCallDepth})throw new Error(${JSON.stringify(`Macro call depth limit of ${maxCallDepth} exceeded`)});`,
+          'cd_++;',
+          'try{',
+        ]),
     'let s="";',
     `const ${compiler.in()}={`,
     `...${context},`,
@@ -28,7 +40,12 @@ async function compileMacro(
 
   await compiler.compileNodes(body);
   compiler.out();
-  compiler.pushRaw(null, 'return s;', '};');
+  compiler.pushRaw(
+    null,
+    'return s;',
+    ...(maxCallDepth == null ? [] : ['}finally{cd_--;}']),
+    '};',
+  );
 }
 
 function compileCaller({ loc }: CallerNode, compiler: Compiler) {

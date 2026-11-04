@@ -53,7 +53,9 @@ document.body.innerHTML = await renderFile('./template.html', { name: '蒹葭' }
 
 - [使用文档](./documentation-zh-CN.md) - 核心文档
 - [过滤器](./FILTERS.md) - 内置过滤器参考
+- [迁移指南](./MIGRATION.md) - 从 Nunjucks、Jinja2、Handlebars 或 EJS 迁过来
 - [安全](./SECURITY.md) - 安全最佳实践
+- [贡献指南](./CONTRIBUTING.md) / [行为准则](./CODE_OF_CONDUCT.md)
 
 ## 许可证
 

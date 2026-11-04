@@ -8,6 +8,37 @@ export interface SecurityOptions {
   deepEscape?: boolean;
   cspNonce?: string;
   cspHeaders?: Record<string, string>;
+  /**
+   * Maximum nest depth of `include` while rendering. Defaults to 100.
+   * Cycles that never end become an error instead of a stack overflow.
+   */
+  maxIncludeDepth?: number;
+  /**
+   * Maximum number of `for` loop iterations across one render. Off by default.
+   * Enable when templates may be untrusted.
+   */
+  maxLoopIterations?: number;
+  /**
+   * Maximum nest depth of macro invocations across one render. Off by default.
+   */
+  maxCallDepth?: number;
+  /**
+   * Wall-clock budget for one `render` / `renderCompiled` call, in
+   * milliseconds. Off by default. The running script is not aborted; the
+   * promise rejects when the budget is exceeded. Prefer a separate process
+   * for truly hostile templates.
+   */
+  timeoutMs?: number;
+}
+
+/** Defaults and resolved limits used by the compiler and renderer. */
+export function resolveSecurityLimits(security: SecurityOptions = {}) {
+  return {
+    maxIncludeDepth: security.maxIncludeDepth ?? 100,
+    maxLoopIterations: security.maxLoopIterations,
+    maxCallDepth: security.maxCallDepth,
+    timeoutMs: security.timeoutMs,
+  };
 }
 
 export class SecuritySandbox {

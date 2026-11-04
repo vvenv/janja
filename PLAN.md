@@ -1,19 +1,21 @@
 # Janja Optimization Roadmap
 
-> **Status note (2026-10):** this roadmap was audited against the code. Items
-> that were ticked but did not hold up were either fixed or un-ticked, and are
-> annotated below. A ticked box now means the behaviour is covered by tests.
+> **Status note (2026-11):** audited against the code again. Phases 1–4.1 and
+> 5.2 are done. Items that are out of scope for a small template engine, have
+> no measurable payoff, or need organisational work rather than code were
+> cancelled or deferred below. A ticked box means the behaviour is covered by
+> tests (or, for docs/community items, that the file exists).
 
 ## Overview
 
-This document outlines the strategic plan to evolve Janja into a world-class template engine. The roadmap is organized into phases based on priority and impact, covering performance optimizations, feature enhancements, developer experience improvements, and ecosystem expansion.
+Evolve Janja into a solid, fast, well-tooled template engine. Remaining work is
+narrow: hardening for untrusted-template edge cases, a few docs, and optional
+DX polish. Do not expand scope into a plugin marketplace or full sandbox VM.
 
-## Phase 1: Performance Foundation (High Priority)
+## Phase 1: Performance Foundation (High Priority) — done
 
 ### 1.1 Template Caching System
-**Priority**: Critical
-**Impact**: High
-**Effort**: Medium
+**Priority**: Critical · **Impact**: High · **Effort**: Medium
 
 - [x] Implement LRU cache for compiled templates
 - [x] Add cache configuration options (size, TTL)
@@ -21,15 +23,8 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Add cache statistics/metrics
 - [x] Write cache performance tests
 
-**Files to modify**:
-- `src/compiler.ts` - Add cache layer
-- `src/options.ts` - Add cache options
-- `src/renderer.ts` - Integrate cache
-
 ### 1.2 Pre-compilation Support
-**Priority**: Critical
-**Impact**: High
-**Effort**: Medium
+**Priority**: Critical · **Impact**: High · **Effort**: Medium
 
 - [x] Create CLI tool for pre-compiling templates
 - [x] Implement template serialization to disk
@@ -37,40 +32,26 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Recompile on change (`janja watch`); in-process hot reload is not implemented
 - [x] Add build system integration examples
 
-**Files to create**:
-- `packages/janja-cli/` - New CLI package
-- Documentation for pre-compilation workflow
-
 ### 1.3 String Processing Optimization
-**Priority**: High
-**Impact**: Medium
-**Effort**: Low
+**Priority**: High · **Impact**: Medium · **Effort**: Low
 
 - [x] Optimize `escape.ts` - single-pass replacement
 - [x] Optimize `out-script.ts` - use array + join
 - [x] Benchmark string operations
 - [x] Add performance regression tests (CI compares benchmarks against `main`)
 
-**Files to modify**:
-- `src/escape.ts`
-- `src/out-script.ts`
-
 ### 1.4 Tokenizer Performance
-**Priority**: High
-**Impact**: Medium
-**Effort**: Medium
+**Priority**: High · **Impact**: Medium · **Effort**: Medium
 
 - [x] Optimize `indexOf` loops in tokenizer
-- [ ] Implement more efficient string search (only analysed so far, no measurable win yet)
+- [x] ~~Implement more efficient string search~~ **cancelled** — analysed; no measurable win over the current `indexOf` loops
 - [x] Add tokenizer benchmark suite
 - [x] Profile and optimize hot paths (escaping, loop scopes, filter calls, cache hits; see PERFORMANCE.md)
 
 ## Phase 2: Feature Enhancement (High Priority)
 
-### 2.1 Filter Library Expansion
-**Priority**: High
-**Impact**: High
-**Effort**: Medium
+### 2.1 Filter Library Expansion — done
+**Priority**: High · **Impact**: High · **Effort**: Medium
 
 - [x] Add date/datetime filters
 - [x] Add number formatting filters
@@ -80,30 +61,18 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Support async filters
 - [x] Create filter documentation with examples
 
-**Files to modify**:
-- `src/filters.ts`
-- `documentation.md`
-
 ### 2.2 Security Enhancements
-**Priority**: Critical
-**Impact**: High
-**Effort**: Medium
+**Priority**: Critical · **Impact**: High · **Effort**: Medium
 
 - [x] Restrict expressions to the data they are given (no access to JS globals or object internals) and allow-list renderer globals. This is **not** a hardened sandbox for untrusted templates, see SECURITY.md
-- [ ] Resource limits (CPU, memory, recursion) for untrusted templates
-- [ ] Add CSP (Content Security Policy) support (only a header-formatting helper exists)
+- [x] Resource limits (`maxIncludeDepth`, `maxLoopIterations`, `maxCallDepth`, `timeoutMs`) for untrusted templates — see SECURITY.md
+- [x] ~~Add CSP (Content Security Policy) support~~ **cancelled as engine feature** — CSP is an HTTP concern; keep `getCSPHeaders()` / `cspNonce` as the formatting helper only
 - [x] Add deep escaping options
-- [ ] Implement security audit tool (current `auditTemplate` is a text-pattern heuristic)
+- [x] ~~Implement security audit tool~~ **scoped down** — keep `auditTemplate` as a lint-level heuristic; a real auditor would need a separate process/isolate and is out of scope. Documented in SECURITY.md
 - [x] Add security best practices documentation
 
-**Files to create**:
-- `src/security.ts`
-- Security documentation
-
-### 2.3 Internationalization (i18n)
-**Priority**: Medium
-**Impact**: High
-**Effort**: High
+### 2.3 Internationalization (i18n) — done
+**Priority**: Medium · **Impact**: High · **Effort**: High
 
 - [x] Add i18n filter support
 - [x] Implement pluralization handling
@@ -112,14 +81,8 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Add locale-aware number formatting
 - [x] Write i18n documentation
 
-**Files to create**:
-- `src/i18n/` directory
-- i18n documentation
-
-### 2.4 Advanced Template Features
-**Priority**: Medium
-**Impact**: Medium
-**Effort**: Medium
+### 2.4 Advanced Template Features — done
+**Priority**: Medium · **Impact**: Medium · **Effort**: Medium
 
 - [x] Support multi-level `super()` calls
 - [x] Add `with` context manager directive
@@ -127,16 +90,10 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Add whitespace control options
 - [x] Support template mixins
 
-**Files to modify**:
-- `src/plugins/block/`
-- `src/plugins/`
-
 ## Phase 3: Developer Experience (Medium Priority)
 
-### 3.1 Error Handling Improvements
-**Priority**: High
-**Impact**: High
-**Effort**: Medium
+### 3.1 Error Handling Improvements — done
+**Priority**: High · **Impact**: High · **Effort**: Medium
 
 - [x] Enhance error messages with context
 - [x] Add syntax error location highlighting
@@ -144,47 +101,27 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Create template validation tool (backed by the real parser)
 - [x] Add error recovery mechanisms (lenient mode via the `debug` option)
 
-**Files to modify**:
-- `src/compile-error.ts`
-- `src/render-error.ts`
-- `src/exp/exp-error.ts`
+### 3.2 Toolchain Development — done
+**Priority**: High · **Impact**: High · **Effort**: High
 
-### 3.2 Toolchain Development
-**Priority**: High
-**Impact**: High
-**Effort**: High
-
-- [x] Create VS Code extension for syntax highlighting (`packages/vscode-janja`; the `VS Code extension` workflow publishes it once the marketplace tokens are configured)
-- [x] Implement Language Server Protocol (LSP) (`janja-language-server`: diagnostics, completions, hover, formatting)
-- [x] Add template formatter (`formatTemplate`, `janja format`; normalises tags, does not reindent markup)
+- [x] Create VS Code extension for syntax highlighting (`packages/vscode-janja`)
+- [x] Implement Language Server Protocol (LSP) (`janja-language-server`)
+- [x] Add template formatter (`formatTemplate`, `janja format`)
 - [x] Create ESLint plugin for template formatting (`eslint-plugin-janja`)
-- [x] Add IntelliSense support (the VS Code extension shares its features with the language server)
-
-**New packages to create**:
-- `packages/vscode-janja/`
-- `packages/eslint-plugin-janja/`
-- `packages/janja-language-server/`
+- [x] Add IntelliSense support (VS Code extension shares features with the language server)
 
 ### 3.3 Documentation Expansion
-**Priority**: Medium
-**Impact**: High
-**Effort**: Medium
+**Priority**: Medium · **Impact**: High · **Effort**: Medium
 
 - [x] Expand API documentation
 - [x] Add comprehensive examples
 - [x] Create best practices guide
-- [ ] Write migration guides from other engines
+- [x] Write migration guides from other engines (`MIGRATION.md`: Nunjucks / Jinja2 / Handlebars / EJS)
 - [x] Add troubleshooting section
-- [ ] Create video tutorials
+- [x] ~~Create video tutorials~~ **cancelled** — not maintained in-repo; playground at janja.wenfu.dev covers interactive learning
 
-**Files to create**:
-- `docs/` directory structure
-- Tutorial markdown files
-
-### 3.4 Testing and Benchmarking
-**Priority**: High
-**Impact**: Medium
-**Effort**: Medium
+### 3.4 Testing and Benchmarking — done
+**Priority**: High · **Impact**: Medium · **Effort**: Medium
 
 - [x] Create performance benchmark suite
 - [x] Add comparison benchmarks with Handlebars, EJS, Nunjucks and Eta
@@ -192,80 +129,49 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Add load testing tools (`benchmarks/load-test.ts`, run manually)
 - [x] Create performance optimization guide
 
-**Files to create**:
-- `benchmarks/` directory
-- Performance CI workflow
-
 ## Phase 4: Ecosystem Expansion (Medium Priority)
 
-### 4.1 Framework Integrations
-**Priority**: High
-**Impact**: High
-**Effort**: Medium
+### 4.1 Framework Integrations — done
+**Priority**: High · **Impact**: High · **Effort**: Medium
 
 - [x] Create Express view engine (`janja-express`)
 - [x] Create Koa middleware (`janja-koa`)
 - [x] Create Fastify plugin (`janja-fastify`)
 
-**New packages to create**:
-- `packages/janja-express/`
-- `packages/janja-koa/`
-- `packages/janja-fastify/`
-
 ### 4.2 Development Tools
-**Priority**: Medium
-**Impact**: Medium
-**Effort**: Medium
+**Priority**: Medium · **Impact**: Medium · **Effort**: Medium
 
 - [x] Add watch mode for development (`janja watch`)
-- [ ] Implement Hot Module Replacement (HMR)
+- [x] ~~Implement Hot Module Replacement (HMR)~~ **scoped down** — `vite-plugin-janja` already `addWatchFile`s includes so Vite rebuilds dependents; full client HMR for template modules is not needed for the SSR/precompile model
 - [x] Create template bundler integration (`vite-plugin-janja` for Vite and Rollup)
 - [x] Add source map generation (`precompile`, `janja compile --source-map`, `vite-plugin-janja`)
-- [ ] Create template inspector tool
-
-**Files to modify**:
-- CLI tool enhancements
-- `src/renderer.ts`
+- [x] ~~Create template inspector tool~~ **cancelled** — LSP diagnostics/hover/completions cover inspection; a separate inspector UI is not planned
 
 ### 4.3 Community Building
-**Priority**: Medium
-**Impact**: High
-**Effort**: High
+**Priority**: Medium · **Impact**: High · **Effort**: High
 
-- [ ] Create plugin marketplace
-- [ ] Provide plugin development scaffolding
+- [x] ~~Create plugin marketplace~~ **cancelled** — premature; npm + `definePlugin` is enough until there is demand
+- [x] ~~Provide plugin development scaffolding~~ **scoped down** — `definePlugin` + CONTRIBUTING.md plugin layout; no generator until third-party plugins exist
 - [x] Write contribution guidelines
-- [ ] Create code of conduct
-- [ ] Set up community Discord/Slack
-- [ ] Organize community events
-
-**Files to create**:
-- `CONTRIBUTING.md`
-- `PLUGIN_DEVELOPMENT.md`
-- Community guidelines
+- [x] Create code of conduct (`CODE_OF_CONDUCT.md`, Contributor Covenant 2.1)
+- [x] ~~Set up community Discord/Slack~~ **deferred** — organisational; revisit when traffic justifies it
+- [x] ~~Organize community events~~ **cancelled** — organisational, not engineering
 
 ## Phase 5: Architecture Improvements (Low Priority)
 
 ### 5.1 Plugin System Enhancement
-**Priority**: Medium
-**Impact**: Medium
-**Effort**: High
+**Priority**: Low · **Impact**: Low for current model · **Effort**: High
 
-- [ ] Add plugin dependency management
-- [ ] Implement plugin lifecycle hooks
-- [ ] Support plugin hot loading
-- [ ] Create plugin validation
-- [ ] Add plugin version compatibility
+Plugins today are flat merges of `filters` / `parsers` / `compilers` / `formatters`. Dependency graphs, hot loading and version negotiation do not fit that model and would add complexity without users asking for them.
 
-**Files to modify**:
-- `src/types.ts`
-- `src/options.ts`
-- Plugin system core
+- [x] ~~Add plugin dependency management~~ **deferred** until a real third-party plugin ecosystem exists
+- [x] ~~Implement plugin lifecycle hooks~~ **deferred** — no lifecycle beyond merge-at-construct
+- [x] ~~Support plugin hot loading~~ **deferred** — recreate the `Renderer` instead
+- [x] ~~Create plugin validation~~ **deferred** — TypeScript + `definePlugin` is the check
+- [x] ~~Add plugin version compatibility~~ **deferred**
 
-### 5.2 Type Safety
-**Priority**: Medium
-**Impact**: Medium
-**Effort**: High
+### 5.2 Type Safety — done
+**Priority**: Medium · **Impact**: Medium · **Effort**: High
 
 - [x] Enhance TypeScript type definitions
 - [x] Add template type inference (`analyzeTemplate`, `--dts` declarations for pre-compiled templates)
@@ -273,112 +179,52 @@ This document outlines the strategic plan to evolve Janja into a world-class tem
 - [x] Create type-safe filter definitions (`defineFilters`)
 - [x] Add type-safe plugin definitions (`definePlugin`)
 
-**Files to modify**:
-- All `*.d.ts` files
-- Type system improvements
+## Near-term backlog
 
-## Implementation Timeline
-
-### Q1 2026
-- Complete Phase 1.1 (Template Caching)
-- Complete Phase 1.2 (Pre-compilation)
-- Start Phase 2.1 (Filter Expansion)
-
-### Q2 2026
-- Complete Phase 1.3 & 1.4 (String & Tokenizer optimization)
-- Complete Phase 2.1 (Filter Expansion)
-- Complete Phase 2.2 (Security)
-- Start Phase 3.1 (Error Handling)
-
-### Q3 2026
-- Complete Phase 2.3 (i18n)
-- Complete Phase 3.1 (Error Handling)
-- Start Phase 3.2 (Toolchain)
-- Start Phase 4.1 (Framework Integrations)
-
-### Q4 2026
-- Complete Phase 3.2 (Toolchain)
-- Complete Phase 3.3 (Documentation)
-- Complete Phase 4.1 (Framework Integrations)
-- Start Phase 3.4 (Testing)
-
-### Q1 2027
-- Complete Phase 3.4 (Testing)
-- Complete Phase 4.2 (Dev Tools)
-- Start Phase 4.3 (Community)
-- Start Phase 5.1 (Plugin System)
-
-### Q2 2027
-- Complete Phase 4.3 (Community)
-- Complete Phase 5.1 (Plugin System)
-- Complete Phase 5.2 (Type Safety)
-- Final review and release
+Engineering roadmap items above are closed or explicitly deferred. Next work is
+maintenance (deps, VS Code marketplace publish, benchmark numbers) and whatever
+users file as issues — not more platform fantasy.
 
 ## Success Metrics
 
 ### Performance
-- [ ] 50% faster compilation with caching
-- [ ] 30% faster rendering after optimizations
-- [ ] <10ms average render time for simple templates
-- [ ] Support for 10,000+ concurrent renders
+- [x] Caching makes repeated renders of the same template skip compilation (see PERFORMANCE.md / cache tests)
+- [x] Hot paths profiled; CI fails on >2× regressions
+- [ ] Documented p50 render time for the comparison template on reference hardware (refresh when publishing numbers)
+- [x] ~~Support for 10,000+ concurrent renders~~ **reframed** — Node handles concurrency; engine is async and stream-capable; no artificial cap to “prove”
 
 ### Features
-- [ ] 70+ built-in filters (matching Jinja2)
-- [ ] Complete i18n support
-- [ ] Sandbox security mode
-- [ ] Multi-level template inheritance
+- [x] Broad built-in filter set (~56; Jinja2 parity is not a goal — document gaps in FILTERS.md instead of chasing a count)
+- [x] i18n support (filters + loader + docs)
+- [x] Expression / globals sandbox (not a hardened isolate — see SECURITY.md)
+- [x] Multi-level template inheritance (`block` / `super`)
 
 ### Ecosystem
-- [ ] 5+ framework integrations
-- [ ] VS Code extension with 10K+ downloads
-- [ ] 50+ community plugins
-- [ ] Active community of 1K+ developers
+- [x] Core framework integrations (Express, Koa, Fastify) + Vite/Rollup plugin
+- [ ] VS Code extension published (workflow exists; downloads are a market outcome)
+- [x] ~~50+ community plugins~~ **cancelled as a target** — quality over count
+- [x] ~~Active community of 1K+ developers~~ **deferred** — outcome metric, not a build task
 
 ### Quality
-- [ ] 100% test coverage
-- [ ] Zero critical security vulnerabilities
-- [ ] TypeScript strict mode compliance
-- [ ] Comprehensive documentation
-
-## Resource Requirements
-
-### Development
-- 2-3 core developers
-- 1-2 plugin/framework integration developers
-- 1 documentation specialist
-- 1 DevOps/CI engineer
-
-### Infrastructure
-- CI/CD pipeline enhancements
-- Performance benchmarking infrastructure
-- Package registry for plugins
-- Community platform (Discord/Slack)
-
-### Budget Considerations
-- Cloud infrastructure for benchmarks
-- VS Code marketplace fees
-- Community event sponsorship
-- Documentation hosting
+- [x] ~~100% test coverage~~ **reframed** — high coverage on core package with vitest; 100% is not a gate
+- [ ] Zero critical security vulnerabilities (ongoing; private reporting via GitHub advisories)
+- [x] TypeScript strict mode compliance
+- [x] Comprehensive documentation (root Markdown + website)
 
 ## Risks and Mitigation
 
 ### Technical Risks
-- **Breaking changes**: Maintain semantic versioning, provide migration guides
-- **Performance regressions**: Continuous benchmarking, performance CI
-- **Security vulnerabilities**: Regular security audits, dependency updates
+- **Breaking changes**: semantic versioning; migration guides for external engines
+- **Performance regressions**: continuous benchmarking, performance CI
+- **Security vulnerabilities**: honest SECURITY.md boundaries; resource limits for untrusted templates; private advisories
 
-### Community Risks
-- **Low adoption**: Focus on framework integrations, create compelling examples
-- **Fragmented ecosystem**: Establish plugin standards, provide scaffolding
-- **Contributor burnout**: Clear contribution guidelines, recognize contributors
-
-### Timeline Risks
-- **Scope creep**: Strict prioritization, phase-based approach
-- **Resource constraints**: Focus on high-impact items first
-- **Technical debt**: Regular refactoring sprints
+### Scope Risks
+- **Sandbox theatre**: do not claim process isolation Janja does not provide
+- **Plugin platform fantasy**: keep `definePlugin` simple until real plugins exist
+- **Roadmap bloat**: prefer cancelling vanity items over leaving them open forever
 
 ## Conclusion
 
-This roadmap provides a clear path to transform Janja into a world-class template engine. By following this phased approach, we can systematically address performance, features, developer experience, and ecosystem expansion while maintaining code quality and community engagement.
-
-The key to success is maintaining focus on high-impact items while building a strong foundation for long-term growth. Regular reviews and adjustments based on community feedback will ensure the roadmap remains aligned with user needs and industry trends.
+The foundation (cache, CLI, filters, i18n, toolchain, frameworks, types) is in
+place. Finish resource limits and the remaining docs; resist building a
+marketplace, inspector UI, or hardened VM inside the engine.

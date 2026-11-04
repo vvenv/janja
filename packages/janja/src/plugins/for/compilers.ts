@@ -1,7 +1,9 @@
 import type { Compiler } from '../../compiler';
 import { ExpCompiler } from '../../exp/exp-compiler';
 import type { BinaryExp, Exp } from '../../exp/exp-types';
+import { resolveSecurityLimits } from '../../security';
 import type { SyntaxNode } from '../../syntax-nodes';
+import type { RendererOptions } from '../../types';
 import { type BreakNode, type ContinueNode, type ForNode } from './syntax';
 
 const loop = 'loop:{first:i_===0,index:i_++,last:i_===n_}';
@@ -107,6 +109,16 @@ async function compileFor(
 
   compiler.pushRaw(loc, 'let i_=0;');
 
+  const { maxLoopIterations } = resolveSecurityLimits(
+    (compiler.options as RendererOptions).security,
+  );
+  const loopGuard =
+    maxLoopIterations == null
+      ? []
+      : [
+          `if(++li_>${maxLoopIterations})throw new Error(${JSON.stringify(`Loop iteration limit of ${maxLoopIterations} exceeded`)});`,
+        ];
+
   if (isReadOnly(body)) {
     // Nothing in the body can modify the scope, so a single one is shared by
     // all iterations instead of copying the outer context for each of them
@@ -114,6 +126,7 @@ async function compileFor(
       loc,
       `const ${scope}={...${context}};`,
       'for(const v_ of a_){',
+      ...loopGuard,
       `${scope}.loop={${loop.slice(6)};`,
       ...variables.map(([name, value]) => `${scope}.${name}=${value};`),
     );
@@ -121,6 +134,7 @@ async function compileFor(
     compiler.pushRaw(
       loc,
       'for(const v_ of a_){',
+      ...loopGuard,
       `const ${scope}={`,
       `...${context},`,
       `${loop},`,

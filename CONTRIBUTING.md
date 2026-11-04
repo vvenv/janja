@@ -1,5 +1,7 @@
 # Contributing
 
+By participating you agree to the [Code of Conduct](./CODE_OF_CONDUCT.md).
+
 ## Setup
 
 Requires Node.js 22.12 or later and [pnpm](https://pnpm.io) (the version is pinned in `package.json`; `corepack enable` picks it up).

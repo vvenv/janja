@@ -54,8 +54,10 @@ The documentation lives at **[janja.wenfu.dev](https://janja.wenfu.dev)**. The s
 - [Language specification](./SPEC.md) - Syntax and semantics, backed by a conformance suite
 - [Documentation](./documentation.md) - API, CLI and tooling
 - [Filters](./FILTERS.md) - Built-in filter reference
+- [Migration](./MIGRATION.md) - From Nunjucks, Jinja2, Handlebars or EJS
 - [Security](./SECURITY.md) - What is protected, what is not, and how to report issues
 - [Performance](./PERFORMANCE.md) - Caching, pre-compilation and benchmarks
+- [Contributing](./CONTRIBUTING.md) / [Code of Conduct](./CODE_OF_CONDUCT.md)
 
 ## Ecosystem
 

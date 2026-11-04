@@ -4,9 +4,15 @@ import { Context } from './context';
 import { Parser } from './parser';
 import type { BlockNode } from './plugins/block/syntax';
 import type { IncludeNode } from './plugins/include/syntax';
+import { resolveSecurityLimits } from './security';
 import type { Mapping } from './source-map';
 import type { RootNode, SyntaxNode } from './syntax-nodes';
-import type { CompilerFn, CompilerOptions, Script } from './types';
+import type {
+  CompilerFn,
+  CompilerOptions,
+  RendererOptions,
+  Script,
+} from './types';
 
 export interface CompiledTemplate {
   code: string;
@@ -50,6 +56,10 @@ export function optionsFingerprint(options: Required<CompilerOptions>) {
       outputClose,
     } = options;
 
+    // Limits that change the generated code must bust the compile cache
+    const { maxIncludeDepth, maxLoopIterations, maxCallDepth } =
+      resolveSecurityLimits((options as RendererOptions).security);
+
     fingerprint = JSON.stringify([
       trimWhitespace,
       stripComments,
@@ -59,6 +69,9 @@ export function optionsFingerprint(options: Required<CompilerOptions>) {
       directiveClose,
       outputOpen,
       outputClose,
+      maxIncludeDepth,
+      maxLoopIterations ?? null,
+      maxCallDepth ?? null,
     ]);
     fingerprints.set(options, fingerprint);
   }
@@ -142,17 +155,25 @@ export class Compiler extends Context {
 
     this.start(this.isRoot);
 
+    if (this.isRoot) {
+      this.pushResourceLimitCounters();
+    }
+
     await this.parseTemplates();
 
     if (this.isRoot) {
       if (this.partials.size) {
+        const { maxIncludeDepth } = resolveSecurityLimits(
+          (this.options as RendererOptions).security,
+        );
+
         this.pushRaw(null, 'let d_=0;', 'const p={');
 
         for (const [path, code] of this.partials) {
           this.pushRaw(
             null,
             `${JSON.stringify(path)}:async()=>{`,
-            `if(d_>=${MAX_INCLUDE_DEPTH})throw new Error(${JSON.stringify(`Includes of ${JSON.stringify(path)} are nested too deeply`)});`,
+            `if(d_>=${maxIncludeDepth})throw new Error(${JSON.stringify(`Includes of ${JSON.stringify(path)} are nested too deeply`)});`,
             'd_++;',
             'try{return await(async()=>{',
             code,
@@ -223,6 +244,24 @@ export class Compiler extends Context {
 
   private fingerprint() {
     return optionsFingerprint(this.options);
+  }
+
+  /**
+   * Shared counters for optional security limits. Declared once on the root
+   * template so nested includes, macros and loops all see the same budget.
+   */
+  private pushResourceLimitCounters() {
+    const { maxLoopIterations, maxCallDepth } = resolveSecurityLimits(
+      (this.options as RendererOptions).security,
+    );
+
+    if (maxLoopIterations != null) {
+      this.pushRaw(null, 'let li_=0;');
+    }
+
+    if (maxCallDepth != null) {
+      this.pushRaw(null, 'let cd_=0;');
+    }
   }
 
   private async isFresh({ sources }: CompiledTemplate) {

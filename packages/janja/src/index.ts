@@ -28,6 +28,7 @@ export * from './analyze';
 export * from './format';
 export * from './file-loader';
 export * from './error-recovery';
+export * from './security';
 
 // Renderers are reused between calls so that their compile cache is too: one
 // for calls without options, and one per options object.

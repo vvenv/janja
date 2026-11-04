@@ -58,10 +58,31 @@ const renderer = new Renderer({
 
 - A template can call any function reachable from the data and globals you pass. If you pass an object with a method that deletes files, a template can call it. Pass plain data.
 - Custom filters and plugins run with full privileges.
-- There are no CPU or memory limits. A template can loop over a huge collection or recurse through macros until the process runs out of resources.
 - `include` loads whatever your `loader` returns for the requested path. If template authors are untrusted, the loader must confine paths itself.
+- Optional resource limits (below) reject a render that exceeds a budget; they do not kill the worker or reclaim memory. Truly hostile templates still need a separate process or isolate.
 
-If you must run untrusted templates, do it in a separate process or isolate with resource limits, and pass only JSON-like data.
+If you must run untrusted templates, do it in a separate process or isolate with OS-level limits, and pass only JSON-like data.
+
+## Resource Limits
+
+Optional budgets under `security`. They are off by default except include depth, so trusted templates keep their current behaviour.
+
+```javascript
+import { Renderer } from 'janja';
+
+const renderer = new Renderer({
+  security: {
+    maxIncludeDepth: 20, // default 100; cyclic includes become an error
+    maxLoopIterations: 10_000, // all `for` bodies in one render share this
+    maxCallDepth: 32, // nested macro invocations
+    timeoutMs: 100, // wall clock for one render; does not abort the script
+  },
+});
+```
+
+- `maxIncludeDepth` is always enforced (default `100`).
+- `maxLoopIterations` and `maxCallDepth` are compile-time guards in the generated code; changing them busts the template cache.
+- `timeoutMs` rejects the render promise when the budget elapses. The compiled script may keep running until the event loop is free — use a child process when you need a hard stop.
 
 ## Auditing Helper
 
@@ -87,6 +108,7 @@ Generate a fresh nonce per response, send the header yourself, and pass the nonc
 - [ ] Templates come from your own codebase, or run in an isolated process
 - [ ] Data passed to templates is plain data, without powerful methods
 - [ ] The `loader` cannot be steered outside the template directory
+- [ ] Untrusted templates set `maxLoopIterations` / `maxCallDepth` / `timeoutMs` (and still run in an isolate)
 - [ ] Templates are validated in CI (`validateTemplate`)
 
 ## Reporting Security Issues
