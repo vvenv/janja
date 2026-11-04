@@ -82,8 +82,8 @@ importers:
         specifier: ^26.6.5
         version: 26.6.5
       '@vitest/coverage-v8':
-        specifier: 5.0.4
-        version: 5.0.4(vitest@5.0.5)
+        specifier: 5.0.5
+        version: 5.0.5(vitest@5.0.5)
       '@vitest/ui':
         specifier: 5.0.4
         version: 5.0.4(vitest@5.0.5)
@@ -104,7 +104,7 @@ importers:
         version: 8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   packages/janja:
     devDependencies:
@@ -133,8 +133,8 @@ importers:
         specifier: ^3.2.6
         version: 3.2.6
       '@vitest/coverage-v8':
-        specifier: 5.0.4
-        version: 5.0.4(vitest@5.0.5)
+        specifier: 5.0.5
+        version: 5.0.5(vitest@5.0.5)
       '@vitest/ui':
         specifier: 5.0.4
         version: 5.0.4(vitest@5.0.5)
@@ -164,7 +164,7 @@ importers:
         version: 8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   packages/janja-cli:
     dependencies:
@@ -182,8 +182,8 @@ importers:
         specifier: ^26.6.5
         version: 26.6.5
       '@vitest/coverage-v8':
-        specifier: 5.0.4
-        version: 5.0.4(vitest@5.0.5)
+        specifier: 5.0.5
+        version: 5.0.5(vitest@5.0.5)
       '@vitest/ui':
         specifier: 5.0.4
         version: 5.0.4(vitest@5.0.5)
@@ -195,7 +195,7 @@ importers:
         version: 8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   packages/janja-express:
     devDependencies:
@@ -216,7 +216,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   packages/janja-fastify:
     dependencies:
@@ -238,7 +238,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   packages/janja-koa:
     devDependencies:
@@ -259,7 +259,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   packages/janja-language-server:
     dependencies:
@@ -281,7 +281,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   packages/vite-plugin-janja:
     devDependencies:
@@ -302,7 +302,7 @@ importers:
         version: 8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   packages/vscode-janja:
     devDependencies:
@@ -332,7 +332,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^5.0.5
-        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+        version: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
       vscode-oniguruma:
         specifier: ^2.0.1
         version: 2.0.1
@@ -461,8 +461,8 @@ packages:
     resolution: {integrity: sha512-uMHhvmDmwFiLuiozaoRYTZHqMFuu3fem/X9JY78lohAuLoh8LSGGC8JqUzo2cVuBsBxkjMZNk56CE7ock8Xxkw==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
-  '@babel/helper-string-parser@7.29.7':
-    resolution: {integrity: sha512-Pb5ijPrZ89GDH8223L4UP8i6QApWxs04RbPQJTeWDV0/keR2E36MeKnyr6LYmUUvqRRI+Iv87SuF1W6ErINzYw==}
+  '@babel/helper-string-parser@7.29.11':
+    resolution: {integrity: sha512-snZbO7MEDOof+hvNa97EjEY7qD7h2kwvQr5AJC3ZhQudKW5dnej6k3kP9NQV88hJwaS8vDqRLFo9rivLEhle2g==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-validator-identifier@7.29.7':
@@ -473,13 +473,18 @@ packages:
     resolution: {integrity: sha512-HYx0YmuchRxRSpnjvcNffnPS8DCauKNmnumIuHG3jnQAVewRA7kfJGwF13ayEpSZs7s4R/oBH4eppuXcAQd5JQ==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
+  '@babel/parser@7.29.12':
+    resolution: {integrity: sha512-WJ7JBp/Q4+z/ImydtI7jS6NVco5++632ExBemSX+Ysb+G1lCwQ5BVo3SY+jGGOcZXI4ZccbZSUSJLNBW6eEpJg==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
   '@babel/parser@7.29.9':
     resolution: {integrity: sha512-CjXrNHTnvqBVqHgdBysY3vk2T8tpJHb5/RMeHJBTyVa9xgugCB0CJTx/3oO8RV2QRQP391RWpB7D6hLjm8V9uA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  '@babel/types@7.29.8':
-    resolution: {integrity: sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==}
+  '@babel/types@7.29.11':
+    resolution: {integrity: sha512-WCsemW40Cpc6gouC1SrY6PBaZ+oLRlEVY9XBvZBI7il/HyUrb2nJ505wE1MHEFyDZNnrWDEuy4jL50WVHfTTSQ==}
     engines: {node: '>=6.9.0'}
 
   '@bcoe/v8-coverage@1.0.2':
@@ -1212,6 +1217,9 @@ packages:
   '@types/esrecurse@4.3.1':
     resolution: {integrity: sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw==}
 
+  '@types/estree@1.0.10':
+    resolution: {integrity: sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g==}
+
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
@@ -1476,11 +1484,11 @@ packages:
       vite: ^5.0.0 || ^6.0.0
       vue: ^3.2.25
 
-  '@vitest/coverage-v8@5.0.4':
-    resolution: {integrity: sha512-P5YcQY8Y6RmoE9xRXI38rT8pssbcubEzqtYTM2XQoxOXMDn04nRaTI1SM8qCl9/NfW3ag9GlzdSXu7IwO5Ft8A==}
+  '@vitest/coverage-v8@5.0.5':
+    resolution: {integrity: sha512-4KpkGdIrSqBihx/JyP/e+S+IKB98etg1XDQiLAxksLfcShnwi1VReGeOT9NI43hLHbknosKp/1CCLn9Zgcs8mg==}
     peerDependencies:
-      '@vitest/browser': 5.0.4
-      vitest: 5.0.4
+      '@vitest/browser': 5.0.5
+      vitest: 5.0.5
     peerDependenciesMeta:
       '@vitest/browser':
         optional: true
@@ -3666,20 +3674,24 @@ snapshots:
       js-tokens: 10.0.0
     optional: true
 
-  '@babel/helper-string-parser@7.29.7': {}
+  '@babel/helper-string-parser@7.29.11': {}
 
   '@babel/helper-validator-identifier@7.29.7': {}
 
   '@babel/helper-validator-identifier@8.0.6':
     optional: true
 
+  '@babel/parser@7.29.12':
+    dependencies:
+      '@babel/types': 7.29.11
+
   '@babel/parser@7.29.9':
     dependencies:
-      '@babel/types': 7.29.8
+      '@babel/types': 7.29.11
 
-  '@babel/types@7.29.8':
+  '@babel/types@7.29.11':
     dependencies:
-      '@babel/helper-string-parser': 7.29.7
+      '@babel/helper-string-parser': 7.29.11
       '@babel/helper-validator-identifier': 7.29.7
 
   '@bcoe/v8-coverage@1.0.2': {}
@@ -4313,6 +4325,8 @@ snapshots:
 
   '@types/esrecurse@4.3.1': {}
 
+  '@types/estree@1.0.10': {}
+
   '@types/estree@1.0.9': {}
 
   '@types/express-serve-static-core@5.1.3':
@@ -4565,7 +4579,7 @@ snapshots:
       vite: 5.4.21(@types/node@26.6.5)(lightningcss@1.33.0)(terser@5.51.2)
       vue: 3.5.43(typescript@6.0.3)
 
-  '@vitest/coverage-v8@5.0.4(vitest@5.0.5)':
+  '@vitest/coverage-v8@5.0.5(vitest@5.0.5)':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/istanbul-lib-coverage': 1.0.2
@@ -4575,7 +4589,7 @@ snapshots:
       obug: 3.0.0
       std-env: 4.3.0
       tinyrainbow: 3.2.0
-      vitest: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+      vitest: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   '@vitest/istanbul-lib-coverage@1.0.2': {}
 
@@ -4606,7 +4620,7 @@ snapshots:
       pathe: 2.0.3
       sirv: 3.0.2
       tinyrainbow: 3.2.0
-      vitest: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
+      vitest: 5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
 
   '@vitest/utils@5.0.4':
     dependencies:
@@ -4628,7 +4642,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.43':
     dependencies:
-      '@babel/parser': 7.29.9
+      '@babel/parser': 7.29.12
       '@vue/shared': 3.5.43
       entities: 7.0.1
       estree-walker: 2.0.2
@@ -4636,7 +4650,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.44':
     dependencies:
-      '@babel/parser': 7.29.9
+      '@babel/parser': 7.29.12
       '@vue/shared': 3.5.44
       entities: 7.0.1
       estree-walker: 2.0.2
@@ -4654,7 +4668,7 @@ snapshots:
 
   '@vue/compiler-sfc@3.5.43':
     dependencies:
-      '@babel/parser': 7.29.9
+      '@babel/parser': 7.29.12
       '@vue/compiler-core': 3.5.43
       '@vue/compiler-dom': 3.5.43
       '@vue/compiler-ssr': 3.5.43
@@ -5401,7 +5415,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
 
   esutils@2.0.3: {}
 
@@ -5965,8 +5979,8 @@ snapshots:
 
   magicast@0.5.5:
     dependencies:
-      '@babel/parser': 7.29.9
-      '@babel/types': 7.29.8
+      '@babel/parser': 7.29.12
+      '@babel/types': 7.29.11
       source-map-js: 1.2.2
 
   mark.js@8.11.1: {}
@@ -6843,7 +6857,7 @@ snapshots:
       - typescript
       - universal-cookie
 
-  vitest@5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.4)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)):
+  vitest@5.0.5(@types/node@26.6.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.4)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2)):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/mocker': 5.0.5(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(terser@5.51.2))
@@ -6861,7 +6875,7 @@ snapshots:
       why-is-node-running: 3.2.1
     optionalDependencies:
       '@types/node': 26.6.5
-      '@vitest/coverage-v8': 5.0.4(vitest@5.0.5)
+      '@vitest/coverage-v8': 5.0.5(vitest@5.0.5)
       '@vitest/ui': 5.0.4(vitest@5.0.5)
     transitivePeerDependencies:
       - msw
