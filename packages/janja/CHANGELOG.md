@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/vvenv/janja/compare/janja-v4.0.0...janja-v4.1.0) (2026-11-04)
+
+
+### Features
+
+* **security:** add optional render resource limits ([0c99b65](https://github.com/vvenv/janja/commit/0c99b650cc53cd69bd5fc199837cee78ff938e30))
+
 ## [4.0.0](https://github.com/vvenv/janja/compare/janja-v3.0.0...janja-v4.0.0) (2026-10-13)
 
 
