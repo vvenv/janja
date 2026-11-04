@@ -2,7 +2,7 @@
   "name": "vscode-janja",
   "displayName": "Janja",
   "description": "Syntax highlighting, diagnostics, completions, hover and formatting for Janja templates",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "publisher": "vvenv",
   "license": "MIT",
